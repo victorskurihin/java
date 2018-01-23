@@ -29,6 +29,6 @@ tail -f $OUTLOG $ERRLOG $WCGCLOG
 EOF
 rm -f $LOGDIR/* ${DUMPDIR}/*
 java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l071.MainTest 
+    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l081.MainTest 
     #\
     #2> $ERRLOG > $OUTLOG

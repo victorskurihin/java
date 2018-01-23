@@ -4,16 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>L07.1</name>
+    <name>L08.1</name>
     <groupId>ru.otus</groupId>
-    <artifactId>L07.1-structural</artifactId>
+    <artifactId>L08.1-structural</artifactId>
     <version>1.0</version>
     <description>Learning</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.main>ru.otus.l071.Main</project.main>
-        <project.maintest>ru.otus.l071.MainTest</project.maintest>
+        <project.main>ru.otus.l081.Main</project.main>
+        <project.maintest>ru.otus.l081.MainTest</project.maintest>
         <project.mainclass>${project.main}</project.mainclass>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
