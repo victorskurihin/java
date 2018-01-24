@@ -23,5 +23,5 @@ DUMP="${DUMP} -XX:HeapDumpPath=${DUMPDIR}"
 mkdir -p $LOGDIR
 mkdir -p $DUMPDIR
 java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" -jar ./target/L07.1.jar \
+    -XX:OnOutOfMemoryError="kill -3 %p" -jar ./target/L08.1.jar \
     2> $ERRLOG
