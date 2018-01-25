@@ -123,6 +123,9 @@ public class ObjectOutputJson {
         if (f.getType().isArray()) {
             addArray(job, o, f);
         }
+        if (String.class == f.getType()) {
+            return job.add(f.getName(), (String) f.get(o));
+        }
         return job;
     }
 
