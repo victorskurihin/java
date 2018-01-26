@@ -1,5 +1,7 @@
 package ru.otus.l081;
 
+import javafx.scene.effect.Reflection;
+
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObjectBuilder;
@@ -62,7 +64,8 @@ public class ObjectOutputJson {
         return jab;
     }
 
-    JsonObjectBuilder addArray(JsonObjectBuilder job, Object o, Field f) throws IllegalAccessException {
+    JsonObjectBuilder addArray(JsonObjectBuilder job, Object o, Field f)
+    throws IllegalAccessException {
         JsonArrayBuilder jab = Json.createArrayBuilder();
         switch (f.getType().getComponentType().getName()) {
             case "boolean":
@@ -134,13 +137,112 @@ public class ObjectOutputJson {
             return;
         }
         for (Field field : c.getDeclaredFields()) {
-            ob = addFiled(ob, o, field);
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+            try {
+                ob = addFiled(ob, o, field);
+            } catch (Throwable e) {
+                throw e;
+            } finally {
+                field.setAccessible(accessible);
+            }
         }
     }
 
     public String toJson(Object o) throws IllegalAccessException {
+        if (Boolean.class == o.getClass()) {
+            Boolean b = (Boolean) o;
+            return b.toString();
+        }
+        if (Byte.class == o.getClass()) {
+            Byte b = (Byte) o;
+            return b.toString();
+        }
+        if (Character.class == o.getClass()) {
+            Character c = (Character) o;
+            return String.format("\"%c\"", c.charValue());
+        }
+        if (Short.class == o.getClass()) {
+            Short s = (Short) o;
+            return s.toString();
+        }
+        if (Integer.class == o.getClass()) {
+            Integer i = (Integer) o;
+            return i.toString();
+        }
+        if (Long.class == o.getClass()) {
+            Long l = (Long) o;
+            return l.toString();
+        }
+        if (Float.class == o.getClass()) {
+            Float f = (Float) o;
+            return f.toString();
+        }
+        if (Double.class == o.getClass()) {
+            Double d = (Double) o;
+            return d.toString();
+        }
         doClassFields(o.getClass(), o);
         return ob.build().toString();
     }
 
+    public String toJson(boolean b) {
+        return Boolean.toString(b);
+    }
+
+    public String toJson(long i) {
+        return Long.toString(i);
+    }
+
+    public String toJson(boolean ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfBoolean(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(byte ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfByte(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(char ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfChar(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(short ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfShort(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(int ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfInt(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(long ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfLong(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(float ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfFloat(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(double ... a) throws IllegalAccessException {
+        JsonArrayBuilder jab = Json.createArrayBuilder();
+        jab = addArrayOfDouble(jab, a);
+        return jab.toString();
+    }
+
+    public String toJson(String s) {
+        return String.format("\"%s\"", s);
+    }
 }
