@@ -1,8 +1,12 @@
 package ru.otus.l081;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
+import java.lang.reflect.Type;
+import java.util.LinkedList;
+import java.util.List;
 
 class EmptyClass {}
 
@@ -20,40 +24,33 @@ class TestString {
 }
 
 class TestComplex {
-    public EmptyClass emptyClass;
-    public TestSerial testSerial;
-    public TestArray testArray;
-    public TestString testString;
+    public EmptyClass emptyClass = new EmptyClass();
+    public TestSerial testSerial = new TestSerial();
+    public TestArray testArray = new TestArray();
+    public TestString testString = new TestString();
 }
 
 public class Main {
     public static void main(String[] args) throws IllegalAccessException {
+        Type listType = new TypeToken<List<String>>() {}.getType();
+        List<String> targetList = new LinkedList<String>();
+        targetList.add("blah");
+
+        TestArray targetTestArray = new TestArray();
+        TestComplex targetTestComplex = new TestComplex();
+
+        System.out.println("listType.getTypeName() = " + listType.getTypeName());
+
         Gson gson = new Gson();
-        TestSerial ts1 = new TestSerial();
-        System.out.println("gson = " + gson.toJson(1));
-        System.out.println("gson = " + gson.toJson("abc"));
-        System.out.println("gson = " + gson.toJson(ts1));
-        System.out.println("gson = " + gson.toJson(new EmptyClass()));
-        System.out.println("gson = " + gson.toJson(new TestArray()));
-        System.out.println("gson = " + gson.toJson(new TestString()));
-        System.out.println("gson = " + gson.toJson(new TestComplex()));
-        System.out.println("gson = " + gson.toJson(new Boolean(true)));
-        System.out.println("gson = " + gson.toJson(new Character('a')));
-        int[] values = { 1 };
-        System.out.println("gson = " + gson.toJson(values));
+        System.out.println("gson = " + gson.toJson(null));
+        System.out.println("gson = " + gson.toJson(targetTestArray));
+        System.out.println("gson = " + gson.toJson(targetTestComplex));
+        System.out.println("gson = " + gson.toJson(targetList, listType));
 
-
-        TestSerial ts2 = new TestSerial();
         ObjectOutputJson oojs = new ObjectOutputJson();
-        System.out.println("oojs = " + oojs.toJson(2));
-        System.out.println("oojs = " + oojs.toJson("abc"));
-        System.out.println("oojs = " + oojs.toJson(ts2));
-        System.out.println("oojs = " + oojs.toJson(new EmptyClass()));
-        System.out.println("oojs = " + oojs.toJson(new TestArray()));
-        System.out.println("oojs = " + oojs.toJson(new TestString()));
-        System.out.println("oojs = " + oojs.toJson(new TestComplex()));
-        System.out.println("oojs = " + oojs.toJson(new Boolean(true)));
-        System.out.println("oojs = " + oojs.toJson(new Character('b')));
-        System.out.println("oojs = " + oojs.toJson(values));
+        System.out.println("oojs = " + oojs.toJson(null));
+        System.out.println("oojs = " + oojs.toJson(targetTestArray));
+        System.out.println("oojs = " + oojs.toJson(targetTestComplex));
+        System.out.println("oojs = " + oojs.toJson(targetList));
     }
 }

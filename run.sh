@@ -5,7 +5,7 @@ OUTLOG=$LOGDIR/std_out.log
 GCLOG="$LOGDIR/gc_pid_%p.log"
 WCGCLOG="$LOGDIR/gc_pid_*.log*"
 DUMPDIR=./dumps
-CP="-cp ./target/classes:./target/test-classes:./target/libs:./target"
+CP="-cp ./target/classes:./target/test-classes:./target/libs:./target/gson-2.8.2.jar:./target/javax.json-1.0.4.jar:./target"
 REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n"
 MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 GC_LOG="-verbose:gc"
@@ -22,6 +22,8 @@ DUMP="-XX:+HeapDumpOnOutOfMemoryError"
 DUMP="${DUMP} -XX:HeapDumpPath=${DUMPDIR}"
 mkdir -p $LOGDIR
 mkdir -p $DUMPDIR
-java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" -jar ./target/L08.1.jar \
-    2> $ERRLOG
+java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
+    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l081.Main
+#java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC_LOG} ${JMX} ${DUMP} \
+#    -XX:OnOutOfMemoryError="kill -3 %p" -jar ./target/L08.1.jar \
+#    2> $ERRLOG
