@@ -5,8 +5,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.lang.reflect.Type;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 class EmptyClass {}
 
@@ -33,8 +32,9 @@ class TestComplex {
 public class Main {
     public static void main(String[] args) throws IllegalAccessException {
         Type listType = new TypeToken<List<String>>() {}.getType();
-        List<String> targetList = new LinkedList<String>();
-        targetList.add("blah");
+        Map<String, Integer> targetMap = new TreeMap();
+        targetMap.put("one", 0);
+        targetMap.put("two", 1);
 
         TestArray targetTestArray = new TestArray();
         TestComplex targetTestComplex = new TestComplex();
@@ -45,12 +45,12 @@ public class Main {
         System.out.println("gson = " + gson.toJson(null));
         System.out.println("gson = " + gson.toJson(targetTestArray));
         System.out.println("gson = " + gson.toJson(targetTestComplex));
-        System.out.println("gson = " + gson.toJson(targetList, listType));
+        System.out.println("gson = " + gson.toJson(targetMap));
 
         ObjectOutputJson oojs = new ObjectOutputJson();
         System.out.println("oojs = " + oojs.toJson(null));
         System.out.println("oojs = " + oojs.toJson(targetTestArray));
         System.out.println("oojs = " + oojs.toJson(targetTestComplex));
-        System.out.println("oojs = " + oojs.toJson(targetList));
+        System.out.println("oojs = " + oojs.toJson(targetMap));
     }
 }

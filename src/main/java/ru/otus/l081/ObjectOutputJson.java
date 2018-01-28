@@ -1,151 +1,49 @@
 package ru.otus.l081;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class ObjectOutputJson {
-    Set<Object> visited = new HashSet<>();
+    public static final String DEFAULT = "__DEFAULT__";
+    public static final String BUILD_IN_ARRAY = "__BUILD_IN_ARRAY__";
 
-    JsonArrayBuilder jsonArray(JsonArrayBuilder jab, Object o)
-    throws IllegalAccessException {
-        if (null == o || visited.contains(o)) {
-            return jab;
+    Map<String, Adapter> adapters = new HashMap<>();
+    private boolean verbose = true;
+    private final Adapter[] predefinedAdapters = {
+        new DefaultAdapter(),
+        new BuildinArrayAdapter(),
+        new ListAdapter(),
+        new LinkedListAdapter(),
+        new ArrayListAdapter(),
+        new SetAdapter(),
+        new TreeSetAdapter(),
+        new HashSetAdapter(),
+        new MapAdapter(),
+        new TreeMapAdapter()
+        // new HashMapAdapter()
+    };
+
+    public ObjectOutputJson() {
+        for (Adapter a : predefinedAdapters) {
+            adapters.put(a.getAdapteeOfType(), a);
+            a.setAdapters(adapters);
         }
-        visited.add(o);
+    }
 
-        switch (o.getClass().getTypeName()) {
-            case "boolean[]":
-                for (boolean b : boolean[].class.cast(o)) { jab.add(b); }
-                return jab;
-            case "char[]":
-                for (char c : char[].class.cast(o)) { jab.add(c); }
-                return jab;
-            case "byte[]":
-                for (byte b : byte[].class.cast(o)) { jab.add(b); }
-                return jab;
-            case "short[]":
-                for (short s : short[].class.cast(o)) { jab.add(s); }
-                return jab;
-            case "int[]":
-                Arrays.stream(int[].class.cast(o)).forEach(jab::add);
-                return jab;
-            case "long[]":
-                Arrays.stream(long[].class.cast(o)).forEach(jab::add);
-                return jab;
-            case "float[]":
-                for (float f : float[].class.cast(o)) { jab.add(f); }
-                return jab;
-            case "double[]":
-                Arrays.stream(double[].class.cast(o)).forEach(jab::add);
-                return jab;
-        }
-
-        for (Object e : Object[].class.cast(o)) {
-            if (null == e) continue;
-            if (e.getClass().isArray()) {
-                JsonArrayBuilder jsonArrayBuilder = Json.createArrayBuilder();
-                jab.add(jsonArray(jsonArrayBuilder, e));
-            } else {
-                JsonObjectBuilder ob = Json.createObjectBuilder();
-                jab.add(jsonObject(ob, e));
+    public ObjectOutputJson(Adapter ... adapters) {
+        this();
+        for (Adapter a : adapters) {
+            if (! this.adapters.containsKey(a.getAdapteeOfType())) {
+                this.adapters.put(a.getAdapteeOfType(), a);
+                a.setAdapters(this.adapters);
             }
         }
-
-        return jab;
-    }
-
-    JsonObjectBuilder addFiled(JsonObjectBuilder job, Object o, Field f)
-    throws IllegalAccessException {
-
-        switch (f.getType().getName()) {
-            case "boolean":
-                return job.add(f.getName(), f.getBoolean(o));
-            case "byte":
-                return job.add(f.getName(), f.getByte(o));
-            case "char":
-                return job.add(f.getName(), f.getChar(o));
-            case "short":
-                return job.add(f.getName(), f.getShort(o));
-            case "int":
-                return job.add(f.getName(), f.getInt(o));
-            case "long":
-                return job.add(f.getName(), f.getLong(o));
-            case "float":
-                return job.add(f.getName(), f.getFloat(o));
-            case "double":
-                return job.add(f.getName(), f.getDouble(o));
-        }
-
-        if (f.getType().isArray()) {
-            JsonArrayBuilder jab = Json.createArrayBuilder();
-            return f.get(o) != null
-                   ? job.add(f.getName(), jsonArray(jab, f.get(o)))
-                   : job.add(f.getName(), "null");
-        }
-
-        if (String.class == f.getType()) {
-            return f.get(o) != null
-                   ? job.add(f.getName(), (String) f.get(o))
-                   : job.add(f.getName(), "null");
-        }
-
-        JsonObjectBuilder ob = Json.createObjectBuilder();
-
-        return f.get(o) != null
-               ? job.add(f.getName(), jsonObject(ob, f.get(o)))
-               : job.add(f.getName(), "null");
-    }
-
-    JsonObjectBuilder jsonObject(JsonObjectBuilder ob, Object o)
-    throws IllegalAccessException {
-        if (null == o || visited.contains(o)) {
-            return ob;
-        }
-        visited.add(o);
-
-        if (o.getClass().getDeclaredFields().length < 1) {
-            return ob;
-        }
-
-        for (Field field : o.getClass().getDeclaredFields()) {
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-
-            try {
-                ob = addFiled(ob, o, field);
-            } catch (Throwable e) {
-                throw e;
-            } finally {
-                field.setAccessible(accessible);
-            }
-        }
-
-        return ob;
-    }
-
-    String toJson(JsonArrayBuilder jab, Object o)
-    throws IllegalAccessException {
-        return jsonArray(jab, o).build().toString();
-    }
-
-    String toJson(JsonObjectBuilder ob, Object o)
-    throws IllegalAccessException {
-        if (o.getClass().isArray()) {
-            JsonArrayBuilder jab = Json.createArrayBuilder();
-            return toJson(jab, o);
-        }
-
-        return jsonObject(ob, o).build().toString();
     }
 
     public String toJson(Type aClass, Object o) throws IllegalAccessException {
-        switch (aClass.getTypeName()) {
+        if (adapters.containsKey(aClass.getTypeName())) {
+            return adapters.get(aClass.getTypeName()).jsonValue(aClass, o).toString();
+        } else switch (aClass.getTypeName()) {
             case "java.lang.Boolean":
                 return ((Boolean) o).toString();
             case "java.lang.Character":
@@ -164,14 +62,17 @@ public class ObjectOutputJson {
                 return Double.toString((Double) o);
             case "java.lang.String":
                 return String.format("\"%s\"", (String) o);
+            default:
+                if (verbose) {
+                    System.err.println("NOT BOXING: " + aClass.getTypeName());
+                }
         }
 
-        try {
-            JsonObjectBuilder ob = Json.createObjectBuilder();
-            return toJson(ob, o);
-        } catch (Exception e) {
-            throw e;
+        if (o.getClass().isArray()) {
+            return adapters.get(BUILD_IN_ARRAY).jsonValue(aClass, o).toString();
         }
+
+        return adapters.get(DEFAULT).jsonValue(aClass, o).toString();
     }
 
     public String toJson(Object o) throws IllegalAccessException {

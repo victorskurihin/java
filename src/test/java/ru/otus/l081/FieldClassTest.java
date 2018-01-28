@@ -12,22 +12,26 @@ class IntFieldDefaultClassTest {
 }
 
 class IntFieldValuesClassTest {
-    int testPackageField = Integer.MIN_VALUE;
+    private int testPrivateField = Integer.MIN_VALUE;
     public int testPublicField = Integer.MAX_VALUE;
 }
 
 class LongFieldValuesClassTest {
-    long testPackageField = Long.MIN_VALUE;
+    private long testPrivateField = Long.MIN_VALUE;
     public long testPublicField = Long.MAX_VALUE;
 }
 
 class CharFieldValuesClassTest {
-    int testPackageField = Character.MIN_VALUE;
+    private int testPrivateField = Character.MIN_VALUE;
     public int testPublicField = Character.MAX_VALUE;
 }
 
-
 class BooleanFieldValuesClassTest {
-    boolean testPackageField;
+    boolean testPrivateField;
     public boolean testPublicField = true;
+}
+
+class IntFieldArrayClassTest {
+    private int testPrivateArrayField[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    public int testPublicArrayField[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 }
