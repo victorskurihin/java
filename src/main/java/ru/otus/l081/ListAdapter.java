@@ -19,8 +19,11 @@ public class ListAdapter extends Adapters implements Adapter {
         JsonArrayBuilder jab = Json.createArrayBuilder();
         //noinspection unchecked
         for (Object e : (List<Object>) o) {
-            if (null == e) { continue; }
-            jab = addToJsonArray(jab, e);
+            if (null == e) {
+                jab.addNull();
+            } else {
+                jab = addToJsonArray(jab, e);
+            }
         }
         return jab.build();
     }

@@ -33,7 +33,7 @@ public class LinkedListAdapterTest {
         for (final T s : array) {
             l.add(s);
         }
-        return (l);
+        return l;
     }
 
     @Test
@@ -56,13 +56,13 @@ public class LinkedListAdapterTest {
         );
         Assert.assertEquals(expectedCharacterList, targetCharacterList);
 
-//        List<FieldClassTest> expectedFieldClassTestList = arrayToList(
-//            new FieldClassTest[]{new FieldClassTest(), null, new FieldClassTest()}
-//        );
-//        Type fieldClassTestListType = new TypeToken<List<FieldClassTest>>() {}.getType();
-//        List<FieldClassTest> targetFieldClassTestList = gson.fromJson(
-//            oojs.toJson(expectedFieldClassTestList), fieldClassTestListType
-//        );
-//        Assert.assertEquals(expectedFieldClassTestList, targetFieldClassTestList);
+        List<FieldClassTest> expectedFieldClassTestList = arrayToList(
+            new FieldClassTest[]{new FieldClassTest(), null, new FieldClassTest()}
+        );
+        Type fieldClassTestListType = new TypeToken<List<FieldClassTest>>() {}.getType();
+        List<FieldClassTest> targetFieldClassTestList = gson.fromJson(
+            oojs.toJson(expectedFieldClassTestList), fieldClassTestListType
+        );
+        Assert.assertEquals(expectedFieldClassTestList, targetFieldClassTestList);
     }
 }

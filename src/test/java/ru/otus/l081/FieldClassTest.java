@@ -2,6 +2,26 @@ package ru.otus.l081;
 
 class FieldClassTest {
     int testPackageField;
+
+    @Override
+    public int hashCode() {
+        return testPackageField;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (getClass() != o.getClass()) {
+            return false;
+        }
+
+        FieldClassTest fieldClassTest = (FieldClassTest) o;
+
+        return fieldClassTest.testPackageField == testPackageField;
+    }
 }
 
 class IntFieldDefaultClassTest {
@@ -27,11 +47,15 @@ class CharFieldValuesClassTest {
 }
 
 class BooleanFieldValuesClassTest {
-    boolean testPrivateField;
+    private boolean testPrivateField;
     public boolean testPublicField = true;
 }
 
-class IntFieldArrayClassTest {
+class IntsFieldArrayClassTest {
     private int testPrivateArrayField[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     public int testPublicArrayField[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+}
+
+class ObjectsFieldArrayClassTest {
+    private FieldClassTest testPrivateArrayField[] = {null, new FieldClassTest()};
 }

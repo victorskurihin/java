@@ -4,7 +4,7 @@ set ERRLOG=%LOGDIR%\std_err.log
 set OUTLOG=%LOGDIR%\std_out.log
 set GCLOG=%LOGDIR%\gc_pid_%p.log
 set DUMPDIR=dumps
-set CP=target\classes;target\test-classes;target\libs:target
+set CP=target\classes;target\test-classes;target\libs;target\gson-2.8.2.jar;target\javax.json-1.0.4.jar;target
 set REMOTE_DEBUG0=-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n
 set REMOTE_DEBUG=
 set MEMORY=-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m
@@ -22,4 +22,4 @@ set DUMP=-XX:+HeapDumpOnOutOfMemoryError
 set DUMP=%DUMP% -XX:HeapDumpPath=%DUMPDIR%
 mkdir %LOGDIR% > nul 2> nul
 mkdir %DUMPDIR% > nul 2> nul
-java -cp %CP% %REMOTE_DEBUG% %MEMORY% %GC_LOG% %JMX% %DUMP% -jar target\L08.1.jar 2> %ERRLOG%
+java -cp %CP% %REMOTE_DEBUG% %MEMORY% %GC_LOG% %JMX% %DUMP% ru.otus.l081.Main 2> %ERRLOG%

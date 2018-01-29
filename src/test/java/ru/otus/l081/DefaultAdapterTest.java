@@ -11,13 +11,17 @@ import javax.json.JsonObjectBuilder;
 
 import java.lang.reflect.Field;
 
+/**
+ * Converts Java objects to JSON.
+ * This adapter class converts application classes to JSON using its built-in type.
+ */
 public class DefaultAdapterTest extends DefaultAdapter {
     public static final String TEST_PACKAGE_FIELD = "testPackageField";
     public static final String TEST_PRIVATE_FIELD = "testPrivateField";
     public static final String TEST_PROTECTED_FIELD = "testProtectedField";
     public static final String TEST_PUBLIC_FIELD = "testPublicField";
 
-    ObjectOutputJson oojs;
+    private ObjectOutputJson oojs;
 
     @Before
     public void setUp() throws Exception {

@@ -33,7 +33,7 @@ public class HashSetAdapterTest {
         for (final T s : array) {
             l.add(s);
         }
-        return (l);
+        return l;
     }
 
     @Test

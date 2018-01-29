@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayListAdapterTest {
-    ObjectOutputJson oojs;
+    private ObjectOutputJson oojs;
 
     @Before
     public void setUp() throws Exception {
@@ -28,7 +28,7 @@ public class ArrayListAdapterTest {
         for (final T s : array) {
             l.add(s);
         }
-        return (l);
+        return l;
     }
 
     @Test

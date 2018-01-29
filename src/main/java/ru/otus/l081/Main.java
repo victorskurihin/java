@@ -23,6 +23,7 @@ class TestString {
 }
 
 class TestComplex {
+    public Integer integer = 0;
     public EmptyClass emptyClass = new EmptyClass();
     public TestSerial testSerial = new TestSerial();
     public TestArray testArray = new TestArray();

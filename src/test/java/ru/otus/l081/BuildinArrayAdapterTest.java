@@ -11,6 +11,7 @@ import javax.json.JsonArrayBuilder;
 public class BuildinArrayAdapterTest {
     public static final String TEST_PRIVATE_ARRAY_FIELD = "testPrivateArrayField";
     public static final String TEST_PUBLIC_ARRAY_FIELD = "testPublicArrayField";
+    public static final String TEST_PACKAGE_FIELD = "testPackageField";
 
     private ObjectOutputJson oojs;
 
@@ -73,6 +74,14 @@ public class BuildinArrayAdapterTest {
         Assert.assertEquals(
             expectedDoubleArray, oojs.toJson(new double[]{0, 0.1, 0.2})
         );
+
+        Object[] objects = new Object[]{null, new Object()};
+
+        String expectedObjects  = Json
+            .createArrayBuilder()
+            .addNull().add(Json.createObjectBuilder())
+            .build().toString();
+        Assert.assertEquals(expectedObjects, oojs.toJson(objects));
     }
 
     @Test
@@ -90,7 +99,19 @@ public class BuildinArrayAdapterTest {
             .add(TEST_PUBLIC_ARRAY_FIELD, jab2)
             .build().toString();
         Assert.assertEquals(
-            expectedIntFieldArrayClass, oojs.toJson(new IntFieldArrayClassTest())
+            expectedIntFieldArrayClass, oojs.toJson(new IntsFieldArrayClassTest())
         );
+
+        ObjectsFieldArrayClassTest source = new ObjectsFieldArrayClassTest();
+        String sourceString = oojs.toJson(source);
+
+        String expectedString = Json
+            .createObjectBuilder()
+            .add(TEST_PRIVATE_ARRAY_FIELD, Json.createArrayBuilder()
+                .addNull().add(
+                    Json.createObjectBuilder()
+                        .add(TEST_PACKAGE_FIELD, 0)))
+            .build().toString();
+        Assert.assertEquals(expectedString, sourceString);
     }
 }

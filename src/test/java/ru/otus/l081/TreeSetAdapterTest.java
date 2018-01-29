@@ -30,7 +30,7 @@ public class TreeSetAdapterTest {
         for (final T e : array) {
             s.add(e);
         }
-        return (s);
+        return s;
     }
 
     @Test
