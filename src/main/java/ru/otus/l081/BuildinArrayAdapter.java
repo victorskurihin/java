@@ -1,9 +1,16 @@
 package ru.otus.l081;
 
+import com.google.common.reflect.TypeToken;
+
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonValue;
+import java.io.InputStream;
 import java.lang.reflect.Type;
+
+/**
+ * By default this class converts application array to JSON using type adapters.
+ */
 
 public class BuildinArrayAdapter extends Adapters implements Adapter {
     private final String ADAPTEE_TYPE = "__BUILD_IN_ARRAY__";
@@ -14,8 +21,13 @@ public class BuildinArrayAdapter extends Adapters implements Adapter {
     }
 
     @Override
-    public JsonValue jsonValue(Type aClass, Object o) throws IllegalAccessException {
+    public JsonValue write(Type aClass, Object o) throws IllegalAccessException {
         JsonArrayBuilder jab = Json.createArrayBuilder();
         return jsonArray(jab, o).build();
+    }
+
+    @Override
+    public <T> T read(InputStream body, TypeToken<T> tt) {
+        return null;
     }
 }

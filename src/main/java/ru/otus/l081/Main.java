@@ -1,10 +1,9 @@
 package ru.otus.l081;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.*;
 
 class EmptyClass {}
@@ -31,27 +30,31 @@ class TestComplex {
 }
 
 public class Main {
-    public static void main(String[] args) throws IllegalAccessException {
-        Type listType = new TypeToken<List<String>>() {}.getType();
-        Map<String, Integer> targetMap = new TreeMap();
-        targetMap.put("one", 0);
-        targetMap.put("two", 1);
+    public static void main(String[] args) throws Exception {
+        List<Integer> targetList = new ArrayList<>();
+        targetList.add(0);
+        targetList.add(1);
 
         TestArray targetTestArray = new TestArray();
         TestComplex targetTestComplex = new TestComplex();
 
-        System.out.println("listType.getTypeName() = " + listType.getTypeName());
-
         Gson gson = new Gson();
-        System.out.println("gson = " + gson.toJson(null));
-        System.out.println("gson = " + gson.toJson(targetTestArray));
-        System.out.println("gson = " + gson.toJson(targetTestComplex));
-        System.out.println("gson = " + gson.toJson(targetMap));
+//        System.out.println("gson = " + gson.toJson(null));
+//        System.out.println("gson = " + gson.toJson(targetTestArray));
+//        System.out.println("gson = " + gson.toJson(targetTestComplex));
+//        System.out.println("gson = " + gson.toJson(targetList));
 
         ObjectOutputJson oojs = new ObjectOutputJson();
-        System.out.println("oojs = " + oojs.toJson(null));
-        System.out.println("oojs = " + oojs.toJson(targetTestArray));
-        System.out.println("oojs = " + oojs.toJson(targetTestComplex));
-        System.out.println("oojs = " + oojs.toJson(targetMap));
+//        System.out.println("oojs = " + oojs.toJson(null));
+//        System.out.println("oojs = " + oojs.toJson(targetTestArray));
+//        System.out.println("oojs = " + oojs.toJson(targetTestComplex));
+//        System.out.println("oojs = " + oojs.toJson(targetList));
+
+        TypeToken<?> tt = new TypeToken<List<Integer>>(targetList.getClass()) {};
+        Set<Integer> set = oojs.fromJson("[0,1]", tt);
+
+//        for (Integer e: set) {
+//            System.out.println("e = " + e);
+//        }
     }
 }

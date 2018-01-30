@@ -1,5 +1,10 @@
 package ru.otus.l081;
 
+import com.google.common.reflect.TypeToken;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -23,8 +28,8 @@ public class ObjectOutputJson {
         new TreeSetAdapter(),
         new HashSetAdapter(),
         new MapAdapter(),
-        new TreeMapAdapter()
-        // new HashMapAdapter()
+        new TreeMapAdapter(),
+        new HashMapAdapter()
     };
 
     /**
@@ -65,33 +70,34 @@ public class ObjectOutputJson {
      */
     public String toJson(Type aClass, Object o) throws IllegalAccessException {
         if (adapters.containsKey(aClass.getTypeName())) {
-            return adapters.get(aClass.getTypeName()).jsonValue(aClass, o).toString();
+            return adapters.get(aClass.getTypeName())
+                .write(aClass, o).toString();
         } else switch (aClass.getTypeName()) {
-            case "java.lang.Boolean":
+            case Adapters.JAVA_LANG_BOOLEAN:
                 return ((Boolean) o).toString();
-            case "java.lang.Character":
+            case Adapters.JAVA_LANG_CHARACTER:
                 return String.format("\"%c\"", (char) o);
-            case "java.lang.Byte":
+            case Adapters.JAVA_LANG_BYTE:
                 return Byte.toString((Byte) o);
-            case "java.lang.Short":
+            case Adapters.JAVA_LANG_SHORT:
                 return Short.toString((Short) o);
-            case "java.lang.Integer":
+            case Adapters.JAVA_LANG_INTEGER:
                 return Integer.toString((Integer) o);
-            case "java.lang.Long":
+            case Adapters.JAVA_LANG_LONG:
                 return Long.toString((Long) o);
-            case "java.lang.Float":
+            case Adapters.JAVA_LANG_FLOAT:
                 return Float.toString((Float) o);
-            case "java.lang.Double":
+            case Adapters.JAVA_LANG_DOUBLE:
                 return Double.toString((Double) o);
-            case "java.lang.String":
+            case Adapters.JAVA_LANG_STRING:
                 return String.format("\"%s\"", (String) o);
         }
 
         if (o.getClass().isArray()) {
-            return adapters.get(BUILD_IN_ARRAY).jsonValue(aClass, o).toString();
+            return adapters.get(BUILD_IN_ARRAY).write(aClass, o).toString();
         }
 
-        return adapters.get(DEFAULT).jsonValue(aClass, o).toString();
+        return adapters.get(DEFAULT).write(aClass, o).toString();
     }
 
     /***
@@ -107,4 +113,25 @@ public class ObjectOutputJson {
                ? toJson(o.getClass(), o)
                : "null";
     }
+
+    public <T> T fromJson(String src, TypeToken<?> tt) {
+        System.out.println("tt = " + tt.toString());
+        TypeToken<?> ct = tt.getComponentType();
+        List<Integer> li = new ArrayList<>();
+        System.out.println("li = " + li.getClass().getComponentType().getTypeName());
+        String tn = List.class.getComponentType().getTypeName();
+        System.out.println("tn = " + tn);
+//        byte[] bytes = src.getBytes("UTF-8");
+//        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+//
+//        new TypeToken<>() {}.resolveType(
+//            List.class.getMethod("get", int.class).getGenericReturnType()
+//
+//
+//        if (adapters.containsKey(aClass.getTypeName())) {
+//            return adapters.get(aClass.getTypeName()).read(is, aClass);
+//        }
+        return null; // TODO return adapters.get(DEFAULT).read(is, aClass):
+    }
+
 }
