@@ -34,16 +34,67 @@ public class ListAdapter extends Adapters implements Adapter {
         return jab.build();
     }
 
+    /**
+     * TODO experimental
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T read(InputStream body, TypeToken<T> tt) {
+    public <T> T read(InputStream body, TypeToken<?> tt) throws NoSuchMethodException {
+
         // Create JsonReader from Json.
         JsonReader reader = Json.createReader(body);
         // Prepare object.
-//        List<Object> list = (List<Object>) newInstance();
-        // Get the JsonObject structure from JsonReader.
-//        JsonArray jsonArray = reader.readArray();
-//        jsonArray.forEach(list::add);
+        TypeToken<?> ct = tt.resolveType(
+            List.class.getMethod("get", int.class).getGenericReturnType()
+        );
+        List<Object> list = (List<Object>) newInstance(tt.getRawType());
 
-        return null;
+        // Get the JsonObject structure from JsonReader.
+        JsonArray jsonArray = reader.readArray();
+        jsonArray.forEach(value -> listAdd(list, ct, value));
+
+        return (T) list;
+    }
+    /**
+     * TODO experimental
+     */
+    private void listAdd(List<Object> list, TypeToken<?> ct, JsonValue value) {
+        switch (value.getValueType()) {
+            case ARRAY:
+                throw new NoImplementedException();
+            case OBJECT:
+                throw new NoImplementedException();
+            case STRING:
+                if (String.class ==  ct.getRawType()) {
+                    list.add(((JsonString) value).getString());
+                } else if (Character.class == ct.getRawType()) {
+                    list.add(((JsonString) value).getChars().charAt(0));
+                } else {
+                    throw new NoImplementedException();
+                }
+                break;
+            case NUMBER:
+                if (Integer.class ==  ct.getRawType()) {
+                    list.add(new Integer(value.toString()));
+                } else if (Long.class == ct.getRawType()) {
+                    list.add(new Long(value.toString()));
+                } else {
+                    throw new NoImplementedException();
+                }
+                break;
+            case TRUE:
+                list.add(Boolean.TRUE);
+                break;
+            case FALSE:
+                list.add(Boolean.FALSE);
+                break;
+            case NULL:
+                list.add(null);
+                break;
+        }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

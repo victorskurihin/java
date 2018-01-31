@@ -11,5 +11,9 @@ public interface Adapter {
     public void setAdapters(Map<String, Adapter> map);
     public String getAdapteeOfType();
     public JsonValue write(Type aClass, Object o) throws IllegalAccessException;
-    public <T> T read(final InputStream body, TypeToken<T> tt);
+    public <T> T read(final InputStream body, TypeToken<?> tt) throws NoSuchMethodException;
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

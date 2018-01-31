@@ -3,7 +3,6 @@ package ru.otus.l081;
 import com.google.common.reflect.TypeToken;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -114,24 +113,24 @@ public class ObjectOutputJson {
                : "null";
     }
 
-    public <T> T fromJson(String src, TypeToken<?> tt) {
-        System.out.println("tt = " + tt.toString());
-        TypeToken<?> ct = tt.getComponentType();
-        List<Integer> li = new ArrayList<>();
-        System.out.println("li = " + li.getClass().getComponentType().getTypeName());
-        String tn = List.class.getComponentType().getTypeName();
-        System.out.println("tn = " + tn);
-//        byte[] bytes = src.getBytes("UTF-8");
-//        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-//
-//        new TypeToken<>() {}.resolveType(
-//            List.class.getMethod("get", int.class).getGenericReturnType()
-//
-//
-//        if (adapters.containsKey(aClass.getTypeName())) {
-//            return adapters.get(aClass.getTypeName()).read(is, aClass);
-//        }
-        return null; // TODO return adapters.get(DEFAULT).read(is, aClass):
+    /**
+     * TODO experimental
+     */
+    public <T> T fromJson(String src, TypeToken<?> tt)
+        throws UnsupportedEncodingException, NoSuchMethodException {
+
+        byte[] bytes = src.getBytes("UTF-8");
+        ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+
+        if (adapters.containsKey(tt.getRawType().getName())) {
+            return adapters.get(tt.getRawType().getTypeName()).read(is, tt);
+        }
+
+        return adapters.get(DEFAULT).read(is, tt);
     }
 
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

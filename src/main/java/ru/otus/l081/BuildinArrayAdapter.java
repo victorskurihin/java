@@ -27,7 +27,11 @@ public class BuildinArrayAdapter extends Adapters implements Adapter {
     }
 
     @Override
-    public <T> T read(InputStream body, TypeToken<T> tt) {
+    public <T> T read(InputStream body, TypeToken<?> tt) {
         return null;
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

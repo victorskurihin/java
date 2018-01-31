@@ -1,60 +1,44 @@
 package ru.otus.l081;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-class EmptyClass {}
+/**
+ * Created by VSkurikhin.
+ *
+ * Solution for L08.1
+ *
+ * To start:
+ * mvn clean compile
+ *
+ * ./run.sh
+ * or
+ * run.bat
+ */
 
-class TestSerial implements Serializable {
-    public byte version = 100;
-    public byte count = 0;
-}
-
-class TestArray {
-    public int[] array = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-}
-
-class TestString {
-    public String string = "test";
-}
-
-class TestComplex {
-    public Integer integer = 0;
-    public EmptyClass emptyClass = new EmptyClass();
-    public TestSerial testSerial = new TestSerial();
-    public TestArray testArray = new TestArray();
-    public TestString testString = new TestString();
-}
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        List<Integer> targetList = new ArrayList<>();
-        targetList.add(0);
-        targetList.add(1);
-
-        TestArray targetTestArray = new TestArray();
-        TestComplex targetTestComplex = new TestComplex();
-
-        Gson gson = new Gson();
-//        System.out.println("gson = " + gson.toJson(null));
-//        System.out.println("gson = " + gson.toJson(targetTestArray));
-//        System.out.println("gson = " + gson.toJson(targetTestComplex));
-//        System.out.println("gson = " + gson.toJson(targetList));
+        Map<String, Integer> map = new TreeMap<>();
+        map.put("key1", 1);
+        map.put("key2", 2);
 
         ObjectOutputJson oojs = new ObjectOutputJson();
-//        System.out.println("oojs = " + oojs.toJson(null));
-//        System.out.println("oojs = " + oojs.toJson(targetTestArray));
-//        System.out.println("oojs = " + oojs.toJson(targetTestComplex));
-//        System.out.println("oojs = " + oojs.toJson(targetList));
+        System.out.println("oojs.toJson(map) = " + oojs.toJson(map));
 
-        TypeToken<?> tt = new TypeToken<List<Integer>>(targetList.getClass()) {};
-        Set<Integer> set = oojs.fromJson("[0,1]", tt);
+        TypeToken<?> tt = new TypeToken<ArrayList<Character>>() {};
+        List<Character> list = oojs.fromJson("[\"a\", \"b\"]", tt);
 
-//        for (Integer e: set) {
-//            System.out.println("e = " + e);
-//        }
+        for (Character e: list) {
+            System.out.print(" " + e);
+        }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF
