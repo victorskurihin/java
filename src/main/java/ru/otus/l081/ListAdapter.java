@@ -5,6 +5,8 @@ import com.google.common.reflect.TypeToken;
 import javax.json.*;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,58 +41,80 @@ public class ListAdapter extends Adapters implements Adapter {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T read(InputStream body, TypeToken<?> tt) throws NoSuchMethodException {
+    public <T> T read(final InputStream body, TypeToken<?> tt) throws NoSuchMethodException {
 
         // Create JsonReader from Json.
         JsonReader reader = Json.createReader(body);
         // Prepare object.
-        TypeToken<?> ct = tt.resolveType(
+        TypeToken<?> elementOfContainetType = tt.resolveType(
             List.class.getMethod("get", int.class).getGenericReturnType()
         );
+//        TypeToken<?> elementOfContainetType2 = tt.resolveType(
+//            List.class.getMethod("add", int.class).getGenericParameterTypes()[0]
+//        );
         List<Object> list = (List<Object>) newInstance(tt.getRawType());
 
         // Get the JsonObject structure from JsonReader.
         JsonArray jsonArray = reader.readArray();
-        jsonArray.forEach(value -> listAdd(list, ct, value));
+        jsonArray.forEach(value -> addToCollection(list, elementOfContainetType, value));
 
         return (T) list;
     }
     /**
      * TODO experimental
      */
-    private void listAdd(List<Object> list, TypeToken<?> ct, JsonValue value) {
+    private void addNumberToCollection(Collection<Object> c, Class<?> type, String s) {
+        if (type == BigInteger.class) {
+            c.add(new BigInteger(s));
+        } else if (type == Double.class) {
+            c.add(new Double(s));
+        } else if (type == Float.class) {
+            c.add(new Float(s));
+        } else if (type == Long.class) {
+            c.add(new Long(s));
+        } else if (type == Integer.class) {
+            c.add(new Integer(s));
+        } else if (type == Short.class) {
+            c.add(new Short(s));
+        } else if (type == Byte.class) {
+            c.add(new Byte(s));
+        } else
+            throw new NoImplementedException();
+    }
+    /**
+     * TODO experimental
+     */
+    private void addStringToCollection(Collection<Object> c, Class<?> type, String s) {
+        if (type == Character.class) {
+            c.add(s.charAt(0));
+        } else {
+            c.add(s);
+        }
+    }
+    /**
+     * TODO experimental
+     */
+    private void addToCollection(Collection<Object> c, TypeToken<?> type, JsonValue value) {
         switch (value.getValueType()) {
             case ARRAY:
-                throw new NoImplementedException();
+                if (type.isArray()) {
+
+                }
             case OBJECT:
                 throw new NoImplementedException();
             case STRING:
-                if (String.class ==  ct.getRawType()) {
-                    list.add(((JsonString) value).getString());
-                } else if (Character.class == ct.getRawType()) {
-                    list.add(((JsonString) value).getChars().charAt(0));
-                } else {
-                    throw new NoImplementedException();
-                }
+                addStringToCollection(c, type.getRawType(), value.toString());
                 break;
             case NUMBER:
-                if (Integer.class ==  ct.getRawType()) {
-                    list.add(new Integer(value.toString()));
-                } else if (Long.class == ct.getRawType()) {
-                    list.add(new Long(value.toString()));
-                } else {
-                    throw new NoImplementedException();
-                }
-                break;
+                addNumberToCollection(c, type.getRawType(), value.toString());
             case TRUE:
-                list.add(Boolean.TRUE);
+                c.add(Boolean.TRUE);
                 break;
             case FALSE:
-                list.add(Boolean.FALSE);
+                c.add(Boolean.FALSE);
                 break;
             case NULL:
-                list.add(null);
-                break;
+                c.add(null);
         }
     }
 }

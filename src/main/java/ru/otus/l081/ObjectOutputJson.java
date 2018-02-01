@@ -20,7 +20,7 @@ public class ObjectOutputJson {
     private final Adapter[] predefinedAdapters = {
         new DefaultAdapter(),
         new BuildinArrayAdapter(),
-        new ListAdapter(),
+        new addToCollection(),
         new LinkedListAdapter(),
         new ArrayListAdapter(),
         new SetAdapter(),

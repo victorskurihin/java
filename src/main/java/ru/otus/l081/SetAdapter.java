@@ -29,7 +29,7 @@ public class SetAdapter extends Adapters implements Adapter {
     }
 
     @Override
-    public <T> T read(InputStream body, TypeToken<?> tt) {
+    public <T> T read(final InputStream body, TypeToken<?> tt) {
         throw new NoImplementedException();
     }
 }
