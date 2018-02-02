@@ -2,10 +2,7 @@ package ru.otus.l081;
 
 import com.google.common.reflect.TypeToken;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by VSkurikhin.
@@ -18,22 +15,25 @@ import java.util.TreeMap;
  * ./run.sh
  * or
  * run.bat
+
+ Set<Integer> expectedIntegerSet = arrayToSet(
+ new Integer[]{0, 1, 2, 3}
+ );
+ Type integerSetType = new TypeToken<Set<Integer>>() {}.getType();
+ Set<Integer> targetIntegerSet = gson.fromJson(
+ oojs.toJson(expectedIntegerSet), integerSetType
+ );
+
  */
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Map<String, Integer> map = new TreeMap<>();
-        map.put("key1", 1);
-        map.put("key2", 2);
-
         ObjectOutputJson oojs = new ObjectOutputJson();
-        System.out.println("oojs.toJson(map) = " + oojs.toJson(map));
+        TypeToken<?> tt = new TypeToken<HashSet<Character>>() {};
+        Set<Character> set = oojs.fromJson("[\"a\", \"b\"]", tt);
 
-        TypeToken<?> tt = new TypeToken<ArrayList<Character>>() {};
-        List<Character> list = oojs.fromJson("[\"a\", \"b\"]", tt);
-
-        for (Character e: list) {
+        for (Character e: set) {
             System.out.print(" " + e);
         }
     }

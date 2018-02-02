@@ -5,8 +5,6 @@ import com.google.common.reflect.TypeToken;
 import javax.json.*;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,7 +13,6 @@ import java.util.List;
 public class ListAdapter extends Adapters implements Adapter {
     private final String ADAPTEE_TYPE = "java.util.List";
 
-    @Override
     public String getAdapteeOfType() {
         return ADAPTEE_TYPE;
     }
@@ -49,73 +46,14 @@ public class ListAdapter extends Adapters implements Adapter {
         TypeToken<?> elementOfContainetType = tt.resolveType(
             List.class.getMethod("get", int.class).getGenericReturnType()
         );
-//        TypeToken<?> elementOfContainetType2 = tt.resolveType(
-//            List.class.getMethod("add", int.class).getGenericParameterTypes()[0]
-//        );
         List<Object> list = (List<Object>) newInstance(tt.getRawType());
+        CollectionWraper collection = new CollectionWraper(this, elementOfContainetType, list);
 
         // Get the JsonObject structure from JsonReader.
         JsonArray jsonArray = reader.readArray();
-        jsonArray.forEach(value -> addToCollection(list, elementOfContainetType, value));
+        jsonArray.forEach(collection::add);
 
         return (T) list;
-    }
-    /**
-     * TODO experimental
-     */
-    private void addNumberToCollection(Collection<Object> c, Class<?> type, String s) {
-        if (type == BigInteger.class) {
-            c.add(new BigInteger(s));
-        } else if (type == Double.class) {
-            c.add(new Double(s));
-        } else if (type == Float.class) {
-            c.add(new Float(s));
-        } else if (type == Long.class) {
-            c.add(new Long(s));
-        } else if (type == Integer.class) {
-            c.add(new Integer(s));
-        } else if (type == Short.class) {
-            c.add(new Short(s));
-        } else if (type == Byte.class) {
-            c.add(new Byte(s));
-        } else
-            throw new NoImplementedException();
-    }
-    /**
-     * TODO experimental
-     */
-    private void addStringToCollection(Collection<Object> c, Class<?> type, String s) {
-        if (type == Character.class) {
-            c.add(s.charAt(0));
-        } else {
-            c.add(s);
-        }
-    }
-    /**
-     * TODO experimental
-     */
-    private void addToCollection(Collection<Object> c, TypeToken<?> type, JsonValue value) {
-        switch (value.getValueType()) {
-            case ARRAY:
-                if (type.isArray()) {
-
-                }
-            case OBJECT:
-                throw new NoImplementedException();
-            case STRING:
-                addStringToCollection(c, type.getRawType(), value.toString());
-                break;
-            case NUMBER:
-                addNumberToCollection(c, type.getRawType(), value.toString());
-            case TRUE:
-                c.add(Boolean.TRUE);
-                break;
-            case FALSE:
-                c.add(Boolean.FALSE);
-                break;
-            case NULL:
-                c.add(null);
-        }
     }
 }
 

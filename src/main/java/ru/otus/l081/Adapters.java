@@ -17,7 +17,7 @@ import java.util.Set;
  * If default  JSON conversion isn't appropriate for a type, extend  this class
  * to customize the conversion.
  */
-public abstract class Adapters implements Adapter {
+public class Adapters {
     public static final String JAVA_LANG_BOOLEAN = "java.lang.Boolean";
     public static final String JAVA_LANG_CHARACTER = "java.lang.Character";
     public static final String JAVA_LANG_BYTE = "java.lang.Byte";
@@ -45,11 +45,14 @@ public abstract class Adapters implements Adapter {
     public static final String DOUBLE_ARRAY = "double[]";
 
     protected Map<String, Adapter> adapters; // the map of adapters
-    private Set<Object> visited = new HashSet<>();
+    protected Set<Object> visited = new HashSet<>();
 
-    @Override
     public void setAdapters(Map<String, Adapter> map) {
         adapters = map;
+    }
+
+    public void setVisited(Set<Object> visited) {
+        this.visited = visited;
     }
 
     private boolean loopDetected(Object o) {
