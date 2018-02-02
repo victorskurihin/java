@@ -30,10 +30,10 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws Exception {
         ObjectOutputJson oojs = new ObjectOutputJson();
-        TypeToken<?> tt = new TypeToken<HashSet<Character>>() {};
-        Set<Character> set = oojs.fromJson("[\"a\", \"b\"]", tt);
+        TypeToken<?> tt = new TypeToken<HashSet<String>>() {};
+        Set<String> set = oojs.fromJson("[\"a\", \"b\"]", tt);
 
-        for (Character e: set) {
+        for (String e: set) {
             System.out.print(" " + e);
         }
     }

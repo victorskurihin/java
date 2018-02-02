@@ -2,6 +2,7 @@ package ru.otus.l081;
 
 import com.google.common.reflect.TypeToken;
 
+import javax.json.JsonString;
 import javax.json.JsonValue;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -53,10 +54,9 @@ public class CollectionWraper extends Adapters {
                 }
                 throw new NoImplementedException();
             case OBJECT:
-                System.out.println("value = " + value.toString());
                 throw new NoImplementedException();
             case STRING:
-                addString(value.toString());
+                addString(((JsonString) value).getString());
                 break;
             case NUMBER:
                 addNumber(value.toString());

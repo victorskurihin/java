@@ -61,9 +61,10 @@ public class SetAdapter extends Adapters implements Adapter {
         JsonReader reader = Json.createReader(body);
         // Prepare object.
         TypeToken<?> elementOfContainetType = getGenericTypeOfFirstParameter(tt);
-        System.out.println("elementOfContainetType.getRawType().getTypeName() = " + elementOfContainetType.getRawType().getTypeName());
 
-        @SuppressWarnings("unchecked") Set<Object> set = (Set<Object>) newInstance(tt.getRawType());
+        @SuppressWarnings("unchecked") Set<Object> set = (Set<Object>) newInstance(
+            tt.getRawType()
+        );
         CollectionWraper collection = new CollectionWraper(this, elementOfContainetType, set);
 
         // Get the JsonObject structure from JsonReader.
