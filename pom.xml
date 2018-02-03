@@ -6,7 +6,7 @@
 
     <name>L08.1</name>
     <groupId>ru.otus</groupId>
-    <artifactId>L08.1-structural</artifactId>
+    <artifactId>L08.1-serialization</artifactId>
     <version>1.0</version>
     <description>Learning</description>
 

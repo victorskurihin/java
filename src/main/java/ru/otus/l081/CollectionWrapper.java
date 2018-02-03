@@ -2,16 +2,17 @@ package ru.otus.l081;
 
 import com.google.common.reflect.TypeToken;
 
-import javax.json.JsonString;
-import javax.json.JsonValue;
+import javax.json.*;
 import java.math.BigInteger;
 import java.util.Collection;
 
-public class CollectionWraper extends Adapters {
+public class CollectionWrapper extends Adapters {
     Collection<Object> collection;
-    TypeToken<?> typeOfElementCollection;
+    private TypeToken<?> typeOfElementCollection;
 
-    CollectionWraper(Adapters adapters, TypeToken<?> type, Collection<Object> collection) {
+    CollectionWrapper(
+        Adapters adapters, TypeToken<?> type, Collection<Object> collection
+    ) {
         this.collection = collection;
         typeOfElementCollection = type;
         setAdapters(adapters.adapters);
@@ -43,23 +44,36 @@ public class CollectionWraper extends Adapters {
         } else if (type == Byte.class) {
             collection.add(new Byte(s));
         } else
-            throw new NoImplementedException();
+            throw new NoImplementationException();
+    }
+
+    private boolean addCollection(JsonValue value) {
+        if (typeOfElementCollection.isSubtypeOf(Collection.class)) {
+            collection.add(
+                adapters
+                    .get(typeOfElementCollection.getRawType().getTypeName())
+                    .read(value, typeOfElementCollection)
+            );
+            return true;
+        }
+        return false;
     }
 
     public void add(JsonValue value) {
         switch (value.getValueType()) {
             case ARRAY:
-                if (typeOfElementCollection.isArray()) {
-                    throw new NoImplementedException();
+                if (addCollection(value)) {
+                    break;
                 }
-                throw new NoImplementedException();
+                throw new NoImplementationException();
             case OBJECT:
-                throw new NoImplementedException();
+                throw new NoImplementationException();
             case STRING:
                 addString(((JsonString) value).getString());
                 break;
             case NUMBER:
                 addNumber(value.toString());
+                break;
             case TRUE:
                 collection.add(Boolean.TRUE);
                 break;
@@ -69,6 +83,9 @@ public class CollectionWraper extends Adapters {
             case NULL:
                 collection.add(null);
         }
-
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

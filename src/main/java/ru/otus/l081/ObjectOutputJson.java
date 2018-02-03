@@ -2,6 +2,10 @@ package ru.otus.l081;
 
 import com.google.common.reflect.TypeToken;
 
+import javax.json.Json;
+import javax.json.JsonReader;
+import javax.json.JsonStructure;
+import javax.json.JsonWriter;
 import java.io.ByteArrayInputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
@@ -122,11 +126,19 @@ public class ObjectOutputJson {
         byte[] bytes = src.getBytes("UTF-8");
         ByteArrayInputStream is = new ByteArrayInputStream(bytes);
 
+        // Create JsonReader from Json.
+        JsonReader reader = Json.createReader(is);
+        JsonStructure structure = reader.read();
+
         if (adapters.containsKey(tt.getRawType().getName())) {
-            return adapters.get(tt.getRawType().getTypeName()).read(is, tt);
+            return adapters.get(tt.getRawType().getTypeName()).read(structure, tt);
         }
 
-        return adapters.get(DEFAULT).read(is, tt);
+        if (tt.getRawType().isArray()) {
+            return adapters.get(BUILD_IN_ARRAY).read(structure, tt);
+        }
+
+        return adapters.get(DEFAULT).read(structure, tt);
     }
 
 }

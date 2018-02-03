@@ -3,7 +3,6 @@ package ru.otus.l081;
 import com.google.common.reflect.TypeToken;
 
 import javax.json.*;
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -17,6 +16,12 @@ public class ListAdapter extends Adapters implements Adapter {
         return ADAPTEE_TYPE;
     }
 
+    /**
+     * @param aClass
+     * @param o
+     * @return
+     * @throws IllegalAccessException
+     */
     @Override
     public JsonValue write(Type aClass, Object o) throws IllegalAccessException {
         JsonArrayBuilder jab = Json.createArrayBuilder();
@@ -35,24 +40,35 @@ public class ListAdapter extends Adapters implements Adapter {
 
     /**
      * TODO experimental
+     * @param value
+     * @param tt
+     * @param <T>
+     * @return
+     * @throws NoSuchMethodException
      */
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T read(final InputStream body, TypeToken<?> tt) throws NoSuchMethodException {
-
-        // Create JsonReader from Json.
-        JsonReader reader = Json.createReader(body);
+    public <T> T read(final JsonValue value, TypeToken<?> tt) {
         // Prepare object.
-        TypeToken<?> elementOfContainetType = tt.resolveType(
-            List.class.getMethod("get", int.class).getGenericReturnType()
-        );
-        List<Object> list = (List<Object>) newInstance(tt.getRawType());
-        CollectionWraper collection = new CollectionWraper(this, elementOfContainetType, list);
+        TypeToken<?> elementOfContainetType = null;
+        try {
+            elementOfContainetType = tt.resolveType(
+                List.class.getMethod("get", int.class).getGenericReturnType()
+            );
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
 
-        // Get the JsonObject structure from JsonReader.
-        JsonArray jsonArray = reader.readArray();
+        //noinspection unchecked
+        List<Object> list = (List<Object>) newInstance(tt.getRawType());
+        CollectionWrapper collection = new CollectionWrapper(
+            this, elementOfContainetType, list
+        );
+
+        // Get the JsonArray structure from JsonValue.
+        JsonArray jsonArray = (JsonArray) value;
         jsonArray.forEach(collection::add);
 
+        //noinspection unchecked
         return (T) list;
     }
 }

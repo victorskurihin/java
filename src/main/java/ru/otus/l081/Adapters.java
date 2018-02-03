@@ -1,8 +1,8 @@
 package ru.otus.l081;
 
-import javax.json.Json;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
+import com.google.common.reflect.TypeToken;
+
+import javax.json.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
@@ -17,32 +17,7 @@ import java.util.Set;
  * If default  JSON conversion isn't appropriate for a type, extend  this class
  * to customize the conversion.
  */
-public class Adapters {
-    public static final String JAVA_LANG_BOOLEAN = "java.lang.Boolean";
-    public static final String JAVA_LANG_CHARACTER = "java.lang.Character";
-    public static final String JAVA_LANG_BYTE = "java.lang.Byte";
-    public static final String JAVA_LANG_SHORT = "java.lang.Short";
-    public static final String JAVA_LANG_INTEGER = "java.lang.Integer";
-    public static final String JAVA_LANG_LONG = "java.lang.Long";
-    public static final String JAVA_LANG_FLOAT = "java.lang.Float";
-    public static final String JAVA_LANG_DOUBLE = "java.lang.Double";
-    public static final String JAVA_LANG_STRING = "java.lang.String";
-    public static final String BOOLEAN = "boolean";
-    public static final String BYTE = "byte";
-    public static final String CHAR = "char";
-    public static final String SHORT = "short";
-    public static final String INT = "int";
-    public static final String LONG = "long";
-    public static final String FLOAT = "float";
-    public static final String DOUBLE = "double";
-    public static final String BOOLEAN_ARRAY = "boolean[]";
-    public static final String CHAR_ARRAY = "char[]";
-    public static final String BYTE_ARRAY = "byte[]";
-    public static final String SHORT_ARRAY = "short[]";
-    public static final String INT_ARRAY = "int[]";
-    public static final String LONG_ARRAY = "long[]";
-    public static final String FLOAT_ARRAY = "float[]";
-    public static final String DOUBLE_ARRAY = "double[]";
+public class Adapters implements TypeNames, FieldMethods {
 
     protected Map<String, Adapter> adapters; // the map of adapters
     protected Set<Object> visited = new HashSet<>();
@@ -117,7 +92,7 @@ public class Adapters {
     JsonObjectBuilder jsonKeyValue(JsonObjectBuilder ob, String key, Object o)
         throws IllegalAccessException {
 
-        if (null == o) { return ob.addNull(key); }
+        if (null == o) { return ob; } // Gson ??? { return ob.addNull(key); }
 
         Class<?> t = o.getClass();
 
@@ -173,7 +148,7 @@ public class Adapters {
             case BYTE:
                 return ob.add(f.getName(), f.getByte(o));
             case CHAR:
-                return ob.add(f.getName(), f.getChar(o));
+                return ob.add(f.getName(), String.valueOf(f.getChar(o)));
             case SHORT:
                 return ob.add(f.getName(), f.getShort(o));
             case INT:
@@ -285,18 +260,82 @@ public class Adapters {
 
     /**
      * The method create instance of test class.
+     *
      * @param runClass - the class
      * @return - the object of test class
      */
     static <T> Object newInstance(Class<T> runClass) {
+        //noinspection TryWithIdenticalCatches
         try {
             return runClass.getDeclaredConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    private <T> T setField(T object, Field field, JsonValue value)
+        throws IllegalAccessException {
+
+        //noinspection unchecked
+        JsonObject jsonObject = (JsonObject) value;
+
+        switch (field.getType().getTypeName()) {
+            case BOOLEAN:
+                return setFieldBoolean(object, field, jsonObject);
+            case BYTE:
+                return setFieldByte(object, field, jsonObject);
+            case CHAR:
+                return setFieldChar(object, field, jsonObject);
+            case SHORT:
+                return setFieldShort(object, field, jsonObject);
+            case INT:
+                return setFieldInt(object, field, jsonObject);
+            case LONG:
+                return setFieldLong(object, field, jsonObject);
+            case FLOAT:
+                return setFieldFloat(object, field, jsonObject);
+            case DOUBLE:
+                return setFieldDouble(object, field, jsonObject);
+            case JAVA_LANG_STRING:
+                return setFieldString(object, field, jsonObject);
+        }
+
+        TypeToken<?> tt = TypeToken.of(field.getGenericType());
+
+        String key = adapters.containsKey(field.getType().getTypeName())
+                   ? field.getType().getTypeName()
+                   : ( tt.isArray()
+                       ? ObjectOutputJson.BUILD_IN_ARRAY
+                       : ObjectOutputJson.DEFAULT
+                   );
+
+        field.set(
+            object, adapters.get(key).read(jsonObject.get(field.getName()), tt)
+        );
+
+        return object;
+    }
+
+    <T> T createObject(JsonValue value, TypeToken<?> tt) {
+        //noinspection unchecked
+        T result = (T) newInstance(tt.getRawType());
+
+        for (Field field : tt.getRawType().getDeclaredFields()) {
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+
+            try {
+                result = setField(result, field, value);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            } finally {
+                field.setAccessible(accessible);
+            }
+        }
+
+        return result;
     }
 }
 

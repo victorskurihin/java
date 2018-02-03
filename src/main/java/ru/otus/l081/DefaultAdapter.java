@@ -2,10 +2,8 @@ package ru.otus.l081;
 
 import com.google.common.reflect.TypeToken;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
-import java.io.InputStream;
+import javax.json.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 /**
@@ -24,11 +22,11 @@ public class DefaultAdapter extends Adapters implements Adapter {
         JsonObjectBuilder ob = Json.createObjectBuilder();
         return jsonObject(ob, o).build();
     }
-
     @Override
-    public <T> T read(InputStream body, TypeToken<?> tt) {
-        return null;
+    public <T> T read(final JsonValue value, TypeToken<?> tt) {
+        return createObject(value, tt);
     }
+
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

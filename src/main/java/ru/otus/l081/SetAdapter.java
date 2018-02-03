@@ -3,10 +3,8 @@ package ru.otus.l081;
 import com.google.common.reflect.TypeToken;
 
 import javax.json.*;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,28 +22,37 @@ public class SetAdapter extends Adapters implements Adapter {
     @Override
     public JsonValue write(Type aClass, Object o) throws IllegalAccessException {
         JsonArrayBuilder jab = Json.createArrayBuilder();
+
         //noinspection unchecked
         for (Object e : (Set<Object>) o) {
             jab = addToJsonArray(jab, e);
         }
+
         return jab.build();
     }
 
     /**
      * TODO experimental
-     */
-    /**
      * @param tt the type token of the collection
      * @return the type token the element from the collection
      */
-    private TypeToken<?> getGenericTypeOfFirstParameter(TypeToken<?> tt) {
+    private TypeToken<?> getTypeOfFirstParameterAddMethod(TypeToken<?> tt) {
         Method[] methods = Set.class.getMethods();
-        Optional<Method> optionalMethod= Arrays.stream(methods)
-            .filter(m -> m.getName().equals("add"))
-            .filter(m -> 1 == m.getParameterCount()).findFirst();
-        if (! optionalMethod.isPresent()) {
-            throw new NoImplementedException();
+        Optional<Method> optionalMethod = Optional.empty();
+
+        for (Method m : methods) {
+            if (m.getName().equals("add")) {
+                if (1 == m.getParameterCount()) {
+                    optionalMethod = Optional.of(m);
+                    break;
+                }
+            }
         }
+
+        if (! optionalMethod.isPresent()) {
+            throw new NoImplementationException();
+        }
+
         return tt.resolveType(
             optionalMethod.get().getGenericParameterTypes()[0]
         );
@@ -56,21 +63,22 @@ public class SetAdapter extends Adapters implements Adapter {
      * TODO experimental
      */
     @Override
-    public <T> T read(final InputStream body, TypeToken<?> tt) throws NoSuchMethodException {
-        // Create JsonReader from Json.
-        JsonReader reader = Json.createReader(body);
+    public <T> T read(final JsonValue value, TypeToken<?> tt) {
         // Prepare object.
-        TypeToken<?> elementOfContainetType = getGenericTypeOfFirstParameter(tt);
-
-        @SuppressWarnings("unchecked") Set<Object> set = (Set<Object>) newInstance(
+        TypeToken<?> elementOfContainetType = getTypeOfFirstParameterAddMethod(tt);
+        //noinspection unchecked
+        Set<Object> set = (Set<Object>) newInstance(
             tt.getRawType()
         );
-        CollectionWraper collection = new CollectionWraper(this, elementOfContainetType, set);
+        CollectionWrapper collection = new CollectionWrapper(
+            this, elementOfContainetType, set
+        );
 
-        // Get the JsonObject structure from JsonReader.
-        JsonArray jsonArray = reader.readArray();
+        // Get the JsonArray structure from JsonValue.
+        JsonArray jsonArray = (JsonArray) value;
         jsonArray.forEach(collection::add);
 
+        //noinspection unchecked
         return (T) set;
     }
 }
