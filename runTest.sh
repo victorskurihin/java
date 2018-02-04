@@ -7,7 +7,18 @@ GCLOG="$LOGDIR/gc_pid_%p.log"
 WCGCLOG="$LOGDIR/gc_pid_*.log*"
 DUMPDIR=./dumps
 mkdir -p $DUMPDIR
-CP="-cp ./target/classes:./target/test-classes:./target/libs:./target:./target/L07.1.jar:./target/hamcrest-core-1.3.jar:./target/junit-4.12.jar:./target/log4j-api-2.10.0.jar:./target/log4j-core-2.10.0.jar:./target/lombok-1.16.20.jar:./target/xercesImpl-2.8.0.jar:./target/xml-apis-1.3.03.jar"
+CP="-cp ./target/classes:./target/test-classes:./target/libs:./target"
+CP=$CP":./target/L09.1.jar"
+CP=$CP":./target/gson-2.8.2.jar"
+CP=$CP":./target/guava-21.0.jar"
+CP=$CP":./target/hamcrest-core-1.3.jar"
+CP=$CP":./target/javassist-3.21.0-GA.jar"
+CP=$CP":./target/javax.json-1.0.4.jar"
+CP=$CP":./target/json-simple-1.1.1.jar"
+CP=$CP":./target/junit-4.12.jar"
+CP=$CP":./target/log4j-api-2.10.0.jar"
+CP=$CP":./target/log4j-core-2.10.0.jar"
+CP=$CP":./target/reflections-0.9.11.jar"
 REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n"
 MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 GC="-XX:+UseG1GC"
@@ -29,6 +40,6 @@ tail -f $OUTLOG $ERRLOG $WCGCLOG
 EOF
 rm -f $LOGDIR/* ${DUMPDIR}/*
 java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l081.MainTest 
+    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l091.MainTest 
     #\
     #2> $ERRLOG > $OUTLOG

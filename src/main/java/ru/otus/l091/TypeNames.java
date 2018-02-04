@@ -1,4 +1,4 @@
-package ru.otus.l081;
+package ru.otus.l091;
 
 public interface TypeNames {
     public static final String JAVA_LANG_BOOLEAN = "java.lang.Boolean";
