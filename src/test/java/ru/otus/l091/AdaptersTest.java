@@ -9,7 +9,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class TestClass {
     boolean f0 = true;
@@ -36,6 +39,14 @@ class TestDataSetClass extends DataSet {
     }
 }
 
+class TestComplexDataSetClass extends DataSet {
+    TestDataSetClass test = new TestDataSetClass(13);
+
+    protected TestComplexDataSetClass(long id) {
+        super(id);
+    }
+}
+
 public class AdaptersTest {
     public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN";
     public static final String F1_SMALLINT_DESC = "f1 SMALLINT";
@@ -44,12 +55,14 @@ public class AdaptersTest {
     public static final String F4_INT_DESC = "f4 INTEGER";
     public static final String F5_LONG_DESC = "f5 BIGINT";
     public static final String F6_STRING_DESC = "f6 TEXT";
-    public static final String CREATE_EXPECTED_CLAUSE = "( id BIGSERIAL PRIMARY KEY, " +
-        "f0 BOOLEAN, f1 SMALLINT, f2 CHAR(1), f3 SMALLINT, f4 INTEGER, f5 BIGINT, f6 TEXT ) ";
-    public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE TestDataSetClass " +
+    public static final String CREATE_EXPECTED_CLAUSE = " ( id BIGSERIAL PRIMARY KEY, " +
+        "f0 BOOLEAN, f1 SMALLINT, f2 CHAR(1), f3 SMALLINT, f4 INTEGER, f5 BIGINT, f6 TEXT )";
+    public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE TestDataSetClass" +
                                CREATE_EXPECTED_CLAUSE;
     public static final String CREATE_TABLE_EXPECTED2 = "CREATE TABLE IF NOT EXISTS " +
-        "ru_otus_l091_TestDataSetClass " + CREATE_EXPECTED_CLAUSE;
+        "ru_otus_l091_TestDataSetClass" + CREATE_EXPECTED_CLAUSE;
+    public static final String CREATE_TABLE_EXPECTED3 = "CREATE TABLE IF NOT EXISTS " +
+        "ru_otus_l091_TestComplexDataSetClass ( id BIGSERIAL PRIMARY KEY, \"fk test\" BIGINT )";
     public static final String F0_VALUE = "TRUE";
     public static final String F1_VALUE = "1";
     public static final String F2_VALUE = "'f'";
@@ -57,20 +70,30 @@ public class AdaptersTest {
     public static final String F4_VALUE = "4";
     public static final String F5_VALUE = "5";
     public static final String F6_VALUE = "'f6'";
+    public static final String VALUES1 = "13, TRUE, 1, 'f', 3, 4, 5, 'f6'";
+    public static final String INSERT1_VALUES1 = "INSERT INTO ru_otus_l091_TestDataSetClass VALUES (" +
+                               VALUES1 + " )";
+    public static final String INSERT2_VALUES2 = "INSERT INTO ru_otus_l091_TestComplexDataSetClass VALUES " +
+        "(14, 13 )";
+    public static final String INSERT3_VALUES3 = "INSERT INTO relationship VALUES " +
+        "('ru_otus_l091_TestComplexDataSetClass', 14, 'test', 'ru_otus_l091_TestDataSetClass', 13)";
 
     Adapters adapters;
     TestClass testClass;
     TestDataSetClass testDataSetClass;
+    TestComplexDataSetClass testComplexDataSetClass;
 
     @Before
     public void setUp() throws Exception {
         adapters = new Adapters();
         testClass = new TestClass();
         testDataSetClass = new TestDataSetClass(13);
+        testComplexDataSetClass = new TestComplexDataSetClass(14);
     }
 
     @After
     public void tearDown() throws Exception {
+        testComplexDataSetClass = null;
         testDataSetClass = null;
         testClass = null;
         adapters = null;
@@ -87,7 +110,6 @@ public class AdaptersTest {
         String result = (String) getColumnDescription.invoke(adapters, f0);
         getColumnDescription.setAccessible(accessible);
         Assert.assertEquals(expectedDescription, result);
-
     }
 
     @Test
@@ -156,8 +178,23 @@ public class AdaptersTest {
         List<String> result = (List<String>) createTablesForClass.invoke(adapters, TestDataSetClass.class);
         List<String> expected = new ArrayList<>();
         expected.add(CREATE_TABLE_EXPECTED2);
-        System.out.println("result = " + result);
-        System.out.println("expected = " + expected);
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    public void testCreateTablesForClassComplex() throws Exception {
+        Method createTablesForClass= adapters.getClass().getDeclaredMethod(
+            "createTablesForClass", DataSet.class.getClass()
+        );
+        boolean accessible = createTablesForClass.isAccessible();
+        createTablesForClass.setAccessible(true);
+        Set<String> result = ((List<String>) createTablesForClass.invoke(
+            adapters, TestComplexDataSetClass.class
+        )).stream().collect(Collectors.toSet());
+        Set<String> expected = new HashSet<>();
+        expected.add(CREATE_TABLE_EXPECTED2);
+        expected.add(CREATE_TABLE_EXPECTED3);
+        expected.add(Adapters.CREATE_TABLE_RELATIONSHIP);
         Assert.assertEquals(expected, result);
     }
 
@@ -207,5 +244,58 @@ public class AdaptersTest {
     @Test
     public void testGetValueString() throws Exception {
         testGetValue("f6", F6_VALUE);
+    }
+
+    @Test
+    public void testGetValuesObject() throws Exception {
+        Method getValuesObject = adapters.getClass().getDeclaredMethod(
+            "getValuesObject", SQLCommand.class, DataSet.class
+        );
+        boolean accessible = getValuesObject.isAccessible();
+        getValuesObject.setAccessible(true);
+        SQLCommand result = new SQLCommand("", "");
+        result = (SQLCommand) getValuesObject.invoke(adapters, result, testDataSetClass);
+        Assert.assertEquals(VALUES1, result.getSql());
+    }
+
+    @Test
+    public void testInsertObjectToTable() throws Exception {
+        Method insertObjectToTable = adapters.getClass().getDeclaredMethod(
+            "insertObjectToTable", DataSet.class
+        );
+        boolean accessible = insertObjectToTable.isAccessible();
+        insertObjectToTable.setAccessible(true);
+        SQLCommand result = (SQLCommand) insertObjectToTable.invoke(adapters, testDataSetClass);
+        Assert.assertEquals(INSERT1_VALUES1, result.getSql());
+    }
+
+    @Test
+    public void testInsertObjectsToTables() throws Exception {
+        Method insertObjectsToTables = adapters.getClass().getDeclaredMethod(
+            "insertObjectsToTables", DataSet.class
+        );
+        boolean accessible = insertObjectsToTables .isAccessible();
+        insertObjectsToTables.setAccessible(true);
+        List<String> result = (List<String>) insertObjectsToTables.invoke(adapters, testDataSetClass);
+        List<String> expected = new ArrayList<>();
+        expected.add(INSERT1_VALUES1);
+        Assert.assertEquals(expected, result);
+    }
+
+    @Test
+    public void testInsertObjectsToTablesComplex() throws Exception {
+        Method insertObjectsToTables = adapters.getClass().getDeclaredMethod(
+            "insertObjectsToTables", DataSet.class
+        );
+        boolean accessible = insertObjectsToTables .isAccessible();
+        insertObjectsToTables.setAccessible(true);
+        Set<String> result = (
+            (List<String>) insertObjectsToTables.invoke(adapters, testComplexDataSetClass)
+        ).stream().collect(Collectors.toSet());
+        Set<String> expected = new HashSet<>();
+        expected.add(INSERT1_VALUES1);
+        expected.add(INSERT2_VALUES2);
+        expected.add(INSERT3_VALUES3);
+        Assert.assertEquals(expected, result);
     }
 }

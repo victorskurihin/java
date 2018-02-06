@@ -10,6 +10,11 @@ class SQLCommand {
     private long id;
     private String sql;
 
+    SQLCommand(String sql) {
+        tableName = "";
+        this.sql = sql;
+    }
+
     SQLCommand(String sql, String tableName) {
         this.tableName = tableName;
         this.sql = sql + tableName;
@@ -36,12 +41,12 @@ class SQLCommand {
     }
 
     public SQLCommand closeParenthesis() {
-        sql = sql.concat(" ) ");
+        sql = sql.concat(" )");
         return this;
     }
 
     public SQLCommand openParenthesis() {
-        sql = sql.concat(" ( ");
+        sql = sql.concat(" (");
         return this;
     }
 
@@ -53,6 +58,10 @@ class SQLCommand {
 
 public class Adapters implements TypeNames {
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
+    public static final String CREATE_TABLE_RELATIONSHIP = "CREATE TABLE IF NOT EXISTS " +
+        "relationship ( parent_class_name TEXT, parent_id BIGINT, parent_field_name TEXT, " +
+        "child_class_name TEXT, child_id BIGINT )";
+
     protected Map<String, Adapter> adapters; // the map of adapters
     private List<SQLCommand> result;
 
@@ -97,11 +106,11 @@ public class Adapters implements TypeNames {
 
         if (DataSet.class.isAssignableFrom(field.getType())) {
             //noinspection unchecked
-            this.result.add(
+            result.add(
                 createTableForClass( (Class<? extends DataSet>) field.getType())
             );
-            // TODO create relationship
-            return null;
+            result.add(new SQLCommand(CREATE_TABLE_RELATIONSHIP));
+            return "\"fk " + field.getName() + '"' + " BIGINT";
         }
 
         throw new NoImplementationException();
@@ -112,7 +121,7 @@ public class Adapters implements TypeNames {
     private SQLCommand getColumnsForClass(SQLCommand sql, Class <? extends DataSet> c) {
 
         if (DataSet.class == c) {
-            sql =  sql.concat("id BIGSERIAL PRIMARY KEY");
+            sql =  sql.concat(" id BIGSERIAL PRIMARY KEY");
             return sql;
         }
 
@@ -165,7 +174,7 @@ public class Adapters implements TypeNames {
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    private <T extends DataSet> String getValue(Field field, Class<? super T> c, T o)
+    private <T extends DataSet> String getValue(Field field, Class<? super T> c, T o, SQLCommand s)
         throws IllegalAccessException {
 
         if (null == field) { return null; }
@@ -197,11 +206,15 @@ public class Adapters implements TypeNames {
 
         if (DataSet.class.isAssignableFrom(field.getType())) {
             //noinspection unchecked
-            this.result.add(
-                insertObjectToTable((T) field.get(o))
-            );
+            SQLCommand sql = insertObjectToTable((T) field.get(o));
+            result.add(sql);
             // TODO add relationship
-            return null;
+            SQLCommand sqlRelation = new SQLCommand(String.format(
+                "INSERT INTO relationship VALUES ('%s', %d, '%s', '%s', %d)",
+                s.getTableName(), s.getId(), field.getName(), sql.getTableName(), sql.getId()
+            ));
+            result.add(sqlRelation);
+            return Long.toString(sql.getId());
         }
 
         throw new NoImplementationException();
@@ -211,6 +224,7 @@ public class Adapters implements TypeNames {
         throws IllegalAccessException {
 
         if (DataSet.class == c) {
+            s.setId(o.getId());
             s = s.concat(Long.toString(o.getId()));
             return s;
         }
@@ -225,7 +239,7 @@ public class Adapters implements TypeNames {
             field.setAccessible(true);
 
             try {
-                String value = getValue(field, c, o);
+                String value = getValue(field, c, o, s);
 
                 if (null != value) {
                     //noinspection ResultOfMethodCallIgnored
@@ -258,7 +272,7 @@ public class Adapters implements TypeNames {
         String tableName = classGetNameToTableName(o.getClass());
         SQLCommand result = new SQLCommand("INSERT INTO ",  tableName);
 
-        result.concat(" VALUES ").openParenthesis();
+        result.concat(" VALUES").openParenthesis();
         result = getValuesObject(result, o);
         result.closeParenthesis();
 
@@ -266,9 +280,11 @@ public class Adapters implements TypeNames {
     }
 
     public <T extends DataSet> List<String> insertObjectsToTables(T o) {
-        this.result = new ArrayList<>();
-        this.result.add(insertObjectToTable(o));
-//        return this.result;
-        return null;
+        result = new ArrayList<>();
+        result.add(insertObjectToTable(o));
+
+        return result.stream()
+            .map(SQLCommand::getSql)
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 }

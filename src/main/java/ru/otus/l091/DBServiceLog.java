@@ -22,6 +22,7 @@ public class DBServiceLog extends DBServiceAdapters {
 
         try {
             for (String createTable : createTables) {
+                logger.info("Creating {} ...", createTable);
                 exec.execUpdate(createTable);
                 logger.info("Table {} created.", createTable);
             }
@@ -39,6 +40,7 @@ public class DBServiceLog extends DBServiceAdapters {
 
         try {
             for (String insert : insertValues) {
+                logger.info("Inserting {} ...", insert);
                 exec.execUpdate(insert);
                 logger.info("Value {} inserted.", insert);
             }
