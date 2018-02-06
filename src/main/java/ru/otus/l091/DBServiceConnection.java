@@ -3,7 +3,7 @@ package ru.otus.l091;
 import java.sql.Connection;
 
 public abstract class DBServiceConnection implements DBService {
-    private final String name = "mb24681";
+    private final String name = "vnsk";
     private final Connection connection;
 
     protected DBServiceConnection() {

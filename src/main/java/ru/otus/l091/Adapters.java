@@ -1,6 +1,9 @@
 package ru.otus.l091;
 
+import com.google.common.reflect.TypeToken;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,11 +59,12 @@ class SQLCommand {
     }
 }
 
-public class Adapters implements TypeNames {
+public class Adapters implements TypeNames, FieldMethods {
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
-    public static final String CREATE_TABLE_RELATIONSHIP = "CREATE TABLE IF NOT EXISTS " +
-        "relationship ( parent_class_name TEXT, parent_id BIGINT, parent_field_name TEXT, " +
-        "child_class_name TEXT, child_id BIGINT )";
+    public static final String CREATE_TABLE_RELATIONSHIP = "CREATE TABLE " +
+        "IF NOT EXISTS relationship ( parent_class_name TEXT, parent_id "  +
+        "BIGINT, parent_field_name TEXT, child_class_name TEXT, child_id " +
+        "BIGINT )";
 
     protected Map<String, Adapter> adapters; // the map of adapters
     private List<SQLCommand> result;
@@ -118,7 +122,7 @@ public class Adapters implements TypeNames {
 
     private String separator = ", ";
 
-    private SQLCommand getColumnsForClass(SQLCommand sql, Class <? extends DataSet> c) {
+    private SQLCommand getColumns(SQLCommand sql, Class <? extends DataSet> c) {
 
         if (DataSet.class == c) {
             sql =  sql.concat(" id BIGSERIAL PRIMARY KEY");
@@ -127,7 +131,7 @@ public class Adapters implements TypeNames {
 
         if (DataSet.class.isAssignableFrom(c.getSuperclass())) {
             //noinspection unchecked
-            sql = getColumnsForClass(
+            sql = getColumns(
                 sql, (Class<? extends DataSet>) c.getSuperclass()
             );
         }
@@ -153,13 +157,13 @@ public class Adapters implements TypeNames {
         return sql;
     }
 
-    public SQLCommand createTableForClass(Class <? extends DataSet> c) {
+    private SQLCommand createTableForClass(Class <? extends DataSet> c) {
 
         String tableName = classGetNameToTableName(c);
         SQLCommand result = new SQLCommand(CREATE_TABLE, tableName);
 
         result.openParenthesis();
-        result = getColumnsForClass(result, c);
+        result = getColumns(result, c);
         result.closeParenthesis();
 
         return result;
@@ -174,7 +178,7 @@ public class Adapters implements TypeNames {
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
-    private <T extends DataSet> String getValue(Field field, Class<? super T> c, T o, SQLCommand s)
+    private <T extends DataSet> String getValue(Field field, T o)
         throws IllegalAccessException {
 
         if (null == field) { return null; }
@@ -204,23 +208,31 @@ public class Adapters implements TypeNames {
             throw new NoImplementationException();
         }
 
+        throw new NoImplementationException();
+    }
+
+    private
+    <T extends DataSet> String getDataSetValue(Field field, T o, SQLCommand s)
+        throws IllegalAccessException {
+
         if (DataSet.class.isAssignableFrom(field.getType())) {
             //noinspection unchecked
             SQLCommand sql = insertObjectToTable((T) field.get(o));
             result.add(sql);
-            // TODO add relationship
+            // add relationship
             SQLCommand sqlRelation = new SQLCommand(String.format(
                 "INSERT INTO relationship VALUES ('%s', %d, '%s', '%s', %d)",
-                s.getTableName(), s.getId(), field.getName(), sql.getTableName(), sql.getId()
+                s.getTableName(), s.getId(), field.getName(),
+                sql.getTableName(), sql.getId()
             ));
             result.add(sqlRelation);
             return Long.toString(sql.getId());
         }
-
-        throw new NoImplementationException();
+        return null;
     }
 
-    private <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o)
+    private
+    <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o)
         throws IllegalAccessException {
 
         if (DataSet.class == c) {
@@ -239,7 +251,11 @@ public class Adapters implements TypeNames {
             field.setAccessible(true);
 
             try {
-                String value = getValue(field, c, o, s);
+                String value = getDataSetValue(field, o, s);
+
+                if (null == value) {
+                    value = getValue(field, o);
+                }
 
                 if (null != value) {
                     //noinspection ResultOfMethodCallIgnored
@@ -257,8 +273,8 @@ public class Adapters implements TypeNames {
 
     private <T extends DataSet> SQLCommand getValuesObject(SQLCommand s, T o) {
         if (DataSet.class.isAssignableFrom(o.getClass().getSuperclass())) {
-            //noinspection unchecked
             try {
+                //noinspection unchecked
                 s = getValues(s, (Class<T>) o.getClass(), o);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e);
@@ -286,5 +302,68 @@ public class Adapters implements TypeNames {
         return result.stream()
             .map(SQLCommand::getSql)
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+    }
+
+    /**
+     * The method create instance of test class.
+     *
+     * @param runClass - the class
+     * @return - the object of test class
+     */
+    static <T> Object newInstance(Class<T> runClass) {
+        //noinspection TryWithIdenticalCatches
+        try {
+            return runClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T> T setField(T object, Field field)
+        throws IllegalAccessException {
+
+        switch (field.getType().getTypeName()) {
+            case BOOLEAN:
+                return setFieldBoolean(object, field);
+            case BYTE:
+                return setFieldByte(object, field);
+            case CHAR:
+                return setFieldChar(object, field);
+            case SHORT:
+                return setFieldShort(object, field);
+            case INT:
+                return setFieldInt(object, field);
+            case LONG:
+                return setFieldLong(object, field);
+            case FLOAT:
+                return setFieldFloat(object, field);
+            case DOUBLE:
+                return setFieldDouble(object, field);
+            case JAVA_LANG_STRING:
+                return setFieldString(object, field);
+        }
+        return null;
+    }
+
+    <T> T createObject(TypeToken<?> tt) {
+        //noinspection unchecked
+        T result = (T) newInstance(tt.getRawType());
+
+        for (Field field : tt.getRawType().getDeclaredFields()) {
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+
+            try {
+//                result = setField(result, field, value);
+//            } catch (IllegalAccessException e) {
+//                throw new RuntimeException(e);
+            } finally {
+                field.setAccessible(accessible);
+            }
+        }
+
+        return result;
     }
 }

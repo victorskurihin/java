@@ -145,14 +145,15 @@ public class AdaptersTest {
 
     @Test
     public void testColumnsForClass() throws Exception {
-        Method getColumnsForClass = adapters.getClass().getDeclaredMethod(
-            "getColumnsForClass", SQLCommand.class, DataSet.class.getClass()
+        Method getColumns = adapters.getClass().getDeclaredMethod(
+            "getColumns", SQLCommand.class, DataSet.class.getClass()
         );
-        boolean accessible = getColumnsForClass.isAccessible();
-        getColumnsForClass.setAccessible(true);
+        boolean accessible = getColumns.isAccessible();
+        getColumns.setAccessible(true);
         SQLCommand result = new SQLCommand("CREATE TABLE ", "TestDataSetClass");
         result.openParenthesis();
-        result = (SQLCommand) getColumnsForClass.invoke(adapters, result, TestDataSetClass.class);
+        result = (SQLCommand) getColumns.invoke(adapters, result, TestDataSetClass.class);
+        getColumns.setAccessible(accessible);
         result.closeParenthesis();
         Assert.assertEquals(CREATE_TABLE_EXPECTED1, result.getSql());
     }
@@ -165,17 +166,13 @@ public class AdaptersTest {
         boolean accessible = createTableForClass.isAccessible();
         createTableForClass.setAccessible(true);
         SQLCommand result = (SQLCommand) createTableForClass.invoke(adapters, TestDataSetClass.class);
+        createTableForClass.setAccessible(accessible);
         Assert.assertEquals(CREATE_TABLE_EXPECTED2, result.getSql());
     }
 
     @Test
     public void testCreateTablesForClass() throws Exception {
-        Method createTablesForClass= adapters.getClass().getDeclaredMethod(
-            "createTablesForClass", DataSet.class.getClass()
-        );
-        boolean accessible = createTablesForClass.isAccessible();
-        createTablesForClass.setAccessible(true);
-        List<String> result = (List<String>) createTablesForClass.invoke(adapters, TestDataSetClass.class);
+        List<String> result = adapters.createTablesForClass(TestDataSetClass.class);
         List<String> expected = new ArrayList<>();
         expected.add(CREATE_TABLE_EXPECTED2);
         Assert.assertEquals(expected, result);
@@ -183,14 +180,10 @@ public class AdaptersTest {
 
     @Test
     public void testCreateTablesForClassComplex() throws Exception {
-        Method createTablesForClass= adapters.getClass().getDeclaredMethod(
-            "createTablesForClass", DataSet.class.getClass()
+        //noinspection unchecked
+        Set<String> result = new HashSet<>(
+            adapters.createTablesForClass(TestComplexDataSetClass.class)
         );
-        boolean accessible = createTablesForClass.isAccessible();
-        createTablesForClass.setAccessible(true);
-        Set<String> result = ((List<String>) createTablesForClass.invoke(
-            adapters, TestComplexDataSetClass.class
-        )).stream().collect(Collectors.toSet());
         Set<String> expected = new HashSet<>();
         expected.add(CREATE_TABLE_EXPECTED2);
         expected.add(CREATE_TABLE_EXPECTED3);
@@ -201,11 +194,11 @@ public class AdaptersTest {
     private void testGetValue(String fieldName, String expectedValue) throws Exception {
         Field f0 = testDataSetClass.getClass().getDeclaredField(fieldName);
         Method getValue = adapters.getClass().getDeclaredMethod(
-            "getValue", Field.class, DataSet.class.getClass(), DataSet.class
+            "getValue", Field.class, DataSet.class
         );
         boolean accessible = getValue.isAccessible();
         getValue.setAccessible(true);
-        String result = (String) getValue.invoke(adapters, f0, testDataSetClass.getClass(), testDataSetClass);
+        String result = (String) getValue.invoke(adapters, f0, testDataSetClass);
         getValue.setAccessible(accessible);
         Assert.assertEquals(expectedValue, result);
 
@@ -255,6 +248,7 @@ public class AdaptersTest {
         getValuesObject.setAccessible(true);
         SQLCommand result = new SQLCommand("", "");
         result = (SQLCommand) getValuesObject.invoke(adapters, result, testDataSetClass);
+        getValuesObject.setAccessible(accessible);
         Assert.assertEquals(VALUES1, result.getSql());
     }
 
@@ -266,17 +260,13 @@ public class AdaptersTest {
         boolean accessible = insertObjectToTable.isAccessible();
         insertObjectToTable.setAccessible(true);
         SQLCommand result = (SQLCommand) insertObjectToTable.invoke(adapters, testDataSetClass);
+        insertObjectToTable.setAccessible(accessible);
         Assert.assertEquals(INSERT1_VALUES1, result.getSql());
     }
 
     @Test
     public void testInsertObjectsToTables() throws Exception {
-        Method insertObjectsToTables = adapters.getClass().getDeclaredMethod(
-            "insertObjectsToTables", DataSet.class
-        );
-        boolean accessible = insertObjectsToTables .isAccessible();
-        insertObjectsToTables.setAccessible(true);
-        List<String> result = (List<String>) insertObjectsToTables.invoke(adapters, testDataSetClass);
+        List<String> result = adapters.insertObjectsToTables(testDataSetClass);
         List<String> expected = new ArrayList<>();
         expected.add(INSERT1_VALUES1);
         Assert.assertEquals(expected, result);
@@ -284,14 +274,10 @@ public class AdaptersTest {
 
     @Test
     public void testInsertObjectsToTablesComplex() throws Exception {
-        Method insertObjectsToTables = adapters.getClass().getDeclaredMethod(
-            "insertObjectsToTables", DataSet.class
-        );
-        boolean accessible = insertObjectsToTables .isAccessible();
-        insertObjectsToTables.setAccessible(true);
-        Set<String> result = (
-            (List<String>) insertObjectsToTables.invoke(adapters, testComplexDataSetClass)
-        ).stream().collect(Collectors.toSet());
+        //noinspection unchecked
+        Set<String> result = new HashSet<>((
+            adapters.insertObjectsToTables(testComplexDataSetClass)
+        ));
         Set<String> expected = new HashSet<>();
         expected.add(INSERT1_VALUES1);
         expected.add(INSERT2_VALUES2);

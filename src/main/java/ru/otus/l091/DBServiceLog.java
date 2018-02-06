@@ -10,10 +10,6 @@ public class DBServiceLog extends DBServiceAdapters {
     public static final String DEFAULT = "__DEFAULT__";
     private Logger logger = LogManager.getLogger(getClass());
 
-    String classGetNameToTableName(Class <? extends DataSet> c) {
-        return c.getName().replace('.','_');
-    }
-
     @Override
     public <T extends DataSet> void createTables(Class<T> clazz) {
 
