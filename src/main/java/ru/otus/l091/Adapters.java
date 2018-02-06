@@ -5,9 +5,56 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+class SQLCommand {
+    private final String tableName;
+    private long id;
+    private String sql;
+
+    SQLCommand(String sql, String tableName) {
+        this.tableName = tableName;
+        this.sql = sql + tableName;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public SQLCommand closeParenthesis() {
+        sql = sql.concat(" ) ");
+        return this;
+    }
+
+    public SQLCommand openParenthesis() {
+        sql = sql.concat(" ( ");
+        return this;
+    }
+
+    public SQLCommand concat(String s) {
+        sql = sql.concat(s);
+        return this;
+    }
+}
+
 public class Adapters implements TypeNames {
+    public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
     protected Map<String, Adapter> adapters; // the map of adapters
-    private List<String> result;
+    private List<SQLCommand> result;
 
     public void setAdapters(Map<String, Adapter> map) {
         adapters = map;
@@ -53,6 +100,7 @@ public class Adapters implements TypeNames {
             this.result.add(
                 createTableForClass( (Class<? extends DataSet>) field.getType())
             );
+            // TODO create relationship
             return null;
         }
 
@@ -61,17 +109,17 @@ public class Adapters implements TypeNames {
 
     private String separator = ", ";
 
-    private String getColumnsForClass(String s, Class <? extends DataSet> c) {
+    private SQLCommand getColumnsForClass(SQLCommand sql, Class <? extends DataSet> c) {
 
         if (DataSet.class == c) {
-            s = s.concat("id BIGSERIAL PRIMARY KEY");
-            return s;
+            sql =  sql.concat("id BIGSERIAL PRIMARY KEY");
+            return sql;
         }
 
         if (DataSet.class.isAssignableFrom(c.getSuperclass())) {
             //noinspection unchecked
-            s = getColumnsForClass(
-                s, (Class<? extends DataSet>) c.getSuperclass()
+            sql = getColumnsForClass(
+                sql, (Class<? extends DataSet>) c.getSuperclass()
             );
         }
 
@@ -84,7 +132,7 @@ public class Adapters implements TypeNames {
 
                 if (null != columnDesc) {
                     //noinspection ResultOfMethodCallIgnored
-                    s = s.concat(separator).concat(columnDesc);
+                    sql = sql.concat(separator).concat(columnDesc);
                 }
             } catch (Throwable e) {
                 throw e;
@@ -93,25 +141,28 @@ public class Adapters implements TypeNames {
             }
         }
 
-        return s;
+        return sql;
     }
 
-    public String createTableForClass(Class <? extends DataSet> c) {
-        System.out.println("c.getTypeName() = " + c.getTypeName());
+    public SQLCommand createTableForClass(Class <? extends DataSet> c) {
 
         String tableName = classGetNameToTableName(c);
-        String result = "CREATE TABLE IF NOT EXISTS " + tableName + " ( ";
+        SQLCommand result = new SQLCommand(CREATE_TABLE, tableName);
 
+        result.openParenthesis();
         result = getColumnsForClass(result, c);
-        result += " )";
+        result.closeParenthesis();
 
         return result;
     }
 
     public List<String> createTablesForClass(Class <? extends DataSet> c) {
-        this.result = new ArrayList<>();
-        this.result.add(createTableForClass(c));
-        return this.result;
+        result = new ArrayList<>();
+        result.add(createTableForClass(c));
+
+        return result.stream()
+            .map(SQLCommand::getSql)
+            .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
     private <T extends DataSet> String getValue(Field field, Class<? super T> c, T o)
@@ -149,13 +200,14 @@ public class Adapters implements TypeNames {
             this.result.add(
                 insertObjectToTable((T) field.get(o))
             );
+            // TODO add relationship
             return null;
         }
 
         throw new NoImplementationException();
     }
 
-    private <T extends DataSet> String getValues(String s, Class<? super T> c, T o)
+    private <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o)
         throws IllegalAccessException {
 
         if (DataSet.class == c) {
@@ -189,7 +241,7 @@ public class Adapters implements TypeNames {
         return s;
     }
 
-    private <T extends DataSet> String getValuesObject(String s, T o) {
+    private <T extends DataSet> SQLCommand getValuesObject(SQLCommand s, T o) {
         if (DataSet.class.isAssignableFrom(o.getClass().getSuperclass())) {
             //noinspection unchecked
             try {
@@ -201,13 +253,14 @@ public class Adapters implements TypeNames {
         return s;
     }
 
-    private <T extends DataSet> String insertObjectToTable(T o) {
+    private <T extends DataSet> SQLCommand insertObjectToTable(T o) {
 
         String tableName = classGetNameToTableName(o.getClass());
-        String result = "INSERT INTO " + tableName + " VALUES ( ";
+        SQLCommand result = new SQLCommand("INSERT INTO ",  tableName);
 
+        result.concat(" VALUES ").openParenthesis();
         result = getValuesObject(result, o);
-        result += " )";
+        result.closeParenthesis();
 
         return result;
     }
@@ -215,6 +268,7 @@ public class Adapters implements TypeNames {
     public <T extends DataSet> List<String> insertObjectsToTables(T o) {
         this.result = new ArrayList<>();
         this.result.add(insertObjectToTable(o));
-        return this.result;
+//        return this.result;
+        return null;
     }
 }

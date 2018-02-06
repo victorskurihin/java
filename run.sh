@@ -18,7 +18,6 @@ CP=$CP":./target/log4j-api-2.10.0.jar"
 CP=$CP":./target/log4j-core-2.10.0.jar"
 CP=$CP":./target/reflections-0.9.11.jar"
 CP=$CP":./target/postgresql-9.1-901-1.jdbc4.jar"
-REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n"
 MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 GC_LOG="-verbose:gc"
 GC_LOG="${GC_LOG} -Xloggc:${GCLOG}"
@@ -34,7 +33,7 @@ DUMP="-XX:+HeapDumpOnOutOfMemoryError"
 DUMP="${DUMP} -XX:HeapDumpPath=${DUMPDIR}"
 mkdir -p $LOGDIR
 mkdir -p $DUMPDIR
-java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
+java ${CP} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
     -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l091.Main
 #java ${CP} ${REMOTE_DEBUG} ${MEMORY} ${GC_LOG} ${JMX} ${DUMP} \
 #    -XX:OnOutOfMemoryError="kill -3 %p" -jar ./target/L09.1.jar \
