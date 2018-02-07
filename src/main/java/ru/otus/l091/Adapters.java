@@ -5,6 +5,7 @@ import com.google.common.reflect.TypeToken;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -322,56 +323,47 @@ public class Adapters implements TypeNames, FieldMethods {
         }
     }
 
-    private <T> T setField(T object, Field field)
-        throws IllegalAccessException {
+    private <T> T setField(T object, Field field, ResultSet rs)
+        throws IllegalAccessException, SQLException {
 
         switch (field.getType().getTypeName()) {
             case BOOLEAN:
-                return setFieldBoolean(object, field);
+                return setFieldBoolean(object, field, rs);
             case BYTE:
-                return setFieldByte(object, field);
+                return setFieldByte(object, field, rs);
             case CHAR:
-                return setFieldChar(object, field);
+                return setFieldChar(object, field, rs);
             case SHORT:
-                return setFieldShort(object, field);
+                return setFieldShort(object, field, rs);
             case INT:
-                return setFieldInt(object, field);
+                return setFieldInt(object, field, rs);
             case LONG:
-                return setFieldLong(object, field);
+                return setFieldLong(object, field, rs);
             case FLOAT:
-                return setFieldFloat(object, field);
+                return setFieldFloat(object, field, rs);
             case DOUBLE:
-                return setFieldDouble(object, field);
+                return setFieldDouble(object, field, rs);
             case JAVA_LANG_STRING:
-                return setFieldString(object, field);
+                return setFieldString(object, field, rs);
         }
         return null;
     }
 
-    <T> T createObject(ResultSet rs , TypeToken<?> tt) {
+    <T> T createObject(ResultSet rs, TypeToken<?> tt) {
         //noinspection unchecked
-//        T result = (T) newInstance(tt.getRawType());
+        T result = (T) newInstance(tt.getRawType());
 
-        try {
-
-            System.out.println("rs.getString(\"id\") = " + rs.getString("id"));
-            rs.getString("id");
-        } catch (Exception e) {
-            new RuntimeException(e);
+        for (Field field : tt.getRawType().getDeclaredFields()) {
+            boolean accessible = field.isAccessible();
+            try {
+                result = setField(result, field, rs);
+            } catch (Exception e) {
+                new RuntimeException(e);
+            } finally {
+                field.setAccessible(accessible);
+            }
         }
 
-//        for (Field field : tt.getRawType().getDeclaredFields()) {
-//            boolean accessible = field.isAccessible();
-//            field.setAccessible(true);
-//
-//                result = setField(result, field, value);
-//            } catch (IllegalAccessException e) {
-//                throw new RuntimeException(e);
-//            } finally {
-//                field.setAccessible(accessible);
-//            }
-//        }
-
-        return null;
+        return result;
     }
 }

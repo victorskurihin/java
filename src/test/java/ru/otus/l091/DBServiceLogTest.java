@@ -11,14 +11,11 @@ import java.sql.Statement;
 
 import static org.junit.Assert.*;
 
-// ATTENTION THIS TEST CLEAR ALL TABLES with prefix 'ru_otus_l091' IN SCHEMA PUBLIC AT USER name!!!
-// SELECT 'DROP TABLE IF EXISTS "' || tablename || '" CASCADE;'
-//   FROM pg_tables
-//  WHERE schemaname = 'public' AND (tablename LIKE 'ru_otus_l091%%' OR tablename = 'relationship');
 interface Clean extends AutoCloseable {
     public void clear() throws SQLException;
 }
 
+// ATTENTION THIS TEST CLEAR ALL TABLES WITH PREFIX 'ru_otus_l091' IN SCHEMA PUBLIC AT USER name!!!
 class DBClean implements Clean {
     private final String name = "mb24681";
     private final Connection connection;
@@ -68,21 +65,24 @@ public class DBServiceLogTest {
     public void setUp() throws Exception {
         dbClean = new DBClean();
         dbService = new DBServiceLog();
-        dbClean.clear();
     }
 
     @After
     public void tearDown() throws Exception {
-        dbClean.clear();
         dbClean.close();
         dbService.close();
         dbService = null;
         dbClean = null;
     }
 
+    public void reCreateTables() throws Exception {
+        dbClean.clear();
+        dbService.createTables(TestDataSetClass.class);
+    }
+
     @Test
     public void test() throws Exception {
-        dbService.createTables(TestDataSetClass.class);
+        reCreateTables();
         dbService.save(new TestDataSetClass(13));
         TestDataSetClass testDataSetClass = dbService.load(13, TestDataSetClass.class);
     }

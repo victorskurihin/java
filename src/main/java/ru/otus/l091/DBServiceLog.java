@@ -57,10 +57,10 @@ public class DBServiceLog extends DBServiceAdapters {
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
         try {
-            System.out.println("clazz = " + TypeToken.of(clazz).getRawType().getTypeName() );
+//            System.out.println("clazz = " + TypeToken.of(clazz).getRawType().getTypeName() );
             TExecutor execT = new TExecutor(getConnection());
-            String sql = String.format(SELECT1, classGetNameToTableName(clazz));
-            System.out.println("sql = " + sql);
+            String sql = String.format(SELECT2, classGetNameToTableName(clazz), id);
+//            System.out.println("sql = " + sql);
             return execT.execQuery(sql, resultSet -> {
                 return adapters.get(DEFAULT).read(resultSet, TypeToken.of(clazz));
             });
