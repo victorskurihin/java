@@ -12,40 +12,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-class TestClass {
-    boolean f0 = true;
-    byte f1 = 1;
-    char f2 = 'f';
-    short f3 = 3;
-    int f4 = 4;
-    long f5 = 5L;
-    String f6 = "f6";
-
-}
-
-class TestDataSetClass extends DataSet {
-    boolean f0 = true;
-    byte f1 = 1;
-    char f2 = 'f';
-    short f3 = 3;
-    int f4 = 4;
-    long f5 = 5L;
-    String f6 = "f6";
-
-    protected TestDataSetClass(long id) {
-        super(id);
-    }
-}
-
-class TestComplexDataSetClass extends DataSet {
-    TestDataSetClass test = new TestDataSetClass(13);
-
-    protected TestComplexDataSetClass(long id) {
-        super(id);
-    }
-}
 
 public class AdaptersTest {
     public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN";

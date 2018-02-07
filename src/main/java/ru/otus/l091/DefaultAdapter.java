@@ -2,6 +2,7 @@ package ru.otus.l091;
 
 import com.google.common.reflect.TypeToken;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 public class DefaultAdapter extends Adapters implements Adapter {
@@ -23,7 +24,5 @@ public class DefaultAdapter extends Adapters implements Adapter {
     }
 
     @Override
-    public <T> T read(String value, TypeToken<? extends DataSet> tt) {
-        return null;
-    }
+    public <T> T read(ResultSet resultSet, TypeToken<? extends DataSet> tt) { return null; }
 }

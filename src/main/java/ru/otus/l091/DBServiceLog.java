@@ -1,5 +1,6 @@
 package ru.otus.l091;
 
+import com.google.common.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +11,12 @@ import java.util.List;
 public class DBServiceLog extends DBServiceAdapters {
     public static final String DEFAULT = "__DEFAULT__";
     private Logger logger = LogManager.getLogger(getClass());
-    private static final String SELECT_USER = "SELECT NAME FROM %s WHERE id=%s";
+    private static final String SELECT1 = "SELECT * FROM %s";
+    private static final String SELECT2 = "SELECT * FROM %s WHERE id=%s";
+
+    String classGetNameToTableName(Class <? extends DataSet> c) {
+        return c.getName().replace('.','_');
+    }
 
     @Override
     public <T extends DataSet> void createTables(Class<T> clazz) {
@@ -50,17 +56,16 @@ public class DBServiceLog extends DBServiceAdapters {
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
-//        try {
-//            TExecutor execT = new TExecutor(getConnection());
-//             execT.execQuery(String.format(SELECT_USER, clazz.getName(), id), (ResultSet result) -> {
-//                result.next();
-//                 System.out.println("result = " + result);
-//                return result.getString("id");
-//            });
-//            return null; // DataSet
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+        try {
+            System.out.println("clazz = " + TypeToken.of(clazz).getRawType().getTypeName() );
+            TExecutor execT = new TExecutor(getConnection());
+            String sql = String.format(SELECT1, classGetNameToTableName(clazz));
+            System.out.println("sql = " + sql);
+            return execT.execQuery(sql, resultSet -> {
+                return adapters.get(DEFAULT).read(resultSet, TypeToken.of(clazz));
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

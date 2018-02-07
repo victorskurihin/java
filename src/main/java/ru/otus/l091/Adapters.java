@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -347,23 +348,30 @@ public class Adapters implements TypeNames, FieldMethods {
         return null;
     }
 
-    <T> T createObject(TypeToken<?> tt) {
+    <T> T createObject(ResultSet rs , TypeToken<?> tt) {
         //noinspection unchecked
-        T result = (T) newInstance(tt.getRawType());
+//        T result = (T) newInstance(tt.getRawType());
 
-        for (Field field : tt.getRawType().getDeclaredFields()) {
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
+        try {
 
-            try {
+            System.out.println("rs.getString(\"id\") = " + rs.getString("id"));
+            rs.getString("id");
+        } catch (Exception e) {
+            new RuntimeException(e);
+        }
+
+//        for (Field field : tt.getRawType().getDeclaredFields()) {
+//            boolean accessible = field.isAccessible();
+//            field.setAccessible(true);
+//
 //                result = setField(result, field, value);
 //            } catch (IllegalAccessException e) {
 //                throw new RuntimeException(e);
-            } finally {
-                field.setAccessible(accessible);
-            }
-        }
+//            } finally {
+//                field.setAccessible(accessible);
+//            }
+//        }
 
-        return result;
+        return null;
     }
 }

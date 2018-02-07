@@ -47,9 +47,7 @@ class DBClean implements Clean {
             while (result.next()) {
                 execSimpleSQL(result.getString("sql"));
             }
-
         }
-
     }
 
     @Override
@@ -84,6 +82,8 @@ public class DBServiceLogTest {
 
     @Test
     public void test() throws Exception {
-
+        dbService.createTables(TestDataSetClass.class);
+        dbService.save(new TestDataSetClass(13));
+        TestDataSetClass testDataSetClass = dbService.load(13, TestDataSetClass.class);
     }
 }
