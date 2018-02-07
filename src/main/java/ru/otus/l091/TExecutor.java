@@ -10,7 +10,7 @@ public class TExecutor extends Executor {
         super(connection);
     }
 
-    public <T> T execQuery(String query, TResultHandler<T> handler)
+    public <T extends DataSet> T execQuery(String query, TResultHandler<T> handler)
         throws SQLException {
 
         try(Statement stmt = super.getConnection().createStatement()) {

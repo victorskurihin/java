@@ -3,12 +3,14 @@ package ru.otus.l091;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class DBServiceLog extends DBServiceAdapters {
     public static final String DEFAULT = "__DEFAULT__";
     private Logger logger = LogManager.getLogger(getClass());
+    private static final String SELECT_USER = "SELECT NAME FROM %s WHERE id=%s";
 
     @Override
     public <T extends DataSet> void createTables(Class<T> clazz) {
@@ -20,7 +22,7 @@ public class DBServiceLog extends DBServiceAdapters {
             for (String createTable : createTables) {
                 logger.info("Creating {} ...", createTable);
                 exec.execUpdate(createTable);
-                logger.info("Table {} created.", createTable);
+                logger.info("By DDL {} created.", createTable);
             }
         } catch (SQLException e) {
             logger.error(e);
@@ -36,9 +38,9 @@ public class DBServiceLog extends DBServiceAdapters {
 
         try {
             for (String insert : insertValues) {
-                logger.info("Inserting {} ...", insert);
+                logger.info("Running {} ...", insert);
                 exec.execUpdate(insert);
-                logger.info("Value {} inserted.", insert);
+                logger.info("Query {} done.", insert);
             }
         } catch (SQLException e) {
             logger.error(e);
@@ -48,6 +50,17 @@ public class DBServiceLog extends DBServiceAdapters {
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
+//        try {
+//            TExecutor execT = new TExecutor(getConnection());
+//             execT.execQuery(String.format(SELECT_USER, clazz.getName(), id), (ResultSet result) -> {
+//                result.next();
+//                 System.out.println("result = " + result);
+//                return result.getString("id");
+//            });
+//            return null; // DataSet
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         return null;
     }
 }
