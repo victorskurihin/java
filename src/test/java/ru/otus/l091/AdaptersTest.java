@@ -20,9 +20,10 @@ public class AdaptersTest {
     public static final String F3_SMALLINT_DESC = "f3 SMALLINT";
     public static final String F4_INT_DESC = "f4 INTEGER";
     public static final String F5_LONG_DESC = "f5 BIGINT";
-    public static final String F6_STRING_DESC = "f6 TEXT";
+    public static final String F6_STRING_DESC = "f6 REAL";
     public static final String CREATE_EXPECTED_CLAUSE = " ( id BIGSERIAL PRIMARY KEY, " +
-        "f0 BOOLEAN, f1 SMALLINT, f2 CHAR(1), f3 SMALLINT, f4 INTEGER, f5 BIGINT, f6 TEXT )";
+        "f0 BOOLEAN, f1 SMALLINT, f2 CHAR(1), f3 SMALLINT, f4 INTEGER, f5 BIGINT, " +
+        "f6 REAL, f7 DOUBLE PRECISION, f8 TEXT )";
     public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE TestDataSetClass" +
                                CREATE_EXPECTED_CLAUSE;
     public static final String CREATE_TABLE_EXPECTED2 = "CREATE TABLE IF NOT EXISTS " +
@@ -35,8 +36,8 @@ public class AdaptersTest {
     public static final String F3_VALUE = "3";
     public static final String F4_VALUE = "4";
     public static final String F5_VALUE = "5";
-    public static final String F6_VALUE = "'f6'";
-    public static final String VALUES1 = "13, TRUE, 1, 'f', 3, 4, 5, 'f6'";
+    public static final String F6_VALUE = "6.6";
+    public static final String VALUES1 = "13, TRUE, 1, 'f', 3, 4, 5, 6.6, 7.7, 'f8'";
     public static final String INSERT1_VALUES1 = "INSERT INTO ru_otus_l091_TestDataSetClass VALUES (" +
                                VALUES1 + " )";
     public static final String INSERT2_VALUES2 = "INSERT INTO ru_otus_l091_TestComplexDataSetClass VALUES " +
@@ -51,7 +52,7 @@ public class AdaptersTest {
 
     @Before
     public void setUp() throws Exception {
-        adapters = new Adapters();
+        adapters = new Adapters(null);
         testClass = new TestClass();
         testDataSetClass = new TestDataSetClass(13);
         testComplexDataSetClass = new TestComplexDataSetClass(14);

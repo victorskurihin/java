@@ -4,19 +4,12 @@ import com.google.common.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class DBServiceLog extends DBServiceAdapters {
     public static final String DEFAULT = "__DEFAULT__";
     private Logger logger = LogManager.getLogger(getClass());
-    private static final String SELECT1 = "SELECT * FROM %s";
-    private static final String SELECT2 = "SELECT * FROM %s WHERE id=%s";
-
-    String classGetNameToTableName(Class <? extends DataSet> c) {
-        return c.getName().replace('.','_');
-    }
 
     @Override
     public <T extends DataSet> void createTables(Class<T> clazz) {
@@ -56,16 +49,20 @@ public class DBServiceLog extends DBServiceAdapters {
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
-        try {
-//            System.out.println("clazz = " + TypeToken.of(clazz).getRawType().getTypeName() );
-            TExecutor execT = new TExecutor(getConnection());
-            String sql = String.format(SELECT2, classGetNameToTableName(clazz), id);
-//            System.out.println("sql = " + sql);
-            return execT.execQuery(sql, resultSet -> {
-                return adapters.get(DEFAULT).read(resultSet, TypeToken.of(clazz));
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Loader loader = new Loader(getConnection());
+
+        return loader.load(
+            id, clazz, resultSet -> {
+                if (resultSet.next()) {
+                    return adapters.get(DEFAULT)
+                        .read(resultSet, TypeToken.of(clazz), id);
+                } else
+                    throw new RuntimeException("SQL Error!!!");
+            }
+        );
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

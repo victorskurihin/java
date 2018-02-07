@@ -4,6 +4,7 @@ import com.google.common.reflect.TypeToken;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -70,6 +71,11 @@ public class Adapters implements TypeNames, FieldMethods {
 
     protected Map<String, Adapter> adapters; // the map of adapters
     private List<SQLCommand> result;
+    private Connection connection;
+
+    Adapters(Connection connection) {
+        this.connection = connection;
+    }
 
     public void setAdapters(Map<String, Adapter> map) {
         adapters = map;
@@ -217,7 +223,8 @@ public class Adapters implements TypeNames, FieldMethods {
     <T extends DataSet> String getDataSetValue(Field field, T o, SQLCommand s)
         throws IllegalAccessException {
 
-        if (DataSet.class.isAssignableFrom(field.getType())) {
+        // DataSet.class.isAssignableFrom(field.getType())
+        if (isSubclassOfDataSet(field.getType())) {
             //noinspection unchecked
             SQLCommand sql = insertObjectToTable((T) field.get(o));
             result.add(sql);
@@ -243,7 +250,8 @@ public class Adapters implements TypeNames, FieldMethods {
             return s;
         }
 
-        if (DataSet.class.isAssignableFrom(c.getSuperclass())) {
+        // DataSet.class.isAssignableFrom(c.getSuperclass())
+        if (isSubclassOfDataSet(c.getSuperclass())) {
             //noinspection unchecked
             s = getValues(s, c.getSuperclass(), o);
         }
@@ -312,10 +320,10 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param runClass - the class
      * @return - the object of test class
      */
-    static <T> Object newInstance(Class<T> runClass) {
+    static <T> Object newInstance(Class<T> runClass, long id) {
         //noinspection TryWithIdenticalCatches
         try {
-            return runClass.getDeclaredConstructor().newInstance();
+            return runClass.getDeclaredConstructor(long.class).newInstance(id);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException | NoSuchMethodException e) {
@@ -328,6 +336,7 @@ public class Adapters implements TypeNames, FieldMethods {
 
         switch (field.getType().getTypeName()) {
             case BOOLEAN:
+                System.out.println("boolean");
                 return setFieldBoolean(object, field, rs);
             case BYTE:
                 return setFieldByte(object, field, rs);
@@ -346,14 +355,34 @@ public class Adapters implements TypeNames, FieldMethods {
             case JAVA_LANG_STRING:
                 return setFieldString(object, field, rs);
         }
-        return null;
+
+        int column = rs.findColumn("fk " + field.getName());
+        if (isSubclassOfDataSet(field.getType()) && column > 0) {
+            long id = getFK(field, rs);
+            System.out.println("Ok " + id);
+            //noinspection unchecked
+            Class<? extends DataSet> c = (Class<? extends DataSet>) field.getType();
+            Loader loader = new Loader(connection);
+            Object value = (Object) loader.load(
+                id, c, resultSet -> {
+                    if (resultSet.next()) {
+                        return createObject(resultSet, TypeToken.of(c), id);
+                    } else
+                        throw new RuntimeException("SQL Error!!!");
+                }
+            );
+            field.set(object, value);
+        }
+
+        throw new NoImplementationException();
     }
 
-    <T> T createObject(ResultSet rs, TypeToken<?> tt) {
+    <T> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
         //noinspection unchecked
-        T result = (T) newInstance(tt.getRawType());
+        T result = (T) newInstance(tt.getRawType(), id);
 
         for (Field field : tt.getRawType().getDeclaredFields()) {
+            System.out.println("field.getName() = " + field.getName());
             boolean accessible = field.isAccessible();
             try {
                 result = setField(result, field, rs);
@@ -367,3 +396,7 @@ public class Adapters implements TypeNames, FieldMethods {
         return result;
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

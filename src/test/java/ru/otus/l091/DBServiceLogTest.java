@@ -1,6 +1,7 @@
 package ru.otus.l091;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,9 +16,10 @@ interface Clean extends AutoCloseable {
     public void clear() throws SQLException;
 }
 
-// ATTENTION THIS TEST CLEAR ALL TABLES WITH PREFIX 'ru_otus_l091' IN SCHEMA PUBLIC AT USER name!!!
+// ATTENTION! THIS TEST WILL DROP ALL THE TABLES WITH PREFIX 'ru_otus_l091'
+// IN THE SCHEMA PUBLIC AT USER name!!!
 class DBClean implements Clean {
-    private final String name = "mb24681";
+    private final String name = "vnsk";
     private final Connection connection;
 
     protected DBClean() {
@@ -51,10 +53,6 @@ class DBClean implements Clean {
     public void close() throws Exception {
         connection.close();
     }
-
-    protected Connection getConnection() {
-        return connection;
-    }
 }
 
 public class DBServiceLogTest {
@@ -75,15 +73,29 @@ public class DBServiceLogTest {
         dbClean = null;
     }
 
-    public void reCreateTables() throws Exception {
+    private void reCreateTables() throws Exception {
         dbClean.clear();
-        dbService.createTables(TestDataSetClass.class);
+        dbService.createTables(TestComplexDataSetClass.class);
     }
 
     @Test
-    public void test() throws Exception {
+    public void test1() throws Exception {
         reCreateTables();
-        dbService.save(new TestDataSetClass(13));
+        TestDataSetClass expectedTestDataSetClass = new TestDataSetClass(13);
+        dbService.save(expectedTestDataSetClass);
         TestDataSetClass testDataSetClass = dbService.load(13, TestDataSetClass.class);
+        Assert.assertEquals(expectedTestDataSetClass, testDataSetClass);
+    }
+
+    @Test
+    public void test2() throws Exception {
+        reCreateTables();
+        TestComplexDataSetClass expectedTestComplexDataSetClass = new TestComplexDataSetClass(13);
+        expectedTestComplexDataSetClass.setTest("bla");
+        dbService.save(expectedTestComplexDataSetClass);
+        TestComplexDataSetClass testComplexDataSetClass = dbService.load(13, TestComplexDataSetClass.class);
+        System.out.println("testComplexDataSetClass = " + testComplexDataSetClass);
+        System.out.println("expectedTestComplexDataSetClass = " + expectedTestComplexDataSetClass);
+//        Assert.assertEquals(expectedTestComplexDataSetClass, testComplexDataSetClass);
     }
 }
