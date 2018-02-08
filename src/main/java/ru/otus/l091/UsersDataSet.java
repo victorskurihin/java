@@ -8,7 +8,7 @@ public class UsersDataSet extends DataSet {
     private String name;
     private int age;
 
-    protected UsersDataSet(long id) {
+    public UsersDataSet(long id) {
         super(id);
     }
 
@@ -34,7 +34,7 @@ public class UsersDataSet extends DataSet {
 
     @Override
     public String toString() {
-        return "DataSet{ " +
+        return "UsersDataSet{ " +
                "id=" + getId() + ", name='" + getName() + "', age=" + getAge() +
                " }";
     }

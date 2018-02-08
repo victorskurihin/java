@@ -15,7 +15,7 @@ public class ComplexDataSet extends DataSet {
     private String f8 = "f8";
     private final UsersDataSet uds;
 
-    protected ComplexDataSet(long id) {
+    public ComplexDataSet(long id) {
         super(id);
         uds = new UsersDataSet(id);
         uds.setName("uds");

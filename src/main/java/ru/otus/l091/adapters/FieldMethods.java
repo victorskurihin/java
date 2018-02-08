@@ -24,8 +24,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldBoolean(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -52,8 +52,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldByte(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -80,8 +80,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldChar(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -110,8 +110,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldShort(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -138,8 +138,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldInt(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -166,8 +166,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldLong(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -194,8 +194,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldFloat(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -222,8 +222,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldDouble(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -249,8 +249,8 @@ public interface FieldMethods {
      * @param rs the result set from sql query
      * @param <T> the generic type of the goal object
      * @return the charged object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default <T> T setFieldString(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -274,11 +274,11 @@ public interface FieldMethods {
      * The method get the value of the primary key (id) of object containing
      * in the field.
      *
-     * @param field
+     * @param field the filed
      * @param rs the result set from sql query
      * @return the id of the object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException ResultSet, ResultSetMetaData
      */
     default long getFK(Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {

@@ -16,7 +16,6 @@ public abstract class DBServiceAdapters extends DBServiceConnection {
     DBServiceAdapters() {
         for (Adapter a : predefinedAdapters) {
             adapters.put(a.getAdapteeOfType(), a);
-            a.setAdapters(adapters);
         }
     }
 }

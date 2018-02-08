@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBConf {
-    public static final String userName = "user";
-    public static final String dbName = "user";
+    public static final String userName = "vnsk";
+    public static final String dbName = "vnsk";
     private final Connection connection;
 
     public DBConf(Connection connection) {

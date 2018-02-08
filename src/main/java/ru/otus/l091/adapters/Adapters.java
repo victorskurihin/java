@@ -75,13 +75,12 @@ class SQLCommand {
  * The adapter as a design pattern.
  */
 public class Adapters implements TypeNames, FieldMethods {
-    public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
+    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
     public static final String CREATE_TABLE_RELATIONSHIP = "CREATE TABLE " +
         "IF NOT EXISTS relationship ( parent_class_name TEXT, parent_id "  +
         "BIGINT, parent_field_name TEXT, child_class_name TEXT, child_id " +
         "BIGINT )";
 
-    protected Map<String, Adapter> adapters; // the map of adapters
     private List<SQLCommand> result;
     private Connection connection;
 
@@ -89,25 +88,21 @@ public class Adapters implements TypeNames, FieldMethods {
         this.connection = connection;
     }
 
-    public void setAdapters(Map<String, Adapter> map) {
-        adapters = map;
-    }
-
     /**
      * The helper method for prepare name of the table for storing the object
      * of class.
      *
-     * @param c
-     * @return
+     * @param c the subclass of the DataSet class
+     * @return the name of the table
      */
-    String classGetNameToTableName(Class <? extends DataSet> c) {
+    private String classGetNameToTableName(Class<? extends DataSet> c) {
         return c.getName().replace('.','_');
     }
 
     /**
      * Not implemented.
-     * @param field
-     * @return
+     * @param field the Field
+     * @return not implemented
      */
     private String getArrayDescription(Field field) {
         return null;
@@ -253,7 +248,7 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param o the object contained the field
      * @param <T> the type of the object
      * @return the String representation of the column value
-     * @throws IllegalAccessException
+     * @throws IllegalAccessException for field
      */
     private <T extends DataSet> String getValue(Field field, T o)
         throws IllegalAccessException {
@@ -296,8 +291,8 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param o the object with type of the subclass by the DataSet class
      * @param s the instantiated SQLCommand container
      * @param <T> the type of the subclass by the DataSet class of the object
-     * @return
-     * @throws IllegalAccessException
+     * @return the string with DDL values from the object
+     * @throws IllegalAccessException access to the field
      */
     private
     <T extends DataSet> String getDataSetValue(Field field, T o, SQLCommand s)
@@ -329,8 +324,7 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param c the class of the appropriate object
      * @param o the appropriate object
      * @param <T> the type of the object
-     * @return
-     * @throws IllegalAccessException
+     * @return the SQLCommand container
      */
     private
     <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o) {
@@ -363,9 +357,11 @@ public class Adapters implements TypeNames, FieldMethods {
                     s = s.concat(separator).concat(value);
                 }
             } catch (IllegalAccessException e) {
+                //noinspection ThrowableNotThrown
                 new RuntimeException(e);
             } catch (Throwable e) {
                 e.printStackTrace();
+                //noinspection ThrowableNotThrown
                 new RuntimeException(e);
             } finally {
                 field.setAccessible(accessible);
@@ -420,6 +416,7 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param runClass - the class
      * @return - the object of test class
      */
+    @SuppressWarnings("WeakerAccess")
     static <T> Object newInstance(Class<T> runClass, long id) {
         //noinspection TryWithIdenticalCatches
         try {
@@ -440,8 +437,8 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param rs the ResultSet from the select query
      * @param <T> the type of the object
      * @return the filled object
-     * @throws IllegalAccessException
-     * @throws SQLException
+     * @throws IllegalAccessException the access to the field
+     * @throws SQLException in the loader
      */
     private <T> T setField(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
@@ -471,13 +468,10 @@ public class Adapters implements TypeNames, FieldMethods {
         if (isSubclassOfDataSet(field.getType()) && column > 0) {
             long id = getFK(field, rs);
 
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnNumber = rs.findColumn("fk " + field.getName());
-
             //noinspection unchecked
             Class<? extends DataSet> c = (Class<? extends DataSet>) field.getType();
             Loader loader = new Loader(connection);
-            Object value = (Object) loader.load(
+            Object value = loader.load(
                 id, c, resultSet -> {
                     if (resultSet.next()) {
                         return createObject(resultSet, TypeToken.of(c), id);
@@ -514,9 +508,11 @@ public class Adapters implements TypeNames, FieldMethods {
             try {
                 result = setField(result, field, rs);
             } catch (IllegalAccessException | SQLException e) {
+                //noinspection ThrowableNotThrown
                 new RuntimeException(e);
             } catch (Throwable e) {
                 e.printStackTrace();
+                //noinspection ThrowableNotThrown
                 new RuntimeException(e);
             } finally {
                 field.setAccessible(accessible);

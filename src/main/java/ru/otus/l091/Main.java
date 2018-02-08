@@ -12,7 +12,7 @@ import ru.otus.l091.db.*;
  * Configure application in db/DBConf.java
  *
  * To start:
- * mvn clean compile
+ * mvn clean package
  *
  * ./run.sh
  * or
