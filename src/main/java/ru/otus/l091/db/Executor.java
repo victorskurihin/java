@@ -1,4 +1,4 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,7 +29,7 @@ public class Executor {
         }
     }
 
-    Connection getConnection() {
+    protected Connection getConnection() {
         return connection;
     }
 }

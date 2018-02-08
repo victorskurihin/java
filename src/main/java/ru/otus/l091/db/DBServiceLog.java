@@ -1,10 +1,10 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
 
 import com.google.common.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.otus.l091.DataSet;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 

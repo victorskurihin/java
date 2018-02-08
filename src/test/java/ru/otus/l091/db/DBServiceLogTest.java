@@ -1,16 +1,16 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.otus.l091.TestComplexDataSetClass;
+import ru.otus.l091.TestDataSetClass;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import static org.junit.Assert.*;
 
 interface Clean extends AutoCloseable {
     public void clear() throws SQLException;

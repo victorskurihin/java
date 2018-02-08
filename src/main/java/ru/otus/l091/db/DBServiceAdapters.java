@@ -1,4 +1,7 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
+
+import ru.otus.l091.adapters.Adapter;
+import ru.otus.l091.adapters.DefaultAdapter;
 
 import java.util.HashMap;
 import java.util.Map;

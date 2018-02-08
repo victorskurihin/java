@@ -1,6 +1,9 @@
-package ru.otus.l091;
+package ru.otus.l091.adapters;
 
 import com.google.common.reflect.TypeToken;
+import ru.otus.l091.NoImplementationException;
+import ru.otus.l091.DataSet;
+import ru.otus.l091.db.Loader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -195,8 +198,6 @@ public class Adapters implements TypeNames, FieldMethods {
                     //noinspection ResultOfMethodCallIgnored
                     sql = sql.concat(separator).concat(columnDesc);
                 }
-            } catch (IllegalAccessException e) {
-                new RuntimeException(e);
             } catch (Throwable e) {
                 e.printStackTrace();
                 new RuntimeException(e);

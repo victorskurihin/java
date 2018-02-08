@@ -1,9 +1,13 @@
-package ru.otus.l091;
+package ru.otus.l091.adapters;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.otus.l091.DataSet;
+import ru.otus.l091.TestClass;
+import ru.otus.l091.TestComplexDataSetClass;
+import ru.otus.l091.TestDataSetClass;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -160,7 +164,7 @@ public class AdaptersTest {
     }
 
     private void testGetValue(String fieldName, String expectedValue) throws Exception {
-        Field f0 = testDataSetClass.getClass().getDeclaredField(fieldName);
+        Field f0 = testDataSetClass.getClass().getField(fieldName);
         Method getValue = adapters.getClass().getDeclaredMethod(
             "getValue", Field.class, DataSet.class
         );

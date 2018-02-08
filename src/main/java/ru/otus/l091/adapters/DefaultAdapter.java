@@ -1,6 +1,7 @@
-package ru.otus.l091;
+package ru.otus.l091.adapters;
 
 import com.google.common.reflect.TypeToken;
+import ru.otus.l091.DataSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,7 +10,7 @@ import java.util.List;
 public class DefaultAdapter extends Adapters implements Adapter {
     private final String ADAPTEE_TYPE = "__DEFAULT__";
 
-    DefaultAdapter(Connection connection) {
+    public DefaultAdapter(Connection connection) {
         super(connection);
     }
 

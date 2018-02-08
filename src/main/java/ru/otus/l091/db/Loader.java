@@ -1,4 +1,6 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
+
+import ru.otus.l091.DataSet;
 
 import java.sql.Connection;
 
@@ -10,7 +12,7 @@ public class Loader {
     private static final String SELECT = "SELECT * FROM %s WHERE id=%s";
     private Connection connection;
 
-    static String classGetNameToTableName(Class <? extends DataSet> c) {
+    public static String classGetNameToTableName(Class<? extends DataSet> c) {
         return c.getName().replace('.','_');
     }
 

@@ -1,4 +1,4 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,7 +32,7 @@ public class ConnectionHelper {
         ));
     }
 
-    static Connection getConnection(String db, String user) {
+    public static Connection getConnection(String db, String user) {
         return getConnection(String.format(
             "jdbc:postgresql://localhost:5432/%s?user=%s", db, user
         ));

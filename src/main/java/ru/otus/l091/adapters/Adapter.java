@@ -1,6 +1,7 @@
-package ru.otus.l091;
+package ru.otus.l091.adapters;
 
 import com.google.common.reflect.TypeToken;
+import ru.otus.l091.DataSet;
 
 import java.sql.ResultSet;
 import java.util.List;

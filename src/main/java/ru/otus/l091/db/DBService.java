@@ -1,4 +1,6 @@
-package ru.otus.l091;
+package ru.otus.l091.db;
+
+import ru.otus.l091.DataSet;
 
 import java.sql.Connection;
 
