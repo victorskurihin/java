@@ -2,10 +2,27 @@ package ru.otus.l091;
 
 import ru.otus.l091.db.*;
 
+/**
+ * Created by VSkurikhin.
+ *
+ * Solution for L09.1
+ *
+ * PreReq: PostgreSQL
+ *
+ * Configure application in db/DBConf.java
+ *
+ * To start:
+ * mvn clean compile
+ *
+ * ./run.sh
+ * or
+ * run.bat
+ */
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        try (DBService dbService = new DBServiceLog()) {
+        try (DBService dbService = new DBServiceTransactional()) {
             DBConf dbConf = new DBConf(dbService.getConnection());
             dbConf.dropTables(Loader.classGetNameToTableName(UsersDataSet.class));
             dbConf.dropTables(Loader.classGetNameToTableName(ComplexDataSet.class));

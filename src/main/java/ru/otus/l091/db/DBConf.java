@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBConf {
-    public static final String userSchemaName = "mb24681";
+    public static final String userName = "user";
+    public static final String dbName = "user";
     private final Connection connection;
 
     public DBConf(Connection connection) {
@@ -19,7 +20,6 @@ public class DBConf {
     }
 
     public void dropTables(String tableName) throws SQLException {
-        ResultHandler handler;
         String dropTablesSQL = "DROP TABLE IF EXISTS %s CASCADE";
 
         try (Statement stmt = connection.createStatement()) {
@@ -27,3 +27,7 @@ public class DBConf {
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

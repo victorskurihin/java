@@ -3,11 +3,12 @@ package ru.otus.l091.db;
 import java.sql.Connection;
 
 public abstract class DBServiceConnection implements DBService {
-    private final String name = DBConf.userSchemaName;
     private final Connection connection;
 
     protected DBServiceConnection() {
-        connection = ConnectionHelper.getConnection(name, name);
+        connection = ConnectionHelper.getConnection(
+            DBConf.userName, DBConf.dbName
+        );
     }
 
     @Override

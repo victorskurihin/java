@@ -28,9 +28,14 @@ public class Loader {
             String sql = String.format(
                 SELECT, classGetNameToTableName(clazz), id
             );
+
             return execT.execQuery(sql, handler);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

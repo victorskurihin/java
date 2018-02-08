@@ -7,6 +7,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.List;
 
+/**
+ * By default this class save application classes to DB.
+ */
 public class DefaultAdapter extends Adapters implements Adapter {
     private final String ADAPTEE_TYPE = "__DEFAULT__";
 
@@ -31,7 +34,6 @@ public class DefaultAdapter extends Adapters implements Adapter {
 
     @Override
     public <T> T read(ResultSet rs, TypeToken<? extends DataSet> tt, long id) {
-        System.out.println("tt.getRawType().getTypeName() = " + tt.getRawType().getTypeName());
         return createObject(rs, tt, id);
     }
 }

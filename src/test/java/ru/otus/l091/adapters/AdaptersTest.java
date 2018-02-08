@@ -45,8 +45,8 @@ public class AdaptersTest {
     public static final String VALUES1 = "13, TRUE, 1, 'f', 3, 4, 5, 6.6, 7.7, 'f8'";
     public static final String INSERT1_VALUES1 = "INSERT INTO ru_otus_l091_TestDataSetClass VALUES (" +
                                VALUES1 + " )";
-    public static final String INSERT2_VALUES2 = "INSERT INTO ru_otus_l091_TestComplexDataSetClass VALUES " +
-        "(14, 13 )";
+    public static final String INSERT2_VALUES2 = "INSERT INTO ru_otus_l091_TestComplexDataSetClass " +
+        "VALUES (14, 13 )";
     public static final String INSERT3_VALUES3 = "INSERT INTO relationship VALUES " +
         "('ru_otus_l091_TestComplexDataSetClass', 14, 'test', 'ru_otus_l091_TestDataSetClass', 13)";
 
@@ -214,12 +214,12 @@ public class AdaptersTest {
     @Test
     public void testGetValuesObject() throws Exception {
         Method getValuesObject = adapters.getClass().getDeclaredMethod(
-            "getValuesObject", SQLCommand.class, DataSet.class
+            "getValues", SQLCommand.class, DataSet.class.getClass(), DataSet.class
         );
         boolean accessible = getValuesObject.isAccessible();
         getValuesObject.setAccessible(true);
         SQLCommand result = new SQLCommand("", "");
-        result = (SQLCommand) getValuesObject.invoke(adapters, result, testDataSetClass);
+        result = (SQLCommand) getValuesObject.invoke(adapters, result, testDataSetClass.getClass(), testDataSetClass);
         getValuesObject.setAccessible(accessible);
         Assert.assertEquals(VALUES1, result.getSql());
     }

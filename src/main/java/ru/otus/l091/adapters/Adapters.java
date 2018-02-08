@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is the helper class used to contained the SQL command structure and
- * contains additional information such as primary key of the object, table
- * name for the object.
+ * This is helper class used to contained the SQL command structure and contains
+ * additional information such as primary key of the object, table name for the
+ * object.
  */
 class SQLCommand {
     private final String tableName;
@@ -333,8 +333,7 @@ public class Adapters implements TypeNames, FieldMethods {
      * @throws IllegalAccessException
      */
     private
-    <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o)
-        throws IllegalAccessException {
+    <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o) {
 
         if (DataSet.class == c) {
             s.setId(o.getId());
@@ -376,31 +375,36 @@ public class Adapters implements TypeNames, FieldMethods {
         return s;
     }
 
-    private <T extends DataSet> SQLCommand getValuesObject(SQLCommand s, T o) {
-        // DataSet.class.isAssignableFrom(o.getClass().getSuperclass())
-        if (isSubclassOfDataSet(o.getClass().getSuperclass())) {
-            try {
-                //noinspection unchecked
-                s = getValues(s, (Class<T>) o.getClass(), o);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return s;
-    }
-
+    /**
+     * The method generate the DML insert query for a table meant for the
+     * appropriate object and store this query to the SQLCommand container.
+     *
+     * @param o the appropriate object
+     * @param <T> the type of the appropriate object
+     * @return the appropriate object
+     */
     private <T extends DataSet> SQLCommand insertObjectToTable(T o) {
 
         String tableName = classGetNameToTableName(o.getClass());
         SQLCommand result = new SQLCommand("INSERT INTO ",  tableName);
 
         result.concat(" VALUES").openParenthesis();
-        result = getValuesObject(result, o);
+        //noinspection unchecked
+        result = getValues(result, (Class<T>) o.getClass(), o);
         result.closeParenthesis();
 
         return result;
     }
 
+    /**
+     * The method create the list and collects to this list  SQLCommand
+     * containers with DML insert queries for the object of the DataSet
+     * subclass types and all aggregated objects of DataSet subclasses.
+     *
+     * @param o the object of the DataSet subclass
+     * @param <T> the type of the object of the DataSet subclass
+     * @return the list of DML insert commands
+     */
     public <T extends DataSet> List<String> insertObjectsToTables(T o) {
         result = new ArrayList<>();
         result.add(insertObjectToTable(o));
@@ -427,6 +431,18 @@ public class Adapters implements TypeNames, FieldMethods {
         }
     }
 
+    /**
+     * The method fills the object. The stored column filling the correspond
+     * field in the object.
+     *
+     * @param object the object
+     * @param field the correspond field
+     * @param rs the ResultSet from the select query
+     * @param <T> the type of the object
+     * @return the filled object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     private <T> T setField(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
@@ -477,7 +493,17 @@ public class Adapters implements TypeNames, FieldMethods {
         throw new NoImplementationException();
     }
 
-    <T> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
+    /**
+     * The method create the object. The method iterates by fields from the
+     * type contained in TypeToken class and get for each filed  the value.
+     *
+     * @param rs the ResultSet from the select query
+     * @param tt the TypeToken object
+     * @param id the id of the stored object
+     * @param <T> the type of the object
+     * @return the completely created object
+     */
+    public  <T> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
         //noinspection unchecked
         T result = (T) newInstance(tt.getRawType(), id);
 

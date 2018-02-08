@@ -19,11 +19,12 @@ interface Clean extends AutoCloseable {
 // ATTENTION! THIS TEST WILL DROP ALL THE TABLES WITH PREFIX 'ru_otus_l091'
 // IN THE SCHEMA PUBLIC AT USER name!!!
 class DBClean implements Clean {
-    private final String name = DBConf.userSchemaName;
     private final Connection connection;
 
     protected DBClean() {
-        connection = ConnectionHelper.getConnection(name, name);
+        connection = ConnectionHelper.getConnection(
+            DBConf.userName, DBConf.dbName
+        );
     }
 
     private void execSimpleSQL(String update) throws SQLException {
@@ -55,14 +56,14 @@ class DBClean implements Clean {
     }
 }
 
-public class DBServiceLogTest {
+public class DBServiceTransactionalTest {
     private DBClean dbClean;
     private DBService dbService;
 
     @Before
     public void setUp() throws Exception {
         dbClean = new DBClean();
-        dbService = new DBServiceLog();
+        dbService = new DBServiceTransactional();
     }
 
     @After
@@ -79,7 +80,7 @@ public class DBServiceLogTest {
     }
 
     @Test
-    public void test1() throws Exception {
+    public void testDataSetClass() throws Exception {
         reCreateTables();
         TestDataSetClass expectedTestDataSetClass = new TestDataSetClass(13);
         dbService.save(expectedTestDataSetClass);
@@ -88,14 +89,12 @@ public class DBServiceLogTest {
     }
 
     @Test
-    public void test2() throws Exception {
+    public void testComplexDataSetClass() throws Exception {
         reCreateTables();
         TestComplexDataSetClass expectedTestComplexDataSetClass = new TestComplexDataSetClass(13);
-        expectedTestComplexDataSetClass.setTest("bla");
+        expectedTestComplexDataSetClass.setTest("tezd");
         dbService.save(expectedTestComplexDataSetClass);
         TestComplexDataSetClass testComplexDataSetClass = dbService.load(13, TestComplexDataSetClass.class);
-        System.out.println("testComplexDataSetClass = " + testComplexDataSetClass);
-        System.out.println("expectedTestComplexDataSetClass = " + expectedTestComplexDataSetClass);
         Assert.assertEquals(expectedTestComplexDataSetClass, testComplexDataSetClass);
     }
 }

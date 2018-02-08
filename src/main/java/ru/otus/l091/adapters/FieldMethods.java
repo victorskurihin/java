@@ -33,12 +33,9 @@ public interface FieldMethods {
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
 
-        System.err.println("setFieldBoolean = " +  + rsmd.getColumnType(columnNumber));
-
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.BIT:
             case Types.BOOLEAN:
-            System.err.println("rs.get(" + field.getName() + ") = " + rs.getBoolean(columnNumber));
             field.setBoolean(object , rs.getBoolean(columnNumber));
             return object;
         }
@@ -63,14 +60,11 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldByte = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.TINYINT:
             case Types.SMALLINT:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getByte(columnNumber));
                 field.setByte(object, rs.getByte(columnNumber));
-                System.err.println("rs.set(" + field.getName() + ") = " + rs.getByte(columnNumber));
                 return object;
         }
 
@@ -94,14 +88,12 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldChar = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.CHAR:
             case Types.NCHAR:
             case Types.NVARCHAR:
             case Types.VARCHAR:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getString(columnNumber));
                 field.setChar(object , rs.getString(columnNumber).charAt(0));
                 return object;
         }
@@ -126,12 +118,10 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldShort = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.NUMERIC:
             case Types.SMALLINT:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getShort(columnNumber));
                 field.setShort(object, rs.getShort(columnNumber));
                 return object;
         }
@@ -156,12 +146,10 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldInt = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.INTEGER:
             case Types.NUMERIC:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getInt(columnNumber));
                 field.setInt(object, rs.getInt(columnNumber));
                 return object;
         }
@@ -186,12 +174,10 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldLong = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.BIGINT:
             case Types.NUMERIC:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getLong(columnNumber));
                 field.setLong(object, rs.getLong(columnNumber));
                 return object;
         }
@@ -216,12 +202,10 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldFloat = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.FLOAT:
             case Types.REAL:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getFloat(columnNumber));
                 field.setFloat(object, rs.getFloat(columnNumber));
                 return object;
         }
@@ -246,11 +230,9 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldDouble = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.DOUBLE:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getDouble(columnNumber));
                 field.setDouble(object, rs.getDouble(columnNumber));
                 return object;
         }
@@ -275,14 +257,12 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("setFieldString = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.CHAR:
             case Types.NCHAR:
             case Types.NVARCHAR:
             case Types.VARCHAR:
-                System.err.println("rs.get(" + field.getName() + ") = " + rs.getString(columnNumber));
                 field.set(object, rs.getString(columnNumber));
                 return object;
         }
@@ -305,7 +285,6 @@ public interface FieldMethods {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn("fk " + field.getName());
-        System.err.println("getFK = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.BIGINT:
