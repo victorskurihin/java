@@ -14,16 +14,17 @@ import java.util.List;
 import java.util.Set;
 
 public class AdaptersTest {
-    public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN";
-    public static final String F1_SMALLINT_DESC = "f1 SMALLINT";
-    public static final String F2_CHAR_DESC = "f2 CHAR(1)";
-    public static final String F3_SMALLINT_DESC = "f3 SMALLINT";
-    public static final String F4_INT_DESC = "f4 INTEGER";
-    public static final String F5_LONG_DESC = "f5 BIGINT";
-    public static final String F6_STRING_DESC = "f6 REAL";
+    public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN NOT NULL";
+    public static final String F1_SMALLINT_DESC = "f1 SMALLINT NOT NULL";
+    public static final String F2_CHAR_DESC = "f2 CHAR(1) NOT NULL";
+    public static final String F3_SMALLINT_DESC = "f3 SMALLINT NOT NULL";
+    public static final String F4_INT_DESC = "f4 INTEGER NOT NULL";
+    public static final String F5_LONG_DESC = "f5 BIGINT NOT NULL";
+    public static final String F6_STRING_DESC = "f6 REAL NOT NULL";
     public static final String CREATE_EXPECTED_CLAUSE = " ( id BIGSERIAL PRIMARY KEY, " +
-        "f0 BOOLEAN, f1 SMALLINT, f2 CHAR(1), f3 SMALLINT, f4 INTEGER, f5 BIGINT, " +
-        "f6 REAL, f7 DOUBLE PRECISION, f8 TEXT )";
+        "f0 BOOLEAN NOT NULL, f1 SMALLINT NOT NULL, f2 CHAR(1) NOT NULL, f3 SMALLINT NOT NULL, " +
+        "f4 INTEGER NOT NULL, f5 BIGINT NOT NULL, f6 REAL NOT NULL, f7 DOUBLE PRECISION NOT NULL, " +
+        "f8 TEXT NOT NULL )";
     public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE TestDataSetClass" +
                                CREATE_EXPECTED_CLAUSE;
     public static final String CREATE_TABLE_EXPECTED2 = "CREATE TABLE IF NOT EXISTS " +

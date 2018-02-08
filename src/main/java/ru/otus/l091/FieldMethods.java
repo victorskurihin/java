@@ -12,18 +12,25 @@ public interface FieldMethods {
         return DataSet.class.isAssignableFrom(c);
     }
 
-    default boolean isSubclassOfDataSetForeigenKey(Field field) {
-        return field.getName().substring(0,2).equals("fk ") &&
-               DataSet.class.isAssignableFrom(field.getType());
-    }
-
+    /**
+     * The method assigns to the object's field of the boolean from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldBoolean(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
 
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldBoolean = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.BIT:
@@ -36,31 +43,55 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the byte type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldByte(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldByte = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.TINYINT:
             case Types.SMALLINT:
                 System.err.println("rs.get(" + field.getName() + ") = " + rs.getByte(columnNumber));
                 field.setByte(object, rs.getByte(columnNumber));
+                System.err.println("rs.set(" + field.getName() + ") = " + rs.getByte(columnNumber));
                 return object;
         }
 
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the char type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldChar(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("Types.CHAR = " + Types.CHAR);
-        System.err.println("char rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldChar = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.CHAR:
@@ -75,12 +106,24 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the short type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldShort(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldShort = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.NUMERIC:
@@ -93,12 +136,24 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the int type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldInt(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldInt = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.INTEGER:
@@ -111,12 +166,24 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the long type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldLong(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldLong = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.BIGINT:
@@ -129,12 +196,24 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the float type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldFloat(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldFloat = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.FLOAT:
@@ -147,12 +226,24 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the double type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldDouble(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldDouble = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.DOUBLE:
@@ -164,12 +255,24 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method assigns to the object's field of the String type from
+     * the designated column SQL.
+     *
+     * @param object the object where located the appropriate field
+     * @param field the appropriate field
+     * @param rs the result set from sql query
+     * @param <T> the generic type of the goal object
+     * @return the charged object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default <T> T setFieldString(T object, Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn(field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("setFieldString = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.CHAR:
@@ -184,12 +287,22 @@ public interface FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method get the value of the primary key (id) of object containing
+     * in the field.
+     *
+     * @param field
+     * @param rs the result set from sql query
+     * @return the id of the object
+     * @throws IllegalAccessException
+     * @throws SQLException
+     */
     default long getFK(Field field, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnNumber = rs.findColumn("fk " + field.getName());
-        System.err.println("rsmd = " + rsmd.getColumnType(columnNumber));
+        System.err.println("getFK = " +  + rsmd.getColumnType(columnNumber));
 
         switch (rsmd.getColumnType(columnNumber)) {
             case Types.BIGINT:

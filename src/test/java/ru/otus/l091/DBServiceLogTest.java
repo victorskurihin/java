@@ -19,7 +19,7 @@ interface Clean extends AutoCloseable {
 // ATTENTION! THIS TEST WILL DROP ALL THE TABLES WITH PREFIX 'ru_otus_l091'
 // IN THE SCHEMA PUBLIC AT USER name!!!
 class DBClean implements Clean {
-    private final String name = "vnsk";
+    private final String name = DBConf.userSchemaName;
     private final Connection connection;
 
     protected DBClean() {
@@ -96,6 +96,6 @@ public class DBServiceLogTest {
         TestComplexDataSetClass testComplexDataSetClass = dbService.load(13, TestComplexDataSetClass.class);
         System.out.println("testComplexDataSetClass = " + testComplexDataSetClass);
         System.out.println("expectedTestComplexDataSetClass = " + expectedTestComplexDataSetClass);
-//        Assert.assertEquals(expectedTestComplexDataSetClass, testComplexDataSetClass);
+        Assert.assertEquals(expectedTestComplexDataSetClass, testComplexDataSetClass);
     }
 }

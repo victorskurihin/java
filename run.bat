@@ -19,7 +19,7 @@ set CP=%CP%;target\reflections-0.9.11.jar
 set CP=%CP%;postgresql-9.1-901-1.jdbc4.jar
 set MEMORY=-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m
 set GC_LOG=-verbose:gc
-set GC_LOG=%GC_LOG% -Xloggc:01_Single_Default\logs\gc_pid_%p.log
+set GC_LOG=%GC_LOG% -Xloggc:%LOGDIR%\gc_pid_%p.log
 set GC_LOG=%GC_LOG% -XX:+PrintGCDateStamps
 set GC_LOG=%GC_LOG% -XX:+PrintGCDetails
 set GC_LOG=%GC_LOG% -XX:+UseGCLogFileRotation

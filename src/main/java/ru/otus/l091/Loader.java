@@ -2,11 +2,15 @@ package ru.otus.l091;
 
 import java.sql.Connection;
 
+/**
+ * The executor as a design pattern.
+ * The class load the object from the designated table and return this object.
+ */
 public class Loader {
     private static final String SELECT = "SELECT * FROM %s WHERE id=%s";
     private Connection connection;
 
-    private String classGetNameToTableName(Class <? extends DataSet> c) {
+    static String classGetNameToTableName(Class <? extends DataSet> c) {
         return c.getName().replace('.','_');
     }
 

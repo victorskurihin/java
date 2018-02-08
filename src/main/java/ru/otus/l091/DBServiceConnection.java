@@ -3,14 +3,15 @@ package ru.otus.l091;
 import java.sql.Connection;
 
 public abstract class DBServiceConnection implements DBService {
-    private final String name = "vnsk";
+    private final String name = DBConf.userSchemaName;
     private final Connection connection;
 
     protected DBServiceConnection() {
         connection = ConnectionHelper.getConnection(name, name);
     }
 
-    protected Connection getConnection() {
+    @Override
+    public Connection getConnection() {
         return connection;
     }
 

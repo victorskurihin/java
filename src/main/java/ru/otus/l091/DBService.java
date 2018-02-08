@@ -1,6 +1,9 @@
 package ru.otus.l091;
 
+import java.sql.Connection;
+
 public interface DBService extends AutoCloseable {
+    Connection getConnection();
     public <T extends DataSet> void createTables(Class<T> clazz);
     public <T extends DataSet> void save(T user);
     public <T extends DataSet> T load(long id, Class<T> clazz);

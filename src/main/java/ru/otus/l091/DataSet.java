@@ -1,7 +1,10 @@
 package ru.otus.l091;
 
+/**
+ * Base Data Set class.
+ */
 public abstract class DataSet {
-    private final long id;
+    private final long id; // Primary key field.
 
     public long getId() {
         return id;

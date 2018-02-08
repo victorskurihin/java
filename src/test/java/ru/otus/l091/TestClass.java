@@ -81,7 +81,7 @@ class TestComplexDataSetClass extends DataSet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TestComplexDataSetClass that = (TestComplexDataSetClass) o;
-        return super.equals(that);
+        return test.equals(that.test);
     }
 
     @Override

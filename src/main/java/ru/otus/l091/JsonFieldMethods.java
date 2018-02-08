@@ -4,6 +4,35 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import java.lang.reflect.Field;
 
+/*
+    setFieldBoolean = -7 => java.sql.Types.BIT
+    rs.get(f0) = true
+
+    setFieldByte = 5     => java.sql.Types.SMALLINT
+    rs.get(f1) = 1
+
+    setFieldChar = 1     => java.sql.Types.CHAR
+    rs.get(f2) = f
+
+    setFieldShort = 5    => java.sql.Types.SMALLINT
+    rs.get(f3) = 3
+
+    setFieldInt = 4      => java.sql.Types.INTEGER
+    rs.get(f4) = 4
+
+    setFieldLong = -5    => java.sql.Types.BIGINT
+    rs.get(f5) = 5
+
+    setFieldFloat = 7    => java.sql.Types.REAL
+    rs.get(f6) = 6.6
+
+    setFieldDouble = 8   => java.sql.Types.DOUBLE
+    rs.get(f7) = 7.7
+
+    setFieldString = 12  => java.sql.Types.VARCHAR
+    rs.get(f8) = f8
+*/
+
 public interface JsonFieldMethods {
 
     default JsonValue.ValueType getValueType(Field f, JsonObject jo) {

@@ -6,11 +6,17 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This is the helper class used to contained the SQL command structure and
+ * contains additional information such as primary key of the object, table
+ * name for the object.
+ */
 class SQLCommand {
     private final String tableName;
     private long id;
@@ -62,6 +68,9 @@ class SQLCommand {
     }
 }
 
+/**
+ * The adapter as a design pattern.
+ */
 public class Adapters implements TypeNames, FieldMethods {
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
     public static final String CREATE_TABLE_RELATIONSHIP = "CREATE TABLE " +
@@ -81,35 +90,56 @@ public class Adapters implements TypeNames, FieldMethods {
         adapters = map;
     }
 
+    /**
+     * The helper method for prepare name of the table for storing the object
+     * of class.
+     *
+     * @param c
+     * @return
+     */
     String classGetNameToTableName(Class <? extends DataSet> c) {
         return c.getName().replace('.','_');
     }
 
+    /**
+     * Not implemented.
+     * @param field
+     * @return
+     */
     private String getArrayDescription(Field field) {
         return null;
     }
 
+    /**
+     * The method generates the column description for DDL operation
+     * by the field type. This method recursively calls method
+     * 'createTableForClass' for objects by subclasses of the DataSet
+     * class.
+     *
+     * @param field the field
+     * @return the String representation of the column description
+     */
     private String getColumnDescription(Field field) {
         if (null == field) { return null; }
 
         switch (field.getType().getName()) {
             case BOOLEAN:
-                return field.getName() + " BOOLEAN";
+                return field.getName() + " BOOLEAN NOT NULL";
             case BYTE:
             case SHORT:
-                return field.getName() + " SMALLINT";
+                return field.getName() + " SMALLINT NOT NULL";
             case CHAR:
-                return field.getName() + " CHAR(1)";
+                return field.getName() + " CHAR(1) NOT NULL";
             case INT:
-                return field.getName() + " INTEGER";
+                return field.getName() + " INTEGER NOT NULL";
             case LONG:
-                return field.getName() + " BIGINT";
+                return field.getName() + " BIGINT NOT NULL";
             case FLOAT:
-                return field.getName() + " REAL";
+                return field.getName() + " REAL NOT NULL";
             case DOUBLE:
-                return field.getName() + " DOUBLE PRECISION";
+                return field.getName() + " DOUBLE PRECISION NOT NULL";
             case JAVA_LANG_STRING:
-                return field.getName() + " TEXT";
+                return field.getName() + " TEXT NOT NULL";
         }
 
         if (field.getType().isArray()) {
@@ -122,6 +152,7 @@ public class Adapters implements TypeNames, FieldMethods {
                 createTableForClass( (Class<? extends DataSet>) field.getType())
             );
             result.add(new SQLCommand(CREATE_TABLE_RELATIONSHIP));
+
             return "\"fk " + field.getName() + '"' + " BIGINT";
         }
 
@@ -130,6 +161,15 @@ public class Adapters implements TypeNames, FieldMethods {
 
     private String separator = ", ";
 
+    /**
+     * The method iterates by fields from the appropriate class and get for each
+     * filed  the DDL  description. This  information  will be collected in the
+     * SQLCommand container.
+     *
+     * @param sql the instantiated SQLCommand container
+     * @param c the appropriate class
+     * @return the SQLCommand container
+     */
     private SQLCommand getColumns(SQLCommand sql, Class <? extends DataSet> c) {
 
         if (DataSet.class == c) {
@@ -155,8 +195,11 @@ public class Adapters implements TypeNames, FieldMethods {
                     //noinspection ResultOfMethodCallIgnored
                     sql = sql.concat(separator).concat(columnDesc);
                 }
+            } catch (IllegalAccessException e) {
+                new RuntimeException(e);
             } catch (Throwable e) {
-                throw e;
+                e.printStackTrace();
+                new RuntimeException(e);
             } finally {
                 field.setAccessible(accessible);
             }
@@ -165,6 +208,13 @@ public class Adapters implements TypeNames, FieldMethods {
         return sql;
     }
 
+    /**
+     * The method generate  the DDL create query  for a table meant for
+     * the appropriate class and store this to the SQLCommand container.
+     *
+     * @param c the appropriate class
+     * @return the SQLCommand contains the DDL create query
+     */
     private SQLCommand createTableForClass(Class <? extends DataSet> c) {
 
         String tableName = classGetNameToTableName(c);
@@ -177,6 +227,14 @@ public class Adapters implements TypeNames, FieldMethods {
         return result;
     }
 
+    /**
+     * The method create the list and collects to this list SQLCommand
+     * containers with DDL create queries for all the DataSet subclass
+     * and all aggregated subclasses of the DataSet class.
+     *
+     * @param c the DataSet subclass
+     * @return the list of DDL queries
+     */
     public List<String> createTablesForClass(Class <? extends DataSet> c) {
         result = new ArrayList<>();
         result.add(createTableForClass(c));
@@ -186,6 +244,16 @@ public class Adapters implements TypeNames, FieldMethods {
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
     }
 
+    /**
+     * The method generates the column value for DML operation by the field
+     * value.
+     *
+     * @param field the field
+     * @param o the object contained the field
+     * @param <T> the type of the object
+     * @return the String representation of the column value
+     * @throws IllegalAccessException
+     */
     private <T extends DataSet> String getValue(Field field, T o)
         throws IllegalAccessException {
 
@@ -219,6 +287,17 @@ public class Adapters implements TypeNames, FieldMethods {
         throw new NoImplementationException();
     }
 
+    /**
+     * The method generates the column value for DML operation by the field
+     * of the subclass by the DataSet class.
+     *
+     * @param field the field of the subclass by the DataSet class
+     * @param o the object with type of the subclass by the DataSet class
+     * @param s the instantiated SQLCommand container
+     * @param <T> the type of the subclass by the DataSet class of the object
+     * @return
+     * @throws IllegalAccessException
+     */
     private
     <T extends DataSet> String getDataSetValue(Field field, T o, SQLCommand s)
         throws IllegalAccessException {
@@ -240,6 +319,18 @@ public class Adapters implements TypeNames, FieldMethods {
         return null;
     }
 
+    /**
+     * The method iterates by fields from the appropriate object and get for
+     * each  filed  the DML value. This information will be collected in the
+     * SQLCommand container.
+     *
+     * @param s the instantiated SQLCommand container
+     * @param c the class of the appropriate object
+     * @param o the appropriate object
+     * @param <T> the type of the object
+     * @return
+     * @throws IllegalAccessException
+     */
     private
     <T extends DataSet> SQLCommand getValues(SQLCommand s, Class<? super T> c, T o)
         throws IllegalAccessException {
@@ -271,8 +362,11 @@ public class Adapters implements TypeNames, FieldMethods {
                     //noinspection ResultOfMethodCallIgnored
                     s = s.concat(separator).concat(value);
                 }
+            } catch (IllegalAccessException e) {
+                new RuntimeException(e);
             } catch (Throwable e) {
-                throw e;
+                e.printStackTrace();
+                new RuntimeException(e);
             } finally {
                 field.setAccessible(accessible);
             }
@@ -282,7 +376,8 @@ public class Adapters implements TypeNames, FieldMethods {
     }
 
     private <T extends DataSet> SQLCommand getValuesObject(SQLCommand s, T o) {
-        if (DataSet.class.isAssignableFrom(o.getClass().getSuperclass())) {
+        // DataSet.class.isAssignableFrom(o.getClass().getSuperclass())
+        if (isSubclassOfDataSet(o.getClass().getSuperclass())) {
             try {
                 //noinspection unchecked
                 s = getValues(s, (Class<T>) o.getClass(), o);
@@ -336,7 +431,6 @@ public class Adapters implements TypeNames, FieldMethods {
 
         switch (field.getType().getTypeName()) {
             case BOOLEAN:
-                System.out.println("boolean");
                 return setFieldBoolean(object, field, rs);
             case BYTE:
                 return setFieldByte(object, field, rs);
@@ -359,7 +453,10 @@ public class Adapters implements TypeNames, FieldMethods {
         int column = rs.findColumn("fk " + field.getName());
         if (isSubclassOfDataSet(field.getType()) && column > 0) {
             long id = getFK(field, rs);
-            System.out.println("Ok " + id);
+
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnNumber = rs.findColumn("fk " + field.getName());
+
             //noinspection unchecked
             Class<? extends DataSet> c = (Class<? extends DataSet>) field.getType();
             Loader loader = new Loader(connection);
@@ -372,6 +469,8 @@ public class Adapters implements TypeNames, FieldMethods {
                 }
             );
             field.set(object, value);
+
+            return object;
         }
 
         throw new NoImplementationException();
@@ -382,11 +481,15 @@ public class Adapters implements TypeNames, FieldMethods {
         T result = (T) newInstance(tt.getRawType(), id);
 
         for (Field field : tt.getRawType().getDeclaredFields()) {
-            System.out.println("field.getName() = " + field.getName());
             boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+
             try {
                 result = setField(result, field, rs);
-            } catch (Exception e) {
+            } catch (IllegalAccessException | SQLException e) {
+                new RuntimeException(e);
+            } catch (Throwable e) {
+                e.printStackTrace();
                 new RuntimeException(e);
             } finally {
                 field.setAccessible(accessible);
