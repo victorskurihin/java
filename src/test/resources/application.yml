@@ -28,3 +28,4 @@ spring.mvc.view:
 
 spring.output.ansi:
       enabled: detect
+

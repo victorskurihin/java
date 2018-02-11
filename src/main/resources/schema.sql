@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS City (
-  id SERIAL PRIMARY KEY ,
-  name VARCHAR,
-  state VARCHAR,
-  country VARCHAR
-);
