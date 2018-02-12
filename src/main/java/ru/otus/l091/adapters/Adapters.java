@@ -486,8 +486,10 @@ public class Adapters implements TypeNames, FieldMethods {
     }
 
     /**
-     * The method create the object. The method iterates by fields from the
-     * type contained in TypeToken class and get for each filed  the value.
+     * The method  create  the object. The method  iterates by  fields from the
+     * type  contained in  TypeToken class  and get  for each filed  the value.
+     * If  type  of Class  contains  filed's type is  a particular  subclass of
+     * DataSet, the loader with createObject call recursively.
      *
      * @param rs the ResultSet from the select query
      * @param tt the TypeToken object

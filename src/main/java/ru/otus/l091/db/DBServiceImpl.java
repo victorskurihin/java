@@ -35,8 +35,9 @@ public class DBServiceImpl implements DBService {
     }
 
     /**
+     * The getter for connection.
      *
-     * @return
+     * @return the connection
      */
     @Override
     public Connection getConnection() {
@@ -44,8 +45,9 @@ public class DBServiceImpl implements DBService {
     }
 
     /**
+     * The DBService interface is an AutoCloseable.
      *
-     * @throws Exception
+     * @throws Exception inasmuch as AutoCloseable
      */
     @Override
     public void close() throws Exception {
@@ -54,12 +56,12 @@ public class DBServiceImpl implements DBService {
     }
 
     /**
+     * The helper method is transactional executing procedure for list of SQL
+     * queries.
      *
-     * @param list
-     * @param <T>
+     * @param list the list of SQL queries
      */
-    protected
-    <T extends DataSet> void execQueries(List<String> list) {
+    protected void execQueries(List<String> list) {
         Executor exec = new Executor(getConnection());
 
         try {
@@ -94,9 +96,14 @@ public class DBServiceImpl implements DBService {
     }
 
     /**
+     * This method implements  the DBService interface contract. In first step,
+     * call  the default adapter  for  the clazz of type T  and get list of DDL
+     * queries, after that execute this list in the RDBMS via JDBC API.
+     * In other words this method prepare the tables in DB for store objects of
+     * Class type.
      *
-     * @param clazz
-     * @param <T>
+     * @param clazz the Class
+     * @param <T> the type of Class is a subclass of DataSet
      */
     @Override
     public <T extends DataSet> void createTables(Class<T> clazz) {
@@ -104,9 +111,14 @@ public class DBServiceImpl implements DBService {
     }
 
     /**
+     * This method implements  the DBService interface contract. In first step,
+     * calls  the default  adapter for  the user's object  and get  list of DML
+     * queries after that execute this list in the RDBMS via JDBC API.
+     * In other words this method save contents from the object user to
+     * the tables in DB.
      *
-     * @param user
-     * @param <T>
+     * @param user the object
+     * @param <T> the type of user is a subclass of DataSet
      */
     @Override
     public <T extends DataSet> void save(T user) {
@@ -115,13 +127,15 @@ public class DBServiceImpl implements DBService {
 
     /**
      * This method implements  the DBService interface contract. In first step,
-     * loads contents  from  the appropriate DB table, second  step  in lambda,
-     * create the object and next iterates by fields and filleng of this object.
+     * loads contents from  a tuple in  the appropriate DB table, second step in
+     * lambda, create the object and next iterates by fields and filling of this
+     * object. If type of Class contains  filed's type is  a particular subclass
+     * of DataSet, the loader with createObject call recursively.
      *
-     * @param id the primary key of object contents
-     * @param clazz
-     * @param <T>
-     * @return
+     * @param id the primary key of object tuple in the appropriate DB table
+     * @param clazz the Class
+     * @param <T> the type of Class
+     * @return the object with type is a subclass of DataSet
      */
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
