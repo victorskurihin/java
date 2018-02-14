@@ -3,18 +3,21 @@ package ru.otus.l101.db;
 import com.google.common.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.l101.adapters.Adapter;
-import ru.otus.l101.adapters.DefaultAdapter;
+import ru.otus.l101.dao.Adapter;
+import ru.otus.l101.dao.DataSetMyDAO;
+import ru.otus.l101.dao.TypeNames;
 import ru.otus.l101.dataset.DataSet;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DBServiceImpl implements DBService {
-    public static final String DEFAULT = "__DEFAULT__";
+public class DBServiceMyImpl implements DBService {
+    private static final String DEFAULT = TypeNames.DEFAULT;
 
     private Map<String, Adapter> adapters = new HashMap<>();
     private final Connection connection = ConnectionHelper.getConnection(
@@ -22,15 +25,40 @@ public class DBServiceImpl implements DBService {
     );
     private final Logger logger = LogManager.getLogger(getClass());
     private final Adapter[] predefinedAdapters = {
-        new DefaultAdapter(getConnection())
+        new DataSetMyDAO(getConnection())
     };
 
     /**
      * Default constructor.
      */
-    public DBServiceImpl() {
-        for (Adapter a : predefinedAdapters) {
-            adapters.put(a.getAdapteeOfType(), a);
+    public DBServiceMyImpl() {
+        for (Adapter adapter : predefinedAdapters) {
+            addAdapter(adapter);
+        }
+    }
+
+    @SafeVarargs
+    public <T extends Adapter> DBServiceMyImpl(Class<T> ... classes) {
+        this();
+//        for (Adapter adapter : predefinedAdapters) {
+//            addAdapter(adapter);
+//        }
+        for (Class<?> c : classes) {
+            try {
+                Adapter adapter = (Adapter) c
+                    .getDeclaredConstructor(Connection.class)
+                    .newInstance(connection);
+                addAdapter(adapter);
+
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                logger.error(e);
+                throw new RuntimeException(e);
+
+            } catch (NoSuchMethodException | InvocationTargetException e) {
+                logger.error(e);
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -42,6 +70,11 @@ public class DBServiceImpl implements DBService {
     @Override
     public Connection getConnection() {
         return connection;
+    }
+
+    public void addAdapter(Adapter adapter) {
+        adapters.put(adapter.getAdapteeOfType(), adapter);
+        adapter.setAdapters(adapters);
     }
 
     /**
@@ -107,7 +140,11 @@ public class DBServiceImpl implements DBService {
      */
     @Override
     public <T extends DataSet> void createTables(Class<T> clazz) {
-        execQueries(adapters.get(DEFAULT).create(clazz));
+        Adapter adapter = adapters.getOrDefault(
+            clazz.getName(), adapters.get(DEFAULT)
+        );
+
+        execQueries(adapter.create(clazz));
     }
 
     /**
@@ -122,7 +159,11 @@ public class DBServiceImpl implements DBService {
      */
     @Override
     public <T extends DataSet> void save(T user) {
-        execQueries(adapters.get(DEFAULT).write(user));
+        Adapter adapter = adapters.getOrDefault(
+            user.getClass().getName(), adapters.get(DEFAULT)
+        );
+
+        execQueries(adapter.write(user));
     }
 
     /**
@@ -140,16 +181,33 @@ public class DBServiceImpl implements DBService {
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
         Loader loader = new Loader(getConnection());
+        Adapter adapter = adapters.getOrDefault(
+            clazz.getName(), adapters.get(DEFAULT)
+        );
 
         return loader.load(
             id, clazz, resultSet -> {
                 if (resultSet.next()) {
-                    return adapters.get(DEFAULT)
-                        .read(resultSet, TypeToken.of(clazz), id);
+                    return adapter.read(resultSet, TypeToken.of(clazz), id);
                 } else
                     throw new RuntimeException("SQL Error!!!");
             }
         );
+    }
+
+    @Override
+    public <T extends DataSet> List<T> readAll() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void shutdown() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            logger.error(e);
+            throw new RuntimeException(e);
+        }
     }
 }
 

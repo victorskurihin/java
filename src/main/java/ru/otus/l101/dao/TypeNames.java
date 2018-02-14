@@ -1,6 +1,7 @@
-package ru.otus.l101.adapters;
+package ru.otus.l101.dao;
 
 public interface TypeNames {
+    public static final String DEFAULT = "__DEFAULT__";
     public static final String JAVA_LANG_BOOLEAN = "java.lang.Boolean";
     public static final String JAVA_LANG_CHARACTER = "java.lang.Character";
     public static final String JAVA_LANG_BYTE = "java.lang.Byte";

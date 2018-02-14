@@ -1,4 +1,4 @@
-package ru.otus.l101.adapters;
+package ru.otus.l101.dao;
 
 import com.google.common.reflect.TypeToken;
 import ru.otus.l101.NoImplementationException;
@@ -11,7 +11,10 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This is helper class used to contained the SQL command structure and contains
@@ -81,9 +84,14 @@ public class Adapters implements TypeNames, FieldMethods {
 
     private List<SQLCommand> result;
     private Connection connection;
+    private Map<String, Adapter> adapters = new HashMap<>();
 
     Adapters(Connection connection) {
         this.connection = connection;
+    }
+
+    public void setAdapters(Map<String, Adapter> adapters) {
+        this.adapters = adapters;
     }
 
     /**
@@ -143,10 +151,22 @@ public class Adapters implements TypeNames, FieldMethods {
         }
 
         if (DataSet.class.isAssignableFrom(field.getType())) {
-            //noinspection unchecked
-            result.add(
-                createTableForClass( (Class<? extends DataSet>) field.getType())
+
+
+            Adapter adapter = adapters.getOrDefault(
+                field.getType().getName(), adapters.get(DEFAULT)
             );
+
+            List<SQLCommand> sqlCommands = adapter
+                .create((Class<? extends DataSet>) field.getType())
+                .stream().map(SQLCommand::new)
+                .collect(Collectors.toList());
+            result.addAll(sqlCommands);
+
+//            //noinspection unchecked
+//            result.add(
+//                createTableForClass( (Class<? extends DataSet>) field.getType())
+//            );
             result.add(new SQLCommand(CREATE_TABLE_RELATIONSHIP));
 
             return "\"fk " + field.getName() + '"' + " BIGINT";
@@ -299,16 +319,17 @@ public class Adapters implements TypeNames, FieldMethods {
         // DataSet.class.isAssignableFrom(field.getType())
         if (isSubclassOfDataSet(field.getType())) {
             //noinspection unchecked
-            SQLCommand sql = insertObjectToTable((T) field.get(o));
-            result.add(sql);
-            // add relationship
-            SQLCommand sqlRelation = new SQLCommand(String.format(
-                "INSERT INTO relationship VALUES ('%s', %d, '%s', '%s', %d)",
-                s.getTableName(), s.getId(), field.getName(),
-                sql.getTableName(), sql.getId()
-            ));
-            result.add(sqlRelation);
-            return Long.toString(sql.getId());
+
+            DataSet objectInField = (DataSet) field.get(o);
+            Adapter adapter = adapters.getOrDefault(
+                objectInField.getClass().getName(), adapters.get(DEFAULT)
+            );
+
+            List<SQLCommand> sqlCommands = adapter.write(objectInField)
+                .stream().map(SQLCommand::new)
+                .collect(Collectors.toList());
+            result.addAll(sqlCommands);
+            return Long.toString(objectInField.getId());
         }
         return null;
     }
@@ -401,8 +422,7 @@ public class Adapters implements TypeNames, FieldMethods {
      */
     public <T extends DataSet> List<String> insertObjectsToTables(T o) {
         result = new ArrayList<>();
-        result.add(insertObjectToTable(o));
-
+        result.add(insertObjectToTable(o) );
         return result.stream()
             .map(SQLCommand::getSql)
             .collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
@@ -468,11 +488,15 @@ public class Adapters implements TypeNames, FieldMethods {
 
             //noinspection unchecked
             Class<? extends DataSet> c = (Class<? extends DataSet>) field.getType();
+            Adapter adapter = adapters.getOrDefault(
+                c.getName(), adapters.get(DEFAULT)
+            );
+
             Loader loader = new Loader(connection);
             Object value = loader.load(
                 id, c, resultSet -> {
                     if (resultSet.next()) {
-                        return createObject(resultSet, TypeToken.of(c), id);
+                        return adapter.read(resultSet, TypeToken.of(c), id);
                     } else
                         throw new RuntimeException("SQL Error!!!");
                 }

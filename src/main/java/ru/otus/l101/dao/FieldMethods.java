@@ -1,4 +1,4 @@
-package ru.otus.l101.adapters;
+package ru.otus.l101.dao;
 
 import ru.otus.l101.NoImplementationException;
 import ru.otus.l101.dataset.DataSet;

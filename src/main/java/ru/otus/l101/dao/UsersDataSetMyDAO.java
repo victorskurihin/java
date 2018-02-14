@@ -1,7 +1,8 @@
-package ru.otus.l101.adapters;
+package ru.otus.l101.dao;
 
 import com.google.common.reflect.TypeToken;
 import ru.otus.l101.dataset.DataSet;
+import ru.otus.l101.dataset.UsersDataSet;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,10 +11,10 @@ import java.util.List;
 /**
  * By default this class save application classes to DB.
  */
-public class DefaultAdapter extends Adapters implements Adapter {
-    private final String ADAPTEE_TYPE = "__DEFAULT__";
+public class UsersDataSetMyDAO extends Adapters implements Adapter {
+    private final String ADAPTEE_TYPE = UsersDataSet.class.getName();
 
-    public DefaultAdapter(Connection connection) {
+    public UsersDataSetMyDAO(Connection connection) {
         super(connection);
     }
 
