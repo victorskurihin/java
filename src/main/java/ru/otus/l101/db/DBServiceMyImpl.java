@@ -7,11 +7,11 @@ import ru.otus.l101.dao.Adapter;
 import ru.otus.l101.dao.DataSetMyDAO;
 import ru.otus.l101.dao.TypeNames;
 import ru.otus.l101.dataset.DataSet;
+import ru.otus.l101.dataset.UserDataSet;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +38,8 @@ public class DBServiceMyImpl implements DBService {
     }
 
     @SafeVarargs
-    public <T extends Adapter> DBServiceMyImpl(Class<T> ... classes) {
+    public DBServiceMyImpl(Class<?>... classes) {
         this();
-//        for (Adapter adapter : predefinedAdapters) {
-//            addAdapter(adapter);
-//        }
         for (Class<?> c : classes) {
             try {
                 Adapter adapter = (Adapter) c
@@ -60,6 +57,11 @@ public class DBServiceMyImpl implements DBService {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public String getLocalStatus() {
+        return "Not implemented!";
     }
 
     /**
@@ -196,8 +198,13 @@ public class DBServiceMyImpl implements DBService {
     }
 
     @Override
-    public <T extends DataSet> List<T> readAll() {
-        return new ArrayList<>();
+    public UserDataSet loadByName(String name) {
+        return null; // TODO
+    }
+
+    @Override
+    public List<UserDataSet> loadAll() {
+        return null; // TODO
     }
 
     @Override

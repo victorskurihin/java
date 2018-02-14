@@ -1,9 +1,14 @@
 package ru.otus.l101.dataset;
 
+import javax.persistence.*;
+
 /**
  * Base Data Set class.
  */
+@MappedSuperclass
 public abstract class DataSet {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final long id; // Primary key field.
 
     public long getId() {
