@@ -7,13 +7,12 @@ import ru.otus.l101.db.Loader;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -114,6 +113,34 @@ public class Adapters implements TypeNames, FieldMethods {
         return null;
     }
 
+
+    /**
+     * TODO experimental
+     * @param tt the type token of the collection
+     * @return the type token the element from the collection
+     */
+    private TypeToken<?> getTTOfFirstParameterAddMethod(TypeToken<?> tt) {
+        Method[] methods = Collection.class.getMethods();
+        Optional<Method> optionalMethod = Optional.empty();
+
+        for (Method m : methods) {
+            if (m.getName().equals("add")) {
+                if (1 == m.getParameterCount()) {
+                    optionalMethod = Optional.of(m);
+                    break;
+                }
+            }
+        }
+
+        if (! optionalMethod.isPresent()) {
+            throw new NoImplementationException();
+        }
+
+        return tt.resolveType(
+            optionalMethod.get().getGenericParameterTypes()[0]
+        );
+    }
+
     /**
      * The method generates the column description for DDL operation
      * by the field type. This method recursively calls method
@@ -151,8 +178,6 @@ public class Adapters implements TypeNames, FieldMethods {
         }
 
         if (DataSet.class.isAssignableFrom(field.getType())) {
-
-
             Adapter adapter = adapters.getOrDefault(
                 field.getType().getName(), adapters.get(DEFAULT)
             );
@@ -162,11 +187,6 @@ public class Adapters implements TypeNames, FieldMethods {
                 .stream().map(SQLCommand::new)
                 .collect(Collectors.toList());
             result.addAll(sqlCommands);
-
-//            //noinspection unchecked
-//            result.add(
-//                createTableForClass( (Class<? extends DataSet>) field.getType())
-//            );
             result.add(new SQLCommand(CREATE_TABLE_RELATIONSHIP));
 
             return "\"fk " + field.getName() + '"' + " BIGINT";
@@ -205,7 +225,17 @@ public class Adapters implements TypeNames, FieldMethods {
             field.setAccessible(true);
 
             try {
-                String columnDesc = getColumnDescription(field);
+                String columnDesc = null;
+
+                if (Collection.class.isAssignableFrom(field.getType())) {
+                    // Type t = c.getDeclaredField("fList").getGenericType();
+                    Type t = field.getGenericType();
+                    TypeToken<?> p = getTTOfFirstParameterAddMethod(TypeToken.of(t));
+                    System.err.println("p = " + p);
+                    // TODO
+                } else {
+                    columnDesc = getColumnDescription(field);
+                }
 
                 if (null != columnDesc) {
                     //noinspection ResultOfMethodCallIgnored
@@ -233,6 +263,7 @@ public class Adapters implements TypeNames, FieldMethods {
 
         String tableName = classGetNameToTableName(c);
         SQLCommand result = new SQLCommand(CREATE_TABLE, tableName);
+        System.out.println("result = " + result.getSql());
 
         result.openParenthesis();
         result = getColumns(result, c);

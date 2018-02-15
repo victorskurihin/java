@@ -8,8 +8,6 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "phone_data_set")
 public class PhoneDataSet extends DataSet {
-    @Transient public final int PRIME = 524287;
-
     @Column(name = "number")
     private String number;
 
@@ -40,9 +38,7 @@ public class PhoneDataSet extends DataSet {
 
     @Override
     public int hashCode() {
-        return number.hashCode() + (int) (
-            PRIME * super.getId() % Integer.MAX_VALUE
-        );
+        return number.hashCode();
     }
 
     @Override
@@ -50,6 +46,6 @@ public class PhoneDataSet extends DataSet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhoneDataSet that = (PhoneDataSet) o;
-        return super.getId() == that.getId() && number.equals(that.number);
+        return number.equals(that.number);
     }
 }

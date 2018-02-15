@@ -11,6 +11,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This is conract for DAO classes with default the helper realization.
+ */
 public abstract class HibernateDAO {
     private final String DAO_TYPE = TypeNames.DEFAULT;
 
@@ -31,6 +34,12 @@ public abstract class HibernateDAO {
     public abstract <T extends DataSet> T readByName(String name);
     public abstract <T extends DataSet> List<T> readAll();
 
+    /**
+     * The helper method save a field of the object
+     * @param field a field of the type by subclass DataSet
+     * @param o the object contains the field.
+     * @param <T> the type of the object
+     */
     private <T extends DataSet> void saveField(Field field, T o) {
         boolean accessible = field.isAccessible();
         field.setAccessible(true);
