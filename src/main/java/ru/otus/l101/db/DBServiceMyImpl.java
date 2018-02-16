@@ -103,6 +103,7 @@ public class DBServiceMyImpl implements DBService {
             getConnection().setAutoCommit(false);
 
             for (String quety : list) {
+                System.out.println("quety = " + quety);
                 exec.execUpdate(quety);
             }
             getConnection().commit();

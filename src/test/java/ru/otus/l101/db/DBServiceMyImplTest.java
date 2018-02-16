@@ -5,8 +5,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import ru.otus.l101.dao.PhoneDataSetMyDAO;
+import ru.otus.l101.dao.TestDataSetClassMyDAO;
 import ru.otus.l101.dao.UserDataSetMyDAO;
 import ru.otus.l101.dataset.PhoneDataSet;
+import ru.otus.l101.dataset.TestDataSetClass;
 import ru.otus.l101.dataset.UserDataSet;
 
 import java.sql.Connection;
@@ -26,7 +28,7 @@ public class DBServiceMyImplTest {
             DBConf.dbName, DBConf.userName, DBConf.password
         );
         dbService = new DBServiceMyImpl(
-            UserDataSetMyDAO.class, PhoneDataSetMyDAO.class
+            UserDataSetMyDAO.class, PhoneDataSetMyDAO.class, TestDataSetClassMyDAO.class
         );
     }
 
@@ -69,9 +71,13 @@ public class DBServiceMyImplTest {
     }
 
     @Test
+    public void create() {
+        dbService.createTables(TestDataSetClass.class);
+    }
+
+    @Test
     public void testPhoneDataSet() throws Exception {
         reCreateTables();
-
     }
 
     @Test

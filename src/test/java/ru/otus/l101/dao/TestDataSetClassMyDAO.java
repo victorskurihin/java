@@ -5,9 +5,11 @@ import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.dataset.TestDataSetClass;
 import ru.otus.l101.dataset.UserDataSet;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 /**
  * By default this class save application classes to DB.
@@ -26,12 +28,24 @@ public class TestDataSetClassMyDAO extends Adapters implements Adapter {
 
     @Override
     public List<String> create(Class<? extends DataSet> c) {
-        return createTablesForClass(c);
+        return generateSQLs(c,
+            sql -> sql.concat(" id BIGSERIAL PRIMARY KEY"),
+            this::getColumnDescription,
+            f -> {
+                // TODO
+                return "\"rt name\" TEXT";
+            }
+        );
     }
 
     @Override
     public <T extends DataSet> List<String> write(T o) {
-        return insertObjectsToTables(o);
+        return generateSQLs(o.getClass(),
+            sql -> { return sql.concat(Long.toString(o.getId())); },
+            field -> { return getValue(field, o); },
+            field -> { return null; }
+        );
+        // return insertObjectsToTables(o);
     }
 
     @Override
