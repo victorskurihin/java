@@ -1,9 +1,7 @@
 package ru.otus.l101.dao;
 
 import org.hibernate.Session;
-import ru.otus.l101.dataset.DataSet;
-import ru.otus.l101.dataset.PhoneDataSet;
-import ru.otus.l101.dataset.UserDataSet;
+import ru.otus.l101.dataset.*;
 
 import java.util.List;
 
@@ -32,8 +30,8 @@ public class PhoneDataSetHibernateDAO extends HibernateDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public UserDataSet readByName(String name) {
-        return readByName(UserDataSet.class, "name", name);
+    public PhoneDataSet readByName(String number) {
+        return readByName(PhoneDataSet.class, "number", number);
     }
 
     @SuppressWarnings("unchecked")

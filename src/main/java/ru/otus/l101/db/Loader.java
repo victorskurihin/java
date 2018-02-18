@@ -1,8 +1,10 @@
 package ru.otus.l101.db;
 
 import ru.otus.l101.dataset.DataSet;
+import ru.otus.l101.exeption.RuntimeSQLException;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * The executor as a design pattern.
@@ -30,8 +32,8 @@ public class Loader {
             );
 
             return execT.execQuery(sql, handler);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            throw new RuntimeSQLException(e);
         }
     }
 }

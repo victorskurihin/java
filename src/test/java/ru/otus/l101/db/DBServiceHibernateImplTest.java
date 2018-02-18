@@ -4,8 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.l101.dataset.PhoneDataSet;
-import ru.otus.l101.dataset.UserDataSet;
+import ru.otus.l101.dataset.*;
 
 public class DBServiceHibernateImplTest {
     public static final String USER_NAME = "User Name 13";
@@ -23,15 +22,17 @@ public class DBServiceHibernateImplTest {
     }
 
     @Test
-    public void test1() {
+    public void testLoad() {
         String status = dbService.getLocalStatus();
         System.out.println("Status: " + status);
 
         UserDataSet expectedUserDataSet = new UserDataSet(
-            1, USER_NAME, new PhoneDataSet("1000003")
+            1, USER_NAME,
+            new AddressDataSet("Elm Street 1984"),
+            new PhoneDataSet("1000003")
         );
         dbService.save(expectedUserDataSet);
-        UserDataSet testUserDataSet = (UserDataSet) dbService.load(1, UserDataSet.class);
+        UserDataSet testUserDataSet = dbService.load(1, UserDataSet.class);
         Assert.assertEquals(expectedUserDataSet, testUserDataSet);
     }
 
@@ -41,7 +42,9 @@ public class DBServiceHibernateImplTest {
         System.out.println("Status: " + status);
 
         UserDataSet expectedUserDataSet = new UserDataSet(
-            1, USER_NAME, new PhoneDataSet("1000003")
+            1, USER_NAME,
+            new AddressDataSet("Elm Street 2010"),
+            new PhoneDataSet("1000003")
         );
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.loadByName(USER_NAME);

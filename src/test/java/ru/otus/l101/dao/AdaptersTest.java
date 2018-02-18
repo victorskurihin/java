@@ -1,18 +1,17 @@
 package ru.otus.l101.dao;
 
-import com.google.common.reflect.TypeToken;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.l101.NoImplementationException;
 import ru.otus.l101.dataset.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class AdaptersTest {
     public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN NOT NULL";
@@ -26,12 +25,22 @@ public class AdaptersTest {
         "f0 BOOLEAN NOT NULL, f1 SMALLINT NOT NULL, f2 CHAR(1) NOT NULL, f3 SMALLINT NOT NULL, " +
         "f4 INTEGER NOT NULL, f5 BIGINT NOT NULL, f6 REAL NOT NULL, f7 DOUBLE PRECISION NOT NULL, " +
         "f8 TEXT NOT NULL )";
-    public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE TestDataSetClass" +
+    public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE IF NOT EXISTS TestDataSetClass" +
         CREATE_EXPECTED_CLAUSE;
+
     public static final String CREATE_TABLE_EXPECTED2 = "CREATE TABLE IF NOT EXISTS " +
         "ru_otus_l101_dataset_TestDataSetClass" + CREATE_EXPECTED_CLAUSE;
     public static final String CREATE_TABLE_EXPECTED3 = "CREATE TABLE IF NOT EXISTS " +
         "ru_otus_l101_dataset_TestComplexDataSetClass ( id BIGSERIAL PRIMARY KEY, \"fk test\" BIGINT )";
+    public static final String CREATE_TABLE_EXPECTED4 = "CREATE TABLE IF NOT EXISTS " +
+        "\"java_util_List ru_otus_l101_dataset_TestDataSetClass\" " +
+        "( id BIGSERIAL PRIMARY KEY, parent_id BIGINT, f0 BOOLEAN NOT NULL, " +
+        "f1 SMALLINT NOT NULL, f2 CHAR(1) NOT NULL, f3 SMALLINT NOT NULL, " +
+        "f4 INTEGER NOT NULL, f5 BIGINT NOT NULL, f6 REAL NOT NULL, " +
+        "f7 DOUBLE PRECISION NOT NULL, f8 TEXT NOT NULL )";
+    public static final String CREATE_TABLE_EXPECTED5 = "CREATE TABLE IF NOT " +
+        "EXISTS ru_otus_l101_dataset_TestDataSetOneToManyClass " +
+        "( id BIGSERIAL PRIMARY KEY, \"rt fList\" TEXT )";
     public static final String F0_VALUE = "TRUE";
     public static final String F1_VALUE = "1";
     public static final String F2_VALUE = "'f'";
@@ -40,15 +49,18 @@ public class AdaptersTest {
     public static final String F5_VALUE = "5";
     public static final String F6_VALUE = "6.6";
     public static final String VALUES1 = "13, TRUE, 1, 'f', 3, 4, 5, 6.6, 7.7, 'f8'";
-    public static final String INSERT1_VALUES1 = "INSERT INTO ru_otus_l101_dataset_TestDataSetClass VALUES" +
-        " " +
-        "(" + VALUES1 + " )";
-    public static final String INSERT2_VALUES2 = "INSERT INTO ru_otus_l101_dataset_TestComplexDataSetClass" +
-        " " +
-        "VALUES (14, 13 )";
-    public static final String INSERT3_VALUES3 = "INSERT INTO relationship VALUES " +
-        "('ru_otus_l101_dataset_TestComplexDataSetClass', 14, 'test', " +
-        "'ru_otus_l101_dataset_TestDataSetClass', 13)";
+    public static final String INSERT1_VALUES1 = "INSERT INTO TestDataSetClass VALUES" +
+        " " + "(" + VALUES1 + " )";
+    public static final String INSERT1_VALUES2 = "INSERT INTO ru_otus_l101_dataset_TestDataSetClass VALUES" +
+        " " + "(" + VALUES1 + " )";
+    public static final String INSERT2_VALUES3 = "INSERT INTO ru_otus_l101_dataset_TestComplexDataSetClass" +
+        " " + "VALUES (14, 13 )";
+    public static final String INSERT3_VALUES4 = "INSERT INTO " +
+        "\"java_util_List ru_otus_l101_dataset_TestDataSetClass\" " +
+        "(1, TRUE, 1, 'f', 3, 4, 5, 6.6, 7.7, 'f8' )";
+    public static final String INSERT3_VALUES5 = "INSERT INTO " +
+        "ru_otus_l101_dataset_TestDataSetOneToManyClass VALUES " +
+        "(13, \"java_util_List ru_otus_l101_dataset_TestDataSetClass\" )";
 
     Adapters testAdapters;
     TestClass testClass;
@@ -121,85 +133,173 @@ public class AdaptersTest {
     }
 
     @Test
-    public void testColumnsForClass() throws Exception {
-        Method getColumns = testAdapters.getClass().getDeclaredMethod(
-            "getColumns", SQLCommand.class, DataSet.class.getClass()
+    public void testExpressionByFieldFieldFunction() throws Exception {
+        Method expressionByField = testAdapters.getClass().getDeclaredMethod(
+            "expressionByField", DataSet.class.getClass(), Field.class
         );
-        boolean accessible = getColumns.isAccessible();
-        getColumns.setAccessible(true);
-        SQLCommand result = new SQLCommand("CREATE TABLE ", "TestDataSetClass");
-        result.openParenthesis();
-        result = (SQLCommand) getColumns.invoke(testAdapters, result, TestDataSetClass.class);
-        getColumns.setAccessible(accessible);
-        result.closeParenthesis();
-        Assert.assertEquals(CREATE_TABLE_EXPECTED1, result.getSql());
+        boolean accessibleExpressionByField = expressionByField.isAccessible();
+        expressionByField.setAccessible(true);
+
+        Field fieldFunctionExpressionByField = testAdapters.getClass()
+            .getDeclaredField("fieldFunction");
+        boolean accessibleFieldFunctionExpressionByField = fieldFunctionExpressionByField.isAccessible();
+        fieldFunctionExpressionByField.setAccessible(true);
+
+        Function<Field, String> fieldFunction = testAdapters::getColumnDescription;
+        fieldFunctionExpressionByField.set(testAdapters, fieldFunction);
+
+        TestDataSetClass testDataSetClass = new TestDataSetClass(13);
+
+        Field f1Field = TestDataSetClass.class.getField("f1");
+        boolean accessibleF1Field = f1Field.isAccessible();
+
+        String testResult = (String) expressionByField.invoke(
+            testAdapters, testDataSetClass.getClass(), f1Field
+        );
+
+        f1Field.setAccessible(accessibleF1Field);
+        expressionByField.setAccessible(accessibleExpressionByField);
+        fieldFunctionExpressionByField.setAccessible(accessibleFieldFunctionExpressionByField);
+
+        Assert.assertEquals(F1_SMALLINT_DESC, testResult);
     }
 
     @Test
-    public void testCreateTableForClass() throws Exception {
-        Method createTableForClass = testAdapters.getClass().getDeclaredMethod(
-            "createTableForClass", DataSet.class.getClass()
+    public void testExpressionByFieldListFieldFunction() throws Exception {
+        Method expressionByField = testAdapters.getClass().getDeclaredMethod(
+            "expressionByField", DataSet.class.getClass(), Field.class
         );
-        boolean accessible = createTableForClass.isAccessible();
-        createTableForClass.setAccessible(true);
-        SQLCommand result = (SQLCommand) createTableForClass.invoke(testAdapters, TestDataSetClass.class);
-        createTableForClass.setAccessible(accessible);
-        Assert.assertEquals(CREATE_TABLE_EXPECTED2, result.getSql());
+        boolean accessibleExpressionByField = expressionByField.isAccessible();
+        expressionByField.setAccessible(true);
+
+        Field listFieldFunction = testAdapters.getClass()
+            .getDeclaredField("listFieldFunction");
+        boolean accessibleListFieldFunction = listFieldFunction.isAccessible();
+        listFieldFunction.setAccessible(true);
+
+        Function<Field, String> function = (Field field) -> {
+            return "Ok";
+        };
+        listFieldFunction.set(testAdapters, function);
+
+        TestDataSetOneToManyClass testClass = new TestDataSetOneToManyClass(13);
+
+        Field fList = testClass.getClass().getDeclaredField("fList");
+        boolean accessibleFList = fList.isAccessible();
+
+        String testResult = (String) expressionByField.invoke(
+            testAdapters, testClass.getClass(), fList
+        );
+
+        fList.setAccessible(accessibleFList);
+        listFieldFunction.setAccessible(accessibleListFieldFunction);
+        expressionByField.setAccessible(accessibleExpressionByField);
+        Assert.assertEquals("Ok", testResult);
+    }
+
+    private <T extends DataSet> String runCreateSQL(
+        T o, Function<Field, String> function, UnaryOperator<SQLCommand> operator, SQLCommand sqlCommand
+    ) throws Exception {
+        Method constructSQL = testAdapters.getClass().getDeclaredMethod(
+            "constructSQL", SQLCommand.class, DataSet.class.getClass()
+        );
+        boolean accessToCreateSQL = constructSQL.isAccessible();
+        constructSQL.setAccessible(true);
+
+        Field fieldFunction = testAdapters.getClass()
+            .getDeclaredField("fieldFunction");
+        boolean accessToFieldFunction = fieldFunction.isAccessible();
+        fieldFunction.setAccessible(true);
+
+        Field indexUnaryOperator = testAdapters.getClass()
+            .getDeclaredField("indexUnaryOperator");
+        boolean accessToIndexUnaryOperator = indexUnaryOperator.isAccessible();
+        indexUnaryOperator.setAccessible(true);
+
+        fieldFunction.set(testAdapters, function);
+        indexUnaryOperator.set(testAdapters, operator);
+        sqlCommand.openParenthesis();
+        sqlCommand = (SQLCommand) constructSQL.invoke(
+            testAdapters, sqlCommand, o.getClass()
+        );
+        sqlCommand.closeParenthesis();
+
+        indexUnaryOperator.setAccessible(accessToIndexUnaryOperator);
+        fieldFunction.setAccessible(accessToFieldFunction);
+        constructSQL.setAccessible(accessToCreateSQL);
+
+        return sqlCommand.getSql();
     }
 
     @Test
-    public void testCreateTablesForClass() throws Exception {
-        List<String> result = testAdapters.createTablesForClass(TestDataSetClass.class);
-        List<String> expected = new ArrayList<>();
+    public void testCreateSQLDDL() throws Exception {
+        TestDataSetClass testDataSet = new TestDataSetClass(13);
+        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, "TestDataSetClass");
+        Function<Field, String> function = testAdapters::getColumnDescription;
+        UnaryOperator<SQLCommand> operator = testAdapters::primaryKeyDescription;
+        String result = runCreateSQL(testDataSet, function, operator, sqlCommand);
+        Assert.assertEquals(CREATE_TABLE_EXPECTED1, result);
+    }
+
+    @Test
+    public void testCreateTablesForTestDataSet() throws Exception {
+        TestDataSetClass testDataSet = new TestDataSetClass(13);
+        String tableName = testAdapters.classGetNameToTableName(testDataSet.getClass());
+        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
+
+        Set<String> result = new HashSet<>(
+            testAdapters.generateSQLs(
+                testDataSet.getClass(), sqlCommand,
+                testAdapters::primaryKeyDescription,
+                testAdapters::getColumnDescription,
+                testAdapters::getTablesForCollection
+            )
+        );
+        Set<String> expected = new HashSet<>();
         expected.add(CREATE_TABLE_EXPECTED2);
         Assert.assertEquals(expected, result);
     }
 
     @Test
     public void testCreateTablesForClassComplex() throws Exception {
-        //noinspection unchecked
+        TestComplexDataSetClass testComplexDataSet = new TestComplexDataSetClass(13);
+        String tableName = testAdapters.classGetNameToTableName(testComplexDataSet.getClass());
+        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
+
         Set<String> result = new HashSet<>(
-            testAdapters.createTablesForClass(TestComplexDataSetClass.class)
+            testAdapters.generateSQLs(
+                testComplexDataSet.getClass(), sqlCommand,
+                testAdapters::primaryKeyDescription,
+                testAdapters::getColumnDescription,
+                testAdapters::getTablesForCollection
+            )
         );
         Set<String> expected = new HashSet<>();
         expected.add(CREATE_TABLE_EXPECTED2);
         expected.add(CREATE_TABLE_EXPECTED3);
-        expected.add(Adapters.CREATE_TABLE_RELATIONSHIP);
+        // expected.add(CREATE_TABLE_EXPECTED4);
         Assert.assertEquals(expected, result);
     }
 
-    /**
-     * TODO experimental
-     * @param tt the type token of the collection
-     * @return the type token the element from the collection
-     */
-    private TypeToken<?> getTypeOfFirstParameterAddMethod(TypeToken<?> tt) {
-        Method[] methods = Collection.class.getMethods();
-        Optional<Method> optionalMethod = Optional.empty();
-
-        for (Method m : methods) {
-            if (m.getName().equals("add")) {
-                if (1 == m.getParameterCount()) {
-                    optionalMethod = Optional.of(m);
-                    break;
-                }
-            }
-        }
-
-        if (! optionalMethod.isPresent()) {
-            throw new NoImplementationException();
-        }
-
-        return tt.resolveType(
-            optionalMethod.get().getGenericParameterTypes()[0]
-        );
-    }
-
     @Test
-    public void testCreateTablesForClassDataSetOneToMany() throws Exception {
+    public void testCreateTablesForDataSetOneToManyDDL() throws Exception {
+        TestDataSetOneToManyClass dataSetOneToManyClass = new TestDataSetOneToManyClass(13);
+
+        String tableName = testAdapters.classGetNameToTableName(dataSetOneToManyClass.getClass());
+        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
+
         Set<String> result = new HashSet<>(
-            testAdapters.createTablesForClass(TestDataSetOneToManyClass.class)
+            testAdapters.generateSQLs(
+                dataSetOneToManyClass.getClass(), sqlCommand,
+                testAdapters::primaryKeyDescription,
+                testAdapters::getColumnDescription,
+                testAdapters::getTablesForCollection
+            )
         );
+        Set<String> expected = new HashSet<>();
+        expected.add(CREATE_TABLE_EXPECTED4);
+        expected.add(CREATE_TABLE_EXPECTED5);
+        Assert.assertEquals(expected, result);
     }
 
     private void testGetValue(String fieldName, String expectedValue) throws Exception {
@@ -251,48 +351,76 @@ public class AdaptersTest {
     }
 
     @Test
-    public void testGetValuesObject() throws Exception {
-        Method getValuesObject = testAdapters.getClass().getDeclaredMethod(
-            "getValues", SQLCommand.class, DataSet.class.getClass(), DataSet.class
-        );
-        boolean accessible = getValuesObject.isAccessible();
-        getValuesObject.setAccessible(true);
-        SQLCommand result = new SQLCommand("", "");
-        result = (SQLCommand) getValuesObject.invoke(testAdapters, result, testDataSetClass.getClass(), testDataSetClass);
-        getValuesObject.setAccessible(accessible);
-        Assert.assertEquals(VALUES1, result.getSql());
+    public void testCreateSQLDML() throws Exception {
+        TestDataSetClass testDataSet = new TestDataSetClass(13);
+        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, "TestDataSetClass");
+        sqlCommand.concat(" VALUES");
+        Function<Field, String> function = field -> testAdapters.getValue(field, testDataSet);
+        UnaryOperator<SQLCommand> operator = sql -> sql.concat(Long.toString(testDataSet.getId()));
+        String result = runCreateSQL(testDataSet, function, operator, sqlCommand);
+        Assert.assertEquals(INSERT1_VALUES1, result);
     }
 
     @Test
-    public void testInsertObjectToTable() throws Exception {
-        Method insertObjectToTable = testAdapters.getClass().getDeclaredMethod(
-            "insertObjectToTable", DataSet.class
+    public void testInsertIntoTestDataSet() throws Exception {
+        TestDataSetClass testDataSet = new TestDataSetClass(13);
+        String tableName = testAdapters.classGetNameToTableName(testDataSet.getClass());
+        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
+        sqlCommand.concat(" VALUES");
+
+        Set<String> result = new HashSet<>(
+            testAdapters.generateSQLs(
+                testDataSet.getClass(), sqlCommand,
+                sql -> sql.concat(Long.toString(testDataSet.getId())),
+                field -> testAdapters.getValue(field, testDataSet),
+                field -> { return null; }
+            )
         );
-        boolean accessible = insertObjectToTable.isAccessible();
-        insertObjectToTable.setAccessible(true);
-        SQLCommand result = (SQLCommand) insertObjectToTable.invoke(testAdapters, testDataSetClass);
-        insertObjectToTable.setAccessible(accessible);
-        Assert.assertEquals(INSERT1_VALUES1, result.getSql());
+        Set<String> expected = new HashSet<>();
+        expected.add(INSERT1_VALUES2);
+        Assert.assertEquals(expected, result);
     }
 
+
     @Test
-    public void testInsertObjectsToTables() throws Exception {
-        List<String> result = testAdapters.insertObjectsToTables(testDataSetClass);
-        List<String> expected = new ArrayList<>();
-        expected.add(INSERT1_VALUES1);
+    public void testInsertIntoComplex() throws Exception {
+        TestComplexDataSetClass testComplexDataSet = new TestComplexDataSetClass(14);
+        String tableName = testAdapters.classGetNameToTableName(testComplexDataSet.getClass());
+        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
+        sqlCommand.concat(" VALUES");
+
+        Set<String> result = new HashSet<>(
+            testAdapters.generateSQLs(
+                testComplexDataSet .getClass(), sqlCommand,
+                sql -> sql.concat(Long.toString(testComplexDataSet .getId())),
+                field -> testAdapters.getValue(field, testComplexDataSet),
+                field -> { return null; }
+            )
+        );
+        Set<String> expected = new HashSet<>();
+        expected.add(INSERT1_VALUES2);
+        expected.add(INSERT2_VALUES3);
         Assert.assertEquals(expected, result);
     }
 
     @Test
-    public void testInsertObjectsToTablesComplex() throws Exception {
-        //noinspection unchecked
-        Set<String> result = new HashSet<>((
-            testAdapters.insertObjectsToTables(testComplexDataSetClass)
-        ));
+    public void testInsertIntoDataSetOneToManyDML() throws Exception {
+        TestDataSetOneToManyClass dataSetOneToManyClass = new TestDataSetOneToManyClass(13);
+        String tableName = testAdapters.classGetNameToTableName(dataSetOneToManyClass.getClass());
+        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
+        sqlCommand.concat(" VALUES");
+
+        Set<String> result = new HashSet<>(
+            testAdapters.generateSQLs(
+                dataSetOneToManyClass.getClass(), sqlCommand,
+                sql -> sql.concat(Long.toString(dataSetOneToManyClass.getId())),
+                field -> testAdapters.getValue(field, dataSetOneToManyClass),
+                field -> testAdapters.getCollectionValues(field, dataSetOneToManyClass)
+            )
+        );
         Set<String> expected = new HashSet<>();
-        expected.add(INSERT1_VALUES1);
-        expected.add(INSERT2_VALUES2);
-        // expected.add(INSERT3_VALUES3);
+        expected.add(INSERT3_VALUES4);
+        expected.add(INSERT3_VALUES5);
         Assert.assertEquals(expected, result);
     }
 }

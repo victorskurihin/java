@@ -3,6 +3,7 @@ package ru.otus.l101.dao;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import ru.otus.l101.dataset.DataSet;
+import ru.otus.l101.exeption.FieldFunctionException;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -52,9 +53,7 @@ public abstract class HibernateDAO {
                 dao.save((T) field.get(o));
             }
         } catch (Throwable e) {
-            e.printStackTrace();
-            //noinspection ThrowableNotThrown
-            new RuntimeException(e);
+            throw new FieldFunctionException(e);
         } finally {
             field.setAccessible(accessible);
         }

@@ -1,16 +1,14 @@
 package ru.otus.l101.dao;
 
-import ru.otus.l101.dataset.TestDataSetClass;
-
 import java.sql.Connection;
 
 /**
  * By default this class save application classes to DB.
  */
-public class TestDataSetClassMyDAO extends MyDAO {
-    private final String ADAPTEE_TYPE = TestDataSetClass.class.getName();
+public class TestComplexDataSetClassMyDAO extends MyDAO {
+    private final String ADAPTEE_TYPE = TestComplexDataSetClassMyDAO.class.getName();
 
-    public TestDataSetClassMyDAO(Connection connection) {
+    public TestComplexDataSetClassMyDAO(Connection connection) {
         super(connection);
     }
 

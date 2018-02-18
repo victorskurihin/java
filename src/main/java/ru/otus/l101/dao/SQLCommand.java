@@ -54,4 +54,11 @@ public class SQLCommand {
         sql = sql.concat(s);
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "SQLCommand{" +
+            "sql='" + sql + '\'' +
+            '}';
+    }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * By default this class save application classes to DB.
  */
-public class TestDataSetOneToManyMyDAO extends Adapters implements Adapter {
+public class TestDataSetOneToManyMyDAO extends MyDAO {
     private final String ADAPTEE_TYPE = TestDataSetOneToManyMyDAO.class.getName();
 
     public TestDataSetOneToManyMyDAO(Connection connection) {
@@ -21,22 +21,6 @@ public class TestDataSetOneToManyMyDAO extends Adapters implements Adapter {
     @Override
     public String getAdapteeOfType() {
         return ADAPTEE_TYPE;
-    }
-
-    @Override
-    public List<String> create(Class<? extends DataSet> c) {
-        System.out.println("ADAPTEE_TYPE = " + ADAPTEE_TYPE);
-        return createTablesForClass(c);
-    }
-
-    @Override
-    public <T extends DataSet> List<String> write(T o) {
-        return insertObjectsToTables(o);
-    }
-
-    @Override
-    public <T> T read(ResultSet rs, TypeToken<? extends DataSet> tt, long id) {
-        return createObject(rs, tt, id);
     }
 }
 

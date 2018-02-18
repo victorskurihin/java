@@ -18,6 +18,7 @@ public class PhoneDataSet extends DataSet {
 
     public PhoneDataSet(long id) {
         super(id);
+        number = "";
     }
 
     public PhoneDataSet(String number) {

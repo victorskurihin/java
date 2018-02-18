@@ -25,6 +25,7 @@ public class DBServiceHibernateImpl implements DBService, TypeNames {
         Configuration cfg = new Configuration();
 
         cfg.addAnnotatedClass(UserDataSet.class);
+        cfg.addAnnotatedClass(AddressDataSet.class);
         cfg.addAnnotatedClass(PhoneDataSet.class);
         cfg.addAnnotatedClass(EmptyDataSet.class);
 
@@ -51,6 +52,7 @@ public class DBServiceHibernateImpl implements DBService, TypeNames {
 
     public void setDefaultDAOFor(Session session) {
         adapters = new HashMap<>();
+        addAdapter(new AddressDataSetHibernateDAO(session));
         addAdapter(new PhoneDataSetHibernateDAO(session));
         addAdapter(new UserDataSetHibernateDAO(session));
     }

@@ -5,10 +5,10 @@ import ru.otus.l101.dataset.*;
 
 import java.util.List;
 
-public class UserDataSetHibernateDAO extends HibernateDAO {
-    private final String DAO_TYPE = UserDataSet.class.getName();
+public class AddressDataSetHibernateDAO extends HibernateDAO {
+    private final String DAO_TYPE = AddressDataSet.class.getName();
 
-    public UserDataSetHibernateDAO(Session session) {
+    public AddressDataSetHibernateDAO(Session session) {
         super(session);
     }
 
@@ -30,8 +30,8 @@ public class UserDataSetHibernateDAO extends HibernateDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public UserDataSet readByName(String name) {
-        return readByName(UserDataSet.class, "name", name);
+    public AddressDataSet readByName(String street) {
+        return readByName(AddressDataSet.class, "street", street);
     }
 
     @SuppressWarnings("unchecked")

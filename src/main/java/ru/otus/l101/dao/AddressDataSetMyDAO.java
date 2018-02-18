@@ -1,20 +1,16 @@
 package ru.otus.l101.dao;
 
-import com.google.common.reflect.TypeToken;
-import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.dataset.PhoneDataSet;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.util.List;
 
 /**
  * By default this class save application classes to DB.
  */
-public class PhoneDataSetMyDAO extends MyDAO {
-    private final String ADAPTEE_TYPE = PhoneDataSet.class.getName();
+public class AddressDataSetMyDAO extends MyDAO {
+    private final String ADAPTEE_TYPE = AddressDataSetMyDAO.class.getName();
 
-    public PhoneDataSetMyDAO(Connection connection) {
+    public AddressDataSetMyDAO(Connection connection) {
         super(connection);
     }
 

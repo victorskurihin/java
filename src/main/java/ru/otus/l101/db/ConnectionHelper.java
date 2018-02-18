@@ -1,5 +1,7 @@
 package ru.otus.l101.db;
 
+import ru.otus.l101.exeption.RuntimeSQLException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,7 +12,7 @@ public class ConnectionHelper {
             DriverManager.registerDriver(new org.postgresql.Driver());
             return DriverManager.getConnection(url);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeSQLException(e);
         }
     }
 

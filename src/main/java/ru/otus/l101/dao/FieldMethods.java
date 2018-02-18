@@ -1,18 +1,47 @@
 package ru.otus.l101.dao;
 
-import ru.otus.l101.NoImplementationException;
+import ru.otus.l101.exeption.NoImplementationException;
 import ru.otus.l101.dataset.DataSet;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Collection;
 
 public interface FieldMethods {
 
     default boolean isSubclassOfDataSet(Class<?> c) {
         return DataSet.class.isAssignableFrom(c);
+    }
+
+    default boolean isImplementatorOfCollection(Class<?> c) {
+        return Collection.class.isAssignableFrom(c);
+    }
+
+    /**
+     * The helper method for prepare name of the table for storing the object
+     * of class.
+     *
+     * @param c the subclass of the DataSet class
+     * @return the name of the table
+     */
+    default String classGetNameToTableName(Class<?> c) {
+        return c.getName().replace('.','_');
+    }
+
+    default Type getFirstParameterType(Field field) {
+        Type type = field.getGenericType();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            if (pType.getActualTypeArguments().length > 0) {
+                return pType.getActualTypeArguments()[0];
+            }
+        }
+        return null;
     }
 
     /**

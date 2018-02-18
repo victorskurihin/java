@@ -5,10 +5,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user_data_set")
 public class UserDataSet extends DataSet {
-    @Transient public final int PRIME = 131071;
-
     @Column(name = "name")
     private String name;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private AddressDataSet address;
 
     @OneToOne(cascade = CascadeType.ALL)
     private PhoneDataSet phone;
@@ -22,14 +23,15 @@ public class UserDataSet extends DataSet {
         super(id);
     }
 
-    public UserDataSet(long id, String name, PhoneDataSet phone) {
+    public UserDataSet(long id, String name, AddressDataSet address, PhoneDataSet phone) {
         this(id);
         this.name = name;
+        this.address = address;
         this.phone = phone;
     }
 
-    public UserDataSet(String name, PhoneDataSet phone) {
-        this(-1, name, phone);
+    public UserDataSet(String name, AddressDataSet address, PhoneDataSet phone) {
+        this(-1, name, address, phone);
     }
 
     public String getName() {
@@ -40,6 +42,12 @@ public class UserDataSet extends DataSet {
         this.name = name;
     }
 
+    public AddressDataSet getAddress() {
+        return address;
+    }
+    private void setPhone(AddressDataSet address) {
+        this.address = address;
+    }
     public PhoneDataSet getPhone() {
         return phone;
     }
@@ -52,16 +60,15 @@ public class UserDataSet extends DataSet {
     public String toString() {
         return "UserDataSet{" +
             "id'" + getId() + '\'' +
-            "name='" + name + '\'' +
-            ", phone=" + phone +
+            ", name='"   + name + '\'' +
+            ", address=" + address +
+            ", phone="   + phone +
             '}';
     }
 
     @Override
     public int hashCode() {
-        return phone.hashCode() + (int) (
-            PRIME * super.getId() % Integer.MAX_VALUE
-        );
+        return name.hashCode() + 13 * address.hashCode() + 31 * phone.hashCode();
     }
 
     @Override
@@ -69,8 +76,8 @@ public class UserDataSet extends DataSet {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserDataSet that = (UserDataSet) o;
-        return  super.getId() == that.getId() &&
-                name.equals(that.name) &&
+        return  name.equals(that.name) &&
+                address.equals(that.address) &&
                 phone.equals(that.phone);
     }
 }

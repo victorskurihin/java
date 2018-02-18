@@ -1,5 +1,6 @@
 package ru.otus.l101.dataset;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TestDataSetOneToManyClass extends DataSet {
@@ -7,6 +8,8 @@ public class TestDataSetOneToManyClass extends DataSet {
 
     public TestDataSetOneToManyClass(long id) {
         super(id);
+        fList = new ArrayList<>();
+        fList.add(new TestDataSetClass(1));
     }
 
     @Override

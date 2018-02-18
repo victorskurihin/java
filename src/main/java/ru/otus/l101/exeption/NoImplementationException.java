@@ -1,4 +1,4 @@
-package ru.otus.l101;
+package ru.otus.l101.exeption;
 
 public class NoImplementationException extends RuntimeException {
 }

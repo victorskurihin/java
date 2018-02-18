@@ -1,7 +1,7 @@
 package ru.otus.l101.dao;
 
 import com.google.common.reflect.TypeToken;
-import ru.otus.l101.NoImplementationException;
+import ru.otus.l101.exeption.NoImplementationException;
 import ru.otus.l101.dataset.*;
 
 import java.sql.Connection;

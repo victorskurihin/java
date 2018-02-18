@@ -1,16 +1,9 @@
 package ru.otus.l101.dao;
 
 import org.hibernate.Session;
-import org.hibernate.query.Query;
-import ru.otus.l101.NoImplementationException;
-import ru.otus.l101.dataset.DataSet;
-import ru.otus.l101.dataset.EmptyDataSet;
-import ru.otus.l101.dataset.PhoneDataSet;
-import ru.otus.l101.dataset.UserDataSet;
+import ru.otus.l101.exeption.NoImplementationException;
+import ru.otus.l101.dataset.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class EmptyDataSetHibernateDAO extends HibernateDAO {

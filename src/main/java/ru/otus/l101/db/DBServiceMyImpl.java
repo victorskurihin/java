@@ -8,6 +8,9 @@ import ru.otus.l101.dao.DataSetMyDAO;
 import ru.otus.l101.dao.TypeNames;
 import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.dataset.UserDataSet;
+import ru.otus.l101.exeption.AccessException;
+import ru.otus.l101.exeption.NewInstanceException;
+import ru.otus.l101.exeption.RuntimeSQLException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -50,11 +53,11 @@ public class DBServiceMyImpl implements DBService {
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
                 logger.error(e);
-                throw new RuntimeException(e);
+                throw new NewInstanceException(e);
 
             } catch (NoSuchMethodException | InvocationTargetException e) {
                 logger.error(e);
-                throw new RuntimeException(e);
+                throw new NewInstanceException(e);
             }
         }
     }
@@ -103,7 +106,6 @@ public class DBServiceMyImpl implements DBService {
             getConnection().setAutoCommit(false);
 
             for (String quety : list) {
-                System.out.println("quety = " + quety);
                 exec.execUpdate(quety);
             }
             getConnection().commit();
@@ -115,9 +117,9 @@ public class DBServiceMyImpl implements DBService {
                 getConnection().rollback();
             } catch (SQLException e2) {
                 logger.error(e2);
-                throw new RuntimeException(e2);
+                throw new RuntimeSQLException(e2);
             }
-            throw new RuntimeException(e1);
+            throw new RuntimeSQLException(e1);
 
         } catch (Throwable e) {
             logger.error(e);
@@ -193,7 +195,7 @@ public class DBServiceMyImpl implements DBService {
                 if (resultSet.next()) {
                     return adapter.read(resultSet, TypeToken.of(clazz), id);
                 } else
-                    throw new RuntimeException("SQL Error!!!");
+                    throw new SQLException("SQL Error!!!");
             }
         );
     }
@@ -214,7 +216,7 @@ public class DBServiceMyImpl implements DBService {
             connection.close();
         } catch (SQLException e) {
             logger.error(e);
-            throw new RuntimeException(e);
+            throw new RuntimeSQLException(e);
         }
     }
 }

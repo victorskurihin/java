@@ -4,12 +4,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.l101.dao.PhoneDataSetMyDAO;
-import ru.otus.l101.dao.TestDataSetClassMyDAO;
-import ru.otus.l101.dao.UserDataSetMyDAO;
-import ru.otus.l101.dataset.PhoneDataSet;
-import ru.otus.l101.dataset.TestDataSetClass;
-import ru.otus.l101.dataset.UserDataSet;
+import ru.otus.l101.dao.*;
+import ru.otus.l101.dataset.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,7 +24,9 @@ public class DBServiceMyImplTest {
             DBConf.dbName, DBConf.userName, DBConf.password
         );
         dbService = new DBServiceMyImpl(
-            UserDataSetMyDAO.class, PhoneDataSetMyDAO.class, TestDataSetClassMyDAO.class
+            UserDataSetMyDAO.class, AddressDataSetMyDAO.class,
+            PhoneDataSetMyDAO.class, TestDataSetClassMyDAO.class,
+            TestComplexDataSetClassMyDAO.class
         );
     }
 
@@ -84,7 +82,9 @@ public class DBServiceMyImplTest {
     public void testUserDataSet() throws Exception {
         reCreateTables();
         UserDataSet expectedUserDataSet = new UserDataSet(
-            13, "Test User 13", new PhoneDataSet("1234")
+            13, "Test User 13",
+            new AddressDataSet("Elm Street 1984"),
+            new PhoneDataSet("1234")
         );
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.load(13, UserDataSet.class);

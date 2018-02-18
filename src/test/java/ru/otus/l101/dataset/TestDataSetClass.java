@@ -13,7 +13,6 @@ public class TestDataSetClass extends DataSet {
     public float f6 = 6.6f;
     public double f7 = 7.7;
     public String f8 = "f8";
-    public List<DataSet> list;
 
     public TestDataSetClass(long id) {
         super(id);
