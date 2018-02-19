@@ -1,5 +1,8 @@
 package ru.otus.l101.dataset;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

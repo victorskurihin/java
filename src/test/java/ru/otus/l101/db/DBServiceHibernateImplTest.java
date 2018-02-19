@@ -30,6 +30,10 @@ public class DBServiceHibernateImplTest {
         String status = dbService.getLocalStatus();
         System.out.println("Status: " + status);
 
+
+        Set<PhoneDataSet> phoneDataSets = new HashSet<>(
+            Arrays.asList(new PhoneDataSet("1000003"))
+        );
         UserDataSet expectedUserDataSet = new UserDataSet(
             1, USER_NAME, new AddressDataSet("Elm Street 1984")
         );

@@ -1,7 +1,5 @@
 package ru.otus.l101.dataset;
 
-import com.sun.istack.internal.NotNull;
-
 import javax.persistence.*;
 
 @Entity
@@ -10,7 +8,6 @@ public class PhoneDataSet extends DataSet {
     private String number;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userdataset_id", referencedColumnName = "id", nullable = false)
-    @NotNull
     private UserDataSet userDataSet;
 
     //Important for Hibernate
