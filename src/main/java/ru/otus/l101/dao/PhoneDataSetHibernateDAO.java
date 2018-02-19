@@ -36,7 +36,7 @@ public class PhoneDataSetHibernateDAO extends HibernateDAO {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<UserDataSet> readAll() {
-        return readAll(UserDataSet.class);
+    public List<PhoneDataSet> readAll() {
+        return readAll(PhoneDataSet.class);
     }
 }

@@ -1,40 +1,44 @@
 package ru.otus.l101.dataset;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "phone_data_set")
 public class PhoneDataSet extends DataSet {
     @Column(name = "number")
     private String number;
+    @Access(AccessType.PROPERTY)
+    @OneToOne
+    @JoinColumn(name = "userdataset_id")
+    private UserDataSet userDataSet;
 
     //Important for Hibernate
     public PhoneDataSet() {
         super(-1);
     }
-
-    public PhoneDataSet(long id) {
-        super(id);
-        number = "";
-    }
-
     public PhoneDataSet(String number) {
-        super(number.hashCode());
+        super(-1);
         this.number = number;
     }
 
     public String getNumber() {
         return number;
     }
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public UserDataSet getUserDataSet() {
+        return userDataSet;
+    }
+    public void setUserDataSet(UserDataSet userDataSet) {
+        this.userDataSet= userDataSet;
+    }
 
     @Override
     public String toString() {
         return "PhoneDataSet{" +
-            "number='" + number + '\'' +
-            '}';
+               " number='" + number + "'" +
+               " }";
     }
 
     @Override

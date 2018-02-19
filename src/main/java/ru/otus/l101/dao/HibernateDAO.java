@@ -18,7 +18,7 @@ import java.util.Map;
 public abstract class HibernateDAO {
     private final String DAO_TYPE = TypeNames.DEFAULT;
 
-    private Session session;
+    protected Session session;
     private Map<String, HibernateDAO> adapters;
 
     HibernateDAO(Session session) {
