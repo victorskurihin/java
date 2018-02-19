@@ -82,9 +82,7 @@ public class DBServiceMyImplTest {
     public void testUserDataSet() throws Exception {
         reCreateTables();
         UserDataSet expectedUserDataSet = new UserDataSet(
-            13, "Test User 13",
-            new AddressDataSet("Elm Street 1984"),
-            new PhoneDataSet("1234")
+            13, "Test User 13", new AddressDataSet("Elm Street 1984")
         );
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.load(13, UserDataSet.class);

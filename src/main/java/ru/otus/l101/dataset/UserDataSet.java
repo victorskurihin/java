@@ -1,18 +1,17 @@
 package ru.otus.l101.dataset;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "user_data_set")
 public class UserDataSet extends DataSet {
     @Column(name = "name")
     private String name;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = AddressDataSet.class, cascade = CascadeType.ALL)
     private AddressDataSet address;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private PhoneDataSet phone;
+    @OneToMany(mappedBy = "userDataSet", cascade = CascadeType.ALL)
+    private Set<PhoneDataSet> phones = new HashSet<>();
 
     //Important for Hibernate
     public UserDataSet() {
@@ -23,52 +22,51 @@ public class UserDataSet extends DataSet {
         super(id);
     }
 
-    public UserDataSet(long id, String name, AddressDataSet address, PhoneDataSet phone) {
+    public UserDataSet(long id, String name, AddressDataSet address) {
         this(id);
         this.name = name;
         this.address = address;
-        this.phone = phone;
     }
 
-    public UserDataSet(String name, AddressDataSet address, PhoneDataSet phone) {
-        this(-1, name, address, phone);
+    public UserDataSet(String name, AddressDataSet address) {
+        this(-1, name, address);
     }
 
     public String getName() {
         return name;
     }
-
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
     public AddressDataSet getAddress() {
         return address;
     }
-    private void setPhone(AddressDataSet address) {
+    public void setAddress(AddressDataSet address) {
         this.address = address;
     }
-    public PhoneDataSet getPhone() {
-        return phone;
-    }
 
-    private void setPhone(PhoneDataSet phone) {
-        this.phone = phone;
+    public void setPhones(Set<PhoneDataSet> phones) {
+        this.phones = phones;
+    }
+    public void addPhone(PhoneDataSet phone) {
+        phone.setUserDataSet(this);
+        phones.add(phone);
     }
 
     @Override
     public String toString() {
         return "UserDataSet{" +
-            "id'" + getId() + '\'' +
-            ", name='"   + name + '\'' +
-            ", address=" + address +
-            ", phone="   + phone +
-            '}';
+               " id'" + getId() + "'" +
+               ", name='"   + name + "'" +
+               ", address=" + address +
+               ", phones="  + phones +
+               " }";
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode() + 13 * address.hashCode() + 31 * phone.hashCode();
+        return name.hashCode() + 13 * address.hashCode() + 31 * phones.hashCode();
     }
 
     @Override
@@ -78,6 +76,6 @@ public class UserDataSet extends DataSet {
         UserDataSet that = (UserDataSet) o;
         return  name.equals(that.name) &&
                 address.equals(that.address) &&
-                phone.equals(that.phone);
+                phones.equals(that.phones);
     }
 }

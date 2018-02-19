@@ -14,7 +14,6 @@ public class TestDataSetClassMyDAO extends MyDAO {
         super(connection);
     }
 
-
     @Override
     public String getAdapteeOfType() {
         return ADAPTEE_TYPE;

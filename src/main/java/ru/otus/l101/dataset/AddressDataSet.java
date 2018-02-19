@@ -1,11 +1,8 @@
 package ru.otus.l101.dataset;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "address_data_set")
 public class AddressDataSet extends DataSet {
     @Column(name = "street")
     private String street;
@@ -20,19 +17,22 @@ public class AddressDataSet extends DataSet {
     }
 
     public AddressDataSet(String street) {
-        super(street.hashCode());
+        super(-1);
         this.street = street;
     }
 
     public String getStreet () {
         return street;
     }
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
     @Override
     public String toString() {
         return "PhoneDataSet{" +
-            "street number='" + street + '\'' +
-            '}';
+               " street='" + street + "'" +
+               " }";
     }
 
     @Override

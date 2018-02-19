@@ -8,7 +8,9 @@ import ru.otus.l101.exeption.FieldFunctionException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import javax.transaction.Transactional;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ import java.util.Map;
 public abstract class HibernateDAO {
     private final String DAO_TYPE = TypeNames.DEFAULT;
 
-    private Session session;
+    protected Session session;
     private Map<String, HibernateDAO> adapters;
 
     HibernateDAO(Session session) {
@@ -59,9 +61,31 @@ public abstract class HibernateDAO {
         }
     }
 
+    private void iterateOverCollection(Collection collection) {
+        for (Object element : collection) {
+            if (DataSet.class.isAssignableFrom(element.getClass())) {
+                System.out.println("element.getClass().getTypeName() = " + element.getClass().getTypeName());
+                session.save(element);
+            }
+        }
+    }
+
+    @Transactional
     <T extends DataSet> void saveDataSet(T dataSet) {
         for (Field field : dataSet.getClass().getDeclaredFields()) {
-            if (DataSet.class.isAssignableFrom(field.getType())) {
+            if (Collection.class.isAssignableFrom(field.getType())) {
+//                System.out.println(field.getName());
+//                boolean accessible = field.isAccessible();
+//                try {
+//                    field.setAccessible(true);
+//                    Collection<?> collection = (Collection<?>) field.get(dataSet);
+//                    iterateOverCollection(collection);
+//                } catch (IllegalAccessException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    field.setAccessible(accessible);
+//                }
+            } else if (DataSet.class.isAssignableFrom(field.getType())) {
                 saveField(field, dataSet);
             }
         }

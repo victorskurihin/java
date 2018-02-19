@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import ru.otus.l101.dataset.*;
 
 import java.util.List;
+import java.util.Set;
 
 public class UserDataSetHibernateDAO extends HibernateDAO {
     private final String DAO_TYPE = UserDataSet.class.getName();
@@ -25,7 +26,8 @@ public class UserDataSetHibernateDAO extends HibernateDAO {
     @SuppressWarnings("unchecked")
     @Override
     public UserDataSet read(long id) {
-        return read(UserDataSet.class, id);
+        UserDataSet userDataSet = read(UserDataSet.class, id);
+        return userDataSet;
     }
 
     @SuppressWarnings("unchecked")
