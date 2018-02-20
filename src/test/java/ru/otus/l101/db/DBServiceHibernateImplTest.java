@@ -30,14 +30,10 @@ public class DBServiceHibernateImplTest {
         String status = dbService.getLocalStatus();
         System.out.println("Status: " + status);
 
-
-        Set<PhoneDataSet> phoneDataSets = new HashSet<>(
-            Arrays.asList(new PhoneDataSet("1000003"))
-        );
         UserDataSet expectedUserDataSet = new UserDataSet(
-            1, USER_NAME, new AddressDataSet("Elm Street 1984")
+            1, USER_NAME, new AddressDataSet(-1, "Elm Street 1984")
         );
-        expectedUserDataSet.addPhone(new PhoneDataSet("1000003"));
+        expectedUserDataSet.addPhone(new PhoneDataSet(-1, "1000003"));
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.load(1, UserDataSet.class);
         Assert.assertEquals(expectedUserDataSet, testUserDataSet);
@@ -49,10 +45,10 @@ public class DBServiceHibernateImplTest {
         System.out.println("Status: " + status);
 
         UserDataSet expectedUserDataSet = new UserDataSet(
-            1, USER_NAME, new AddressDataSet("Elm Street 2010")
+            1, USER_NAME, new AddressDataSet( -1, "Elm Street 2010")
         );
-        expectedUserDataSet.addPhone(new PhoneDataSet("1000003"));
-        expectedUserDataSet.addPhone(new PhoneDataSet("1000033"));
+        expectedUserDataSet.addPhone(new PhoneDataSet(-1, "1000003"));
+        expectedUserDataSet.addPhone(new PhoneDataSet(-1, "1000033"));
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.loadByName(USER_NAME);
         Assert.assertEquals(expectedUserDataSet, testUserDataSet);

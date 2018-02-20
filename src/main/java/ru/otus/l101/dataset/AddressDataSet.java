@@ -16,8 +16,8 @@ public class AddressDataSet extends DataSet {
         super(id);
     }
 
-    public AddressDataSet(String street) {
-        super(-1);
+    public AddressDataSet(long id, String street) {
+        super(id);
         this.street = street;
     }
 

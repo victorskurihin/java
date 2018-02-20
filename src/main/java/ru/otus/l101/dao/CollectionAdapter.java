@@ -27,17 +27,23 @@ public class CollectionAdapter extends MyDAO {
         return sql.concat(" id BIGSERIAL PRIMARY KEY, parent_id BIGINT");
     }
 
-    private String getTableName(Field f, Class<?> classOfElements) {
+    private String getTableNameAsDescr(Field f, Class<?> classOfElements) {
         Class<?> classOfCollection = f.getType();
         return  '"' + classGetNameToTableName(classOfCollection)
-              + ' ' + classGetNameToTableName(classOfElements) + '"';
+            + ' ' + classGetNameToTableName(classOfElements) + '"';
+    }
+
+    private String getTableNameAsValue(Field f, Class<?> classOfElements) {
+        Class<?> classOfCollection = f.getType();
+        return  "'" + classGetNameToTableName(classOfCollection)
+              + ' ' + classGetNameToTableName(classOfElements) + "'";
     }
 
     public List<String> createByCollection(Field f) {
         @SuppressWarnings("unchecked")
         Class<?> classOfElements = (Class<?>) getFirstParameterType(f);
         SQLCommand sqlCommand = new SQLCommand(
-            CREATE_TABLE, getTableName(f, classOfElements)
+            CREATE_TABLE, getTableNameAsDescr(f, classOfElements)
         );
 
         //noinspection unchecked
@@ -53,13 +59,14 @@ public class CollectionAdapter extends MyDAO {
         @SuppressWarnings("unchecked")
         Class<?> classOfElements = (Class<?>) getFirstParameterType(f);
         SQLCommand sqlCommand = new SQLCommand(
-            INSERT_INTO, getTableName(f, classOfElements)
+            INSERT_INTO, getTableNameAsDescr(f, classOfElements)
         );
+        sqlCommand.valuesWord();
 
         //noinspection unchecked
         return generateSQLs((Class<? extends DataSet>) classOfElements,
             sqlCommand,
-            sql -> sql.concat(Long.toString(o.getId())),
+            sql -> sql.concat(Long.toString(o.getId())).concat(", ").concat(Long.toString(parentId)), // TODO
             field -> getValue(field, o),
             field -> getCollectionValues(field, o)
         );

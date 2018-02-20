@@ -1,6 +1,7 @@
 package ru.otus.l101.dao;
 
 import com.google.common.reflect.TypeToken;
+import ru.otus.l101.dataset.MyORMFiledIgnore;
 import ru.otus.l101.exeption.*;
 import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.db.Loader;
@@ -55,6 +56,14 @@ public class Adapters implements TypeNames, FieldMethods {
     private String expressionByField(Class<? extends DataSet> c, Field f) {
         boolean accessible = f.isAccessible();
         f.setAccessible(true);
+
+        boolean isMyORMFiledIgnore = Arrays.stream(f.getAnnotations()).anyMatch(
+            a -> a.annotationType().equals(MyORMFiledIgnore.class)
+        );
+
+        if (isMyORMFiledIgnore) {
+            return null;
+        }
 
         try {
             if (isImplementatorOfCollection(f.getType())) {
@@ -201,7 +210,6 @@ public class Adapters implements TypeNames, FieldMethods {
                 .stream().map(SQLCommand::new)
                 .collect(Collectors.toList());
             result.addAll(sqlCommands);
-            // result.add(new SQLCommand(CREATE_TABLE_RELATIONSHIP)); deprecated
 
             return "\"fk " + field.getName() + '"' + " BIGINT";
         }
@@ -346,8 +354,8 @@ public class Adapters implements TypeNames, FieldMethods {
     private String getTableName(Field f) {
         Class<?> classOfElements = (Class<?>) getFirstParameterType(f);
         Class<?> classOfCollection = f.getType();
-        return  '"' + classGetNameToTableName(classOfCollection)
-            + ' ' + classGetNameToTableName(classOfElements) + '"';
+        return  "'" + classGetNameToTableName(classOfCollection)
+            + ' ' + classGetNameToTableName(classOfElements) + "'";
     }
 
     <T extends DataSet> String getCollectionValues(Field f, T o) {
@@ -360,7 +368,7 @@ public class Adapters implements TypeNames, FieldMethods {
                 e.printStackTrace();
             }
         }
-        throw new NotCollectionExeption("The field " + f + "isn't collection.");
+        throw new NotCollectionExeption("The field " + f + " isn't collection.");
     }
 
     /**
@@ -378,6 +386,16 @@ public class Adapters implements TypeNames, FieldMethods {
         } catch (InvocationTargetException | NoSuchMethodException e) {
             throw new NewInstanceException(e);
         }
+    }
+
+    private <T> T loadCollection(T object, Field field, ResultSet rs, int column) throws SQLException {
+        String[] array = rs.getString(column).split(" ");
+        if (array.length > 1) {
+            Adapter adapter = adapters.getOrDefault(
+                array[1], adapters.get(DEFAULT)
+            );
+        }
+        return object;
     }
 
     /**
@@ -414,6 +432,14 @@ public class Adapters implements TypeNames, FieldMethods {
                 return setFieldDouble(object, field, rs);
             case JAVA_LANG_STRING:
                 return setFieldString(object, field, rs);
+        }
+
+        if (isImplementatorOfCollection(field.getType())) {
+            int column = rs.findColumn("rt " + field.getName());
+            if (column > 0) {
+                return loadCollection(object, field, rs, column);
+            }
+            return object;
         }
 
         int column = rs.findColumn("fk " + field.getName());

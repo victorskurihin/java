@@ -6,6 +6,8 @@ import javax.persistence.*;
 public class PhoneDataSet extends DataSet {
     @Column(name = "number")
     private String number;
+
+    @MyORMFiledIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "userdataset_id", referencedColumnName = "id", nullable = false)
     private UserDataSet userDataSet;
@@ -14,8 +16,8 @@ public class PhoneDataSet extends DataSet {
     public PhoneDataSet() {
         super(-1);
     }
-    public PhoneDataSet(String number) {
-        super(-1);
+    public PhoneDataSet(long id, String number) {
+        super(id);
         this.number = number;
     }
 

@@ -38,7 +38,8 @@ public class MyDAO extends Adapters implements Adapter {
     public <T extends DataSet> List<String> write(T o) {
         String tableName = classGetNameToTableName(o.getClass());
         SQLCommand sqlCommand = new SQLCommand(INSERT_INTO, tableName);
-        sqlCommand.concat(" VALUES");
+        sqlCommand.valuesWord();
+        // sqlCommand.concat(" VALUES");
 
         return generateSQLs(o.getClass(), sqlCommand,
             sql -> sql.concat(Long.toString(o.getId())),

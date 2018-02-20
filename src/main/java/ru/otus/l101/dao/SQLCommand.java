@@ -55,6 +55,10 @@ public class SQLCommand {
         return this;
     }
 
+    public SQLCommand valuesWord() {
+        return this.concat(" VALUES");
+    }
+
     @Override
     public String toString() {
         return "SQLCommand{" +
