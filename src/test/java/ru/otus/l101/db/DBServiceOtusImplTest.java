@@ -12,9 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.Assert.*;
-
-public class DBServiceMyImplTest {
+public class DBServiceOtusImplTest {
     private DBService dbService;
     private Connection connection;
 
@@ -24,9 +22,8 @@ public class DBServiceMyImplTest {
             DBConf.dbName, DBConf.userName, DBConf.password
         );
         dbService = new DBServiceMyImpl(
-            UserDataSetMyDAO.class, AddressDataSetMyDAO.class,
-            PhoneDataSetMyDAO.class, TestDataSetClassMyDAO.class,
-            TestComplexDataSetClassMyDAO.class
+            UserDataSetOtusDAO.class, AddressDataSetOtusDAO.class,
+            PhoneDataSetOtusDAO.class, TestDataSetOtusDAO.class
         );
     }
 
@@ -80,7 +77,7 @@ public class DBServiceMyImplTest {
 
     @Test
     public void create() {
-        dbService.createTables(TestDataSetClass.class);
+        dbService.createTables(TestDataSet.class);
     }
 
     @Test

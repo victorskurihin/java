@@ -4,11 +4,10 @@ import com.google.common.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.otus.l101.dao.Adapter;
-import ru.otus.l101.dao.DataSetMyDAO;
+import ru.otus.l101.dao.DataSetOtusDAO;
 import ru.otus.l101.dao.TypeNames;
 import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.dataset.UserDataSet;
-import ru.otus.l101.exeption.AccessException;
 import ru.otus.l101.exeption.NewInstanceException;
 import ru.otus.l101.exeption.RuntimeSQLException;
 
@@ -28,7 +27,7 @@ public class DBServiceMyImpl implements DBService {
     );
     private final Logger logger = LogManager.getLogger(getClass());
     private final Adapter[] predefinedAdapters = {
-        new DataSetMyDAO(getConnection())
+        new DataSetOtusDAO(getConnection())
     };
 
     /**

@@ -1,9 +1,8 @@
 package ru.otus.l101.dataset;
 
-import java.util.List;
 import java.util.Objects;
 
-public class TestDataSetClass extends DataSet {
+public class TestDataSet extends DataSet {
     public boolean f0 = true;
     public byte f1 = 1;
     public char f2 = 'f';
@@ -14,7 +13,7 @@ public class TestDataSetClass extends DataSet {
     public double f7 = 7.7;
     public String f8 = "f8";
 
-    public TestDataSetClass(long id) {
+    public TestDataSet(long id) {
         super(id);
     }
 
@@ -22,7 +21,7 @@ public class TestDataSetClass extends DataSet {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TestDataSetClass that = (TestDataSetClass) o;
+        TestDataSet that = (TestDataSet) o;
         return f0 == that.f0 && f1 == that.f1 &&
             f2 == that.f2 && f3 == that.f3 &&
             f4 == that.f4 && f5 == that.f5 &&
@@ -39,7 +38,7 @@ public class TestDataSetClass extends DataSet {
 
     @Override
     public String toString() {
-        return "TestDataSetClass{" +
+        return "TestDataSet{" +
             "f0=" + f0 +
             ", f1=" + f1 +
             ", f2=" + f2 +

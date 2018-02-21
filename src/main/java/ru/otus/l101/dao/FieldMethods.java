@@ -1,5 +1,6 @@
 package ru.otus.l101.dao;
 
+import ru.otus.l101.dataset.MyORMFiledIgnore;
 import ru.otus.l101.exeption.NoImplementationException;
 import ru.otus.l101.dataset.DataSet;
 
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Collection;
 
 public interface FieldMethods {
@@ -35,6 +37,13 @@ public interface FieldMethods {
 
     default String tableNameToClassName(String name) {
         return name.replace('_','.');
+    }
+
+
+    default boolean isMyORMFiledIgnore(Field f) {
+        return Arrays.stream(f.getAnnotations()).anyMatch(
+            a -> a.annotationType().equals(MyORMFiledIgnore.class)
+        );
     }
 
     default String getTableName(Field f) {

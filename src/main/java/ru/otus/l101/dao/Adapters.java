@@ -23,10 +23,6 @@ import java.util.stream.Collectors;
 public class Adapters implements TypeNames, FieldMethods {
     public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
     public static final String INSERT_INTO = "INSERT INTO ";
-    public static final String CREATE_TABLE_RELATIONSHIP = "CREATE TABLE " +
-        "IF NOT EXISTS relationship ( parent_class_name TEXT, parent_id "  +
-        "BIGINT, parent_field_name TEXT, child_class_name TEXT, child_id " +
-        "BIGINT )";
     private final String separator = ", ";
 
     private List<SQLCommand> result;
@@ -54,15 +50,11 @@ public class Adapters implements TypeNames, FieldMethods {
         return null;
     }
 
-    private String expressionByField(Class<? extends DataSet> c, Field f) {
+    private String expressionByField(Field f) {
         boolean accessible = f.isAccessible();
         f.setAccessible(true);
 
-        boolean isMyORMFiledIgnore = Arrays.stream(f.getAnnotations()).anyMatch(
-            a -> a.annotationType().equals(MyORMFiledIgnore.class)
-        );
-
-        if (isMyORMFiledIgnore) {
+        if (isMyORMFiledIgnore(f)) {
             return null;
         }
 
@@ -105,7 +97,7 @@ public class Adapters implements TypeNames, FieldMethods {
         }
 
         for (Field field : c.getDeclaredFields()) {
-            String sqlExpression = expressionByField(c, field);
+            String sqlExpression = expressionByField(field);
             if (null != sqlExpression) {
                 sql = sql.concat(separator).concat(sqlExpression);
             }
@@ -320,6 +312,10 @@ public class Adapters implements TypeNames, FieldMethods {
     <T extends DataSet> String getValue(Field f, T o) {
 
         try {
+            if (null == f.get(o)) {
+                return "NULL";
+            }
+
             String value = getDataSetValue(f, o);
 
             if (null == value) {
@@ -368,13 +364,13 @@ public class Adapters implements TypeNames, FieldMethods {
     /**
      * The method create instance of test class.
      *
-     * @param runClass - the class
+     * @param c - the class
      * @return - the object of test class
      */
-    private static <T> Object newInstance(Class<T> runClass, long id) {
+    private static <T> Object newInstance(Class<T> c, long id) {
         //noinspection TryWithIdenticalCatches
         try {
-            return runClass.getDeclaredConstructor(long.class).newInstance(id);
+            return c.getDeclaredConstructor(long.class).newInstance(id);
         } catch (InstantiationException | IllegalAccessException e) {
             throw new NewInstanceException(e);
         } catch (InvocationTargetException | NoSuchMethodException e) {
@@ -382,8 +378,7 @@ public class Adapters implements TypeNames, FieldMethods {
         }
     }
 
-    private <T extends DataSet>
-    Class<T> getFirstParameterClass(Field f) {
+    private <T extends DataSet> Class<T> getFirstParameterClass(Field f) {
         //noinspection unchecked
         return (Class<T>) getFirstParameterType(f);
     }
@@ -403,18 +398,16 @@ public class Adapters implements TypeNames, FieldMethods {
             CollectionLoader loader = new CollectionLoader(connection);
             Class<? extends DataSet> c = getFirstParameterClass(f);
 
-            collection.addAll(
-                loader.load(
-                    o.getId(), tableName, resultSet -> {
-                        List<DataSet> r = new ArrayList<>();
-                        while (resultSet.next()) {
-                            long id = resultSet.getLong(1);
-                            r.add(createObject(resultSet, TypeToken.of(c), id));
-                        }
-                        return r;
+            collection.addAll(loader.load(
+                o.getId(), tableName, resultSet -> {
+                    List<DataSet> r = new ArrayList<>();
+                    while (resultSet.next()) {
+                        long id = resultSet.getLong(1);
+                        r.add(createObject(resultSet, TypeToken.of(c), id));
                     }
-                )
-            );
+                    return r;
+                }
+            ));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -437,11 +430,7 @@ public class Adapters implements TypeNames, FieldMethods {
     private <T extends DataSet> T setField(T o, Field f, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
-        boolean isMyORMFiledIgnore = Arrays.stream(f.getAnnotations()).anyMatch(
-                a -> a.annotationType().equals(MyORMFiledIgnore.class)
-        );
-
-        if (isMyORMFiledIgnore) {
+        if (isMyORMFiledIgnore(f)) {
             return o;
         }
 
@@ -513,7 +502,7 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param <T> the type of the object
      * @return the completely created object
      */
-    public  <T extends DataSet> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
+    public <T extends DataSet> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
         //noinspection unchecked
         T result = (T) newInstance(tt.getRawType(), id);
 
@@ -534,7 +523,6 @@ public class Adapters implements TypeNames, FieldMethods {
         return result;
     }
 }
-
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
  */

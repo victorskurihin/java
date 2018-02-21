@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * By default this class save application classes to DB.
  */
-public class CollectionAdapter extends MyDAO {
+public class CollectionAdapter extends OtusDAO {
     private final String ADAPTEE_TYPE = "__COLLECTION__";
     private final long parentId;
 

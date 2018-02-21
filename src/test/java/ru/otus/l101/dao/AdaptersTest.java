@@ -7,40 +7,34 @@ import org.junit.Test;
 import ru.otus.l101.dataset.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 public class AdaptersTest {
-    public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN NOT NULL";
-    public static final String F1_SMALLINT_DESC = "f1 SMALLINT NOT NULL";
-    public static final String F2_CHAR_DESC = "f2 CHAR(1) NOT NULL";
-    public static final String F3_SMALLINT_DESC = "f3 SMALLINT NOT NULL";
-    public static final String F4_INT_DESC = "f4 INTEGER NOT NULL";
-    public static final String F5_LONG_DESC = "f5 BIGINT NOT NULL";
-    public static final String F6_STRING_DESC = "f6 REAL NOT NULL";
     public static final String CREATE_EXPECTED_CLAUSE = " ( id BIGSERIAL PRIMARY KEY, " +
-        "f0 BOOLEAN NOT NULL, f1 SMALLINT NOT NULL, f2 CHAR(1) NOT NULL, f3 SMALLINT NOT NULL, " +
-        "f4 INTEGER NOT NULL, f5 BIGINT NOT NULL, f6 REAL NOT NULL, f7 DOUBLE PRECISION NOT NULL, " +
-        "f8 TEXT NOT NULL )";
-    public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE IF NOT EXISTS TestDataSetClass" +
-        CREATE_EXPECTED_CLAUSE;
+        "f0 BOOLEAN NOT NULL, f1 SMALLINT NOT NULL, f2 CHAR(1) NOT NULL, " +
+        "f3 SMALLINT NOT NULL, f4 INTEGER NOT NULL, f5 BIGINT NOT NULL, " +
+        "f6 REAL NOT NULL, f7 DOUBLE PRECISION NOT NULL, f8 TEXT NOT NULL )";
+
+    public static final String CREATE_TABLE_EXPECTED1 = "CREATE TABLE IF NOT EXISTS " +
+        "TestDataSet" + CREATE_EXPECTED_CLAUSE;
 
     public static final String CREATE_TABLE_EXPECTED2 = "CREATE TABLE IF NOT EXISTS " +
-        "ru_otus_l101_dataset_TestDataSetClass" + CREATE_EXPECTED_CLAUSE;
+        "ru_otus_l101_dataset_TestDataSet" + CREATE_EXPECTED_CLAUSE;
+
     public static final String CREATE_TABLE_EXPECTED3 = "CREATE TABLE IF NOT EXISTS " +
-        "ru_otus_l101_dataset_TestComplexDataSetClass ( id BIGSERIAL PRIMARY KEY, \"fk test\" BIGINT )";
+        "ru_otus_l101_dataset_UserDataSet ( id BIGSERIAL PRIMARY KEY, name TEXT NOT NULL, " +
+        "\"fk address\" BIGINT, \"rt phones\" TEXT )";
     public static final String CREATE_TABLE_EXPECTED4 = "CREATE TABLE IF NOT EXISTS " +
-        "\"java_util_List ru_otus_l101_dataset_TestDataSetClass\" " +
-        "( id BIGSERIAL PRIMARY KEY, parent_id BIGINT, f0 BOOLEAN NOT NULL, " +
-        "f1 SMALLINT NOT NULL, f2 CHAR(1) NOT NULL, f3 SMALLINT NOT NULL, " +
-        "f4 INTEGER NOT NULL, f5 BIGINT NOT NULL, f6 REAL NOT NULL, " +
-        "f7 DOUBLE PRECISION NOT NULL, f8 TEXT NOT NULL )";
-    public static final String CREATE_TABLE_EXPECTED5 = "CREATE TABLE IF NOT " +
-        "EXISTS ru_otus_l101_dataset_TestDataSetOneToManyClass " +
-        "( id BIGSERIAL PRIMARY KEY, \"rt fList\" TEXT )";
+        "\"java_util_Set ru_otus_l101_dataset_PhoneDataSet\" " +
+        "( id BIGSERIAL PRIMARY KEY, parent_id BIGINT, number TEXT NOT NULL )";
+
+    public static final String CREATE_TABLE_EXPECTED5 = "CREATE TABLE IF NOT EXISTS " +
+        "ru_otus_l101_dataset_AddressDataSet ( id BIGSERIAL PRIMARY KEY, " +
+        "street TEXT NOT NULL )";
+
     public static final String F0_VALUE = "TRUE";
     public static final String F1_VALUE = "1";
     public static final String F2_VALUE = "'f'";
@@ -49,47 +43,44 @@ public class AdaptersTest {
     public static final String F5_VALUE = "5";
     public static final String F6_VALUE = "6.6";
     public static final String VALUES1 = "13, TRUE, 1, 'f', 3, 4, 5, 6.6, 7.7, 'f8'";
-    public static final String INSERT1_VALUES1 = "INSERT INTO TestDataSetClass VALUES" +
+    public static final String INSERT1_VALUES1 = "INSERT INTO TestDataSet VALUES" +
         " " + "(" + VALUES1 + " )";
-    public static final String INSERT1_VALUES2 = "INSERT INTO ru_otus_l101_dataset_TestDataSetClass VALUES" +
-        " " + "(" + VALUES1 + " )";
-    public static final String INSERT2_VALUES3 = "INSERT INTO ru_otus_l101_dataset_TestComplexDataSetClass" +
-        " " + "VALUES (14, 13 )";
-    public static final String INSERT3_VALUES4 = "INSERT INTO " +
-        "\"java_util_List ru_otus_l101_dataset_TestDataSetClass\" " +
-        "(1, TRUE, 1, 'f', 3, 4, 5, 6.6, 7.7, 'f8' )";
-    public static final String INSERT3_VALUES5 = "INSERT INTO " +
-        "ru_otus_l101_dataset_TestDataSetOneToManyClass VALUES " +
-        "(13, \"java_util_List ru_otus_l101_dataset_TestDataSetClass\" )";
+    public static final String INSERT1_VALUES2 = "INSERT INTO " +
+        "ru_otus_l101_dataset_TestDataSet VALUES (" + VALUES1 + " )";
+    public static final String INSERT2_VALUES3 = "INSERT INTO " +
+        "ru_otus_l101_dataset_UserDataSet VALUES (14, NULL, NULL, " +
+        "'java_util_Set ru_otus_l101_dataset_PhoneDataSet' )";
 
     Adapters testAdapters;
     TestClass testClass;
-    TestDataSetClass testDataSetClass;
-    TestComplexDataSetClass testComplexDataSetClass;
+    TestDataSet testDataSetClass;
+    UserDataSet userDataSet;
 
     @Before
     public void setUp() throws Exception {
         Map<String, Adapter> adapters = new HashMap<>();
         testAdapters = new Adapters(null);
-        adapters.put(TypeNames.DEFAULT, new TestDataSetClassMyDAO(null));
-        TestDataSetOneToManyMyDAO dao = new TestDataSetOneToManyMyDAO(null);
-        adapters.put(dao.getAdapteeOfType(), dao);
+        adapters.put(TypeNames.DEFAULT, new TestDataSetOtusDAO(null));
+        UserDataSetOtusDAO dao0 = new UserDataSetOtusDAO(null);
+        adapters.put(dao0.getAdapteeOfType(), dao0);
+        TestDataSetOtusDAO dao1 = new TestDataSetOtusDAO(null);
+        adapters.put(dao1.getAdapteeOfType(), dao1);
         testAdapters.setAdapters(adapters);
         testClass = new TestClass();
-        testDataSetClass = new TestDataSetClass(13);
-        testComplexDataSetClass = new TestComplexDataSetClass(14);
+        testDataSetClass = new TestDataSet(13);
+        userDataSet = new UserDataSet(14);
     }
 
     @After
     public void tearDown() throws Exception {
-        testComplexDataSetClass = null;
+        userDataSet = null;
         testDataSetClass = null;
         testClass = null;
         testAdapters = null;
     }
 
     private void testColumnDescription(String fieldName, String expectedDescription)
-        throws NoSuchMethodException, NoSuchFieldException, InvocationTargetException, IllegalAccessException {
+        throws ReflectiveOperationException {
         Field f0 = testClass.getClass().getDeclaredField(fieldName);
         Method getColumnDescription = testAdapters.getClass().getDeclaredMethod(
             "getColumnDescription", Field.class
@@ -101,32 +92,39 @@ public class AdaptersTest {
         Assert.assertEquals(expectedDescription, result);
     }
 
+    public static final String F0_BOOLEAN_DESC = "f0 BOOLEAN NOT NULL";
     @Test
     public void testColumnBooleanDescription() throws Exception {
         testColumnDescription("f0", F0_BOOLEAN_DESC);
     }
 
+    public static final String F1_SMALLINT_DESC = "f1 SMALLINT NOT NULL";
+    public static final String F3_SMALLINT_DESC = "f3 SMALLINT NOT NULL";
     @Test
     public void testColumnSmallIntDescription() throws Exception {
         testColumnDescription("f1", F1_SMALLINT_DESC);
         testColumnDescription("f3", F3_SMALLINT_DESC);
     }
 
+    public static final String F2_CHAR_DESC = "f2 CHAR(1) NOT NULL";
     @Test
     public void testColumnCharDescription() throws Exception {
         testColumnDescription("f2", F2_CHAR_DESC);
     }
 
+    public static final String F4_INT_DESC = "f4 INTEGER NOT NULL";
     @Test
     public void testColumnIntDescription() throws Exception {
         testColumnDescription("f4", F4_INT_DESC);
     }
 
+    public static final String F5_LONG_DESC = "f5 BIGINT NOT NULL";
     @Test
     public void testColumnLongDescription() throws Exception {
         testColumnDescription("f5", F5_LONG_DESC);
     }
 
+    public static final String F6_STRING_DESC = "f6 REAL NOT NULL";
     @Test
     public void testColumnStringDescription() throws Exception {
         testColumnDescription("f6", F6_STRING_DESC);
@@ -135,31 +133,27 @@ public class AdaptersTest {
     @Test
     public void testExpressionByFieldFieldFunction() throws Exception {
         Method expressionByField = testAdapters.getClass().getDeclaredMethod(
-            "expressionByField", DataSet.class.getClass(), Field.class
+            "expressionByField", Field.class
         );
         boolean accessibleExpressionByField = expressionByField.isAccessible();
         expressionByField.setAccessible(true);
 
-        Field fieldFunctionExpressionByField = testAdapters.getClass()
+        Field testFieldFunction = testAdapters.getClass()
             .getDeclaredField("fieldFunction");
-        boolean accessibleFieldFunctionExpressionByField = fieldFunctionExpressionByField.isAccessible();
-        fieldFunctionExpressionByField.setAccessible(true);
+        boolean accessibleFieldFunctionExpressionByField = testFieldFunction.isAccessible();
+        testFieldFunction.setAccessible(true);
 
         Function<Field, String> fieldFunction = testAdapters::getColumnDescription;
-        fieldFunctionExpressionByField.set(testAdapters, fieldFunction);
+        testFieldFunction.set(testAdapters, fieldFunction);
 
-        TestDataSetClass testDataSetClass = new TestDataSetClass(13);
-
-        Field f1Field = TestDataSetClass.class.getField("f1");
+        Field f1Field = TestDataSet.class.getField("f1");
         boolean accessibleF1Field = f1Field.isAccessible();
 
-        String testResult = (String) expressionByField.invoke(
-            testAdapters, testDataSetClass.getClass(), f1Field
-        );
+        String testResult = (String) expressionByField.invoke(testAdapters, f1Field);
 
         f1Field.setAccessible(accessibleF1Field);
         expressionByField.setAccessible(accessibleExpressionByField);
-        fieldFunctionExpressionByField.setAccessible(accessibleFieldFunctionExpressionByField);
+        testFieldFunction.setAccessible(accessibleFieldFunctionExpressionByField);
 
         Assert.assertEquals(F1_SMALLINT_DESC, testResult);
     }
@@ -167,7 +161,7 @@ public class AdaptersTest {
     @Test
     public void testExpressionByFieldListFieldFunction() throws Exception {
         Method expressionByField = testAdapters.getClass().getDeclaredMethod(
-            "expressionByField", DataSet.class.getClass(), Field.class
+            "expressionByField", Field.class
         );
         boolean accessibleExpressionByField = expressionByField.isAccessible();
         expressionByField.setAccessible(true);
@@ -182,23 +176,23 @@ public class AdaptersTest {
         };
         listFieldFunction.set(testAdapters, function);
 
-        TestDataSetOneToManyClass testClass = new TestDataSetOneToManyClass(13);
+        UserDataSet testClass = new UserDataSet(13);
 
-        Field fList = testClass.getClass().getDeclaredField("fList");
-        boolean accessibleFList = fList.isAccessible();
+        Field phones = testClass.getClass().getDeclaredField("phones");
+        boolean accessibleFList = phones.isAccessible();
 
-        String testResult = (String) expressionByField.invoke(
-            testAdapters, testClass.getClass(), fList
-        );
+        String testResult = (String) expressionByField.invoke(testAdapters, phones);
 
-        fList.setAccessible(accessibleFList);
+        phones.setAccessible(accessibleFList);
         listFieldFunction.setAccessible(accessibleListFieldFunction);
         expressionByField.setAccessible(accessibleExpressionByField);
         Assert.assertEquals("Ok", testResult);
     }
 
     private <T extends DataSet> String runCreateSQL(
-        T o, Function<Field, String> function, UnaryOperator<SQLCommand> operator, SQLCommand sqlCommand
+        T o, Function<Field, String> function,
+        UnaryOperator<SQLCommand> operator,
+        SQLCommand sqlCommand
     ) throws Exception {
         Method constructSQL = testAdapters.getClass().getDeclaredMethod(
             "constructSQL", SQLCommand.class, DataSet.class.getClass()
@@ -233,8 +227,8 @@ public class AdaptersTest {
 
     @Test
     public void testCreateSQLDDL() throws Exception {
-        TestDataSetClass testDataSet = new TestDataSetClass(13);
-        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, "TestDataSetClass");
+        TestDataSet testDataSet = new TestDataSet(13);
+        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, "TestDataSet");
         Function<Field, String> function = testAdapters::getColumnDescription;
         UnaryOperator<SQLCommand> operator = testAdapters::primaryKeyDescription;
         String result = runCreateSQL(testDataSet, function, operator, sqlCommand);
@@ -243,7 +237,7 @@ public class AdaptersTest {
 
     @Test
     public void testCreateTablesForTestDataSet() throws Exception {
-        TestDataSetClass testDataSet = new TestDataSetClass(13);
+        TestDataSet testDataSet = new TestDataSet(13);
         String tableName = testAdapters.classGetTableName(testDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
 
@@ -261,42 +255,23 @@ public class AdaptersTest {
     }
 
     @Test
-    public void testCreateTablesForClassComplex() throws Exception {
-        TestComplexDataSetClass testComplexDataSet = new TestComplexDataSetClass(13);
-        String tableName = testAdapters.classGetTableName(testComplexDataSet.getClass());
+    public void testUserDataSetDDL() throws Exception {
+        UserDataSet userDataSet = new UserDataSet(13);
+
+        String tableName = testAdapters.classGetTableName(userDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
 
         Set<String> result = new HashSet<>(
             testAdapters.generateSQLs(
-                testComplexDataSet.getClass(), sqlCommand,
+                userDataSet.getClass(), sqlCommand,
                 testAdapters::primaryKeyDescription,
                 testAdapters::getColumnDescription,
                 testAdapters::getTablesForCollection
             )
         );
+
         Set<String> expected = new HashSet<>();
-        expected.add(CREATE_TABLE_EXPECTED2);
         expected.add(CREATE_TABLE_EXPECTED3);
-        // expected.add(CREATE_TABLE_EXPECTED4);
-        Assert.assertEquals(expected, result);
-    }
-
-    @Test
-    public void testCreateTablesForDataSetOneToManyDDL() throws Exception {
-        TestDataSetOneToManyClass dataSetOneToManyClass = new TestDataSetOneToManyClass(13);
-
-        String tableName = testAdapters.classGetTableName(dataSetOneToManyClass.getClass());
-        SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
-
-        Set<String> result = new HashSet<>(
-            testAdapters.generateSQLs(
-                dataSetOneToManyClass.getClass(), sqlCommand,
-                testAdapters::primaryKeyDescription,
-                testAdapters::getColumnDescription,
-                testAdapters::getTablesForCollection
-            )
-        );
-        Set<String> expected = new HashSet<>();
         expected.add(CREATE_TABLE_EXPECTED4);
         expected.add(CREATE_TABLE_EXPECTED5);
         Assert.assertEquals(expected, result);
@@ -352,8 +327,8 @@ public class AdaptersTest {
 
     @Test
     public void testCreateSQLDML() throws Exception {
-        TestDataSetClass testDataSet = new TestDataSetClass(13);
-        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, "TestDataSetClass");
+        TestDataSet testDataSet = new TestDataSet(13);
+        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, "TestDataSet");
         sqlCommand.concat(" VALUES");
         Function<Field, String> function = field -> testAdapters.getValue(field, testDataSet);
         UnaryOperator<SQLCommand> operator = sql -> sql.concat(Long.toString(testDataSet.getId()));
@@ -363,7 +338,7 @@ public class AdaptersTest {
 
     @Test
     public void testInsertIntoTestDataSet() throws Exception {
-        TestDataSetClass testDataSet = new TestDataSetClass(13);
+        TestDataSet testDataSet = new TestDataSet(13);
         String tableName = testAdapters.classGetTableName(testDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
         sqlCommand.concat(" VALUES");
@@ -384,43 +359,21 @@ public class AdaptersTest {
 
     @Test
     public void testInsertIntoComplex() throws Exception {
-        TestComplexDataSetClass testComplexDataSet = new TestComplexDataSetClass(14);
-        String tableName = testAdapters.classGetTableName(testComplexDataSet.getClass());
+        UserDataSet userDataSet = new UserDataSet(14);
+        String tableName = testAdapters.classGetTableName(userDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
-        sqlCommand.concat(" VALUES");
+        sqlCommand.valuesWord();
 
         Set<String> result = new HashSet<>(
             testAdapters.generateSQLs(
-                testComplexDataSet .getClass(), sqlCommand,
-                sql -> sql.concat(Long.toString(testComplexDataSet .getId())),
-                field -> testAdapters.getValue(field, testComplexDataSet),
-                field -> { return null; }
+                userDataSet.getClass(), sqlCommand,
+                sql -> sql.concat(Long.toString(userDataSet.getId())),
+                field -> testAdapters.getValue(field, userDataSet),
+                field -> testAdapters.getCollectionValues(field, userDataSet)
             )
         );
         Set<String> expected = new HashSet<>();
-        expected.add(INSERT1_VALUES2);
         expected.add(INSERT2_VALUES3);
-        Assert.assertEquals(expected, result);
-    }
-
-    @Test
-    public void testInsertIntoDataSetOneToManyDML() throws Exception {
-        TestDataSetOneToManyClass dataSetOneToManyClass = new TestDataSetOneToManyClass(13);
-        String tableName = testAdapters.classGetTableName(dataSetOneToManyClass.getClass());
-        SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
-        sqlCommand.concat(" VALUES");
-
-        Set<String> result = new HashSet<>(
-            testAdapters.generateSQLs(
-                dataSetOneToManyClass.getClass(), sqlCommand,
-                sql -> sql.concat(Long.toString(dataSetOneToManyClass.getId())),
-                field -> testAdapters.getValue(field, dataSetOneToManyClass),
-                field -> testAdapters.getCollectionValues(field, dataSetOneToManyClass)
-            )
-        );
-        Set<String> expected = new HashSet<>();
-        expected.add(INSERT3_VALUES4);
-        expected.add(INSERT3_VALUES5);
         Assert.assertEquals(expected, result);
     }
 }
