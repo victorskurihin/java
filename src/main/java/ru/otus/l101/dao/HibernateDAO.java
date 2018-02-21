@@ -37,15 +37,6 @@ public abstract class HibernateDAO {
     public abstract <T extends DataSet> T readByName(String name);
     public abstract <T extends DataSet> List<T> readAll();
 
-    private void iterateOverCollection(Collection collection) {
-        for (Object element : collection) {
-            if (DataSet.class.isAssignableFrom(element.getClass())) {
-                System.out.println("element.getClass().getTypeName() = " + element.getClass().getTypeName());
-                session.save(element);
-            }
-        }
-    }
-
     @Transactional
     <T extends DataSet> void saveDataSet(T dataSet) {
         session.save(dataSet);
@@ -72,3 +63,7 @@ public abstract class HibernateDAO {
         return session.createQuery(criteria).list();
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

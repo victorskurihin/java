@@ -15,19 +15,15 @@ public class CollectionLoader {
     private static final String SELECT = "SELECT * FROM \"%s\" WHERE parent_id=%s";
     private Connection connection;
 
-    public static String classGetNameToTableName(Class<? extends DataSet> c) {
-        return c.getName().replace('.','_');
-    }
-
     public CollectionLoader(Connection connection) {
         this.connection = connection;
     }
 
     public
-    <T extends DataSet> List<T> load(long id, String tableName, CTResultHandler<T> handler) {
+    <T extends DataSet> List<T> load(long id, String tableName, ListTResultHandler<T> handler) {
 
         try {
-            CTExecutor execT = new CTExecutor(connection);
+            ListTExecutor execT = new ListTExecutor(connection);
             String sql = String.format(
                 SELECT, tableName, id
             );

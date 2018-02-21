@@ -7,7 +7,7 @@ public class PhoneDataSet extends DataSet {
     @Column(name = "number")
     private String number;
 
-    @MyORMFiledIgnore
+    @OtusIgnoreFiled
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "userdataset_id", referencedColumnName = "id", nullable = false)
     private UserDataSet userDataSet;
@@ -59,3 +59,7 @@ public class PhoneDataSet extends DataSet {
         return number.equals(that.number);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

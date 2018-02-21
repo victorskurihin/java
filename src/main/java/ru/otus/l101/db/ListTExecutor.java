@@ -8,12 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
-public class CTExecutor extends Executor {
-    public CTExecutor(Connection connection) {
+public class ListTExecutor extends Executor {
+    public ListTExecutor(Connection connection) {
         super(connection);
     }
 
-    public <T extends DataSet> List<T> execQuery(String query, CTResultHandler<T> handler)
+    public <T extends DataSet> List<T> execQuery(String query, ListTResultHandler<T> handler)
         throws SQLException {
 
         try(Statement stmt = super.getConnection().createStatement()) {

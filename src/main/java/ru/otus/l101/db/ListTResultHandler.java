@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @FunctionalInterface
-public interface CTResultHandler<T extends DataSet> {
+public interface ListTResultHandler<T extends DataSet> {
     List<T> handle(ResultSet resultSet) throws SQLException;
 }
 

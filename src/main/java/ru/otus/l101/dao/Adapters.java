@@ -1,7 +1,6 @@
 package ru.otus.l101.dao;
 
 import com.google.common.reflect.TypeToken;
-import ru.otus.l101.dataset.MyORMFiledIgnore;
 import ru.otus.l101.db.CollectionLoader;
 import ru.otus.l101.exeption.*;
 import ru.otus.l101.dataset.DataSet;
@@ -383,7 +382,8 @@ public class Adapters implements TypeNames, FieldMethods {
         return (Class<T>) getFirstParameterType(f);
     }
 
-    private <T extends DataSet> T loadCollection(T o, Field f, ResultSet rs, int column)
+    private <T extends DataSet>
+    T loadCollection(T o, Field f, ResultSet rs, int column)
         throws SQLException {
 
         String tableName = rs.getString(column);
@@ -394,6 +394,7 @@ public class Adapters implements TypeNames, FieldMethods {
         }
 
         try {
+            //noinspection unchecked
             Collection<DataSet> collection = (Collection<DataSet>) f.get(o);
             CollectionLoader loader = new CollectionLoader(connection);
             Class<? extends DataSet> c = getFirstParameterClass(f);
