@@ -8,7 +8,7 @@ public class PhoneDataSet extends DataSet {
     private String number;
 
     @MyORMFiledIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "userdataset_id", referencedColumnName = "id", nullable = false)
     private UserDataSet userDataSet;
 

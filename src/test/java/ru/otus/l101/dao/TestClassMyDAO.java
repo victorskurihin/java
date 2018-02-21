@@ -35,7 +35,7 @@ public class TestClassMyDAO extends Adapters implements Adapter {
     }
 
     @Override
-    public <T> T read(ResultSet resultSet, TypeToken<? extends DataSet> tt, long id) {
+    public <T extends DataSet> T read(ResultSet resultSet, TypeToken<? extends DataSet> tt, long id) {
         throw new NoImplementationException();
     }
 }

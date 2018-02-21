@@ -37,30 +37,6 @@ public abstract class HibernateDAO {
     public abstract <T extends DataSet> T readByName(String name);
     public abstract <T extends DataSet> List<T> readAll();
 
-    /**
-     * The helper method save a field of the object
-     * @param field a field of the type by subclass DataSet
-     * @param o the object contains the field.
-     * @param <T> the type of the object
-     */
-    private <T extends DataSet> void saveField(Field field, T o) {
-        boolean accessible = field.isAccessible();
-        field.setAccessible(true);
-
-        try {
-            String key = field.getType().getName();
-            HibernateDAO dao = adapters.getOrDefault(key, null);
-            if (null != dao) {
-                //noinspection unchecked
-                dao.save((T) field.get(o));
-            }
-        } catch (Throwable e) {
-            throw new FieldFunctionException(e);
-        } finally {
-            field.setAccessible(accessible);
-        }
-    }
-
     private void iterateOverCollection(Collection collection) {
         for (Object element : collection) {
             if (DataSet.class.isAssignableFrom(element.getClass())) {
@@ -72,23 +48,6 @@ public abstract class HibernateDAO {
 
     @Transactional
     <T extends DataSet> void saveDataSet(T dataSet) {
-        for (Field field : dataSet.getClass().getDeclaredFields()) {
-            if (Collection.class.isAssignableFrom(field.getType())) {
-//                System.out.println(field.getName());
-//                boolean accessible = field.isAccessible();
-//                try {
-//                    field.setAccessible(true);
-//                    Collection<?> collection = (Collection<?>) field.get(dataSet);
-//                    iterateOverCollection(collection);
-//                } catch (IllegalAccessException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    field.setAccessible(accessible);
-//                }
-            } else if (DataSet.class.isAssignableFrom(field.getType())) {
-                saveField(field, dataSet);
-            }
-        }
         session.save(dataSet);
     }
 

@@ -29,8 +29,19 @@ public interface FieldMethods {
      * @param c the subclass of the DataSet class
      * @return the name of the table
      */
-    default String classGetNameToTableName(Class<?> c) {
+    default String classGetTableName(Class<?> c) {
         return c.getName().replace('.','_');
+    }
+
+    default String tableNameToClassName(String name) {
+        return name.replace('_','.');
+    }
+
+    default String getTableName(Field f) {
+        Class<?> classOfElements = (Class<?>) getFirstParameterType(f);
+        Class<?> classOfCollection = f.getType();
+        return  "'" + classGetTableName(classOfCollection)
+            + ' ' + classGetTableName(classOfElements) + "'";
     }
 
     default Type getFirstParameterType(Field field) {

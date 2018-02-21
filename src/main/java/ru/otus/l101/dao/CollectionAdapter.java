@@ -29,14 +29,14 @@ public class CollectionAdapter extends MyDAO {
 
     private String getTableNameAsDescr(Field f, Class<?> classOfElements) {
         Class<?> classOfCollection = f.getType();
-        return  '"' + classGetNameToTableName(classOfCollection)
-            + ' ' + classGetNameToTableName(classOfElements) + '"';
+        return  '"' + classGetTableName(classOfCollection)
+            + ' ' + classGetTableName(classOfElements) + '"';
     }
 
     private String getTableNameAsValue(Field f, Class<?> classOfElements) {
         Class<?> classOfCollection = f.getType();
-        return  "'" + classGetNameToTableName(classOfCollection)
-              + ' ' + classGetNameToTableName(classOfElements) + "'";
+        return  "'" + classGetTableName(classOfCollection)
+              + ' ' + classGetTableName(classOfElements) + "'";
     }
 
     public List<String> createByCollection(Field f) {

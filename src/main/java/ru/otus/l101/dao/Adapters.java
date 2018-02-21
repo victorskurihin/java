@@ -2,6 +2,7 @@ package ru.otus.l101.dao;
 
 import com.google.common.reflect.TypeToken;
 import ru.otus.l101.dataset.MyORMFiledIgnore;
+import ru.otus.l101.db.CollectionLoader;
 import ru.otus.l101.exeption.*;
 import ru.otus.l101.dataset.DataSet;
 import ru.otus.l101.db.Loader;
@@ -46,10 +47,10 @@ public class Adapters implements TypeNames, FieldMethods {
 
     /**
      * Not implemented.
-     * @param field the Field
+     * @param f the Field
      * @return not implemented
      */
-    private String getArrayDescription(Field field) {
+    private String getArrayDescription(Field f) {
         return null;
     }
 
@@ -118,17 +119,17 @@ public class Adapters implements TypeNames, FieldMethods {
      * class and store this to the SQLCommand container.
      *
      * @param c the appropriate class
-     * @param sqlOperation the initialized SQLCommand container
+     * @param sql the initialized SQLCommand container
      * @return the SQLCommand contains the DDL create query
      */
     private
-    SQLCommand createSQL(Class <? extends DataSet> c, SQLCommand sqlOperation) {
+    SQLCommand createSQL(Class <? extends DataSet> c, SQLCommand sql) {
 
-        sqlOperation.openParenthesis();
-        sqlOperation = constructSQL(sqlOperation, c);
-        sqlOperation.closeParenthesis();
+        sql.openParenthesis();
+        sql = constructSQL(sql, c);
+        sql.closeParenthesis();
 
-        return sqlOperation;
+        return sql;
     }
 
     /**
@@ -169,105 +170,105 @@ public class Adapters implements TypeNames, FieldMethods {
      * 'createTableForClass' for objects by subclasses of the DataSet
      * class.
      *
-     * @param field the field
+     * @param f the field
      * @return the String representation of the column description
      */
-    String getColumnDescription(Field field) {
-        if (null == field) { return null; }
+    String getColumnDescription(Field f) {
+        if (null == f) { return null; }
 
-        switch (field.getType().getName()) {
+        switch (f.getType().getName()) {
             case BOOLEAN:
-                return field.getName() + " BOOLEAN NOT NULL";
+                return f.getName() + " BOOLEAN NOT NULL";
             case BYTE:
             case SHORT:
-                return field.getName() + " SMALLINT NOT NULL";
+                return f.getName() + " SMALLINT NOT NULL";
             case CHAR:
-                return field.getName() + " CHAR(1) NOT NULL";
+                return f.getName() + " CHAR(1) NOT NULL";
             case INT:
-                return field.getName() + " INTEGER NOT NULL";
+                return f.getName() + " INTEGER NOT NULL";
             case LONG:
-                return field.getName() + " BIGINT NOT NULL";
+                return f.getName() + " BIGINT NOT NULL";
             case FLOAT:
-                return field.getName() + " REAL NOT NULL";
+                return f.getName() + " REAL NOT NULL";
             case DOUBLE:
-                return field.getName() + " DOUBLE PRECISION NOT NULL";
+                return f.getName() + " DOUBLE PRECISION NOT NULL";
             case JAVA_LANG_STRING:
-                return field.getName() + " TEXT NOT NULL";
+                return f.getName() + " TEXT NOT NULL";
         }
 
-        if (field.getType().isArray()) {
-            return getArrayDescription(field);
+        if (f.getType().isArray()) {
+            return getArrayDescription(f);
         }
 
-        if (DataSet.class.isAssignableFrom(field.getType())) {
+        if (DataSet.class.isAssignableFrom(f.getType())) {
             Adapter adapter = adapters.getOrDefault(
-                field.getType().getName(), adapters.get(DEFAULT)
+                f.getType().getName(), adapters.get(DEFAULT)
             );
 
             //noinspection unchecked
             List<SQLCommand> sqlCommands = adapter
-                .create((Class<? extends DataSet>) field.getType())
+                .create((Class<? extends DataSet>) f.getType())
                 .stream().map(SQLCommand::new)
                 .collect(Collectors.toList());
             result.addAll(sqlCommands);
 
-            return "\"fk " + field.getName() + '"' + " BIGINT";
+            return "\"fk " + f.getName() + '"' + " BIGINT";
         }
 
         throw new NoImplementationException();
     }
 
-    String getTablesForCollection(Field field) {
+    String getTablesForCollection(Field f) {
         CollectionAdapter collectionAdapter = new CollectionAdapter(
             connection, 0
         );
 
         result.addAll(
-            collectionAdapter.createByCollection(field).stream()
+            collectionAdapter.createByCollection(f).stream()
                 .map(SQLCommand::new)
                 .collect(Collectors.toList())
         );
 
-        return "\"rt " + field.getName() + '"' + " TEXT";
+        return "\"rt " + f.getName() + '"' + " TEXT";
     }
 
     /**
      * The method generates the column value for DML operation by the field
      * value.
      *
-     * @param field the field
+     * @param f the field
      * @param o the object contained the field
      * @param <T> the type of the object
      * @return the String representation of the column value
      * @throws IllegalAccessException for field
      */
-    private <T extends DataSet> String getBuildInValue(Field field, T o)
+    private <T extends DataSet> String getBuildInValue(Field f, T o)
         throws IllegalAccessException {
 
-        if (null == field) { return null; }
+        if (null == f) { return null; }
 
-        switch (field.getType().getName()) {
+        switch (f.getType().getName()) {
             case BOOLEAN:
-                return field.getBoolean(o) ? "TRUE" : "FALSE";
+                return f.getBoolean(o) ? "TRUE" : "FALSE";
             case BYTE:
-                return Byte.toString(field.getByte(o));
+                return Byte.toString(f.getByte(o));
             case SHORT:
-                return Short.toString(field.getShort(o));
+                return Short.toString(f.getShort(o));
             case CHAR:
-                return String.format("'%c'", field.getChar(o));
+                return String.format("'%c'", f.getChar(o));
             case INT:
-                return Integer.toString(field.getInt(o));
+                return Integer.toString(f.getInt(o));
             case LONG:
-                return Long.toString(field.getLong(o));
+                return Long.toString(f.getLong(o));
             case FLOAT:
-                return Float.toString(field.getFloat(o));
+                return Float.toString(f.getFloat(o));
             case DOUBLE:
-                return Double.toString(field.getDouble(o));
+                return Double.toString(f.getDouble(o));
             case JAVA_LANG_STRING:
-                return String.format("'%s'", (String) field.get(o));
+                return String.format("'%s'", (String) f.get(o));
         }
 
-        if (field.getType().isArray()) {
+        if (f.getType().isArray()) {
             throw new NoImplementationException();
         }
 
@@ -278,20 +279,20 @@ public class Adapters implements TypeNames, FieldMethods {
      * The method generates the column value for DML operation by the field
      * of the subclass by the DataSet class.
      *
-     * @param field the field of the subclass by the DataSet class
+     * @param f the field of the subclass by the DataSet class
      * @param o the object with type of the subclass by the DataSet class
      * @param <T> the type of the subclass by the DataSet class of the object
      * @return the string with DDL values from the object
      * @throws IllegalAccessException access to the field
      */
-    private <T extends DataSet> String getDataSetValue(Field field, T o)
+    private <T extends DataSet> String getDataSetValue(Field f, T o)
         throws IllegalAccessException {
 
         // DataSet.class.isAssignableFrom(field.getType())
-        if (isSubclassOfDataSet(field.getType())) {
+        if (isSubclassOfDataSet(f.getType())) {
             //noinspection unchecked
 
-            DataSet objectInField = (DataSet) field.get(o);
+            DataSet objectInField = (DataSet) f.get(o);
 
             Adapter adapter = adapters.getOrDefault(
                 objectInField.getClass().getName(), adapters.get(DEFAULT)
@@ -311,18 +312,18 @@ public class Adapters implements TypeNames, FieldMethods {
      * each  filed  the DML value. This information will be collected in the
      * SQLCommand container.
      *
-     * @param field
+     * @param f
      * @param o the appropriate object
      * @param <T> the type of the object
      * @return String
      */
-    <T extends DataSet> String getValue(Field field, T o) {
-        String value = null;
+    <T extends DataSet> String getValue(Field f, T o) {
+
         try {
-            value = getDataSetValue(field, o);
+            String value = getDataSetValue(f, o);
 
             if (null == value) {
-                value = getBuildInValue(field, o);
+                value = getBuildInValue(f, o);
             }
             return value;
         } catch (IllegalAccessException e) {
@@ -350,13 +351,6 @@ public class Adapters implements TypeNames, FieldMethods {
         return sqlCommandList;
     }
 
-
-    private String getTableName(Field f) {
-        Class<?> classOfElements = (Class<?>) getFirstParameterType(f);
-        Class<?> classOfCollection = f.getType();
-        return  "'" + classGetNameToTableName(classOfCollection)
-            + ' ' + classGetNameToTableName(classOfElements) + "'";
-    }
 
     <T extends DataSet> String getCollectionValues(Field f, T o) {
         if (isImplementatorOfCollection(f.getType())) {
@@ -388,66 +382,101 @@ public class Adapters implements TypeNames, FieldMethods {
         }
     }
 
-    private <T> T loadCollection(T object, Field field, ResultSet rs, int column) throws SQLException {
-        String[] array = rs.getString(column).split(" ");
+    private <T extends DataSet> T loadCollection(T o, Field f, ResultSet rs, int column)
+        throws SQLException {
+
+        String tableName = rs.getString(column);
+        String[] array = tableName.split(" ");
+
         if (array.length > 1) {
+            String className = tableNameToClassName(array[1]);
+
             Adapter adapter = adapters.getOrDefault(
-                array[1], adapters.get(DEFAULT)
+                className, adapters.get(DEFAULT)
             );
+            try {
+                Collection<?> collection = (Collection<?>) f.get(o);
+                CollectionLoader loader = new CollectionLoader(connection);
+                System.out.println("o.getId() = " + o.getId());
+                loader.load(
+                    o.getId(), tableName, resultSet -> {
+                        List<Object> res = ArrayList<>();
+                        while (resultSet.next()) {
+                            System.out.println("resultSet = " + resultSet.getLong(1));
+                        }
+                        return null;
+                    }
+                );
+//                List<Object> =
+//
+//                Loader loader = new Loader(connection);
+//                Object value = loader.load(
+//                    id, c, resultSet -> {
+//                        if (resultSet.next()) {
+//                            return adapter.read(resultSet, TypeToken.of(c), id);
+//                        } else
+//                            throw new SQLException("SQL Error!!!");
+//                    }
+//                );
+
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
-        return object;
+
+        return o;
     }
 
     /**
      * The method fills the object. The stored column filling the correspond
      * field in the object.
      *
-     * @param object the object
-     * @param field the correspond field
+     * @param o the object
+     * @param f the correspond field
      * @param rs the ResultSet from the select query
      * @param <T> the type of the object
      * @return the filled object
      * @throws IllegalAccessException the access to the field
      * @throws SQLException in the loader
      */
-    private <T> T setField(T object, Field field, ResultSet rs)
-        throws IllegalAccessException, SQLException {
+     private <T extends DataSet> T setField(T o, Field f, ResultSet rs)
+         throws IllegalAccessException, SQLException {
 
-        switch (field.getType().getTypeName()) {
+        switch (f.getType().getTypeName()) {
             case BOOLEAN:
-                return setFieldBoolean(object, field, rs);
+                return setFieldBoolean(o, f, rs);
             case BYTE:
-                return setFieldByte(object, field, rs);
+                return setFieldByte(o, f, rs);
             case CHAR:
-                return setFieldChar(object, field, rs);
+                return setFieldChar(o, f, rs);
             case SHORT:
-                return setFieldShort(object, field, rs);
+                return setFieldShort(o, f, rs);
             case INT:
-                return setFieldInt(object, field, rs);
+                return setFieldInt(o, f, rs);
             case LONG:
-                return setFieldLong(object, field, rs);
+                return setFieldLong(o, f, rs);
             case FLOAT:
-                return setFieldFloat(object, field, rs);
+                return setFieldFloat(o, f, rs);
             case DOUBLE:
-                return setFieldDouble(object, field, rs);
+                return setFieldDouble(o, f, rs);
             case JAVA_LANG_STRING:
-                return setFieldString(object, field, rs);
+                return setFieldString(o, f, rs);
         }
 
-        if (isImplementatorOfCollection(field.getType())) {
-            int column = rs.findColumn("rt " + field.getName());
+        if (isImplementatorOfCollection(f.getType())) {
+            int column = rs.findColumn("rt " + f.getName());
             if (column > 0) {
-                return loadCollection(object, field, rs, column);
+                return loadCollection(o, f, rs, column);
             }
-            return object;
+            return o;
         }
 
-        int column = rs.findColumn("fk " + field.getName());
-        if (isSubclassOfDataSet(field.getType()) && column > 0) {
-            long id = getFK(field, rs);
+        int column = rs.findColumn("fk " + f.getName());
+        if (isSubclassOfDataSet(f.getType()) && column > 0) {
+            long id = getFK(f, rs);
 
             //noinspection unchecked
-            Class<? extends DataSet> c = (Class<? extends DataSet>) field.getType();
+            Class<? extends DataSet> c = (Class<? extends DataSet>) f.getType();
             Adapter adapter = adapters.getOrDefault(
                 c.getName(), adapters.get(DEFAULT)
             );
@@ -461,9 +490,9 @@ public class Adapters implements TypeNames, FieldMethods {
                         throw new SQLException("SQL Error!!!");
                 }
             );
-            field.set(object, value);
+            f.set(o, value);
 
-            return object;
+            return o;
         }
 
         throw new NoImplementationException();
@@ -481,7 +510,7 @@ public class Adapters implements TypeNames, FieldMethods {
      * @param <T> the type of the object
      * @return the completely created object
      */
-    public  <T> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
+    public  <T extends DataSet> T createObject(ResultSet rs, TypeToken<?> tt, long id) {
         //noinspection unchecked
         T result = (T) newInstance(tt.getRawType(), id);
 

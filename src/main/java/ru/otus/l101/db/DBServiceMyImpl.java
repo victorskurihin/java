@@ -105,7 +105,7 @@ public class DBServiceMyImpl implements DBService {
         try {
             getConnection().setAutoCommit(false);
             // TODO
-            list.stream().forEach(System.err::println);
+            // list.stream().forEach(System.err::println);
 
             for (String quety : list) {
                 exec.execUpdate(quety);

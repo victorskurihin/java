@@ -24,7 +24,7 @@ public class MyDAO extends Adapters implements Adapter {
 
     @Override
     public List<String> create(Class<? extends DataSet> c) {
-        String tableName = classGetNameToTableName(c);
+        String tableName = classGetTableName(c);
         SQLCommand sqlCommand = new SQLCommand(CREATE_TABLE, tableName);
 
         return generateSQLs(c, sqlCommand,
@@ -36,7 +36,7 @@ public class MyDAO extends Adapters implements Adapter {
 
     @Override
     public <T extends DataSet> List<String> write(T o) {
-        String tableName = classGetNameToTableName(o.getClass());
+        String tableName = classGetTableName(o.getClass());
         SQLCommand sqlCommand = new SQLCommand(INSERT_INTO, tableName);
         sqlCommand.valuesWord();
         // sqlCommand.concat(" VALUES");
@@ -49,7 +49,7 @@ public class MyDAO extends Adapters implements Adapter {
     }
 
     @Override
-    public <T> T read(ResultSet rs, TypeToken<? extends DataSet> tt, long id) {
+    public <T extends DataSet> T read(ResultSet rs, TypeToken<? extends DataSet> tt, long id) {
         return createObject(rs, tt, id);
     }
 }

@@ -244,7 +244,7 @@ public class AdaptersTest {
     @Test
     public void testCreateTablesForTestDataSet() throws Exception {
         TestDataSetClass testDataSet = new TestDataSetClass(13);
-        String tableName = testAdapters.classGetNameToTableName(testDataSet.getClass());
+        String tableName = testAdapters.classGetTableName(testDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
 
         Set<String> result = new HashSet<>(
@@ -263,7 +263,7 @@ public class AdaptersTest {
     @Test
     public void testCreateTablesForClassComplex() throws Exception {
         TestComplexDataSetClass testComplexDataSet = new TestComplexDataSetClass(13);
-        String tableName = testAdapters.classGetNameToTableName(testComplexDataSet.getClass());
+        String tableName = testAdapters.classGetTableName(testComplexDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
 
         Set<String> result = new HashSet<>(
@@ -285,7 +285,7 @@ public class AdaptersTest {
     public void testCreateTablesForDataSetOneToManyDDL() throws Exception {
         TestDataSetOneToManyClass dataSetOneToManyClass = new TestDataSetOneToManyClass(13);
 
-        String tableName = testAdapters.classGetNameToTableName(dataSetOneToManyClass.getClass());
+        String tableName = testAdapters.classGetTableName(dataSetOneToManyClass.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.CREATE_TABLE, tableName);
 
         Set<String> result = new HashSet<>(
@@ -364,7 +364,7 @@ public class AdaptersTest {
     @Test
     public void testInsertIntoTestDataSet() throws Exception {
         TestDataSetClass testDataSet = new TestDataSetClass(13);
-        String tableName = testAdapters.classGetNameToTableName(testDataSet.getClass());
+        String tableName = testAdapters.classGetTableName(testDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
         sqlCommand.concat(" VALUES");
 
@@ -385,7 +385,7 @@ public class AdaptersTest {
     @Test
     public void testInsertIntoComplex() throws Exception {
         TestComplexDataSetClass testComplexDataSet = new TestComplexDataSetClass(14);
-        String tableName = testAdapters.classGetNameToTableName(testComplexDataSet.getClass());
+        String tableName = testAdapters.classGetTableName(testComplexDataSet.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
         sqlCommand.concat(" VALUES");
 
@@ -406,7 +406,7 @@ public class AdaptersTest {
     @Test
     public void testInsertIntoDataSetOneToManyDML() throws Exception {
         TestDataSetOneToManyClass dataSetOneToManyClass = new TestDataSetOneToManyClass(13);
-        String tableName = testAdapters.classGetNameToTableName(dataSetOneToManyClass.getClass());
+        String tableName = testAdapters.classGetTableName(dataSetOneToManyClass.getClass());
         SQLCommand sqlCommand = new SQLCommand(Adapters.INSERT_INTO, tableName);
         sqlCommand.concat(" VALUES");
 

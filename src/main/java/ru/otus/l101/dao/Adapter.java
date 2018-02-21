@@ -11,7 +11,7 @@ public interface Adapter {
     String getAdapteeOfType();
     List<String> create(Class<? extends DataSet> o);
     <T extends DataSet> List<String> write(T o);
-    <T> T read(ResultSet resultSet, TypeToken<? extends DataSet> tt, long id);
+    <T extends DataSet> T read(ResultSet resultSet, TypeToken<? extends DataSet> tt, long id);
     void setAdapters(Map<String, Adapter> adapters);
 }
 
