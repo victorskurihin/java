@@ -67,22 +67,17 @@ public class DBServiceOtusImplTest {
         }
     }
 
-    private void reCreateTables() throws Exception {
+    public void reCreateTables() throws Exception {
         clear();
         dropTables("\"java_util_Set ru_otus_l101_dataset_PhoneDataSet\"");
-        dbService.createTables(UserDataSet.class);
         dbService.createTables(AddressDataSet.class);
         dbService.createTables(PhoneDataSet.class);
+        dbService.createTables(UserDataSet.class);
     }
 
     @Test
     public void create() {
         dbService.createTables(TestDataSet.class);
-    }
-
-    @Test
-    public void testPhoneDataSet() throws Exception {
-        reCreateTables();
     }
 
     @Test
