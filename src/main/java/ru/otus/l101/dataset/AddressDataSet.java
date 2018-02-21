@@ -30,7 +30,7 @@ public class AddressDataSet extends DataSet {
 
     @Override
     public String toString() {
-        return "PhoneDataSet{" +
+        return "AddressDataSet{" +
                " street='" + street + "'" +
                " }";
     }

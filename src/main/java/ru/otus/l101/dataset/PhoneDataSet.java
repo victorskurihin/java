@@ -7,7 +7,7 @@ public class PhoneDataSet extends DataSet {
     @Column(name = "number")
     private String number;
 
-    @OtusIgnoreFiled
+    @OtusIgnoreField
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "userdataset_id", referencedColumnName = "id", nullable = false)
     private UserDataSet userDataSet;

@@ -1,6 +1,6 @@
 package ru.otus.l101.dao;
 
-import ru.otus.l101.dataset.OtusIgnoreFiled;
+import ru.otus.l101.dataset.OtusIgnoreField;
 import ru.otus.l101.exeption.NoImplementationException;
 import ru.otus.l101.dataset.DataSet;
 
@@ -42,7 +42,7 @@ public interface FieldMethods {
 
     default boolean isMyORMFiledIgnore(Field f) {
         return Arrays.stream(f.getAnnotations()).anyMatch(
-            a -> a.annotationType().equals(OtusIgnoreFiled.class)
+            a -> a.annotationType().equals(OtusIgnoreField.class)
         );
     }
 
