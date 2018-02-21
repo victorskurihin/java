@@ -382,46 +382,41 @@ public class Adapters implements TypeNames, FieldMethods {
         }
     }
 
+    private <T extends DataSet>
+    Class<T> getFirstParameterClass(Field f) {
+        //noinspection unchecked
+        return (Class<T>) getFirstParameterType(f);
+    }
+
     private <T extends DataSet> T loadCollection(T o, Field f, ResultSet rs, int column)
         throws SQLException {
 
         String tableName = rs.getString(column);
         String[] array = tableName.split(" ");
 
-        if (array.length > 1) {
-            String className = tableNameToClassName(array[1]);
+        if (array.length < 2) {
+            return o;
+        }
 
-            Adapter adapter = adapters.getOrDefault(
-                className, adapters.get(DEFAULT)
-            );
-            try {
-                Collection<?> collection = (Collection<?>) f.get(o);
-                CollectionLoader loader = new CollectionLoader(connection);
-                System.out.println("o.getId() = " + o.getId());
+        try {
+            Collection<DataSet> collection = (Collection<DataSet>) f.get(o);
+            CollectionLoader loader = new CollectionLoader(connection);
+            Class<? extends DataSet> c = getFirstParameterClass(f);
+
+            collection.addAll(
                 loader.load(
                     o.getId(), tableName, resultSet -> {
-                        List<Object> res = ArrayList<>();
+                        List<DataSet> r = new ArrayList<>();
                         while (resultSet.next()) {
-                            System.out.println("resultSet = " + resultSet.getLong(1));
+                            long id = resultSet.getLong(1);
+                            r.add(createObject(resultSet, TypeToken.of(c), id));
                         }
-                        return null;
+                        return r;
                     }
-                );
-//                List<Object> =
-//
-//                Loader loader = new Loader(connection);
-//                Object value = loader.load(
-//                    id, c, resultSet -> {
-//                        if (resultSet.next()) {
-//                            return adapter.read(resultSet, TypeToken.of(c), id);
-//                        } else
-//                            throw new SQLException("SQL Error!!!");
-//                    }
-//                );
-
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+                )
+            );
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
 
         return o;
@@ -439,8 +434,16 @@ public class Adapters implements TypeNames, FieldMethods {
      * @throws IllegalAccessException the access to the field
      * @throws SQLException in the loader
      */
-     private <T extends DataSet> T setField(T o, Field f, ResultSet rs)
-         throws IllegalAccessException, SQLException {
+    private <T extends DataSet> T setField(T o, Field f, ResultSet rs)
+        throws IllegalAccessException, SQLException {
+
+        boolean isMyORMFiledIgnore = Arrays.stream(f.getAnnotations()).anyMatch(
+                a -> a.annotationType().equals(MyORMFiledIgnore.class)
+        );
+
+        if (isMyORMFiledIgnore) {
+            return o;
+        }
 
         switch (f.getType().getTypeName()) {
             case BOOLEAN:
@@ -531,6 +534,7 @@ public class Adapters implements TypeNames, FieldMethods {
         return result;
     }
 }
+
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
  */

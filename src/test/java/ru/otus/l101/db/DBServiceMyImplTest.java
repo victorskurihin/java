@@ -99,6 +99,6 @@ public class DBServiceMyImplTest {
         expectedUserDataSet.addPhone(new PhoneDataSet(2, "1000033"));
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.load(12, UserDataSet.class);
-//        Assert.assertEquals(expectedUserDataSet, testUserDataSet);
+        Assert.assertEquals(expectedUserDataSet, testUserDataSet);
     }
 }

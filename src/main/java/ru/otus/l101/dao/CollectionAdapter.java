@@ -10,7 +10,7 @@ import java.util.List;
  * By default this class save application classes to DB.
  */
 public class CollectionAdapter extends MyDAO {
-    private final String ADAPTEE_TYPE = "__DEFAULT__";
+    private final String ADAPTEE_TYPE = "__COLLECTION__";
     private final long parentId;
 
     public CollectionAdapter(Connection connection, long id) {
@@ -66,7 +66,9 @@ public class CollectionAdapter extends MyDAO {
         //noinspection unchecked
         return generateSQLs((Class<? extends DataSet>) classOfElements,
             sqlCommand,
-            sql -> sql.concat(Long.toString(o.getId())).concat(", ").concat(Long.toString(parentId)), // TODO
+            sql -> sql.concat(Long.toString(o.getId()))
+                      .concat(", ")
+                      .concat(Long.toString(parentId)),
             field -> getValue(field, o),
             field -> getCollectionValues(field, o)
         );
