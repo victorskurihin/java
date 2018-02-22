@@ -3,6 +3,9 @@ package ru.otus.l101.db;
 import com.google.common.reflect.TypeToken;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.otus.l101.cache.CacheEngine;
+import ru.otus.l101.cache.CacheEngineImpl;
+import ru.otus.l101.cache.MyElement;
 import ru.otus.l101.dao.Adapter;
 import ru.otus.l101.dao.DataSetOtusDAO;
 import ru.otus.l101.dao.TypeNames;
@@ -11,6 +14,7 @@ import ru.otus.l101.dataset.UserDataSet;
 import ru.otus.l101.exeption.NewInstanceException;
 import ru.otus.l101.exeption.RuntimeSQLException;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -19,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DBServiceMyImpl implements DBService {
+    public static final int cacheSize = 10;
     private static final String DEFAULT = TypeNames.DEFAULT;
 
     private Map<String, Adapter> adapters = new HashMap<>();
@@ -29,6 +34,7 @@ public class DBServiceMyImpl implements DBService {
     private final Adapter[] predefinedAdapters = {
         new DataSetOtusDAO(getConnection())
     };
+    private CacheEngine<Long, DataSet> cache;
 
     /**
      * Default constructor.
@@ -37,6 +43,9 @@ public class DBServiceMyImpl implements DBService {
         for (Adapter adapter : predefinedAdapters) {
             addAdapter(adapter);
         }
+        cache = new CacheEngineImpl<>(
+            cacheSize, 0, 0, true
+        );
     }
 
     @SafeVarargs
@@ -103,8 +112,6 @@ public class DBServiceMyImpl implements DBService {
 
         try {
             getConnection().setAutoCommit(false);
-            // TODO
-            // list.stream().forEach(System.err::println);
 
             for (String quety : list) {
                 exec.execUpdate(quety);
@@ -168,8 +175,24 @@ public class DBServiceMyImpl implements DBService {
         Adapter adapter = adapters.getOrDefault(
             user.getClass().getName(), adapters.get(DEFAULT)
         );
-
+        cache.put(new MyElement<>(user.getId(), user));
         execQueries(adapter.write(user));
+    }
+
+    <T extends DataSet> T loadFromDB(long id, Class<T> clazz) {
+        Loader loader = new Loader(getConnection());
+        Adapter adapter = adapters.getOrDefault(
+            clazz.getName(), adapters.get(DEFAULT)
+        );
+
+        return loader.load(
+            id, clazz, resultSet -> {
+                if (resultSet.next()) {
+                    return adapter.read(resultSet, TypeToken.of(clazz), id);
+                } else
+                    throw new SQLException("SQL Error!!!");
+            }
+        );
     }
 
     /**
@@ -184,21 +207,15 @@ public class DBServiceMyImpl implements DBService {
      * @param <T> the type of Class
      * @return the object with type is a subclass of DataSet
      */
-    @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
-        Loader loader = new Loader(getConnection());
-        Adapter adapter = adapters.getOrDefault(
-            clazz.getName(), adapters.get(DEFAULT)
-        );
+        MyElement<Long, DataSet> element = cache.get(id);
+        if (null == element) {
+            return loadFromDB(id, clazz);
+        } else {
+            //noinspection unchecked
+            return (T) element.getValue();
+        }
 
-        return loader.load(
-            id, clazz, resultSet -> {
-                if (resultSet.next()) {
-                    return adapter.read(resultSet, TypeToken.of(clazz), id);
-                } else
-                    throw new SQLException("SQL Error!!!");
-            }
-        );
     }
 
     @Override
