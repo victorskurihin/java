@@ -31,4 +31,4 @@ DUMP="${DUMP} -XX:HeapDumpPath=${DUMPDIR}"
 mkdir -p $LOGDIR
 mkdir -p $DUMPDIR
 java ${CP} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l101.Main
+    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l111.Main
