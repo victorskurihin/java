@@ -40,7 +40,7 @@ public interface FieldMethods {
     }
 
 
-    default boolean isMyORMFiledIgnore(Field f) {
+    default boolean isMyORMFieldIgnore(Field f) {
         return Arrays.stream(f.getAnnotations()).anyMatch(
             a -> a.annotationType().equals(OtusIgnoreField.class)
         );

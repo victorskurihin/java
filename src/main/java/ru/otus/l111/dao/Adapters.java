@@ -49,11 +49,16 @@ public class Adapters implements TypeNames, FieldMethods {
         return null;
     }
 
+    /**
+     *
+     * @param f field
+     * @return the String
+     */
     private String expressionByField(Field f) {
         boolean accessible = f.isAccessible();
         f.setAccessible(true);
 
-        if (isMyORMFiledIgnore(f)) {
+        if (isMyORMFieldIgnore(f)) {
             return null;
         }
 
@@ -431,7 +436,7 @@ public class Adapters implements TypeNames, FieldMethods {
     private <T extends DataSet> T setField(T o, Field f, ResultSet rs)
         throws IllegalAccessException, SQLException {
 
-        if (isMyORMFiledIgnore(f)) {
+        if (isMyORMFieldIgnore(f)) {
             return o;
         }
 
