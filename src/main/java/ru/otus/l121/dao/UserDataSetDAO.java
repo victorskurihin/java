@@ -4,12 +4,11 @@ import org.hibernate.Session;
 import ru.otus.l121.dataset.*;
 
 import java.util.List;
-import java.util.Set;
 
-public class UserDataSetHibernateDAO extends HibernateDAO {
+public class UserDataSetDAO extends DAO {
     private final String DAO_TYPE = UserDataSet.class.getName();
 
-    public UserDataSetHibernateDAO(Session session) {
+    public UserDataSetDAO(Session session) {
         super(session);
     }
 

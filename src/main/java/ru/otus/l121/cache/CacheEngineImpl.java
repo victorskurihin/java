@@ -32,7 +32,7 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
     }
 
     public void put(SoftReferenceElement<K, V> element) {
-        if (elements.size() == maxElements) {
+        if (elements.size() == maxElements + 1) {
             K firstKey = elements.keySet().iterator().next();
             elements.remove(firstKey);
         }
@@ -80,8 +80,8 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         timer.cancel();
     }
 
-    private
-    TimerTask getTimerTask(final K key, Function<SoftReferenceElement<K, V>, Long> timeFunction) {
+    private TimerTask
+    getTimerTask(final K key, Function<SoftReferenceElement<K, V>, Long> timeFunction) {
         return new TimerTask() {
             @Override
             public void run() {

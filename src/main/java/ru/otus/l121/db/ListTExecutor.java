@@ -13,7 +13,8 @@ public class ListTExecutor extends Executor {
         super(connection);
     }
 
-    public <T extends DataSet> List<T> execQuery(String query, ListTResultHandler<T> handler)
+    public <T extends DataSet>
+    List<T> execQuery(String query, ListTResultHandler<T> handler)
         throws SQLException {
 
         try(Statement stmt = super.getConnection().createStatement()) {

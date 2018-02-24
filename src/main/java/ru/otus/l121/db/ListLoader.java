@@ -5,22 +5,24 @@ import ru.otus.l121.exeption.RuntimeSQLException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 /**
  * The executor as a design pattern.
  * The class load the object from the designated table and return this object.
  */
-public class CollectionLoader {
+public class ListLoader {
     private static final String SELECT = "SELECT * FROM \"%s\" WHERE parent_id=%s";
     private Connection connection;
 
-    public CollectionLoader(Connection connection) {
+    public ListLoader(Connection connection) {
         this.connection = connection;
     }
 
     public
-    <T extends DataSet> List<T> load(long id, String tableName, ListTResultHandler<T> handler) {
+    <T extends DataSet>
+    List<T> load(long id, String tableName, ListTResultHandler<T> handler) {
 
         try {
             ListTExecutor execT = new ListTExecutor(connection);

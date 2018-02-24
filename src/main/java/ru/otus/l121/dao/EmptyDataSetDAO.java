@@ -6,10 +6,10 @@ import ru.otus.l121.dataset.*;
 
 import java.util.List;
 
-public class EmptyDataSetHibernateDAO extends HibernateDAO {
+public class EmptyDataSetDAO extends DAO {
     private final String DAO_TYPE = EmptyDataSet.class.getName();
 
-    public EmptyDataSetHibernateDAO(Session session) {
+    public EmptyDataSetDAO(Session session) {
         super(session);
     }
 

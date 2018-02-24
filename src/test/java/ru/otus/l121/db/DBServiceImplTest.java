@@ -6,17 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.otus.l121.dataset.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-public class DBServiceHibernateImplTest {
+public class DBServiceImplTest {
     public static final String USER_NAME = "User Name 13";
     DBService dbService;
 
     @Before
     public void setUp() throws Exception {
-        dbService = new DBServiceHibernateImpl();
+        dbService = new DBServiceImpl();
     }
 
     @After
@@ -26,31 +22,57 @@ public class DBServiceHibernateImplTest {
     }
 
     @Test
-    public void testLoad() {
+    public void testLoadById() {
         String status = dbService.getLocalStatus();
         System.out.println("Status: " + status);
 
         UserDataSet expectedUserDataSet = new UserDataSet(
-            1, USER_NAME, new AddressDataSet(-1, "Elm Street 1984")
+            1, USER_NAME, new AddressDataSet("Elm Street 1984")
         );
-        expectedUserDataSet.addPhone(new PhoneDataSet(-1, "1000003"));
+        expectedUserDataSet.addPhone(new PhoneDataSet("1000003"));
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.load(1, UserDataSet.class);
         Assert.assertEquals(expectedUserDataSet, testUserDataSet);
     }
 
     @Test
-    public void testName() {
+    public void testLoadByName() {
         String status = dbService.getLocalStatus();
         System.out.println("Status: " + status);
 
         UserDataSet expectedUserDataSet = new UserDataSet(
-            1, USER_NAME, new AddressDataSet( -1, "Elm Street 2010")
+            1, USER_NAME, new AddressDataSet("Elm Street 2010")
         );
         expectedUserDataSet.addPhone(new PhoneDataSet(-1, "1000003"));
         expectedUserDataSet.addPhone(new PhoneDataSet(-1, "1000033"));
         dbService.save(expectedUserDataSet);
         UserDataSet testUserDataSet = dbService.loadByName(USER_NAME);
         Assert.assertEquals(expectedUserDataSet, testUserDataSet);
+    }
+
+    @Test
+    public void testCache() throws Exception {
+        final int size = 20;
+        int j = 0;
+
+        for (int i = 0; i < size; i++) {
+            UserDataSet expectedUserDataSet = new UserDataSet(
+                i,"User " + i, new AddressDataSet("Street " + i)
+            );
+            expectedUserDataSet.addPhone(
+                new PhoneDataSet("100" + String.format("%04d", j++))
+            );
+            expectedUserDataSet.addPhone(
+                new PhoneDataSet("100" + String.format("%04d", j++))
+            );
+            dbService.save(expectedUserDataSet);
+        }
+
+        for (int i = (size - (DBServiceImpl.cacheSize + 5)); i < size; i++) {
+            UserDataSet testUserDataSet = dbService.load(i, UserDataSet.class);
+        }
+
+        Assert.assertEquals(DBServiceImpl.cacheSize, dbService.getHitCount());
+        Assert.assertEquals(5, dbService.getMissCount());
     }
 }

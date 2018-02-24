@@ -3,11 +3,9 @@ package ru.otus.l121;
 /**
  * Created by VSkurikhin.
  *
- * Solution for L09.1
+ * Solution for L12.1
  *
  * PreReq: PostgreSQL
- *
- * Configure application in db/DBConf.java
  *
  * To start:
  * mvn clean package

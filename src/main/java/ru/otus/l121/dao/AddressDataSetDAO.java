@@ -5,10 +5,10 @@ import ru.otus.l121.dataset.*;
 
 import java.util.List;
 
-public class AddressDataSetHibernateDAO extends HibernateDAO {
+public class AddressDataSetDAO extends DAO {
     private final String DAO_TYPE = AddressDataSet.class.getName();
 
-    public AddressDataSetHibernateDAO(Session session) {
+    public AddressDataSetDAO(Session session) {
         super(session);
     }
 

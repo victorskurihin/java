@@ -3,26 +3,25 @@ package ru.otus.l121.dataset;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "phones")
 public class PhoneDataSet extends DataSet {
     @Column(name = "number")
     private String number;
 
-    @OtusIgnoreField
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "userdataset_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private UserDataSet userDataSet;
 
     //Important for Hibernate
     public PhoneDataSet() {
         super(-1);
     }
-    public PhoneDataSet(long id) {
-        super(id);
-
-    }
     public PhoneDataSet(long id, String number) {
         super(id);
         this.number = number;
+    }
+    public PhoneDataSet(String number) {
+        this(-1, number);
     }
 
     public String getNumber() {

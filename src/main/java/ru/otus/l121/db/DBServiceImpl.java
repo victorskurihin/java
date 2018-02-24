@@ -7,6 +7,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.service.ServiceRegistry;
+import ru.otus.l121.cache.CacheEngine;
+import ru.otus.l121.cache.CacheEngineImpl;
+import ru.otus.l121.cache.SoftReferenceElement;
 import ru.otus.l121.dao.*;
 import ru.otus.l121.dataset.*;
 
@@ -17,17 +20,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class DBServiceHibernateImpl implements DBService, TypeNames {
-    private Map<String, HibernateDAO> adapters;
+public class DBServiceImpl implements DBService, TypeNames {
+    public static final int cacheSize = 10;
+
+    private Map<String, DAO> adapters;
     private final SessionFactory sessionFactory;
+    private CacheEngine<Long, DataSet> cache;
 
     private static Configuration defaultConfiguration() {
         Configuration cfg = new Configuration();
 
-        cfg.addAnnotatedClass(UserDataSet.class);
         cfg.addAnnotatedClass(AddressDataSet.class);
-        cfg.addAnnotatedClass(PhoneDataSet.class);
         cfg.addAnnotatedClass(EmptyDataSet.class);
+        cfg.addAnnotatedClass(PhoneDataSet.class);
+        cfg.addAnnotatedClass(UserDataSet.class);
 
         cfg.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
         cfg.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
@@ -41,23 +47,25 @@ public class DBServiceHibernateImpl implements DBService, TypeNames {
         return cfg;
     }
 
-    public DBServiceHibernateImpl() {
-        this(defaultConfiguration());
-
-    }
-
-    public DBServiceHibernateImpl(Configuration configuration) {
-        sessionFactory = createSessionFactory(configuration);
-    }
-
     public void setDefaultDAOFor(Session session) {
         adapters = new HashMap<>();
-        addAdapter(new AddressDataSetHibernateDAO(session));
-        addAdapter(new PhoneDataSetHibernateDAO(session));
-        addAdapter(new UserDataSetHibernateDAO(session));
+        addAdapter(new AddressDataSetDAO(session));
+        addAdapter(new PhoneDataSetDAO(session));
+        addAdapter(new UserDataSetDAO(session));
     }
 
-    public void addAdapter(HibernateDAO adapter) {
+    public DBServiceImpl() {
+        this(defaultConfiguration());
+    }
+
+    public DBServiceImpl(Configuration configuration) {
+        sessionFactory = createSessionFactory(configuration);
+        cache = new CacheEngineImpl<>(
+            cacheSize, 10000, 0, false
+        );
+    }
+
+    public void addAdapter(DAO adapter) {
         if (! adapters.containsKey(adapter.getAdapteeOfType())) {
             adapters.put(adapter.getAdapteeOfType(), adapter);
             adapter.setAdapters(adapters);
@@ -91,30 +99,34 @@ public class DBServiceHibernateImpl implements DBService, TypeNames {
     }
 
     @Override
-    public <T extends DataSet> void createTables(Class<T> clazz) {
-        // TODO
-    }
-
-    @Override
     public <T extends DataSet> void save(T dataSet) {
         try (Session session = sessionFactory.openSession()) {
             setDefaultDAOFor(session);
+
             String key = dataSet.getClass().getName();
-            HibernateDAO dao = adapters.getOrDefault(
-                key, new EmptyDataSetHibernateDAO(session)
+            DAO dao = adapters.getOrDefault(
+                key, new EmptyDataSetDAO(session)
             );
+
             dao.save(dataSet);
-            //session.save(dataSet);
+            long softKey = dataSet.getClass().hashCode() + dataSet.getId();
+            cache.put(new SoftReferenceElement<>(softKey, dataSet));
         }
     }
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
+        long softKey = clazz.hashCode() + id;
+        SoftReferenceElement<Long, DataSet> element = cache.get(softKey);
+        if (null != element) {
+            //noinspection unchecked
+            return (T) element.getValue();
+        }
         return runInSession(session -> {
             setDefaultDAOFor(session);
             String key = clazz.getName();
-            HibernateDAO dao = adapters.getOrDefault(
-                key, new EmptyDataSetHibernateDAO(session)
+            DAO dao = adapters.getOrDefault(
+                key, new EmptyDataSetDAO(session)
             );
             //noinspection unchecked
             return (T) dao.read(id);
@@ -124,7 +136,7 @@ public class DBServiceHibernateImpl implements DBService, TypeNames {
     @Override
     public UserDataSet loadByName(String name) {
         return runInSession(session -> {
-            UserDataSetHibernateDAO dao = new UserDataSetHibernateDAO(session);
+            UserDataSetDAO dao = new UserDataSetDAO(session);
             return dao.readByName(name);
         });
     }
@@ -132,9 +144,19 @@ public class DBServiceHibernateImpl implements DBService, TypeNames {
     @Override
     public List<UserDataSet> loadAll() {
         return runInSession(session -> {
-            UserDataSetHibernateDAO dao = new UserDataSetHibernateDAO(session);
+            UserDataSetDAO dao = new UserDataSetDAO(session);
             return dao.readAll();
         });
+    }
+
+    @Override
+    public int getHitCount() {
+        return cache.getHitCount();
+    }
+
+    @Override
+    public int getMissCount() {
+        return cache.getMissCount();
     }
 
     public void shutdown() {

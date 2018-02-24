@@ -3,6 +3,7 @@ package ru.otus.l121.dataset;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "address")
 public class AddressDataSet extends DataSet {
     @Column(name = "street")
     private String street;
@@ -12,13 +13,13 @@ public class AddressDataSet extends DataSet {
         super(-1);
     }
 
-    public AddressDataSet(long id) {
-        super(id);
-    }
-
     public AddressDataSet(long id, String street) {
         super(id);
         this.street = street;
+    }
+
+    public AddressDataSet(String street) {
+        this(-1, street);
     }
 
     public String getStreet () {

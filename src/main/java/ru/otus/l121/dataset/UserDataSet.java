@@ -1,17 +1,16 @@
 package ru.otus.l121.dataset;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class UserDataSet extends DataSet {
     @Column(name = "name")
     private String name;
     @OneToOne(targetEntity = AddressDataSet.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name="address_id")
     private AddressDataSet address;
     @OneToMany(mappedBy = "userDataSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<PhoneDataSet> phones = new HashSet<>();
@@ -20,17 +19,11 @@ public class UserDataSet extends DataSet {
     public UserDataSet() {
         super(-1);
     }
-
-    public UserDataSet(long id) {
-        super(id);
-    }
-
     public UserDataSet(long id, String name, AddressDataSet address) {
-        this(id);
+        super(id);
         this.name = name;
         this.address = address;
     }
-
     public UserDataSet(String name, AddressDataSet address) {
         this(-1, name, address);
     }

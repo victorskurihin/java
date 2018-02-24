@@ -3,31 +3,28 @@ package ru.otus.l121.dao;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import ru.otus.l121.dataset.DataSet;
-import ru.otus.l121.exeption.FieldFunctionException;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.lang.reflect.Field;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /**
  * This is conract for DAO classes with default the helper realization.
  */
-public abstract class HibernateDAO {
+public abstract class DAO {
     private final String DAO_TYPE = TypeNames.DEFAULT;
 
     protected Session session;
-    private Map<String, HibernateDAO> adapters;
+    private Map<String, DAO> adapters;
 
-    HibernateDAO(Session session) {
+    DAO(Session session) {
         this.session = session;
     }
 
-    public void setAdapters(Map<String, HibernateDAO> adapters) {
+    public void setAdapters(Map<String, DAO> adapters) {
         this.adapters = adapters;
     }
 
@@ -43,8 +40,8 @@ public abstract class HibernateDAO {
     }
 
     protected <T extends DataSet> T read(Class<T> clazz, long id) {
-        return readByName(clazz, "id", id);
-        // return session.load(clazz, id); ???
+        // return readByName(clazz, "id", id);
+        return session.load(clazz, id); // ???
     }
 
     <T extends DataSet, S> T readByName(Class<T> clazz, String fldName, S name) {
