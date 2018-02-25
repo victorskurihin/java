@@ -15,23 +15,47 @@ import java.util.Map;
  * This is conract for DAO classes with default the helper realization.
  */
 public abstract class DAO {
-    private final String DAO_TYPE = TypeNames.DEFAULT;
-
+    @SuppressWarnings("WeakerAccess")
     protected Session session;
-    private Map<String, DAO> adapters;
 
     DAO(Session session) {
         this.session = session;
     }
 
-    public void setAdapters(Map<String, DAO> adapters) {
-        this.adapters = adapters;
-    }
-
+    /**
+     * TODO
+     * @return
+     */
     public abstract String getAdapteeOfType();
+
+    /**
+     * TODO
+     * @param dataSet
+     * @param <T>
+     */
     public abstract <T extends DataSet> void save(T dataSet);
+
+    /**
+     * TODO
+     * @param id
+     * @param <T>
+     * @return
+     */
     public abstract <T extends DataSet> T read(long id);
+
+    /**
+     * TODO
+     * @param name
+     * @param <T>
+     * @return
+     */
     public abstract <T extends DataSet> T readByName(String name);
+
+    /**
+     * TODO
+     * @param <T>
+     * @return
+     */
     public abstract <T extends DataSet> List<T> readAll();
 
     @Transactional
@@ -45,18 +69,22 @@ public abstract class DAO {
     }
 
     <T extends DataSet, S> T readByName(Class<T> clazz, String fldName, S name) {
+
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(clazz);
         Root<T> from = criteria.from(clazz);
         criteria.where(builder.equal(from.get(fldName), name));
         Query<T> query = session.createQuery(criteria);
+
         return query.uniqueResult();
     }
 
     <T extends DataSet> List<T> readAll(Class<T> clazz) {
+
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(clazz);
         criteria.from(clazz);
+
         return session.createQuery(criteria).list();
     }
 }

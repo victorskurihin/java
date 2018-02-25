@@ -2,10 +2,13 @@ package ru.otus.l121.dataset;
 
 import javax.persistence.*;
 
+/**
+ * TODO
+ */
 @Entity
 @Table(name = "phones")
 public class PhoneDataSet extends DataSet {
-    @Column(name = "number")
+    @Column(name = "number", unique = true)
     private String number;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)

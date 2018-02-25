@@ -11,6 +11,10 @@ public abstract class DataSet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final long id; // Primary key field.
 
+    /**
+     * TODO
+     * @return
+     */
     public long getId() {
         return id;
     }

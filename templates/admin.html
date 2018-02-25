@@ -5,11 +5,6 @@
     <title>Admin</title>
 </head>
 <body>
-<div class="top">
-    <img src="logo.png"/>
-    <br/>
-    <a href="login">Login</a> <a href="admin">Admin</a> <a href="timer">Timer</a>
-</div>
 
 <p>Login: ${login}</p>
 
@@ -20,6 +15,14 @@
 <p>Locale: ${locale}</p>
 
 <p>SessionId: ${sessionId}</p>
+
+<p style="color: darkgreen;">
+Cache Hit: ${cacheHit}
+</p>
+
+<p style="color: darkblue;">
+Cache Miss: ${cacheMiss}
+</p>
 
 <p>Parameters: ${parameters}</p>
 

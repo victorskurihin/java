@@ -5,6 +5,9 @@ import ru.otus.l121.dataset.*;
 
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class PhoneDataSetDAO extends DAO {
     private final String DAO_TYPE = PhoneDataSet.class.getName();
 

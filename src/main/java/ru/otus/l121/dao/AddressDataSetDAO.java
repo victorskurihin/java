@@ -5,9 +5,16 @@ import ru.otus.l121.dataset.*;
 
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class AddressDataSetDAO extends DAO {
     private final String DAO_TYPE = AddressDataSet.class.getName();
 
+    /**
+     * TODO
+     * @param session
+     */
     public AddressDataSetDAO(Session session) {
         super(session);
     }

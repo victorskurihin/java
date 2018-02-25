@@ -6,6 +6,9 @@ import ru.otus.l121.dataset.*;
 
 import java.util.List;
 
+/**
+ * TODO
+ */
 public class EmptyDataSetDAO extends DAO {
     private final String DAO_TYPE = EmptyDataSet.class.getName();
 

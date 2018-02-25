@@ -153,9 +153,6 @@
                             <mainClass>${project.mainclass}</mainClass>
                             <addClasspath>true</addClasspath>
                         </manifest>
-                        <manifestEntries>
-                            <Class-Path>hamcrest-core-${hamcrest.core.version}.jar junit-${junit.version}.jar ${name}.jar</Class-Path>
-                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>

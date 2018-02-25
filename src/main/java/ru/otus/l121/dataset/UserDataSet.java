@@ -7,7 +7,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class UserDataSet extends DataSet {
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     private String name;
 
     @OneToOne(

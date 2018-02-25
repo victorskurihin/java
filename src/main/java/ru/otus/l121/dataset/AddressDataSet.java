@@ -2,10 +2,13 @@ package ru.otus.l121.dataset;
 
 import javax.persistence.*;
 
+/**
+ * TODO
+ */
 @Entity
 @Table(name = "address")
 public class AddressDataSet extends DataSet {
-    @Column(name = "street")
+    @Column(name = "street", unique = true)
     private String street;
 
     //Important for Hibernate

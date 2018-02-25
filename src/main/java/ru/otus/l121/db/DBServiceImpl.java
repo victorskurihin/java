@@ -20,7 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class DBServiceImpl implements DBService, TypeNames {
+/**
+ * TODO
+ */
+public class DBServiceImpl implements DBService {
     public static final int cacheSize = 10;
 
     private Map<String, DAO> adapters;
@@ -47,6 +50,10 @@ public class DBServiceImpl implements DBService, TypeNames {
         return cfg;
     }
 
+    /**
+     * TODO
+     * @param session
+     */
     public void setDefaultDAOFor(Session session) {
         adapters = new HashMap<>();
         addAdapter(new AddressDataSetDAO(session));
@@ -54,10 +61,17 @@ public class DBServiceImpl implements DBService, TypeNames {
         addAdapter(new UserDataSetDAO(session));
     }
 
+    /**
+     * TODO
+     */
     public DBServiceImpl() {
         this(defaultConfiguration());
     }
 
+    /**
+     * TODO
+     * @param configuration
+     */
     public DBServiceImpl(Configuration configuration) {
         sessionFactory = createSessionFactory(configuration);
         cache = new CacheEngineImpl<>(
@@ -65,10 +79,14 @@ public class DBServiceImpl implements DBService, TypeNames {
         );
     }
 
+    /**
+     * TODO
+     * @param adapter
+     */
     public void addAdapter(DAO adapter) {
         if (! adapters.containsKey(adapter.getAdapteeOfType())) {
             adapters.put(adapter.getAdapteeOfType(), adapter);
-            adapter.setAdapters(adapters);
+            // DEPRECATED adapter.setAdapters(adapters);
         }
     }
 
