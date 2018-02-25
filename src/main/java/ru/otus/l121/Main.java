@@ -1,26 +1,39 @@
 package ru.otus.l121;
 
-/**
- * Created by VSkurikhin.
- *
- * Solution for L12.1
- *
- * PreReq: PostgreSQL
- *
- * To start:
- * mvn clean package
- *
- * ./run.sh
- * or
- * run.bat
- */
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import ru.otus.l121.servlet.AdminServlet;
+import ru.otus.l121.servlet.LoginServlet;
+import ru.otus.l121.servlet.TimerServlet;
 
+/**
+ * @author v.chibrikov
+ */
 public class Main {
+    private final static int PORT = 8090;
+    private final static String PUBLIC_HTML = "public_html";
 
     public static void main(String[] args) throws Exception {
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setResourceBase(PUBLIC_HTML);
+
+        ServletContextHandler context = new ServletContextHandler(
+            ServletContextHandler.SESSIONS
+        );
+
+        context.addServlet(
+            new ServletHolder(new LoginServlet("anonymous")), "/login"
+        );
+        context.addServlet(AdminServlet.class, "/admin");
+        context.addServlet(TimerServlet.class, "/timer");
+
+        Server server = new Server(PORT);
+        server.setHandler(new HandlerList(resourceHandler, context));
+
+        server.start();
+        server.join();
     }
 }
-
-/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
- */
-//EOF

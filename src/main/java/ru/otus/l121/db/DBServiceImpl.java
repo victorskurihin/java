@@ -40,7 +40,7 @@ public class DBServiceImpl implements DBService, TypeNames {
         cfg.setProperty("hibernate.connection.url", "jdbc:postgresql://localhost:5432/db");
         cfg.setProperty("hibernate.connection.username", "dbuser");
         cfg.setProperty("hibernate.connection.password", "password");
-        cfg.setProperty("hibernate.show_sql", "true");
+        cfg.setProperty("hibernate.show_sql", "false");
         cfg.setProperty("hibernate.hbm2ddl.auto", "create");
         cfg.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 

@@ -9,10 +9,18 @@ import java.util.Set;
 public class UserDataSet extends DataSet {
     @Column(name = "name")
     private String name;
-    @OneToOne(targetEntity = AddressDataSet.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToOne(
+        targetEntity = AddressDataSet.class,
+        cascade = CascadeType.ALL,
+        fetch = FetchType.EAGER
+    )
     @JoinColumn(name="address_id")
     private AddressDataSet address;
-    @OneToMany(mappedBy = "userDataSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+
+    @OneToMany(
+        mappedBy = "userDataSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER
+    )
     private Set<PhoneDataSet> phones = new HashSet<>();
 
     //Important for Hibernate

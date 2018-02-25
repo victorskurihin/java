@@ -12,12 +12,10 @@ public class AddressDataSet extends DataSet {
     public AddressDataSet() {
         super(-1);
     }
-
     public AddressDataSet(long id, String street) {
         super(id);
         this.street = street;
     }
-
     public AddressDataSet(String street) {
         this(-1, street);
     }
