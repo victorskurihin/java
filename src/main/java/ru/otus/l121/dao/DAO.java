@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This is conract for DAO classes with default the helper realization.
+ * This is contract for DAO classes with default the helper realization.
  */
 public abstract class DAO {
     @SuppressWarnings("WeakerAccess")

@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO
+ * This class provides access to a centralized registry of the user's online
+ * accounts.  The user enters credentials  (username and password) once  per
+ * account,  granting   applications   access   to  online  resources   with
+ * "one-click" approval.
  */
 public class AuthAccount {
     public static final String ADMIN_NAME = "admin_username";
