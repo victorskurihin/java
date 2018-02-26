@@ -9,10 +9,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 
 /**
  * This is contract for DAO classes with default the helper realization.
+ *
+ * A class is a superclass for implementing a Data Access Object interfaces
+ * through Hibernate ORM.
  */
 public abstract class DAO {
     @SuppressWarnings("WeakerAccess")
@@ -23,38 +25,47 @@ public abstract class DAO {
     }
 
     /**
-     * TODO
-     * @return
+     * Returns the string description of type that can be serviced an adapter.
+     *
+     * @return the string description of type
      */
     public abstract String getAdapteeOfType();
 
     /**
-     * TODO
-     * @param dataSet
-     * @param <T>
+     * Persists the given transient instance of subclass DataSet type, first
+     * assigning a generated identifier.
+     *
+     * @param dataSet the transient instance of subclass DataSet type
+     * @param <T> the subclass DataSet type
      */
     public abstract <T extends DataSet> void save(T dataSet);
 
     /**
-     * TODO
-     * @param id
-     * @param <T>
-     * @return
+     * Returns the persistent instance with given identifier of object, assuming
+     * that the instance exists.
+     *
+     * @param id identifier
+     * @param <T> the subclass DataSet type
+     * @return the persistent instance of the T class with the given identifier
      */
     public abstract <T extends DataSet> T read(long id);
 
     /**
-     * TODO
-     * @param name
-     * @param <T>
-     * @return
+     * Returns the persistent instance with given the string value in object,
+     * assuming that the instance exists.
+     *
+     * @param name the string value
+     * @param <T> the subclass DataSet type
+     * @return the persistent instance of the T class
      */
     public abstract <T extends DataSet> T readByName(String name);
 
     /**
-     * TODO
-     * @param <T>
-     * @return
+     * Returns all persistent instances of the appropriate type of subclass
+     * DataSet.
+     *
+     * @param <T> the subclass DataSet type
+     * @return all persistent instances of the T class
      */
     public abstract <T extends DataSet> List<T> readAll();
 

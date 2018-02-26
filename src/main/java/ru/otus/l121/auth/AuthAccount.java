@@ -15,6 +15,11 @@ public class AuthAccount {
     private Map<String, String> adminsUserPassword = new HashMap<>();
     private Map<String, String> usersPassword = new HashMap<>();
 
+    /**
+     * The constructor initializes the list of admin accounts.
+     *
+     * @param admins the list of admin accounts with passwords.
+     */
     public AuthAccount(Map<String, String> admins) {
         if (admins.containsKey(ADMIN_NAME)) {
             String adminName = admins.get(ADMIN_NAME);
@@ -27,6 +32,13 @@ public class AuthAccount {
         }
     }
 
+    /**
+     * The method is procedure for users authentication.
+     *
+     * @param username the name of user
+     * @param password the password of user
+     * @return true if authentication is success
+     */
     public boolean auth(String username, String password) {
         if (usersPassword.containsKey(username)) {
             return usersPassword.get(username).equals(password);
@@ -35,10 +47,22 @@ public class AuthAccount {
             && adminsUserPassword.get(username).equals(password);
     }
 
+    /**
+     * The method is procedure for detecting admin accounts.
+     *
+     * @param username the name of user
+     * @return true if account is administrator
+     */
     public boolean isAdministrator(String username) {
         return adminsUserPassword.containsKey(username);
     }
 
+    /**
+     * The method adds the user to authentication map.
+     *
+     * @param user the name of user
+     * @param password the password of user
+     */
     public void put(String user, String password) {
         usersPassword.put(user, password);
     }

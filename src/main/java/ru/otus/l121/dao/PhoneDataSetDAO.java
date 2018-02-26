@@ -6,11 +6,18 @@ import ru.otus.l121.dataset.*;
 import java.util.List;
 
 /**
- * TODO
+ * The class for instances of the Data access object. An instance of this class
+ * will serve  instances of  PhoneDataSet for  the persistence layer of data in
+ * them.
  */
 public class PhoneDataSetDAO extends DAO {
     private final String DAO_TYPE = PhoneDataSet.class.getName();
 
+    /**
+     * The constructor remembers the DBService session.
+     *
+     * @param session the DBService session
+     */
     public PhoneDataSetDAO(Session session) {
         super(session);
     }
