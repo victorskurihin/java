@@ -72,7 +72,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DBService dbService = new DBServiceImpl();
         AuthAccount authAccount = new AuthAccount(loadAdmins(
-            dbService, "admins.txt"
+            dbService, "admins.properties"
         ));
         UserDataSet user = new UserDataSet("user", null);
 
