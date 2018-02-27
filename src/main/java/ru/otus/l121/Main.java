@@ -26,7 +26,7 @@ import java.util.Map;
  * PreReq: A DB compatible with Hibernate ORM.
  *
  * Configure application in db/DBServiceImpl.java
- * and resources/admin.txt.
+ * and resources/admins.properties
  *
  * To start:
  * mvn clean package
