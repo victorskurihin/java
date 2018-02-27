@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.resource.Resource;
 import ru.otus.l121.auth.AuthAccount;
 import ru.otus.l121.dataset.*;
 import ru.otus.l121.db.*;
@@ -69,7 +70,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-
         DBService dbService = new DBServiceImpl();
         AuthAccount authAccount = new AuthAccount(loadAdmins(
             dbService, "admins.txt"
@@ -81,7 +81,8 @@ public class Main {
         dbService.load(0, UserDataSet.class); // One miss
 
         ResourceHandler resourceHandler = new ResourceHandler();
-        resourceHandler.setResourceBase(PUBLIC_HTML);
+        Resource resource = Resource.newClassPathResource(PUBLIC_HTML);
+        resourceHandler.setBaseResource(resource);
 
         ServletContextHandler context = new ServletContextHandler(
             ServletContextHandler.SESSIONS
@@ -94,6 +95,7 @@ public class Main {
             new AdminServlet(authAccount, dbService)), "/admin"
         );
         context.addServlet(HomeServlet.class, "/home");
+        context.setContextPath("/");
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));

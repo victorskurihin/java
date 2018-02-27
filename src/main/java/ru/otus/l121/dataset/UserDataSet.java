@@ -4,12 +4,18 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * The class contains a users data. This class is marked up by annotation for
+ * working with Hibernate ORM.
+ */
 @Entity
 @Table(name = "users")
 public class UserDataSet extends DataSet {
+    // for store user name
     @Column(name = "name", unique = true)
     private String name;
 
+    // for store an user's address
     @OneToOne(
         targetEntity = AddressDataSet.class,
         cascade = CascadeType.ALL,
@@ -18,6 +24,7 @@ public class UserDataSet extends DataSet {
     @JoinColumn(name="address_id")
     private AddressDataSet address;
 
+    // for store a list of user's phones
     @OneToMany(
         mappedBy = "userDataSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER
     )

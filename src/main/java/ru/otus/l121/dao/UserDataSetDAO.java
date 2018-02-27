@@ -6,7 +6,7 @@ import ru.otus.l121.dataset.*;
 import java.util.List;
 
 /**
- * The class for instances of the Data access object. An instance of this class
+ * The class for instances of the Data Access Object. An instance of this class
  * will  serve instances  of UserDataSet for  the persistence layer  of data in
  * them.
  */

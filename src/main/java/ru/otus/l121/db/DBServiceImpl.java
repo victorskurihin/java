@@ -9,7 +9,6 @@ import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.service.ServiceRegistry;
 import ru.otus.l121.cache.CacheEngine;
 import ru.otus.l121.cache.CacheEngineImpl;
-import ru.otus.l121.cache.SoftReferenceElement;
 import ru.otus.l121.dao.*;
 import ru.otus.l121.dataset.*;
 
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * TODO
+ * Class that provides common database services
  */
 public class DBServiceImpl implements DBService {
     public static final int cacheSize = 10;
@@ -50,6 +49,11 @@ public class DBServiceImpl implements DBService {
         return cfg;
     }
 
+    /**
+     * Construct a `DbService` with service ID and the current application
+     * @param id the service ID
+     * @param app the current application
+     */
     /**
      * TODO
      * @param session
@@ -127,18 +131,19 @@ public class DBServiceImpl implements DBService {
             );
 
             dao.save(dataSet);
-            long softKey = dataSet.getClass().hashCode() + dataSet.getId();
-            cache.put(new SoftReferenceElement<>(softKey, dataSet));
+            long longKey = dataSet.getClass().hashCode() + dataSet.getId();
+//            cache.put(new SoftReferenceElement<>(softKey, dataSet));
+            cache.put(longKey, dataSet);
         }
     }
 
     @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
         long softKey = clazz.hashCode() + id;
-        SoftReferenceElement<Long, DataSet> element = cache.get(softKey);
+        DataSet element = cache.get(softKey);
         if (null != element) {
             //noinspection unchecked
-            return (T) element.getValue();
+            return (T) element;
         }
         return runInSession(session -> {
             setDefaultDAOFor(session);
