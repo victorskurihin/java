@@ -35,4 +35,4 @@ set JMX=%JMX%" -Dcom.sun.management.jmxremote.authenticate=false"
 set JMX=%JMX%" -Dcom.sun.management.jmxremote.ssl=false"
 set DUMP="-XX:+HeapDumpOnOutOfMemoryError"
 set DUMP=%DUMP%" -XX:HeapDumpPath="%DUMPDIR%
-java %CP% %REMOTE_DEBUG% %MEMORY% %GC% %GC_LOG% %JMX% %DUMP% ru.otus.l091.MainTest 2> %ERRLOG% > %OUTLOG%
+java %CP% %REMOTE_DEBUG% %MEMORY% %GC% %GC_LOG% %JMX% %DUMP% ru.otus.l131.MainTest 2> %ERRLOG% > %OUTLOG%
