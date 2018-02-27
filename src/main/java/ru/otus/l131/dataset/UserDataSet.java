@@ -1,5 +1,7 @@
 package ru.otus.l131.dataset;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,6 +11,9 @@ import java.util.Set;
  * working with Hibernate ORM.
  */
 @Entity
+@org.hibernate.annotations.Cache(
+    usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE, region = "yourEntityCache"
+)
 @Table(name = "users")
 public class UserDataSet extends DataSet {
     // for store user name
@@ -27,6 +32,9 @@ public class UserDataSet extends DataSet {
     // for store a list of user's phones
     @OneToMany(
         mappedBy = "userDataSet", cascade = CascadeType.ALL, fetch = FetchType.EAGER
+    )
+    @org.hibernate.annotations.Cache(
+        usage=CacheConcurrencyStrategy.READ_ONLY, region="yourCollectionRegion"
     )
     private Set<PhoneDataSet> phones = new HashSet<>();
 
