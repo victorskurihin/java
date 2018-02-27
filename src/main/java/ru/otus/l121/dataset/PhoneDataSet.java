@@ -3,7 +3,9 @@ package ru.otus.l121.dataset;
 import javax.persistence.*;
 
 /**
- * TODO
+ * The class contains information about user's phones. This class is associated
+ * with the UserDataSet class by the relationship of many to one. This class is
+ * marked with an annotation for working with Hibernate ORM.
  */
 @Entity
 @Table(name = "phones")

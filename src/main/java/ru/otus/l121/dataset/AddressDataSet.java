@@ -3,11 +3,14 @@ package ru.otus.l121.dataset;
 import javax.persistence.*;
 
 /**
- * TODO
+ * The class contains information about the user's address. This class is
+ * associated with the UserDataSet class by the relationship of one to one.
+ * This class is marked with an annotation for working with Hibernate ORM.
  */
 @Entity
 @Table(name = "address")
 public class AddressDataSet extends DataSet {
+    // for store the user's address as a street
     @Column(name = "street", unique = true)
     private String street;
 

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * TODO
+ * Class that provides common database services
  */
 public class DBServiceImpl implements DBService {
     public static final int cacheSize = 10;
@@ -50,6 +50,11 @@ public class DBServiceImpl implements DBService {
         return cfg;
     }
 
+    /**
+     * Construct a `DbService` with service ID and the current application
+     * @param id the service ID
+     * @param app the current application
+     */
     /**
      * TODO
      * @param session

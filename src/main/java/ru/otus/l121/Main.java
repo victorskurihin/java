@@ -69,7 +69,6 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-
         DBService dbService = new DBServiceImpl();
         AuthAccount authAccount = new AuthAccount(loadAdmins(
             dbService, "admins.txt"
@@ -94,6 +93,7 @@ public class Main {
             new AdminServlet(authAccount, dbService)), "/admin"
         );
         context.addServlet(HomeServlet.class, "/home");
+        context.setContextPath("/");
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));

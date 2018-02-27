@@ -9,7 +9,7 @@ import javax.persistence.*;
 public abstract class DataSet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final long id; // Primary key field.
+    private final long id; // This is the primary key field.
 
     /**
      * TODO

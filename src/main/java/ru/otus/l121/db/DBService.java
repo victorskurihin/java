@@ -6,46 +6,57 @@ import ru.otus.l121.dataset.UserDataSet;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * This is contract for the database services classes.
+ */
 public interface DBService extends AutoCloseable {
 
     /**
-     * TODO
-     * @return
+     * Get the current local status of a transaction.
+     *
+     * @return the current local status
      */
     String getLocalStatus();
 
     /**
-     * TODO
-     * @return
+     * Obtain a database connection.
+     *
+     * @return a database connection
      */
     Connection getConnection();
 
     /**
-     * TODO
-     * @param user
-     * @param <T>
+     * Save a instance with type of subclass of DataSet to the DB.
+     *
+     * @param user a instance
+     * @param <T> type of subclass of DataSet
      */
     <T extends DataSet> void save(T user);
 
     /**
-     * TODO
-     * @param id
-     * @param clazz
-     * @param <T>
+     * Originates, loads from the DB and constructs a instance of T by
+     * identifier.
+     *
+     * @param id a identifier
+     * @param clazz a class object of type T
+     * @param <T> type of subclass of DataSet
      * @return
      */
     <T extends DataSet> T load(long id, Class<T> clazz);
 
     /**
-     * TODO
-     * @param name
-     * @return
+     * Originates, loads from the DB and constructs a instance of UserDataSet
+     * by a mame of user.
+     *
+     * @param name of user
+     * @return a instance
      */
     UserDataSet loadByName(String name);
 
     /**
-     * TODO
-     * @return
+     * Originates, loads from the DB and constructs all instances of UserDataSet.
+     *
+     * @return a list of UserDataSet objects
      */
     List<UserDataSet> loadAll();
 
