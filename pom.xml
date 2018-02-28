@@ -95,7 +95,7 @@
     </dependencies>
 
     <build>
-        <finalName>L13.1-inject</finalName>
+        <finalName>auth</finalName>
 
         <plugins>
             <plugin>
