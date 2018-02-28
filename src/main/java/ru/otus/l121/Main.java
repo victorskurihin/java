@@ -39,50 +39,29 @@ import java.util.Map;
 public class Main {
     private final static int PORT = 8090;
     private final static String PUBLIC_HTML = "public_html";
-
-    private static Map<String, String> loadAdmins(DBService dbService, String fileName)
-        throws Exception {
-
-        URL url = Resources.getResource(fileName);
-        List<String> lines = Resources.readLines(url, Charsets.UTF_8);
-        int index = 1;
-        Map<String, String> result = new HashMap<>();
-
-        for (String line : lines) {
-            String[] variablePair = line.split("=", 2 );
-            if (2 == variablePair.length) {
-                String variableName = variablePair[0].trim();
-                String variableValue = variablePair[1].trim();
-
-                result.put(variableName, variableValue);
-                if (variableName.equals(AuthAccount.ADMIN_NAME)) {
-                    UserDataSet adminUser = new UserDataSet(
-                        index++, variableValue, null
-                    );
-                    dbService.save(adminUser);
-                }
-            }
-        }
-
-        dbService.load(1, UserDataSet.class); // One hit
-
-        return result;
-    }
+    public static final String JAR_FILE = "jar:file:";
+    public static final String RU_OTUS_MAIN_CLASS = "ru/otus/l121/Main.class";
+    public static final String ADMINS = "admins.properties";
 
     public static void main(String[] args) throws Exception {
-        DBService dbService = new DBServiceImpl();
-        AuthAccount authAccount = new AuthAccount(loadAdmins(
-            dbService, "admins.properties"
-        ));
-        UserDataSet user = new UserDataSet("user", null);
+        URL urlMain = ClassLoader.getSystemResource(RU_OTUS_MAIN_CLASS);
+        String scheme = urlMain.toString().substring(0, 9);
 
-        dbService.save(user);
+        DBService dbService = new DBServiceImpl();
+        AuthAccount authAccount = new AuthAccount(dbService, ADMINS);
+        Workload workload = new Workload(dbService);
+
         authAccount.put("user", "password");
-        dbService.load(0, UserDataSet.class); // One miss
+        workload.run();
 
         ResourceHandler resourceHandler = new ResourceHandler();
-        Resource resource = Resource.newClassPathResource(PUBLIC_HTML);
-        resourceHandler.setBaseResource(resource);
+
+        if (JAR_FILE.equals(scheme)) {
+            Resource resource = Resource.newClassPathResource(PUBLIC_HTML);
+            resourceHandler.setBaseResource(resource);
+        } else {
+            resourceHandler.setResourceBase(PUBLIC_HTML);
+        }
 
         ServletContextHandler context = new ServletContextHandler(
             ServletContextHandler.SESSIONS
@@ -95,7 +74,7 @@ public class Main {
             new AdminServlet(authAccount, dbService)), "/admin"
         );
         context.addServlet(HomeServlet.class, "/home");
-        context.setContextPath("/");
+        // context.setContextPath("/");
 
         Server server = new Server(PORT);
         server.setHandler(new HandlerList(resourceHandler, context));

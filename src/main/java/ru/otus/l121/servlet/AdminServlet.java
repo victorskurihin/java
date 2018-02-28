@@ -46,9 +46,12 @@ public class AdminServlet extends HomeServlet {
 
         Map<String, Object> pageVariables = HomeServlet.createPageVariablesMap(request);
         String login = (String) pageVariables.get(AuthServlet.LOGIN_PARAMETER_NAME);
+        String login2 = (String) request.getSession().getAttribute("login");
+
         if (null != login && authAccount.isAdministrator(login)) {
             pageVariables.put(CACHE_HIT, dbService.getHitCount());
             pageVariables.put(CACHE_MISS, dbService.getMissCount());
+            pageVariables.put("login2", login2);
 
             response.getWriter().println(TemplateProcessor.instance().getPage(
                 ADMIN_PAGE_TEMPLATE, pageVariables)

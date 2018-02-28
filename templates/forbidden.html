@@ -2,11 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
-    <title>Admin</title>
+    <title>Forbidden</title>
 </head>
-<body>
+<body style="background-color:#DD0000;">
 
-<p>Login: ${login}</p>
+<p style="font-style: oblique; background-color:#FF0000;">
+Forbidden Login: ${login}
+</p>
 
 <p>Method: ${method}</p>
 
@@ -16,17 +18,7 @@
 
 <p>SessionId: ${sessionId}</p>
 
-<p style="color: darkgreen;">
-Cache Hit: ${cacheHit}
-</p>
-
-<p style="color: darkblue;">
-Cache Miss: ${cacheMiss}
-</p>
-
 <p>Parameters: ${parameters}</p>
-
-<p>Login2: ${login2}</p>
 
 </body>
 </html>

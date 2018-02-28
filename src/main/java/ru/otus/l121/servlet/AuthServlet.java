@@ -75,16 +75,14 @@ public class AuthServlet extends HttpServlet {
         String requestLogin = request.getParameter(LOGIN_PARAMETER_NAME);
         String requestPassword = request.getParameter(PASSWORD_PARAMETER_NAME);
 
-        if (requestLogin != null) {
+        response.setContentType(HomeServlet.TEXT_HTML_CHARSET);
+
+        if (requestLogin != null && authAccount.auth(requestLogin, requestPassword)) {
             saveToVariable(requestLogin);
             saveToSession(request, requestLogin);
             saveToServlet(request, requestLogin);
             saveToCookie(response, requestLogin);
-        }
 
-        response.setContentType(HomeServlet.TEXT_HTML_CHARSET);
-
-        if (authAccount.auth(requestLogin, requestPassword)) {
             if (authAccount.isAdministrator(requestLogin)) {
                 response.sendRedirect(ADMIN_ROUTE);
             } else {
