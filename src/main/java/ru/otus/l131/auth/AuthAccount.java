@@ -1,6 +1,13 @@
 package ru.otus.l131.auth;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
+import ru.otus.l131.dataset.UserDataSet;
+import ru.otus.l131.db.DBService;
+
+import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +21,33 @@ public class AuthAccount {
     private static final String ADMIN_PASSWORD = "admin_password";
     private Map<String, String> adminsUserPassword = new HashMap<>();
     private Map<String, String> usersPassword = new HashMap<>();
+
+    private static Map<String, String> loadAdmins(DBService dbService, String fileName)
+        throws Exception {
+
+        URL url = Resources.getResource(fileName);
+        List<String> lines = Resources.readLines(url, Charsets.UTF_8);
+        int index = 1;
+        Map<String, String> result = new HashMap<>();
+
+        for (String line : lines) {
+            String[] variablePair = line.split("=", 2 );
+            if (2 == variablePair.length) {
+                String variableName = variablePair[0].trim();
+                String variableValue = variablePair[1].trim();
+
+                result.put(variableName, variableValue);
+                if (variableName.equals(AuthAccount.ADMIN_NAME)) {
+                    UserDataSet adminUser = new UserDataSet(
+                        index++, variableValue, null
+                    );
+                    dbService.save(adminUser);
+                }
+            }
+        }
+
+        return result;
+    }
 
     /**
      * The constructor initializes the list of admin accounts.
@@ -32,6 +66,9 @@ public class AuthAccount {
         }
     }
 
+    public AuthAccount(DBService dbService, String fileName) throws Exception {
+        this(loadAdmins(dbService, fileName));
+    }
     /**
      * The method is procedure for users authentication.
      *
