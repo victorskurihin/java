@@ -20,5 +20,4 @@ set DUMP=-XX:+HeapDumpOnOutOfMemoryError
 set DUMP=%DUMP% -XX:HeapDumpPath=%DUMPDIR%
 mkdir %LOGDIR% > nul 2> nul
 mkdir %DUMPDIR% > nul 2> nul
-java -cp %CP% %MEMORY% %GC_LOG% %JMX% %DUMP% -jar target\l131jetty.jar \
-     -Dorg.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog
+java -cp %CP% %MEMORY% %GC_LOG% %JMX% %DUMP% -jar target\l131inject.jar -Dorg.eclipse.jetty.util.log.class=org.eclipse.jetty.util.log.StdErrLog
