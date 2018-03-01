@@ -1,5 +1,7 @@
 package ru.otus.l131.servlet;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.l131.auth.AuthAccount;
 import ru.otus.l131.db.DBService;
 
@@ -24,23 +26,22 @@ public class AuthServlet extends HttpServlet {
     private static final String ADMIN_ROUTE = "admin";
     private static final String HOME_ROUTE = "home";
     private static final String AUTH_ROUTE = "auth";
+    private static final String ADMINS = "admins.properties";
 
-    private String login;
+    private String login = "anonymous";
+    private DBService dbService;
     private AuthAccount authAccount;
 
-    /**
-     * TODO
-     * @param login
-     * @param authAccount
-     */
-    public AuthServlet(String login, AuthAccount authAccount) {
-        this.login = login;
-        this.authAccount = authAccount;
+    public void init() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
+        authAccount = (AuthAccount) context.getBean("authAccount");
+        dbService = (DBService) context.getBean("dbService");
+        authAccount.put("user", "password");
+        (new Workload(dbService)).run();
     }
 
     private static String getPage(String login) throws IOException {
         Map<String, Object> pageVariables = new HashMap<>();
-
         pageVariables.put(LOGIN_VARIABLE_NAME, login == null ? "" : login);
 
         return TemplateProcessor.instance().getPage(LOGIN_PAGE_TEMPLATE, pageVariables);

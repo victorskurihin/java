@@ -1,7 +1,10 @@
 package ru.otus.l131.servlet;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.l131.auth.AuthAccount;
 import ru.otus.l131.db.DBService;
+import ru.otus.l131.db.DBServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,15 +26,10 @@ public class AdminServlet extends HomeServlet {
     private DBService dbService;
     private AuthAccount authAccount;
 
-    /**
-     * TODO
-     * @param authAccount
-     * @param dbService
-     */
-    public AdminServlet(AuthAccount authAccount, DBService dbService) {
-        super();
-        this.authAccount = authAccount;
-        this.dbService = dbService;
+    public void init() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
+        authAccount = (AuthAccount) context.getBean("authAccount");
+        dbService = (DBService) context.getBean("dbService");
     }
 
     /**

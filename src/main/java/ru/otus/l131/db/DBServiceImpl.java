@@ -45,11 +45,6 @@ public class DBServiceImpl implements DBService {
         cfg.setProperty("hibernate.show_sql", "false");
         cfg.setProperty("hibernate.hbm2ddl.auto", "create");
         cfg.setProperty("hibernate.enable_lazy_load_no_trans", "true");
-        cfg.setProperty("hibernate.cache.use_second_level_cache", "true");
-        cfg.setProperty(
-            "hibernate.cache.region.factory_class",
-            "org.hibernate.cache.ehcache.EhCacheRegionFactory"
-        );
 
         return cfg;
     }

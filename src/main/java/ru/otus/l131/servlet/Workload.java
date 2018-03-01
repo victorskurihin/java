@@ -1,4 +1,4 @@
-package ru.otus.l131;
+package ru.otus.l131.servlet;
 
 import ru.otus.l131.dataset.*;
 import ru.otus.l131.db.*;

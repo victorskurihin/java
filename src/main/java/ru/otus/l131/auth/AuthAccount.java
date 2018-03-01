@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import ru.otus.l131.dataset.UserDataSet;
 import ru.otus.l131.db.DBService;
+import ru.otus.l131.db.DBServiceImpl;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ public class AuthAccount {
     private Map<String, String> adminsUserPassword = new HashMap<>();
     private Map<String, String> usersPassword = new HashMap<>();
 
-    private static Map<String, String> loadAdmins(DBService dbService, String fileName)
+    private static Map<String, String> loadAdmins(String fileName)
         throws Exception {
 
         URL url = Resources.getResource(fileName);
@@ -37,12 +38,6 @@ public class AuthAccount {
                 String variableValue = variablePair[1].trim();
 
                 result.put(variableName, variableValue);
-                if (variableName.equals(AuthAccount.ADMIN_NAME)) {
-                    UserDataSet adminUser = new UserDataSet(
-                        index++, variableValue, null
-                    );
-                    dbService.save(adminUser);
-                }
             }
         }
 
@@ -66,8 +61,8 @@ public class AuthAccount {
         }
     }
 
-    public AuthAccount(DBService dbService, String fileName) throws Exception {
-        this(loadAdmins(dbService, fileName));
+    public AuthAccount(String fileName) throws Exception {
+        this(loadAdmins(fileName));
     }
     /**
      * The method is procedure for users authentication.
