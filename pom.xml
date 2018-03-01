@@ -10,7 +10,7 @@
 
 
     <name>l131inject</name>
-    <description>Project for Spring Boot with JPA Hibernate</description>
+    <description>Project for Spring with JPA Hibernate</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

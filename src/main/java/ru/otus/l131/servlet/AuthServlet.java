@@ -49,6 +49,8 @@ public class AuthServlet extends HttpServlet {
 
     /**
      * Called by the server to allow a servlet to handle a GET request.
+     * The HTTP GET method allows the client to request a representation of
+     * the specified resource.
      *
      * @param request contains the request the client has made of the servlet
      * @param response contains the response the servlet sends to the client
@@ -67,8 +69,7 @@ public class AuthServlet extends HttpServlet {
     /**
      * Called by  the server  to allow  a servlet  to handle  a POST  request.
      * The HTTP POST method allows the client to send data of unlimited length
-     * to the Web server a single time and is useful when posting information
-     * such as credit card numbers.
+     * to the Web server a single time.
      *
      * @param request contains the request the client has made of the servlet
      * @param response contains the response the servlet sends to the client
