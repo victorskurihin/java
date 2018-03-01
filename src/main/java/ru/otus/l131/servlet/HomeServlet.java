@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO
+ * Servlet implementation class AuthServlet.
  */
 public class HomeServlet extends HttpServlet {
 

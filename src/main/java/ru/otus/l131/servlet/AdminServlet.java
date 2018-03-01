@@ -4,7 +4,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.l131.auth.AuthAccount;
 import ru.otus.l131.db.DBService;
-import ru.otus.l131.db.DBServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * TODO
+ * Servlet implementation class HomeServlet.
  */
 public class AdminServlet extends HomeServlet {
 

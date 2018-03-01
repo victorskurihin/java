@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * TODO
+ * Servlet implementation class AuthServlet.
  */
 public class AuthServlet extends HttpServlet {
 
