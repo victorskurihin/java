@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * Servlet implementation class AuthServlet.
+ * This servlet is responsible for authenticating users.
  */
 public class AuthServlet extends HttpServlet {
 
@@ -47,9 +48,10 @@ public class AuthServlet extends HttpServlet {
     }
 
     /**
-     * TODO
-     * @param request
-     * @param response
+     * Called by the server to allow a servlet to handle a GET request.
+     *
+     * @param request contains the request the client has made of the servlet
+     * @param response contains the response the servlet sends to the client
      * @throws ServletException
      * @throws IOException
      */
@@ -63,9 +65,13 @@ public class AuthServlet extends HttpServlet {
     }
 
     /**
-     * TODO
-     * @param request
-     * @param response
+     * Called by  the server  to allow  a servlet  to handle  a POST  request.
+     * The HTTP POST method allows the client to send data of unlimited length
+     * to the Web server a single time and is useful when posting information
+     * such as credit card numbers.
+     *
+     * @param request contains the request the client has made of the servlet
+     * @param response contains the response the servlet sends to the client
      * @throws ServletException
      * @throws IOException
      */
