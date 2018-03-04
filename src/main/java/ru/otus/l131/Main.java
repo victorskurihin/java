@@ -8,7 +8,9 @@ package ru.otus.l131;
  * PreReq: A DB compatible with Hibernate ORM.
  *
  * Configure application in db/DBServiceImpl.java
- * and resources/admins.properties, resources/SpringBeans.xml
+ * resources/admins.properties,
+ * resources/WEB-INF/applicationContext.xml
+ * resources/WEB-INF/web.xml
  *
  * To start:
  * mvn clean package

@@ -28,7 +28,6 @@ public class AuthAccount {
 
         URL url = Resources.getResource(fileName);
         List<String> lines = Resources.readLines(url, Charsets.UTF_8);
-        int index = 1;
         Map<String, String> result = new HashMap<>();
 
         for (String line : lines) {

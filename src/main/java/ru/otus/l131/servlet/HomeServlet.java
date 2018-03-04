@@ -1,7 +1,6 @@
 package ru.otus.l131.servlet;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.util.Map;
 /**
  * Servlet implementation class HomeServlet.
  */
-public class HomeServlet extends HttpServlet {
+public class HomeServlet extends AbstractServlet {
 
     private static final String DEFAULT_USER_NAME = "UNKNOWN";
     private static final String HOME_PAGE_TEMPLATE = "home.html";

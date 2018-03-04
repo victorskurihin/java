@@ -1,13 +1,11 @@
 package ru.otus.l131.servlet;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.otus.l131.auth.AuthAccount;
-import ru.otus.l131.db.DBService;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,26 +16,29 @@ import java.util.Map;
  * Servlet implementation class AuthServlet.
  * This servlet is responsible for authenticating users.
  */
-public class AuthServlet extends HttpServlet {
+public class AuthServlet extends AbstractServlet {
 
     public static final String LOGIN_PARAMETER_NAME = "login";
+    public static final String TEXT_HTML_CHARSET = "text/html;charset=utf-8";
+
     private static final String PASSWORD_PARAMETER_NAME = "password";
     private static final String LOGIN_VARIABLE_NAME = "login";
     private static final String LOGIN_PAGE_TEMPLATE = "auth.html";
     private static final String ADMIN_ROUTE = "admin";
     private static final String HOME_ROUTE = "home";
     private static final String AUTH_ROUTE = "auth";
-    private static final String ADMINS = "admins.properties";
 
     private String login = "anonymous";
-    private DBService dbService;
+
+    @Autowired
     private AuthAccount authAccount;
 
-    public void init() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
-        authAccount = (AuthAccount) context.getBean("authAccount");
-        dbService = (DBService) context.getBean("dbService");
-        authAccount.put("user", "password");
+    public AuthAccount getAuthAccount() {
+        return authAccount;
+    }
+
+    public void setAuthAccount(AuthAccount authAccount) {
+        this.authAccount = authAccount;
     }
 
     private static String getPage(String login) throws IOException {
@@ -45,6 +46,12 @@ public class AuthServlet extends HttpServlet {
         pageVariables.put(LOGIN_VARIABLE_NAME, login == null ? "" : login);
 
         return TemplateProcessor.instance().getPage(LOGIN_PAGE_TEMPLATE, pageVariables);
+    }
+
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        authAccount.put("user", "password");
     }
 
     /**
@@ -82,14 +89,14 @@ public class AuthServlet extends HttpServlet {
         String requestLogin = request.getParameter(LOGIN_PARAMETER_NAME);
         String requestPassword = request.getParameter(PASSWORD_PARAMETER_NAME);
 
-        response.setContentType(HomeServlet.TEXT_HTML_CHARSET);
+        response.setContentType(TEXT_HTML_CHARSET);
 
         if (null != requestLogin && authAccount.auth(requestLogin, requestPassword)) {
             saveToVariable(requestLogin);
             saveToSession(request, requestLogin);
             saveToServlet(request, requestLogin);
             saveToCookie(response, requestLogin);
-            
+
             if (authAccount.isAdministrator(requestLogin)) {
                 response.sendRedirect(ADMIN_ROUTE);
             } else {
@@ -108,10 +115,6 @@ public class AuthServlet extends HttpServlet {
         request.getServletContext().setAttribute("login", requestLogin);
     }
 
-    private void saveToServlet(HttpServletRequest request, DBService dbService) {
-        request.getServletContext().setAttribute("dbService", dbService);
-    }
-
     private void saveToSession(HttpServletRequest request, String requestLogin) {
         request.getSession().setAttribute("login", requestLogin);
     }
@@ -121,7 +124,7 @@ public class AuthServlet extends HttpServlet {
     }
 
     private void setOK(HttpServletResponse response) {
-        response.setContentType(HomeServlet.TEXT_HTML_CHARSET);
+        response.setContentType(TEXT_HTML_CHARSET);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

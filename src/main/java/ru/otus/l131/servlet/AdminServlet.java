@@ -1,7 +1,6 @@
 package ru.otus.l131.servlet;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.otus.l131.auth.AuthAccount;
 import ru.otus.l131.db.DBService;
 
@@ -17,20 +16,32 @@ import java.util.Map;
  */
 public class AdminServlet extends HomeServlet {
 
-    private static final String DEFAULT_USER_NAME = "UNKNOWN";
     private static final String ADMIN_PAGE_TEMPLATE = "admin.html";
     private static final String FORBIDDEN_PAGE_TEMPLATE = "forbidden.html";
     private static final String CACHE_HIT = "cacheHit";
     private static final String CACHE_MISS = "cacheMiss";
-
-    private DBService dbService;
-    private AuthAccount authAccount;
     private Workload workload;
 
-    public void init() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
-        authAccount = (AuthAccount) context.getBean("authAccount");
-        dbService = (DBService) context.getBean("dbService");
+    @Autowired
+    private DBService dbService;
+
+    @Autowired
+    private AuthAccount authAccount;
+
+    public DBService getDbService() {
+        return dbService;
+    }
+
+    public void setDbService(DBService dbService) {
+        this.dbService = dbService;
+    }
+
+    public AuthAccount getAuthAccount() {
+        return authAccount;
+    }
+
+    public void setAuthAccount(AuthAccount authAccount) {
+        this.authAccount = authAccount;
     }
 
     /**
