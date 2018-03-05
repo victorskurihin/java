@@ -4,12 +4,9 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.l141.ParallelSortRunner;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-
-import static org.junit.Assert.*;
 
 public class ThreadsSortRunnerTest {
 
@@ -32,7 +29,7 @@ public class ThreadsSortRunnerTest {
     @Test
     public void correctStepValues() {
         //noinspection unchecked
-        ParallelSortRunner runner = new ParallelSortRunner(
+        ThreadsSortRunner runner = new ThreadsSortRunner(
             new Integer[]{3, 2, 1}, 2
         );
     }
