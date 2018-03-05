@@ -5,7 +5,10 @@ OUTLOG=$LOGDIR/std_out.log
 GCLOG="$LOGDIR/gc_pid_%p.log"
 WCGCLOG="$LOGDIR/gc_pid_*.log*"
 DUMPDIR=./dumps
-CP="-cp CP=$CP":./targetclasses:CP=$CP":./targettest-classes:CP=$CP":./targetlibs:CP=$CP":./target"
+CP="-cp CP=$CP":./targetclasses
+CP=$CP":./targettest-classes"
+CP=$CP":./targetlibs"
+CP=$CP":./target"
 MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 GC_LOG="-verbose:gc"
 GC_LOG="${GC_LOG} -Xloggc:${GCLOG}"

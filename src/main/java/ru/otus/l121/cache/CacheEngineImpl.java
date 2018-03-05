@@ -31,13 +31,15 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         this.isEternal = lifeTimeMs == 0 && idleTimeMs == 0 || isEternal;
     }
 
-    public void put(SoftReferenceElement<K, V> element) {
+    public void put(K key, V value) {
+
+        SoftReferenceElement<K, V> element = new SoftReferenceElement<>(key, value);
+
         if (elements.size() == maxElements + 1) {
             K firstKey = elements.keySet().iterator().next();
             elements.remove(firstKey);
         }
 
-        K key = element.getKey();
         elements.put(key, element);
 
         if (!isEternal) {
@@ -56,15 +58,16 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V> {
         }
     }
 
-    public SoftReferenceElement<K, V> get(K key) {
+    public V get(K key) {
         SoftReferenceElement<K, V> element = elements.get(key);
         if (element != null) {
             hit++;
             element.setAccessed();
+            return element.getValue();
         } else {
             miss++;
         }
-        return element;
+        return null;
     }
 
     public int getHitCount() {

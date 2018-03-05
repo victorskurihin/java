@@ -10,7 +10,7 @@ import java.lang.ref.SoftReference;
  * @param <V> the type for strong reference to a value
  */
 @SuppressWarnings("WeakerAccess")
-public class SoftReferenceElement<K, V> {
+class SoftReferenceElement<K, V> {
     private final K key;
     private final SoftReference<V> softReferenceValue;
     private final long creationTime;

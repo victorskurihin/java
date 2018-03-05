@@ -2,9 +2,9 @@ package ru.otus.l121.cache;
 
 public interface CacheEngine<K, V> {
 
-    void put(SoftReferenceElement<K, V> element);
+    void put(K key, V value);
 
-    SoftReferenceElement<K, V> get(K key);
+    V get(K key);
 
     int getHitCount();
 

@@ -6,7 +6,11 @@
     </Console>
   </Appenders>
   <Loggers>
+<<<<<<< HEAD
     <Root level="ALL">
+=======
+    <Root level="WARN">
+>>>>>>> d8ff9b8aee46d8bcb4129d59ce0c78cdfe960804
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>
