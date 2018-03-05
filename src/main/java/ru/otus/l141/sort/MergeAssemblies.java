@@ -41,7 +41,6 @@ class MergeAssemblies<T extends Comparable<? super T>> {
     }
 
     boolean findMinimumInList(T[] array, int index) {
-        System.out.println("index = " + index);
         if (positionsInArrays[index] < array.length) {
 
             T element = array[positionsInArrays[index]];

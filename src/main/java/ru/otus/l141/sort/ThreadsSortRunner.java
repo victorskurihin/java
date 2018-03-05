@@ -1,6 +1,10 @@
 package ru.otus.l141.sort;
 
+import com.google.common.reflect.TypeToken;
+
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ThreadsSortRunner<T extends Comparable<? super T>> {
 
@@ -8,12 +12,19 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
     private int lastInterval;
     private int numberThreads;
 
+
     private T[] array;
     private Collection<T> collection;
 
     private T[][] subArrays;
 
     private Comparator<T> comparator = Comparator.naturalOrder();
+    private final TypeToken<T> typeToken = new TypeToken<T>(getClass()) { };
+
+    private Class<T> getParameterClass() {
+        //noinspection unchecked
+        return (Class<T>) typeToken.getRawType();
+    }
 
     private ThreadsSortRunner(int nThreads, int length) {
         if (nThreads < 1 || length < nThreads) {
@@ -26,23 +37,25 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
             : interval;
         this.numberThreads = nThreads;
 
+        Class<T> c = getParameterClass();
+
         //noinspection unchecked
-        this.subArrays = (T[][]) new Object[nThreads][];
+        this.subArrays = (T[][]) Array.newInstance(c, nThreads, 0);
+        for (int idx = 0; idx < nThreads - 1; ++idx) {
+            //noinspection unchecked
+            this.subArrays[idx] = (T[]) Array.newInstance(c, interval);
+        }
+        //noinspection unchecked
+        this.subArrays[nThreads - 1] = (T[]) Array.newInstance(c, lastInterval);
     }
 
     private void copyToSubArray(int index, Iterator<T> iterator, int size) {
-        //noinspection unchecked
-        subArrays[index] = (T[]) new Object[size];
-
         for (int idx = 0; idx < size; ++idx) {
             subArrays[index][idx] = iterator.next();
         }
     }
 
     private int copyToSubArray(int index, int iterator, int size) {
-        //noinspection unchecked
-        subArrays[index] = (T[]) new Object[size];
-
         for (int idx = 0; idx < size; ++idx) {
             subArrays[index][idx] = array[iterator++];
         }
@@ -99,12 +112,42 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
         }
     }
 
+    public T[] getResultToArray() {
+        if (null != array) {
+            MergeAssemblies<T> merge = new MergeAssemblies<>(
+                subArrays, Comparator.naturalOrder()
+            );
+
+            for (int idx = 0; idx < array.length; ++idx) {
+                array[idx] = merge.poll();
+            }
+
+            return array;
+        }
+
+        throw null;
+    }
+
     public List<T> getResultToList() {
         if (null != collection) {
             MergeAssemblies<T> merge = new MergeAssemblies<>(
                 subArrays, Comparator.naturalOrder()
             );
+
+            return collection.stream()
+                .map(e -> merge.poll())
+                .collect(Collectors.toCollection(ArrayList::new));
         }
+
         return null;
     }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public int getLastInterval() {
+        return lastInterval;
+    }
+
 }

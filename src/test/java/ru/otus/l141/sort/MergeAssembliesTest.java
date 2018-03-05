@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -16,6 +18,7 @@ public class MergeAssembliesTest {
     private Integer[][] array0;
     private Integer[][] array1;
     private Integer[][] array2;
+    private Integer[][] array3;
     private Integer[][] array100;
 
     @Before
@@ -29,10 +32,26 @@ public class MergeAssembliesTest {
         array2[0][0] = 1;
         array2[0][1] = 2;
 
+        array3 = new Integer[3][];
+        for (int idx = 0; idx < 3; ++idx) {
+            array3[idx] = new Integer[idx + 1];
+            for (int jdx = 0; jdx < idx + 1; ++jdx) {
+                array3[idx][jdx] = idx + (jdx + 1);
+            }
+        }
+
+        array100 = new Integer[10][10];
+        for (int idx = 0; idx < 10; ++idx) {
+            for (int jdx = 0; jdx < 10; ++jdx) {
+                array100[idx][jdx] = idx*10 + (jdx + 1);
+            }
+        }
+
     }
 
     @After
     public void tearDown() throws Exception {
+        array100 = null;
         array2 = null;
         array1 = null;
         array0 = null;
@@ -65,7 +84,7 @@ public class MergeAssembliesTest {
     }
 
     @Test
-    public void test4() {
+    public void pullTwice() {
         mergeAssemblies = new MergeAssemblies<>(array2, Comparator.naturalOrder());
         int i1 = mergeAssemblies.poll();
         Assert.assertEquals(1, i1);
@@ -75,9 +94,20 @@ public class MergeAssembliesTest {
     }
 
     @Test
+    public void testTriangularMatrix() {
+        Integer[] expected = {1, 2, 3, 3, 4, 5};
+        List<Integer> testResult = new ArrayList<>();
+        mergeAssemblies = new MergeAssemblies<>(array3, Comparator.naturalOrder());
+        while (mergeAssemblies.hasNext()) {
+            testResult.add(mergeAssemblies.poll());
+        }
+        Assert.assertEquals(expected, testResult.toArray());
+    }
+
+    @Test
     public void test100() {
         int expected = 1;
-        mergeAssemblies = new MergeAssemblies<>(subList100, Comparator.naturalOrder());
+        mergeAssemblies = new MergeAssemblies<>(array100, Comparator.naturalOrder());
         while (mergeAssemblies.hasNext()) {
             int i = mergeAssemblies.poll();
             Assert.assertEquals(expected++, i);

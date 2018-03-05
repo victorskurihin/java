@@ -1,24 +1,21 @@
-package ru.otus.l141;
+package ru.otus.l141.sort;
 
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import ru.otus.l141.sort.Sorter;
-import ru.otus.l141.sort.ForkJoinSorterImpl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class ForkJoinSorterBenchmark {
+public class ThreadsSorterBenchmark {
 
     public static void main(String[] args) throws Exception {
         Options opt = new OptionsBuilder()
-            .include(ForkJoinSorterBenchmark.class.getSimpleName())
+            .include(ThreadsSorterBenchmark.class.getSimpleName())
             .warmupIterations(1)
             .measurementIterations(5)
             .forks(1)
@@ -38,15 +35,19 @@ public class ForkJoinSorterBenchmark {
         @Param({ "1", "2", "4" })
         public int threads;
 
-        public List<Integer> values;
+        public Integer[] values;
 
         @Setup(Level.Invocation)
         public void setUp() {
-            values = new ArrayList<>(size);
+            List<Integer> list = new ArrayList<>(size);
+            values = new Integer[size];
             for(int i = 1; i <= size; i++) {
-                values.add(i);
+                list.add(i);
             }
-            Collections.shuffle(values);
+            Collections.shuffle(list);
+            for (int i = 0; i < list.size(); i++) {
+                values[i] = list.get(i);
+            }
         }
     }
 
@@ -56,7 +57,7 @@ public class ForkJoinSorterBenchmark {
     public void timeParallelSortRunner(BenchmarkExecutionPlan plan)
         throws ExecutionException, InterruptedException {
 
-        Sorter sorter = new ForkJoinSorterImpl();
+        Sorter sorter = new ThreadsSorterImpl();
         for (int i = 0; i < plan.iterations; i++) {
             sorter.sort(plan.values, plan.threads);
         }
