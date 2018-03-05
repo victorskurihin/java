@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -16,9 +18,14 @@ public class ForkJoinSorterImpl implements Sorter {
 
         ForkJoinPool pool = new ForkJoinPool(numberOfThreads);
         //noinspection unchecked
-        return (T[]) pool.submit(
-            () -> Arrays.stream(array).parallel().sorted().toArray()
+        Stream<T> stream = pool.submit(
+            () -> Arrays.stream(array).parallel().sorted()
         ).get();
+
+        AtomicInteger index = new AtomicInteger();
+        stream.forEachOrdered(e -> array[index.getAndIncrement()] = e);
+
+        return array;
     }
 
     @Override

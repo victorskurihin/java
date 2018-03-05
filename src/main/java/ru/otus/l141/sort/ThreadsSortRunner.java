@@ -12,7 +12,6 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
     private int lastInterval;
     private int numberThreads;
 
-
     private T[] array;
     private Collection<T> collection;
 
@@ -125,7 +124,7 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
             return array;
         }
 
-        throw null;
+        throw new NullPointerException();
     }
 
     public List<T> getResultToList() {
