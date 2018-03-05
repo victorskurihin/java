@@ -10,6 +10,7 @@ public class ParallelSortRunner<T extends Comparable<? super T>> {
     private ArrayList<T>[] subList;
     private int interval;
     private int lastInterval;
+    private Comparator<T> comparator = Comparator.naturalOrder();
 
     private ParallelSortRunner(int nThreads, int length) {
         if (nThreads < 1 || length < nThreads) {
@@ -52,6 +53,14 @@ public class ParallelSortRunner<T extends Comparable<? super T>> {
         givenSubsetWhenParitioning(Arrays.asList(arrayOfT));
     }
 
+    public ParallelSortRunner(
+        T[] arrayOfT, int numberThreads, Comparator<T> comparator
+    ) {
+        this(arrayOfT, numberThreads);
+        this.comparator = comparator;
+
+    }
+
     public ParallelSortRunner(Collection<T> elements, int numberThreads) {
         this(numberThreads, elements.size());
         this.collection = elements;
@@ -59,14 +68,20 @@ public class ParallelSortRunner<T extends Comparable<? super T>> {
         givenSubsetWhenParitioning(elements);
     }
 
+    public ParallelSortRunner(
+        Collection<T> elements, int numberThreads, Comparator<T> comparator
+    ) {
+        this(elements, numberThreads);
+        this.comparator = comparator;
+    }
+
     public void run() throws InterruptedException {
         List<Thread> threads = new ArrayList<>(numberThreads);
 
         for (int idx = 0; idx < numberThreads; ++idx) {
-            Thread thread = new Thread(new SortingJob<>(subList[idx]));
+            Thread thread = new Thread(new SortingJob<>(subList[idx], comparator));
             threads.add(thread);
             thread.start();
-
         }
 
         for (Thread thread : threads) {
@@ -82,19 +97,29 @@ public class ParallelSortRunner<T extends Comparable<? super T>> {
         return lastInterval;
     }
 
-    public T[] getResultFromArray() {
+    public T[] getResultToArray() {
         if (null != array) {
+            MergeAssemblies<T> merge = new MergeAssemblies<>(
+                subList, Comparator.naturalOrder()
+            );
+
+            for (int idx = 0; idx < array.length; ++idx) {
+                array[idx] = merge.poll();
+            }
+
             return array;
         }
         throw new NullPointerException();
     }
 
-    public List<T> getResultFromCollection() {
+    public List<T> getResultToList() {
         if (null != collection) {
-            FinalAssembly<T> finalAssembly = new FinalAssembly<>(subList);
+            MergeAssemblies<T> merge = new MergeAssemblies<>(
+                subList, Comparator.naturalOrder()
+            );
 
             return collection.stream()
-                .map(e -> finalAssembly.pullMinimal())
+                .map(e -> merge.poll())
                 .collect(Collectors.toCollection(ArrayList::new));
         }
         throw new NullPointerException();

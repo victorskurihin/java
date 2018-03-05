@@ -1,6 +1,7 @@
 package ru.otus.l141;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,9 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-public class ParallelSortRunnerTest {
+public class ParallelSorterRunnerTest {
     @Before
     public void setUp() throws Exception {
     }
@@ -37,23 +36,22 @@ public class ParallelSortRunnerTest {
     }
 
     @Test
-    public void test() {
+    public void testRunnerRun() {
         ArrayList<Integer> x = new ArrayList<Integer>();
-        for(int i = 1; i <= 1000000; i++) {
+        for(int i = 1; i <= 1000; i++) {
             x.add(i);
         }
+        ArrayList<Integer> expected = new ArrayList<Integer>(x);
         Collections.shuffle(x);
         ParallelSortRunner<Integer> parallelSortRunner = new ParallelSortRunner<Integer>(
-            x, 1
+            x, 2
         );
-        parallelSortRunner.print();
         try {
             parallelSortRunner.run();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        parallelSortRunner.print();
-        List<Integer> list = parallelSortRunner.getResultFromCollection();
-        list.forEach(e -> System.out.print(e + " "));
+        List<Integer> list = parallelSortRunner.getResultToList();
+        Assert.assertEquals(expected, list);
     }
 }

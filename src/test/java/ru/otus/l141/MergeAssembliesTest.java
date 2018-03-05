@@ -6,12 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Comparator;
 
-import static org.junit.Assert.*;
-
-public class FinalAssemblyTest {
-    FinalAssembly<Integer> finalAssembly;
+public class MergeAssembliesTest {
+    MergeAssemblies<Integer> mergeAssemblies;
     private ArrayList<Integer>[] subList0;
     private ArrayList<Integer>[] subList1;
     private ArrayList<Integer>[] subList2;
@@ -35,57 +33,58 @@ public class FinalAssemblyTest {
                 subList100[idx].add(idx*10 + (jdx + 1));
             }
         }
-        Arrays.stream(subList100).forEach(System.out::println);
     }
 
     @After
     public void tearDown() throws Exception {
-        finalAssembly = null;
+        mergeAssemblies = null;
+        subList100 = null;
+        subList2 = null;
         subList1 = null;
         subList0 = null;
     }
 
     @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void testEmtyThrowExeption() {
-        finalAssembly = new FinalAssembly<>(subList0);
+    public void testEmptyThrowExeption() {
+        mergeAssemblies = new MergeAssemblies<>(subList0, Comparator.naturalOrder());
     }
 
     @Test
-    public void test1() {
-        finalAssembly = new FinalAssembly<>(subList1);
-        Assert.assertTrue(finalAssembly.hasNext());
+    public void testMergeAssembliesToOneHasNext() {
+        mergeAssemblies = new MergeAssemblies<>(subList1, Comparator.naturalOrder());
+        Assert.assertTrue(mergeAssemblies.hasNext());
     }
 
     @Test
-    public void test2() {
-        finalAssembly = new FinalAssembly<>(subList1);
-        finalAssembly.findMinimumInList(subList1[0], 0);
-        Assert.assertTrue(finalAssembly.hasNext());
+    public void testFindMinimumInListHasNext() {
+        mergeAssemblies = new MergeAssemblies<>(subList1, Comparator.naturalOrder());
+        mergeAssemblies.findMinimumInList(subList1[0], 0);
+        Assert.assertTrue(mergeAssemblies.hasNext());
     }
 
     @Test
     public void test3() {
-        finalAssembly = new FinalAssembly<>(subList1);
-        finalAssembly.pullMinimal();
-        Assert.assertFalse(finalAssembly.hasNext());
+        mergeAssemblies = new MergeAssemblies<>(subList1, Comparator.naturalOrder());
+        mergeAssemblies.poll();
+        Assert.assertFalse(mergeAssemblies.hasNext());
     }
 
     @Test
     public void test4() {
-        finalAssembly = new FinalAssembly<>(subList2);
-        int i1 = finalAssembly.pullMinimal();
+        mergeAssemblies = new MergeAssemblies<>(subList2, Comparator.naturalOrder());
+        int i1 = mergeAssemblies.poll();
         Assert.assertEquals(1, i1);
-        Assert.assertTrue(finalAssembly.hasNext());
-        int i2 = finalAssembly.pullMinimal();
+        Assert.assertTrue(mergeAssemblies.hasNext());
+        int i2 = mergeAssemblies.poll();
         Assert.assertEquals(2, i2);
     }
 
     @Test
     public void test10() {
         int expected = 1;
-        finalAssembly = new FinalAssembly<>(subList100);
-        while (finalAssembly.hasNext()) {
-            int i = finalAssembly.pullMinimal();
+        mergeAssemblies = new MergeAssemblies<>(subList100, Comparator.naturalOrder());
+        while (mergeAssemblies.hasNext()) {
+            int i = mergeAssemblies.poll();
             Assert.assertEquals(expected++, i);
         }
     }
