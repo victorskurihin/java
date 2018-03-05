@@ -14,21 +14,26 @@ public class ThreadsSorterImpl implements Sorter {
     T[] sort(T[] array, int numberOfThreads)
         throws ExecutionException, InterruptedException {
 
-        ForkJoinPool pool = new ForkJoinPool(numberOfThreads);
-        //noinspection unchecked
-        return (T[]) pool.submit(
-            () -> Arrays.stream(array).parallel().sorted().toArray()
-        ).get();
+        ThreadsSortRunner <T> runner = new ThreadsSortRunner<>(
+            array, numberOfThreads
+        );
+
+        // TODO
+
+        return null;
     }
 
     @Override
     public <T extends Comparable<? super T>>
-    List<T> sort(Collection<T> list, int numberOfThreads)
+    List<T> sort(Collection<T> collection, int numberOfThreads)
         throws ExecutionException, InterruptedException {
 
-        ForkJoinPool pool = new ForkJoinPool(numberOfThreads);
-        return pool.submit(
-            () -> list.stream().parallel().sorted().collect(toList())
-        ).get();
+        ThreadsSortRunner <T> runner = new ThreadsSortRunner<>(
+            collection, numberOfThreads
+        );
+
+        // TODO
+
+        return null;
     }
 }

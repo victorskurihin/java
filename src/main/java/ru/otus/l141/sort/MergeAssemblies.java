@@ -1,30 +1,30 @@
-package ru.otus.l141;
+package ru.otus.l141.sort;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 class MergeAssemblies<T extends Comparable<? super T>> {
-    private ArrayList<T>[] subList;
-    private int[] positionsInSubList;
+    private T[][] arrays;
+    private int[] positionsInArrays;
     private int minimumIndex = 0;
     private Comparator<T> comparator;
 
-    MergeAssemblies(ArrayList<T>[] subList, Comparator<T> comparator) {
-        if (subList.length < 1 || subList[0].size() < 1) {
+    public MergeAssemblies(T[][] subArrays, Comparator<T> comparator) {
+
+        if (subArrays.length < 1 || subArrays[0].length < 1) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        this.subList = subList;
-        this.positionsInSubList = new int[subList.length];
+
+        this.arrays = subArrays;
+        this.positionsInArrays = new int[subArrays.length];
         this.comparator = comparator;
 
-        Arrays.fill(this.positionsInSubList, 0);
+        Arrays.fill(this.positionsInArrays, 0);
     }
 
     private int firstIndex() {
-        for (int idx = 0; idx < subList.length; ++idx) {
-            if (positionsInSubList[idx] < subList[idx].size()) {
+        for (int idx = 0; idx < arrays.length; ++idx) {
+            if (positionsInArrays[idx] < arrays[idx].length) {
                 return idx;
             }
         }
@@ -37,12 +37,14 @@ class MergeAssemblies<T extends Comparable<? super T>> {
     }
 
     private T getMinimum() {
-        return subList[minimumIndex].get(positionsInSubList[minimumIndex]);
+        return arrays[minimumIndex][positionsInArrays[minimumIndex]];
     }
 
-    boolean findMinimumInList(List<T> list, int index) {
-        if (positionsInSubList[index] < list.size()) {
-            T element = list.get(positionsInSubList[index]);
+    boolean findMinimumInList(T[] array, int index) {
+        System.out.println("index = " + index);
+        if (positionsInArrays[index] < array.length) {
+
+            T element = array[positionsInArrays[index]];
             T minimum = getMinimum();
 
             if (comparator.compare(element, minimum) <= 0) {
@@ -56,8 +58,8 @@ class MergeAssemblies<T extends Comparable<? super T>> {
     private boolean findMinimum() {
         boolean result = false;
 
-        for (int idx = 0; idx < subList.length; ++idx) {
-            if (findMinimumInList(subList[idx], idx)) {
+        for (int idx = 0; idx < arrays.length; ++idx) {
+            if (findMinimumInList(arrays[idx], idx)) {
                 result = true;
             }
         }
@@ -75,7 +77,7 @@ class MergeAssemblies<T extends Comparable<? super T>> {
 
         if (findMinimum()) {
             T minimum = getMinimum();
-            positionsInSubList[minimumIndex] += 1;
+            positionsInArrays[minimumIndex] += 1;
             return minimum;
         }
 
