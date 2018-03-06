@@ -1,9 +1,10 @@
 package ru.otus.l141.sort;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * This is the service class for an instance of the parallel sorting job.
+ * This is the service class for instances of the parallel sorting job.
  *
  * @param <T> the type of elements in the target array, must be Comparable.
  */
@@ -18,6 +19,7 @@ public class MergeSortingJob<T extends Comparable<? super T>> implements Runnabl
         this.to = to;
         this.array = subArray;
         this.mergeSort = new MergeSort<>(comparator);
+        Arrays.sort(array);
     }
 
     @Override

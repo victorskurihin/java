@@ -5,7 +5,11 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
- * TODO
+ * This is implementation of Parallel Sort using Java lang threads to do
+ * parallel execution.
+ *
+ * In this implementation of Sorter interface realises two methods, one for
+ * build-in arrays and other for Collections.
  */
 public class ThreadsSorterImpl implements Sorter {
     @Override
