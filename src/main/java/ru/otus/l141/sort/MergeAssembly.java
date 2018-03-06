@@ -7,8 +7,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * This is helper class for
- * @param <T>
+ * This is an auxiliary class for the final sort. The instance of this class
+ * creates  auxiliary  pieces of the array where is already sorted intervals
+ * are copied.
+ *
+ * @param <T> the type of elements in the target array, must be Comparable.
  */
 class MergeAssembly<T extends Comparable<? super T>> {
     private T[] array;
@@ -20,7 +23,14 @@ class MergeAssembly<T extends Comparable<? super T>> {
     private Comparator<T> comparator;
     private final TypeToken<T> typeToken = new TypeToken<T>(getClass()) { };
 
-    public MergeAssembly(T[] array, int numberPieces, Comparator<T> comparator) {
+    /**
+     * The constructor gets the target array, number of pieces and a comparator.
+     *
+     * @param array the target array
+     * @param numberPieces number of pieces what already sorted
+     * @param comparator comparator for a type T
+     */
+    MergeAssembly(T[] array, int numberPieces, Comparator<T> comparator) {
 
         if (array.length < 1 || numberPieces < 1) {
             throw new ArrayIndexOutOfBoundsException();
@@ -56,6 +66,12 @@ class MergeAssembly<T extends Comparable<? super T>> {
         return arrays[minimumIndex][positionsInArrays[minimumIndex]];
     }
 
+    /**
+     *
+     * @param array the target array
+     * @param index the index of the piece
+     * @return true if founded a minimum
+     */
     boolean findMinimumInList(T[] array, int index) {
         if (positionsInArrays[index] < array.length) {
 
@@ -87,7 +103,10 @@ class MergeAssembly<T extends Comparable<? super T>> {
     }
 
     /**
-     * @param index
+     * The method copy from the already sorted piece of the target array
+     * to the service substructure in this class.
+     *
+     * @param index the index of the piece
      * @param from the initial index of the range to be copied, inclusive
      * @param to the final index of the range to be copied, exclusive.
      *        (This index may lie outside the array.)
@@ -103,9 +122,10 @@ class MergeAssembly<T extends Comparable<? super T>> {
     }
 
     /**
-     * Retrieves and removes the head of this queue, or --returns null if this
-     * structure is empty--.
-     * @return
+     * Retrieves  and  removes  the head (minimum)  of  the service structure.
+     * If this structure is empty this method throw IndexOutOfBoundsException.
+     *
+     * @return the minimum element
      */
     T poll() {
         minimumIndex = firstIndex();

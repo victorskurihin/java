@@ -3,14 +3,33 @@ package ru.otus.l141.sort;
 import java.util.Arrays;
 import java.util.Comparator;
 
+/**
+ * The  algorithm  belongs  to  the  group  of  Divide and Conquer  family  of
+ * algorithms.
+ * This  basically  means  that  it divides  the sorting  problem into smaller
+ * parts to solve.
+ *
+ * @param <T> the type of elements in the target array, must be Comparable.
+ */
 public class MergeSort<T extends Comparable<? super T>> {
     private Comparator<T> comparator = Comparator.naturalOrder();
 
     public MergeSort() { /* None */ }
+
+    /**
+     * TODO comments
+     *
+     * @param comparator
+     */
     public MergeSort(Comparator<T> comparator) {
         this.comparator = comparator;
     }
 
+    /**
+     * TODO comments
+     *
+     * @param array
+     */
     public void sort(T[] array) {
         mergeSort(array, 0, array.length-1);
     }
@@ -19,6 +38,13 @@ public class MergeSort<T extends Comparable<? super T>> {
         return index < 0 || index >= array.length;
     }
 
+    /**
+     * TODO comments
+     *
+     * @param array
+     * @param from
+     * @param to
+     */
     public void sort(T[] array, int from, int to) {
         if (indexOutOfBounds(array, from) || indexOutOfBounds(array, to)) {
             throw new ArrayIndexOutOfBoundsException();

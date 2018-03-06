@@ -5,10 +5,28 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public interface Sorter {
+    /**
+     *
+     * @param array
+     * @param numberOfThreads
+     * @param <T> the type of elements in the target array, must be Comparable.
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     <T extends Comparable<? super T>>
     T[] sort(T[] array, int numberOfThreads)
         throws ExecutionException, InterruptedException;
 
+    /**
+     *
+     * @param list
+     * @param numberOfThreads
+     * @param <T> the type of elements in the target array, must be Comparable.
+     * @return
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     <T extends Comparable<? super T>>
     List<T> sort(Collection<T> list, int numberOfThreads)
         throws ExecutionException, InterruptedException;

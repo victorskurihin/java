@@ -6,6 +6,11 @@ import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * TODO
+ *
+ * @param <T> the type of elements in the target array, must be Comparable.
+ */
 public class ThreadsSortRunner<T extends Comparable<? super T>> {
 
     private int interval;
@@ -30,11 +35,23 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
         this.numberThreads = nThreads;
     }
 
+    /**
+     * TODO
+     *
+     * @param arrayOfT
+     * @param numberThreads
+     */
     public ThreadsSortRunner(T[] arrayOfT, int numberThreads) {
         this(numberThreads, arrayOfT.length);
         this.array = arrayOfT;
     }
 
+    /**
+     * TODO
+     *
+     * @param elements
+     * @param numberThreads
+     */
     public ThreadsSortRunner(Collection<T> elements, int numberThreads) {
         this(numberThreads, elements.size());
         this.collection = elements;
@@ -49,12 +66,17 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
 
     private void runThread(List<Thread> threads, int from, int to) {
         Thread thread = new Thread(
-            new MegreSortingJob<>(array, from, to, comparator)
+            new MergeSortingJob<>(array, from, to, comparator)
         );
         threads.add(thread);
         thread.start();
     }
 
+    /**
+     * TODO
+     *
+     * @throws InterruptedException
+     */
     public void run() throws InterruptedException {
         List<Thread> threads = new ArrayList<>(numberThreads);
         int lastIndex = numberThreads - 1;
@@ -92,6 +114,11 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
         return merge;
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     public T[] getResultToArray() {
         if (null != array) {
             MergeAssembly<T> merge = constructMergeAssembly();
@@ -106,6 +133,11 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
         throw new NullPointerException();
     }
 
+    /**
+     * TODO
+     *
+     * @return
+     */
     public List<T> getResultToList() {
         if (null != collection) {
             MergeAssembly<T> merge = constructMergeAssembly();

@@ -1,15 +1,19 @@
 package ru.otus.l141.sort;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
-public class MegreSortingJob<T extends Comparable<? super T>> implements Runnable {
+/**
+ * This is the service class for an instance of the parallel sorting job.
+ *
+ * @param <T> the type of elements in the target array, must be Comparable.
+ */
+public class MergeSortingJob<T extends Comparable<? super T>> implements Runnable {
     private int from;
     private int to;
     private T[] array;
     private MergeSort<T> mergeSort;
 
-    public MegreSortingJob(T[] subArray, int from, int to, Comparator<T> comparator) {
+    public MergeSortingJob(T[] subArray, int from, int to, Comparator<T> comparator) {
         this.from = from;
         this.to = to;
         this.array = subArray;

@@ -27,7 +27,6 @@ public class SorterTest {
 
     @Before
     public void setUp() throws Exception {
-        System.err.println("Sorter size = " + size);
         List<Integer> list = new ArrayList<>(size);
 
         for(int i = 0; i < size; i++) {

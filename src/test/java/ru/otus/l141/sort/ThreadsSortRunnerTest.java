@@ -112,7 +112,6 @@ public class ThreadsSortRunnerTest {
 
         int size = (random.nextInt() & 0xffff) % 1023
                  + (random.nextInt() & 0xffff) % 2047;
-        System.err.println("array size = " + size);
 
         List<Integer> list = new ArrayList<>(size);
 
@@ -140,7 +139,6 @@ public class ThreadsSortRunnerTest {
 
         int size = (random.nextInt() & 0xffff) % 1023
                  + (random.nextInt() & 0xffff) % 2047;
-        System.err.println("list size = " + size);
 
         List<Integer> values =  IntStream.range(1, size)
             .boxed().collect(Collectors.toCollection(ArrayList::new));
