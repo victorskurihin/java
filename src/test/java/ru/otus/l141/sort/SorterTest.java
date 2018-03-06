@@ -8,7 +8,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,12 +15,8 @@ import java.util.stream.IntStream;
 public class SorterTest {
 
     private final int numberThreads = 2;
-
-//    private final Random random = new Random();
-//    private final int size = (random.nextInt() & 0xffff) % 1023
-//                           + (random.nextInt() & 0xffff) % 2047;
-
     private final int size = 131_071;
+    // private final int size = 524_287;
 
     private Integer[] valuesArray;
     private Integer[] expectedArray;
@@ -70,7 +65,7 @@ public class SorterTest {
     public void sorterThreadsList() throws ExecutionException, InterruptedException {
         sorterThreads = new ThreadsSorterImpl();
         valuesList = sorterThreads.sort(valuesList, numberThreads);
-//        Assert.assertEquals(expectedList, valuesList);
+        Assert.assertEquals(expectedList, valuesList);
     }
 
 

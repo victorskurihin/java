@@ -22,7 +22,7 @@ class MergeAssembly<T extends Comparable<? super T>> {
 
     public MergeAssembly(T[] array, int numberPieces, Comparator<T> comparator) {
 
-        if (numberPieces < 1) {
+        if (array.length < 1 || numberPieces < 1) {
             throw new ArrayIndexOutOfBoundsException();
         }
 

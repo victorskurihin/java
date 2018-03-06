@@ -115,7 +115,7 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
                 .collect(Collectors.toCollection(ArrayList::new));
         }
 
-        return new ArrayList<>(getResultToList());
+        return new ArrayList<>(Arrays.asList(getResultToArray()));
     }
 
     public int getInterval() {

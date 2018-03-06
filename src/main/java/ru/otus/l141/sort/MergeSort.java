@@ -23,7 +23,7 @@ public class MergeSort<T extends Comparable<? super T>> {
         if (indexOutOfBounds(array, from) || indexOutOfBounds(array, to)) {
             throw new ArrayIndexOutOfBoundsException();
         }
-        mergeSort(array, from, array.length-1);
+        mergeSort(array, from, to);
     }
 
     void mergeSort(T[] array, int from, int to) {
