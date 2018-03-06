@@ -10,6 +10,13 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * This is implementation of Parallel Sort using Fork-Join Framework to do
+ * parallel execution.
+ *
+ * In this implementation of Sorter interface realises two methods, one for
+ * build-in arrays and other for Collections.
+ */
 public class ForkJoinSorterImpl implements Sorter {
     @Override
     public <T extends Comparable<? super T>>

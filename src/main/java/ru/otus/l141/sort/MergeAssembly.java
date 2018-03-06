@@ -1,5 +1,8 @@
 package ru.otus.l141.sort;
 
+import com.google.common.reflect.TypeToken;
+
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -7,20 +10,29 @@ import java.util.Comparator;
  * This is helper class for
  * @param <T>
  */
-class MergeAssemblies<T extends Comparable<? super T>> {
+class MergeAssembly<T extends Comparable<? super T>> {
+    private T[] array;
     private T[][] arrays;
+
     private int[] positionsInArrays;
     private int minimumIndex = 0;
+
     private Comparator<T> comparator;
+    private final TypeToken<T> typeToken = new TypeToken<T>(getClass()) { };
 
-    public MergeAssemblies(T[][] subArrays, Comparator<T> comparator) {
+    public MergeAssembly(T[] array, int numberPieces, Comparator<T> comparator) {
 
-        if (subArrays.length < 1 || subArrays[0].length < 1) {
+        if (numberPieces < 1) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        this.arrays = subArrays;
-        this.positionsInArrays = new int[subArrays.length];
+        //noinspection unchecked
+        Class<T> clazz = (Class<T>) typeToken.getRawType();
+
+        this.array = array;
+        //noinspection unchecked
+        this.arrays = (T[][]) Array.newInstance(clazz, numberPieces, 0);
+        this.positionsInArrays = new int[numberPieces];
         this.comparator = comparator;
 
         Arrays.fill(this.positionsInArrays, 0);
@@ -68,6 +80,26 @@ class MergeAssemblies<T extends Comparable<? super T>> {
         }
 
         return result;
+    }
+
+    private <E> boolean indexOutOfBounds(E[] array, int index) {
+        return index < 0 || index >= array.length;
+    }
+
+    /**
+     * @param index
+     * @param from the initial index of the range to be copied, inclusive
+     * @param to the final index of the range to be copied, exclusive.
+     *        (This index may lie outside the array.)
+     */
+    void pushToSlot(int index, int from, int to) {
+
+        if (indexOutOfBounds(arrays, index) ||
+            indexOutOfBounds(array, to - 1)  ||
+            indexOutOfBounds(array, from) ) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        arrays[index] = Arrays.copyOfRange(array, from, to);
     }
 
     /**

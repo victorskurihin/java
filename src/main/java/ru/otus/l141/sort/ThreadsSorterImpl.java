@@ -10,12 +10,23 @@ public class ThreadsSorterImpl implements Sorter {
     T[] sort(T[] array, int numberOfThreads)
         throws ExecutionException, InterruptedException {
 
+        long startTime = System.currentTimeMillis();
         ThreadsSortRunner <T> runner = new ThreadsSortRunner<T>(
             array, numberOfThreads
         );
-        runner.run();
+        long endTime = System.currentTimeMillis();
+        System.err.println("Array construct took " + (endTime - startTime) + " milliseconds");
 
-        return runner.getResultToArray();
+        startTime = System.currentTimeMillis();
+        runner.run();
+        endTime = System.currentTimeMillis();
+        System.err.println("Array run took " + (endTime - startTime) + " milliseconds");
+
+        startTime = System.currentTimeMillis();
+        T[] result = runner.getResultToArray();
+        System.err.println("Array get took " + (endTime - startTime) + " milliseconds");
+
+        return result;
     }
 
     @Override
@@ -23,11 +34,23 @@ public class ThreadsSorterImpl implements Sorter {
     List<T> sort(Collection<T> collection, int numberOfThreads)
         throws ExecutionException, InterruptedException {
 
+        long startTime = System.currentTimeMillis();
         ThreadsSortRunner <T> runner = new ThreadsSortRunner<T>(
             collection, numberOfThreads
         );
-        runner.run();
+        long endTime = System.currentTimeMillis();
+        System.err.println("Collection construct took " + (endTime - startTime) + " milliseconds");
 
-        return runner.getResultToList();
+        startTime = System.currentTimeMillis();
+        runner.run();
+        endTime = System.currentTimeMillis();
+        System.err.println("Collection run took " + (endTime - startTime) + " milliseconds");
+
+        startTime = System.currentTimeMillis();
+        List<T> result = runner.getResultToList();
+        endTime = System.currentTimeMillis();
+        System.err.println("Collection get took " + (endTime - startTime) + " milliseconds");
+
+        return result;
     }
 }

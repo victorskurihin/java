@@ -15,15 +15,8 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
     private T[] array;
     private Collection<T> collection;
 
-    private T[][] subArrays;
-
     private Comparator<T> comparator = Comparator.naturalOrder();
     private final TypeToken<T> typeToken = new TypeToken<T>(getClass()) { };
-
-    private Class<T> getParameterClass() {
-        //noinspection unchecked
-        return (Class<T>) typeToken.getRawType();
-    }
 
     private ThreadsSortRunner(int nThreads, int length) {
         if (nThreads < 1 || length < nThreads) {
@@ -35,87 +28,73 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
             ? length - (interval*(nThreads - 1))
             : interval;
         this.numberThreads = nThreads;
-
-        Class<T> c = getParameterClass();
-
-        //noinspection unchecked
-        this.subArrays = (T[][]) Array.newInstance(c, nThreads, 0);
-        for (int idx = 0; idx < nThreads - 1; ++idx) {
-            //noinspection unchecked
-            this.subArrays[idx] = (T[]) Array.newInstance(c, interval);
-        }
-        //noinspection unchecked
-        this.subArrays[nThreads - 1] = (T[]) Array.newInstance(c, lastInterval);
-    }
-
-    private void copyToSubArray(int index, Iterator<T> iterator, int size) {
-        for (int idx = 0; idx < size; ++idx) {
-            subArrays[index][idx] = iterator.next();
-        }
-    }
-
-    private int copyToSubArray(int index, int iterator, int size) {
-        for (int idx = 0; idx < size; ++idx) {
-            subArrays[index][idx] = array[iterator++];
-        }
-        return iterator;
-    }
-
-    private void givenSubsetWhenParitioning(Collection<T> c) {
-        int lastIndex = numberThreads - 1;
-        Iterator<T> iterator =  c.iterator();
-
-        for (int idx = 0; idx < lastIndex; ++idx) {
-            copyToSubArray(idx, iterator, interval);
-        }
-
-        copyToSubArray(lastIndex, iterator, lastInterval);
-    }
-
-    private void givenSubsetWhenParitioning() {
-        int lastIndex = numberThreads - 1;
-        int index =  0;
-
-        for (int idx = 0; idx < lastIndex; ++idx) {
-            index = copyToSubArray(idx, index, interval);
-        }
-
-        index = copyToSubArray(lastIndex, index, lastInterval);
     }
 
     public ThreadsSortRunner(T[] arrayOfT, int numberThreads) {
         this(numberThreads, arrayOfT.length);
         this.array = arrayOfT;
-
-        givenSubsetWhenParitioning();
     }
 
     public ThreadsSortRunner(Collection<T> elements, int numberThreads) {
         this(numberThreads, elements.size());
         this.collection = elements;
 
-        givenSubsetWhenParitioning(elements);
+        //noinspection unchecked
+        Class<T> genericClass = (Class<T>) typeToken.getRawType();
+        //noinspection unchecked
+        this.array = elements.toArray(
+            (T[]) Array.newInstance(genericClass, elements.size())
+        );
+    }
+
+    private void runThread(List<Thread> threads, int from, int to) {
+        Thread thread = new Thread(
+            new MegreSortingJob<>(array, from, to, comparator)
+        );
+        threads.add(thread);
+        thread.start();
     }
 
     public void run() throws InterruptedException {
         List<Thread> threads = new ArrayList<>(numberThreads);
+        int lastIndex = numberThreads - 1;
 
-        for (int idx = 0; idx < numberThreads; ++idx) {
-            Thread thread = new Thread(new SortingJob<>(subArrays[idx], comparator));
-            threads.add(thread);
-            thread.start();
+        for (int idx = 0; idx < lastIndex; ++idx) {
+            int from = idx*interval;
+            int to = from + interval - 1;
+            runThread(threads, from, to);
         }
+        int from = lastIndex*interval;
+        int to = from + lastInterval - 1;
+        runThread(threads, from, to);
 
         for (Thread thread : threads) {
             thread.join();
         }
     }
 
+    private MergeAssembly<T> constructMergeAssembly() {
+        MergeAssembly<T> merge = new MergeAssembly<T>(
+            array, numberThreads, comparator
+        );
+
+        int lastIndex = numberThreads - 1;
+
+        for (int idx = 0; idx < lastIndex; ++idx) {
+            int from = idx*interval;
+            int to = from + interval;
+            merge.pushToSlot(idx, from, to);
+        }
+        int from = lastIndex*interval;
+        int to = from + lastInterval;
+        merge.pushToSlot(lastIndex, from, to);
+
+        return merge;
+    }
+
     public T[] getResultToArray() {
         if (null != array) {
-            MergeAssemblies<T> merge = new MergeAssemblies<>(
-                subArrays, Comparator.naturalOrder()
-            );
+            MergeAssembly<T> merge = constructMergeAssembly();
 
             for (int idx = 0; idx < array.length; ++idx) {
                 array[idx] = merge.poll();
@@ -129,16 +108,14 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
 
     public List<T> getResultToList() {
         if (null != collection) {
-            MergeAssemblies<T> merge = new MergeAssemblies<>(
-                subArrays, Comparator.naturalOrder()
-            );
+            MergeAssembly<T> merge = constructMergeAssembly();
 
             return collection.stream()
                 .map(e -> merge.poll())
                 .collect(Collectors.toCollection(ArrayList::new));
         }
 
-        return null;
+        return new ArrayList<>(getResultToList());
     }
 
     public int getInterval() {
@@ -148,5 +125,4 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
     public int getLastInterval() {
         return lastInterval;
     }
-
 }
