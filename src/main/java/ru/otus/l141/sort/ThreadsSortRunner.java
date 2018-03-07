@@ -7,11 +7,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * TODO
+ * This class and its nested classes provide the main functionality and control
+ * for a set of sorting worker threads.  Workers take these tasks and typically
+ * split them into subtasks of sorting.
  *
  * @param <T> the type of elements in the target array, must be Comparable.
  */
-public class ThreadsSortRunner<T extends Comparable<? super T>> {
+public class ThreadsSortRunner<T extends Comparable<? super T>>
+    implements Runnable {
 
     private int interval;
     private int lastInterval;
@@ -36,10 +39,11 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
     }
 
     /**
-     * TODO
+     * The constructor is for creating new ThreadsSortRunner for a build-in
+     * array sorting.
      *
-     * @param arrayOfT
-     * @param numberThreads
+     * @param arrayOfT a build-in array
+     * @param numberThreads number of threads
      */
     public ThreadsSortRunner(T[] arrayOfT, int numberThreads) {
         this(numberThreads, arrayOfT.length);
@@ -47,10 +51,10 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
     }
 
     /**
-     * TODO
+     * The constructor is for creating new ThreadsSortRunner for a Collection.
      *
-     * @param elements
-     * @param numberThreads
+     * @param elements a Collection.
+     * @param numberThreads number of threads
      */
     public ThreadsSortRunner(Collection<T> elements, int numberThreads) {
         this(numberThreads, elements.size());
@@ -64,35 +68,55 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
         );
     }
 
-    private void runThread(List<Thread> threads, int from, int to) {
+    private void runThread(List<Thread> threads, int from, int toBarrier) {
         Thread thread = new Thread(
-            new MergeSortingJob<>(array, from, to, comparator)
+            new MergeSortingJob<>(array, from, toBarrier - 1, comparator)
         );
         threads.add(thread);
         thread.start();
     }
 
-    /**
-     * TODO
-     *
-     * @throws InterruptedException
-     */
-    public void run() throws InterruptedException {
-        List<Thread> threads = new ArrayList<>(numberThreads);
+    private void iterateByIntervals(IterateHandlerIndexFromTo handler) {
+
         int lastIndex = numberThreads - 1;
 
         for (int idx = 0; idx < lastIndex; ++idx) {
             int from = idx*interval;
-            int to = from + interval - 1;
-            runThread(threads, from, to);
+            int to = from + interval;
+            handler.handle(idx, from, to);
         }
+
         int from = lastIndex*interval;
-        int to = from + lastInterval - 1;
-        runThread(threads, from, to);
+        int to = from + lastInterval;
+        handler.handle(lastIndex, from, to);
+    }
+
+    /**
+     * The method prepares the list of threads and this threads will be
+     * running and they will join to main thread.
+     * For each thread in the method runThread creates the sorting job.
+     *
+     * @throws RuntimeInterruptedException
+     */
+    public void run() {
+        List<Thread> threads = new ArrayList<>(numberThreads);
+
+        iterateByIntervals((i, from, to) -> runThread(threads, from, to));
 
         for (Thread thread : threads) {
-            thread.join();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeInterruptedException(e);
+            }
         }
+
+        MergeAssembly<T> merge = constructMergeAssembly();
+
+        for (int idx = 0; idx < array.length; ++idx) {
+            array[idx] = merge.poll();
+        }
+
     }
 
     private MergeAssembly<T> constructMergeAssembly() {
@@ -100,41 +124,20 @@ public class ThreadsSortRunner<T extends Comparable<? super T>> {
             array, numberThreads, comparator
         );
 
-        int lastIndex = numberThreads - 1;
-
-        for (int idx = 0; idx < lastIndex; ++idx) {
-            int from = idx*interval;
-            int to = from + interval;
-            merge.pushToSlot(idx, from, to);
-        }
-        int from = lastIndex*interval;
-        int to = from + lastInterval;
-        merge.pushToSlot(lastIndex, from, to);
+        iterateByIntervals(merge::pushToSlot);
 
         return merge;
     }
 
     /**
-     * TODO
-     *
-     * @return
+     * @return the target array
      */
     public T[] getResultToArray() {
-        if (null != array) {
-            MergeAssembly<T> merge = constructMergeAssembly();
-
-            for (int idx = 0; idx < array.length; ++idx) {
-                array[idx] = merge.poll();
-            }
-
-            return array;
-        }
-
-        throw new NullPointerException();
+        return array;
     }
 
     /**
-     * TODO
+     * TODO comments
      *
      * @return
      */
