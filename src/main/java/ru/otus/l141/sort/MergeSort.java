@@ -14,7 +14,7 @@ import java.util.Comparator;
 public class MergeSort<T extends Comparable<? super T>> {
 
     // Decides when to fork or compute directly:
-    private static final int SORT_THRESHOLD = 16;
+    private static final int SORT_THRESHOLD = 32;
 
     private Comparator<T> comparator = Comparator.naturalOrder();
 

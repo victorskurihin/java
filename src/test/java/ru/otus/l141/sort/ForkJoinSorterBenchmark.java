@@ -26,10 +26,10 @@ public class ForkJoinSorterBenchmark {
     @State(Scope.Thread)
     public static class BenchmarkExecutionPlan {
 
-        @Param({ "500000" })
+        @Param({ "1000000" })
         public int size;
 
-        @Param({ "1", "5" })
+        @Param({ "1", "2" })
         public int iterations;
 
         @Param({ "1", "2", "4" })

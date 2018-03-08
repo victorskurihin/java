@@ -9,7 +9,6 @@ package ru.otus.l141;
  * mvn clean package
  *
  */
-// https://s3.amazonaws.com/baeldung.com/Building+a+REST+API+with+Spring.pdf?__s=bnwyscvjkgzurbq8xk4x&utm_source=drip&utm_medium=email&utm_campaign=Welcome+to+Baeldung
 
 public class MainTest {
     public static void main(String[] args) throws Exception {

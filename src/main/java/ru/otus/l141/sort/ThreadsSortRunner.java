@@ -13,8 +13,7 @@ import java.util.stream.Collectors;
  *
  * @param <T> the type of elements in the target array, must be Comparable.
  */
-public class ThreadsSortRunner<T extends Comparable<? super T>>
-    implements Runnable {
+public class ThreadsSortRunner<T extends Comparable<? super T>> implements Runnable {
 
     private int interval;
     private int lastInterval;
@@ -69,8 +68,9 @@ public class ThreadsSortRunner<T extends Comparable<? super T>>
     }
 
     private void runThread(List<Thread> threads, int from, int toBarrier) {
+        // new MergeSortingJob<>(array, from, toBarrier - 1, comparator)
         Thread thread = new Thread(
-            new MergeSortingJob<>(array, from, toBarrier - 1, comparator)
+            new ArraysSortingJob<>(array, from, toBarrier - 1, comparator)
         );
         threads.add(thread);
         thread.start();
@@ -110,13 +110,6 @@ public class ThreadsSortRunner<T extends Comparable<? super T>>
                 throw new RuntimeInterruptedException(e);
             }
         }
-
-        MergeAssembly<T> merge = constructMergeAssembly();
-
-        for (int idx = 0; idx < array.length; ++idx) {
-            array[idx] = merge.poll();
-        }
-
     }
 
     private MergeAssembly<T> constructMergeAssembly() {
@@ -133,6 +126,14 @@ public class ThreadsSortRunner<T extends Comparable<? super T>>
      * @return the target array
      */
     public T[] getResultToArray() {
+        if (null != array) {
+            MergeAssembly<T> merge = constructMergeAssembly();
+
+            for (int idx = 0; idx < array.length; ++idx) {
+                array[idx] = merge.poll();
+            }
+        }
+
         return array;
     }
 
