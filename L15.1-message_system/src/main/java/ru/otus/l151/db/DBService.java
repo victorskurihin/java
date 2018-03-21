@@ -64,8 +64,6 @@ public interface DBService extends AutoCloseable {
      */
     List<UserDataSet> loadAll();
 
-    int getUserId(String name);
-
     /**
      * TODO
      * @return
