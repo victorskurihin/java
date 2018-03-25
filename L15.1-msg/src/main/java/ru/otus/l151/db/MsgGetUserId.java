@@ -20,6 +20,7 @@ public class MsgGetUserId extends MsgToDB {
     public void exec(DBService dbService) {
         int id = dbService.getUserId(login);
         // TODO dbService.getMS().sendMessage(new MsgGetUserIdAnswer(getTo(), getFrom(), login, id));
+        dbService.getMS().sendMessage(new MsgGetUserIdAnswer(getTo(), getFrom(), login, id));
     }
 
 }

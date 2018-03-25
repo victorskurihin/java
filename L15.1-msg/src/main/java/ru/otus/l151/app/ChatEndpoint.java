@@ -19,14 +19,13 @@ public class ChatEndpoint
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         LOG.info("Session opened, id: {}", session.getId());
-        System.err.printf("Session opened, id: %s%n", session.getId());
 
         this.session = session;
-        this.remote = this.session.getAsyncRemote();
+        remote = this.session.getAsyncRemote();
         // attach echo message handler
         session.addMessageHandler(this);
 
-        this.remote.sendText("You are now connected to " + this.getClass().getName());
+        remote.sendText("You are now connected to " + this.getClass().getName());
         // session.getBasicRemote().sendText("Hi there, we are successfully connected.");
     }
 
@@ -34,7 +33,7 @@ public class ChatEndpoint
     public void onClose(Session session, CloseReason close) {
         super.onClose(session, close);
         this.session = null;
-        this.remote = null;
+        remote = null;
         LOG.info(
             "WebSocket Close session({}): {} - {}",
             session.getId(), close.getCloseCode(), close.getReasonPhrase()

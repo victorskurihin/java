@@ -24,12 +24,10 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     }
 
     void setAddress(Address address) {
-        System.err.printf("Set Address: %s for %s%n", address.getId(), this);
         this.address = address;
     }
 
     void setContext(MessageSystemContext context) {
-        System.err.printf("Set Message System Context: %s for %s%n", context.toString(), this);
         this.context = context;
     }
 
@@ -39,15 +37,13 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     }
 
     public void handleRequest(String login) {
-        System.err.printf("Address: %s for %s%n", getAddress(), this);
-        System.err.printf("Context: %s for %s%n", context, this);
         Message message = new MsgGetUserId(getAddress(), context.getDbAddress(), login);
         context.getMessageSystem().sendMessage(message);
     }
 
     public void addUser(int id, String name) {
         users.put(id, name);
-        System.out.println("User: " + name + " has id: " + id);
+        System.err.println("User: " + name + " has id: " + id);
     }
 
     @Override
