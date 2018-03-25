@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthEndpoint
-    extends Endpoint implements MessageHandler.Whole<String> {
+    extends FrontendEndpoint implements MessageHandler.Whole<String> {
 
     private static final Logger LOG = Log.getLogger(AuthEndpoint.class);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

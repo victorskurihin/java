@@ -11,10 +11,14 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.service.ServiceRegistry;
+import ru.otus.l151.app.DBService;
+import ru.otus.l151.app.MessageSystemContext;
 import ru.otus.l151.cache.CacheEngine;
 import ru.otus.l151.cache.CacheEngineImpl;
 import ru.otus.l151.dao.*;
 import ru.otus.l151.dataset.*;
+import ru.otus.l151.messageSystem.Address;
+import ru.otus.l151.messageSystem.MessageSystem;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -32,6 +36,9 @@ public class DBServiceImpl implements DBService {
     private Map<String, DAO> adapters;
     private final SessionFactory sessionFactory;
     private CacheEngine<Long, DataSet> cache;
+
+    private final Address address;
+    private final MessageSystemContext context;
 
     private static Configuration defaultConfiguration() {
         Configuration cfg = new Configuration();
@@ -72,19 +79,22 @@ public class DBServiceImpl implements DBService {
     /**
      * TODO
      */
-    public DBServiceImpl() {
-        this(defaultConfiguration());
-    }
-
-    /**
-     * TODO
-     * @param configuration
-     */
-    public DBServiceImpl(Configuration configuration) {
-        sessionFactory = createSessionFactory(configuration);
+    public DBServiceImpl(MessageSystemContext context, Address address) {
+        this.context = context;
+        this.address = address;
+        sessionFactory = createSessionFactory(defaultConfiguration());
         cache = new CacheEngineImpl<>(
             cacheSize, 10000, 0, false
         );
+    }
+
+    public void init() {
+        context.getMessageSystem().addAddressee(this);
+    }
+
+    @Override
+    public int getUserId(String name) {
+        return name.hashCode();
     }
 
     /**
@@ -105,14 +115,12 @@ public class DBServiceImpl implements DBService {
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
-    @Override
     public String getLocalStatus() {
         return runInSession(session -> {
             return session.getTransaction().getStatus().name();
         });
     }
 
-    @Override
     public Connection getConnection() {
         try {
             ((SessionImplementor) sessionFactory)
@@ -124,7 +132,6 @@ public class DBServiceImpl implements DBService {
         return null;
     }
 
-    @Override
     public <T extends DataSet> void save(T dataSet) {
         try (Session session = sessionFactory.openSession()) {
             setDefaultDAOFor(session);
@@ -141,7 +148,6 @@ public class DBServiceImpl implements DBService {
         }
     }
 
-    @Override
     public <T extends DataSet> T load(long id, Class<T> clazz) {
         long softKey = clazz.hashCode() + id;
         DataSet element = cache.get(softKey);
@@ -160,7 +166,6 @@ public class DBServiceImpl implements DBService {
         });
     }
 
-    @Override
     public UserDataSet loadByName(String name) {
         return runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
@@ -168,7 +173,6 @@ public class DBServiceImpl implements DBService {
         });
     }
 
-    @Override
     public List<UserDataSet> loadAll() {
         return runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
@@ -176,12 +180,10 @@ public class DBServiceImpl implements DBService {
         });
     }
 
-    @Override
     public int getHitCount() {
         return cache.getHitCount();
     }
 
-    @Override
     public int getMissCount() {
         return cache.getMissCount();
     }
@@ -203,9 +205,18 @@ public class DBServiceImpl implements DBService {
         }
     }
 
-    @Override
     public void close() throws Exception {
         sessionFactory.close();
+    }
+
+    @Override
+    public Address getAddress() {
+        return address;
+    }
+
+    @Override
+    public MessageSystem getMS() {
+        return context.getMessageSystem();
     }
 }
 

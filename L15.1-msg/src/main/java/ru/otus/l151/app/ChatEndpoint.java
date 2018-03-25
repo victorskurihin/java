@@ -6,7 +6,7 @@ import org.eclipse.jetty.util.log.Logger;
 import javax.websocket.*;
 
 public class ChatEndpoint
-    extends Endpoint implements MessageHandler.Whole<String> {
+    extends FrontendEndpoint implements MessageHandler.Whole<String> {
 
     private static final Logger LOG = Log.getLogger(ChatEndpoint.class);
     private Session session;

@@ -23,3 +23,6 @@ public abstract class MsgToDB extends Message {
     public abstract void exec(DBService dbService);
 }
 
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

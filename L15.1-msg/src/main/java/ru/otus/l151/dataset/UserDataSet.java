@@ -19,6 +19,10 @@ public class UserDataSet extends DataSet {
     @Column(name = "name", unique = true)
     private String name;
 
+    // for store user password
+    @Column(name = "password")
+    private String password;
+
     // for store an user's address
     @OneToOne(
         targetEntity = AddressDataSet.class,
