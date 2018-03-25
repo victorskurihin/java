@@ -52,6 +52,13 @@ public class AuthEndpoint
             "Message received. Session id: {} Message: {}",
             session.getId(), message
         );
+        Map<String, String> authData = new HashMap<>();
+        //noinspection unchecked
+        authData = GSON.fromJson(message, authData.getClass());
+        if (authData.containsKey("user") && authData.containsKey("pass")) {
+            LOG.info("User: {} password: {}", authData.get("user"), authData.get("pass"));
+            handleRequest(authData.get("user"));
+        }
         if (true) {
             remote.sendText(GSON.toJson(getOkResult()));
         } else {

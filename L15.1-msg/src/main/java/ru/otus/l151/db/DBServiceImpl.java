@@ -20,6 +20,8 @@ import ru.otus.l151.dataset.*;
 import ru.otus.l151.messageSystem.Address;
 import ru.otus.l151.messageSystem.MessageSystem;
 
+import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.log.Logger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import java.util.function.Function;
  */
 public class DBServiceImpl implements DBService {
     public static final int cacheSize = 10;
+    private static final Logger LOG = Log.getLogger(DBServiceImpl.class);
 
     private Map<String, DAO> adapters;
     private final SessionFactory sessionFactory;
@@ -94,6 +97,7 @@ public class DBServiceImpl implements DBService {
 
     @Override
     public int getUserId(String name) {
+        LOG.info("getUserId for: {}", name);
         return name.hashCode();
     }
 

@@ -47,6 +47,7 @@ public class EndpointFabric {
         ServerEndpointConfig config = ServerEndpointConfig.Builder.create(
                 clazz, "/" + name
         ).build();
+
         try {
             T endpoint = config.getConfigurator().getEndpointInstance(clazz);
             Address frontAddress = new Address("Frontend service " + name);
