@@ -1,4 +1,4 @@
-package ru.otus.l151.servlet;
+package ru.otus.l151;
 
 /*
  * Created by VSkurikhin at winter 2018.

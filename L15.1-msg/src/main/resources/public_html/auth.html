@@ -1,0 +1,73 @@
+<html>
+
+<body style="margin: 35px">
+<div class="auth">
+    <form>
+        <table>
+            <tr>
+                <td>login:</td><td><input id="login" type="text"/></td>
+            </tr>
+            <tr>
+                <td>password:</td><td><input id="password" type="password"/></td>
+            </tr>
+            <tr>
+                <td><input onclick="sendAuth();" value="login" type="button"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<div id="msg-box" style="width:500px; background: #eee; overflow:auto;">Server: </div>
+
+<script>
+    var webSocket = new WebSocket("ws://localhost:8090/auth");
+    var login = document.getElementById("login");
+    var password = document.getElementById("password");
+    var divMsg = document.getElementById("msg-box");
+
+    function sendAuth() {
+        webSocket.send(JSON.stringify({ user: login.value, pass: password.value }));
+    }
+
+    function redirect(url) {
+        var ua        = navigator.userAgent.toLowerCase(),
+            isIE      = ua.indexOf('msie') !== -1,
+            version   = parseInt(ua.substr(4, 2), 10);
+
+        // Internet Explorer 8 and lower
+        if (isIE && version < 9) {
+            var link = document.createElement('a');
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        // All other browsers can use the standard window.location.href (they don't lose HTTP_REFERER like Internet Explorer 8 & lower does)
+        else {
+            window.location.href = url;
+        }
+    }
+
+    webSocket.onmessage = function(message) {
+        var answer = JSON.parse(message.data)
+        if (answer["result"] == "ok") {
+            redirect("chat.html")
+        } else {
+            divMsg.innerHTML = "Server: " + answer["result"];
+        }
+    }
+
+    webSocket.onopen = function() {
+        console.log("connection opened");
+    };
+
+    webSocket.onclose = function() {
+        console.log("connection closed");
+    };
+
+    webSocket.onerror = function wserror(message) {
+        console.log("error: " + message);
+    }
+</script>
+</body>
+</html>

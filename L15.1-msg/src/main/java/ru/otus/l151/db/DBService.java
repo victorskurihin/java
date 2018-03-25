@@ -76,7 +76,6 @@ public interface DBService extends AutoCloseable {
      */
     int getMissCount();
 
-
     void shutdown();
 }
 

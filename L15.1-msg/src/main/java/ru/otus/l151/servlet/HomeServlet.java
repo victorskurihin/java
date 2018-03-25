@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Servlet implementation class AuthServlet.
+ * TODO
  */
 public class HomeServlet extends HttpServlet {
 
@@ -42,10 +42,9 @@ public class HomeServlet extends HttpServlet {
     }
 
     /**
-     * Called by the server to allow a servlet to handle a GET request.
-     *
-     * @param request contains the request the client has made of the servlet
-     * @param response contains the response the servlet sends to the client
+     * TODO
+     * @param request
+     * @param response
      * @throws ServletException
      * @throws IOException
      */

@@ -4,8 +4,6 @@ package ru.otus.l151.servlet;
  * Created by VSkurikhin at winter 2018.
  */
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.l151.auth.AuthAccount;
 import ru.otus.l151.db.DBService;
 
@@ -16,8 +14,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * Servlet implementation class HomeServlet.
- * This servlet provides the information for administrators.
+ * TODO
  */
 public class AdminServlet extends HomeServlet {
 
@@ -29,19 +26,22 @@ public class AdminServlet extends HomeServlet {
 
     private DBService dbService;
     private AuthAccount authAccount;
-    private Workload workload;
 
-    public void init() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
-        authAccount = (AuthAccount) context.getBean("authAccount");
-        dbService = (DBService) context.getBean("dbService");
+    /**
+     * TODO
+     * @param authAccount
+     * @param dbService
+     */
+    public AdminServlet(AuthAccount authAccount, DBService dbService) {
+        super();
+        this.authAccount = authAccount;
+        this.dbService = dbService;
     }
 
     /**
-     * Called by the server to allow a servlet to handle a GET request.
-     *
-     * @param request contains the request the client has made of the servlet
-     * @param response contains the response the servlet sends to the client
+     * TODO
+     * @param request
+     * @param response
      * @throws ServletException
      * @throws IOException
      */
@@ -50,13 +50,12 @@ public class AdminServlet extends HomeServlet {
 
         Map<String, Object> pageVariables = HomeServlet.createPageVariablesMap(request);
         String login = (String) pageVariables.get(AuthServlet.LOGIN_PARAMETER_NAME);
+        String login2 = (String) request.getSession().getAttribute("login");
+
         if (null != login && authAccount.isAdministrator(login)) {
-            if (null == workload) {
-                workload = new Workload(dbService);
-                workload.run();
-            }
             pageVariables.put(CACHE_HIT, dbService.getHitCount());
             pageVariables.put(CACHE_MISS, dbService.getMissCount());
+            pageVariables.put("login2", login2);
 
             response.getWriter().println(TemplateProcessor.instance().getPage(
                 ADMIN_PAGE_TEMPLATE, pageVariables)

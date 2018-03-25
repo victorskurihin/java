@@ -4,8 +4,6 @@ package ru.otus.l151.dataset;
  * Created by VSkurikhin at winter 2018.
  */
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;

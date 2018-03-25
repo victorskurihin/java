@@ -1,11 +1,9 @@
 package ru.otus.l151.servlet;
 
 /*
- * Created by VSkurikhin at winter 2018.
+ * Created by VSkurikhin at spring 2018.
  */
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.l151.auth.AuthAccount;
 import ru.otus.l151.db.DBService;
 
@@ -18,9 +16,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// import org.apache.catalina.websocket.StreamInbound;
+// import org.apache.catalina.websocket.WebSocketServlet;
+
 /**
- * Servlet implementation class AuthServlet.
- * This servlet is responsible for authenticating users.
+ * TODO
  */
 public class AuthServlet extends HttpServlet {
 
@@ -34,29 +34,30 @@ public class AuthServlet extends HttpServlet {
     private static final String ANONYMOUS_LOGIN = "anonymous";
 
     private String login = ANONYMOUS_LOGIN;
-    @SuppressWarnings("unused")
-    private DBService dbService;
     private AuthAccount authAccount;
 
-    public void init() {
-        ApplicationContext context = new ClassPathXmlApplicationContext("SpringBeans.xml");
-        authAccount = (AuthAccount) context.getBean("authAccount");
-        dbService = (DBService) context.getBean("dbService");
-        authAccount.put("user", "password");
+    /**
+     * TODO
+     * @param login
+     * @param authAccount
+     */
+    public AuthServlet(String login, AuthAccount authAccount) {
+        this.login = login;
+        this.authAccount = authAccount;
     }
 
     private static String getPage(String login) throws IOException {
         Map<String, Object> pageVariables = new HashMap<>();
+
         pageVariables.put(LOGIN_VARIABLE_NAME, login == null ? "" : login);
 
         return TemplateProcessor.instance().getPage(LOGIN_PAGE_TEMPLATE, pageVariables);
     }
 
     /**
-     * Called by the server to allow a servlet to handle a GET request.
-     *
-     * @param request contains the request the client has made of the servlet
-     * @param response contains the response the servlet sends to the client
+     * TODO
+     * @param request
+     * @param response
      * @throws ServletException
      * @throws IOException
      */
@@ -70,13 +71,9 @@ public class AuthServlet extends HttpServlet {
     }
 
     /**
-     * Called by  the server  to allow  a servlet  to handle  a POST  request.
-     * The HTTP POST method allows the client to send data of unlimited length
-     * to the Web server a single time and is useful when posting information
-     * such as credit card numbers.
-     *
-     * @param request contains the request the client has made of the servlet
-     * @param response contains the response the servlet sends to the client
+     * TODO
+     * @param request
+     * @param response
      * @throws ServletException
      * @throws IOException
      */
@@ -88,7 +85,7 @@ public class AuthServlet extends HttpServlet {
 
         response.setContentType(HomeServlet.TEXT_HTML_CHARSET);
 
-        if (null != requestLogin) {
+                if (null != requestLogin) {
             if (authAccount.auth(requestLogin, requestPassword)) {
                 saveToVariable(requestLogin);
                 saveToSession(request, requestLogin);
@@ -112,7 +109,7 @@ public class AuthServlet extends HttpServlet {
     }
 
     private void saveToCookie(HttpServletResponse response, String requestLogin) {
-        response.addCookie(new Cookie("L15.1-login", requestLogin));
+        response.addCookie(new Cookie("L12.1-login", requestLogin));
     }
 
     private void saveToServlet(HttpServletRequest request, String requestLogin) {
