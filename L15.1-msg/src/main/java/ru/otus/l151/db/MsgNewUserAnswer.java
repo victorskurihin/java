@@ -7,19 +7,22 @@ import ru.otus.l151.messageSystem.Address;
 /**
  * Created by tully.
  */
-public class MsgGetUserIdAnswer extends MsgToFrontend {
+public class MsgNewUserAnswer extends MsgToFrontend {
+    private final long id;
     private final String name;
-    private final int id;
+    private final String password;
 
-    public MsgGetUserIdAnswer(Address from, Address to, String name, int id) {
+    public MsgNewUserAnswer(Address from, Address to, long id, String name, String password) {
         super(from, to);
-        this.name = name;
         this.id = id;
+        this.name = name;
+        this.password = password;
     }
 
     @Override
     public void exec(FrontendService frontendService) {
-        frontendService.addUser(id, name);
+        frontendService.idUser(id, name);
+        frontendService.idPassword(id, password);
     }
 }
 

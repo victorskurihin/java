@@ -1,6 +1,7 @@
 package ru.otus.l151.app;
 
-import ru.otus.l151.db.MsgGetUserId;
+import ru.otus.l151.db.MsgGetUser;
+import ru.otus.l151.db.MsgNewUser;
 import ru.otus.l151.messageSystem.Address;
 import ru.otus.l151.messageSystem.Message;
 import ru.otus.l151.messageSystem.MessageSystem;
@@ -17,7 +18,8 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     private Address address;
     private MessageSystemContext context;
 
-    private final Map<Integer, String> users = new HashMap<>();
+    private final Map<String, Long> users = new HashMap<>();
+    private final Map<Long, String> passwords = new HashMap<>();
 
     public void init() {
         context.getMessageSystem().addAddressee(this);
@@ -36,19 +38,57 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
         return address;
     }
 
-    public void handleRequest(String login) {
-        Message message = new MsgGetUserId(getAddress(), context.getDbAddress(), login);
+    @Override
+    public void handleRequest(Message message) {
         context.getMessageSystem().sendMessage(message);
     }
 
-    public void addUser(int id, String name) {
-        users.put(id, name);
-        System.err.println("User: " + name + " has id: " + id);
+    @Override
+    public void idUser(long id, String name) {
+        if (id > -1) {
+            users.put(name, id);
+        }
+    }
+
+    @Override
+    public void idPassword(long id, String password) {
+        if (id > -1) {
+            passwords.put(id, password);
+        }
     }
 
     @Override
     public MessageSystem getMS() {
         return context.getMessageSystem();
+    }
+
+    public Message msgGetUser(String login, String password) {
+        return new MsgGetUser(getAddress(), context.getDbAddress(), login, password);
+    }
+
+    public Message msgNewUser(String login, String password) {
+        return new MsgNewUser(getAddress(), context.getDbAddress(), login, password);
+    }
+
+
+    public long lookup(String username) {
+        return users.getOrDefault(username, (long) -1);
+    }
+
+    public boolean isUserExists(String username) {
+        return lookup(username) > -1;
+
+    }
+
+    public boolean auth(String username, String password) {
+        long id = users.getOrDefault(username, (long) -1);
+
+        if (id < 0) {
+            return false;
+        }
+        String pwd = passwords.getOrDefault(id, null);
+
+        return pwd != null && password.equals(pwd);
     }
 }
 

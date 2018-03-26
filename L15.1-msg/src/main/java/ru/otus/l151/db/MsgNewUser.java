@@ -3,24 +3,25 @@ package ru.otus.l151.db;
 import ru.otus.l151.app.DBService;
 import ru.otus.l151.app.MsgToDB;
 import ru.otus.l151.messageSystem.Address;
-import ru.otus.l151.messageSystem.MessageSystem;
 
 /**
  * Created by tully.
  */
-public class MsgGetUserId extends MsgToDB {
+public class MsgNewUser extends MsgToDB {
     private final String login;
+    private final String password;
 
-    public MsgGetUserId(Address from, Address to, String login) {
+    public MsgNewUser(Address from, Address to, String login, String password) {
         super(from, to);
         this.login = login;
+        this.password = password;
     }
 
     @Override
     public void exec(DBService dbService) {
-        int id = dbService.getUserId(login);
+        long id = dbService.newUser(login, password);
         // TODO dbService.getMS().sendMessage(new MsgGetUserIdAnswer(getTo(), getFrom(), login, id));
-        dbService.getMS().sendMessage(new MsgGetUserIdAnswer(getTo(), getFrom(), login, id));
+        dbService.getMS().sendMessage(new MsgNewUserAnswer(getTo(), getFrom(), id, login, password));
     }
 
 }

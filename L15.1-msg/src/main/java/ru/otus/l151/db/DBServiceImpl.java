@@ -22,6 +22,8 @@ import ru.otus.l151.messageSystem.MessageSystem;
 
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+
+import javax.jws.soap.SOAPBinding;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -96,9 +98,23 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
-    public int getUserId(String name) {
-        LOG.info("getUserId for: {}", name);
-        return name.hashCode();
+    public long getUserId(String name) {
+        LOG.debug("getUserId for: {}", name);
+        UserDataSet user = loadByName(name);
+
+        if (null != user) {
+            return user.getId();
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public String getPasswordById(long id) {
+        LOG.debug("getPasswordById for: {}", id);
+        UserDataSet user = load(id, UserDataSet.class);
+
+        return user.getPassword();
     }
 
     /**
@@ -108,14 +124,15 @@ public class DBServiceImpl implements DBService {
     public void addAdapter(DAO adapter) {
         if (! adapters.containsKey(adapter.getAdapteeOfType())) {
             adapters.put(adapter.getAdapteeOfType(), adapter);
-            // DEPRECATED adapter.setAdapters(adapters);
         }
     }
 
     private static SessionFactory createSessionFactory(Configuration configuration) {
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+
         builder.applySettings(configuration.getProperties());
         ServiceRegistry serviceRegistry = builder.build();
+
         return configuration.buildSessionFactory(serviceRegistry);
     }
 
@@ -147,7 +164,6 @@ public class DBServiceImpl implements DBService {
 
             dao.save(dataSet);
             long longKey = dataSet.getClass().hashCode() + dataSet.getId();
-//            cache.put(new SoftReferenceElement<>(softKey, dataSet));
             cache.put(longKey, dataSet);
         }
     }
@@ -209,8 +225,20 @@ public class DBServiceImpl implements DBService {
         }
     }
 
+    @Override
     public void close() throws Exception {
         sessionFactory.close();
+    }
+
+    @Override
+    public long newUser(String login, String password) {
+        if (-1 == getUserId(login)) {
+            UserDataSet user = new UserDataSet(login, password);
+            save(user);
+
+            return getUserId(login);
+        }
+        return -1;
     }
 
     @Override

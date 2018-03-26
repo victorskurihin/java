@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  * @author tully
  */
 public final class MessageSystem {
-    private final static Logger logger = Logger.getLogger(MessageSystem.class.getName());
+    private final static Logger LOG = Logger.getLogger(MessageSystem.class.getName());
     private static final int DEFAULT_STEP_TIME = 10;
 
     private final List<Thread> workers;
@@ -45,15 +45,19 @@ public final class MessageSystem {
                     while (!queue.isEmpty()) {
                         Message message = queue.poll();
                         message.exec(entry.getValue());
+                        String fromTo = String.format("from %s to %s",
+                            message.getFrom().getId(), message.getTo().getId()
+                        );
+                        LOG.log(Level.INFO, "Delivered: " + fromTo);
                     }
                     try {
                         Thread.sleep(MessageSystem.DEFAULT_STEP_TIME);
                     } catch (InterruptedException e) {
-                        logger.log(Level.INFO, "Thread interrupted. Finishing: " + name);
+                        LOG.log(Level.INFO, "Thread interrupted. Finishing: " + name);
                         return;
                     }
                     if (Thread.currentThread().isInterrupted()) {
-                        logger.log(Level.INFO, "Finishing: " + name);
+                        LOG.log(Level.INFO, "Finishing: " + name);
                         return;
                     }
                 }

@@ -42,13 +42,14 @@ public class UserDataSet extends DataSet {
     public UserDataSet() {
         super(-1);
     }
-    public UserDataSet(long id, String name, AddressDataSet address) {
+    public UserDataSet(long id, String name, String password, AddressDataSet address) {
         super(id);
         this.name = name;
+        this.password = password;
         this.address = address;
     }
-    public UserDataSet(String name, AddressDataSet address) {
-        this(-1, name, address);
+    public UserDataSet(String name, String password) {
+        this(-1, name, password, null);
     }
 
     public String getName() {
@@ -56,6 +57,13 @@ public class UserDataSet extends DataSet {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public AddressDataSet getAddress() {

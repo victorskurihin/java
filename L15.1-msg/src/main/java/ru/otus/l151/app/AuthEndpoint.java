@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+import ru.otus.l151.db.MsgNewUser;
+import ru.otus.l151.messageSystem.Message;
 
 import javax.websocket.*;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ public class AuthEndpoint
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private Session session;
     private RemoteEndpoint.Async remote;
+    private boolean signup = true;
 
     public AuthEndpoint() {
         LOG.info("class loaded {}", this.getClass());
@@ -46,26 +49,6 @@ public class AuthEndpoint
         );
     }
 
-    @Override
-    public void onMessage(String message) {
-        LOG.info(
-            "Message received. Session id: {} Message: {}",
-            session.getId(), message
-        );
-        Map<String, String> authData = new HashMap<>();
-        //noinspection unchecked
-        authData = GSON.fromJson(message, authData.getClass());
-        if (authData.containsKey("user") && authData.containsKey("pass")) {
-            LOG.info("User: {} password: {}", authData.get("user"), authData.get("pass"));
-            handleRequest(authData.get("user"));
-        }
-        if (true) {
-            remote.sendText(GSON.toJson(getOkResult()));
-        } else {
-            remote.sendText(GSON.toJson(getErrorResult()));
-        }
-    }
-
     private Map<String, String> getOkResult() {
         Map<String, String> result = new HashMap<>();
         result.put("result", "ok");
@@ -77,6 +60,77 @@ public class AuthEndpoint
         Map<String, String> result = new HashMap<>();
         result.put("result", "Error!");
         return result;
+    }
+
+    private Map<String, String> getErrorResult(String msg) {
+        Map<String, String> result = new HashMap<>();
+        result.put("result", "Error!" + msg);
+        return result;
+    }
+
+    private void singup(String username, String password) {
+        signup = true;
+        if (null != username && null != password) {
+            LOG.info("singup User: {} password: {}", username, password);
+            handleRequest(msgNewUser(username, password));
+        }
+    }
+
+    private void authenticate(String username, String password) {
+        signup = false;
+        if (null != username && null != password) {
+            LOG.info("authenticate User: {} password: {}", username, password);
+            handleRequest(msgGetUser(username, password));
+        }
+    }
+
+    @Override
+    public void onMessage(String message) {
+        LOG.info(
+            "Message received. Session id: {} Message: {}",
+            session.getId(), message
+        );
+
+        Map<String, String> authData = new HashMap<>();
+        //noinspection unchecked
+        authData = GSON.fromJson(message, authData.getClass());
+
+        String form = authData.getOrDefault("form", null);
+        String username = authData.getOrDefault("user", null);
+        String password = authData.getOrDefault("pass", null);
+
+        switch (form) {
+            case "singup":
+                singup(username, password);
+                break;
+            case "auth": authenticate(username, password);
+        }
+    }
+
+    @Override
+    public void idUser(long id, String name) {
+        if (signup) {
+            if (isUserExists(name)) {
+                remote.sendText(GSON.toJson(getErrorResult("User exists!")));
+                return;
+            }
+        } else {
+            if ( ! isUserExists(name)) {
+                remote.sendText(GSON.toJson(getErrorResult("User doesn't exist!")));
+                return;
+            }
+        }
+        super.idUser(id, name);
+    }
+
+    @Override
+    public void idPassword(long id, String password) {
+        if (! signup && id < 0) {
+            remote.sendText(GSON.toJson(getErrorResult("Wrong password!")));
+            return;
+        }
+        super.idPassword(id, password);
+        remote.sendText(GSON.toJson(getOkResult()));
     }
 }
 

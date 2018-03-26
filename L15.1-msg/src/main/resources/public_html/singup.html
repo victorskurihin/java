@@ -1,28 +1,27 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
-    <title>Authenticate</title>
+    <title>Sing-Up</title>
 </head>
 
 <body style="margin: 35px">
-
 
 <table>
     <tr>
         <td>
             <div id="title1" style="width:250px; background: #ee; overflow:auto;">
-                <a href="singup.html">Sing-up login</a>
+                <a href="auth.html">Sing in to chat</a>
             </div>
         </td>
         <td>
             <div id="title2" style="width:250px; background: #ee; overflow:auto;">
-                Sing in to chat:
+                Sing-up login:
             </div>
         </td>
     </tr>
 </table>
 
-<div id="form" class="auth">
+<div id="form" class="singup">
     <form>
         <table>
             <tr>
@@ -73,7 +72,7 @@
     webSocket.onmessage = function(message) {
         var answer = JSON.parse(message.data)
         if (answer["result"] == "ok") {
-            redirect("chat.html")
+            redirect("auth.html")
         } else if (array["Impression"] === undefined) {
             divMsg.innerHTML = "Server: " + answer["result"];
         }

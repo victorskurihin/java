@@ -26,7 +26,6 @@ public class ChatEndpoint
         session.addMessageHandler(this);
 
         remote.sendText("You are now connected to " + this.getClass().getName());
-        // session.getBasicRemote().sendText("Hi there, we are successfully connected.");
     }
 
     @Override
@@ -46,6 +45,16 @@ public class ChatEndpoint
             "Message received. Session id: {} Message: {}",
             session.getId(), message
         );
+    }
+
+    @Override
+    public void idUser(long id, String name) {
+
+    }
+
+    @Override
+    public void idPassword(long id, String name) {
+
     }
 }
 
