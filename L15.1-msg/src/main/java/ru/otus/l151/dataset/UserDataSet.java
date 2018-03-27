@@ -86,6 +86,7 @@ public class UserDataSet extends DataSet {
         return "UserDataSet{" +
                " id'" + getId() + "'" +
                ", name='"   + name + "'" +
+               ", password='"   + password + "'" +
                ", address=" + address +
                ", phones="  + phones +
                " }";

@@ -1,14 +1,17 @@
 package ru.otus.l151.app;
 
-import ru.otus.l151.db.MsgGetUser;
-import ru.otus.l151.db.MsgNewUser;
+import ru.otus.l151.dataset.UserDataSet;
+import ru.otus.l151.db.MsgGetUserDataSet;
+import ru.otus.l151.db.MsgNewUserDataSet;
 import ru.otus.l151.messageSystem.Address;
+import ru.otus.l151.messageSystem.ControlBlock;
 import ru.otus.l151.messageSystem.Message;
 import ru.otus.l151.messageSystem.MessageSystem;
 
 import javax.websocket.Endpoint;
-import java.util.HashMap;
+import javax.websocket.RemoteEndpoint;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by tully.
@@ -18,8 +21,8 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     private Address address;
     private MessageSystemContext context;
 
-    private final Map<String, Long> users = new HashMap<>();
-    private final Map<Long, String> passwords = new HashMap<>();
+    private final Map<String, Long> users = new ConcurrentHashMap<>();
+    private final Map<Long, String> passwords = new ConcurrentHashMap<>();
 
     public void init() {
         context.getMessageSystem().addAddressee(this);
@@ -44,32 +47,30 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     }
 
     @Override
-    public void idUser(long id, String name) {
-        if (id > -1) {
-            users.put(name, id);
-        }
-    }
-
-    @Override
-    public void idPassword(long id, String password) {
-        if (id > -1) {
-            passwords.put(id, password);
-        }
-    }
-
-    @Override
     public MessageSystem getMS() {
         return context.getMessageSystem();
     }
 
-    public Message msgGetUser(String login, String password) {
-        return new MsgGetUser(getAddress(), context.getDbAddress(), login, password);
+    @Override
+    public void deliverUserDataSet(ControlBlock control, UserDataSet user) {
+        if (null != user && user.getId() > -1) {
+            users.put(user.getName(), user.getId());
+            passwords.put(user.getId(), user.getPassword());
+        }
     }
 
-    public Message msgNewUser(String login, String password) {
-        return new MsgNewUser(getAddress(), context.getDbAddress(), login, password);
+    public Message msgGetUserDataSet(ControlBlock control, String login) {
+        return new MsgGetUserDataSet(getAddress(), context.getDbAddress(), control, login);
     }
 
+    public Message msgNewUserDataSet(ControlBlock control, UserDataSet user) {
+        return new MsgNewUserDataSet(getAddress(), context.getDbAddress(), control, user);
+    }
+
+    public Message msgChatUserDataSet(ControlBlock control, String login) {
+        Address chatAddress = new Address("Frontend service chat");
+        return new MsgGetUserDataSet(chatAddress, context.getDbAddress(), control, login);
+    }
 
     public long lookup(String username) {
         return users.getOrDefault(username, (long) -1);

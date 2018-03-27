@@ -97,26 +97,6 @@ public class DBServiceImpl implements DBService {
         context.getMessageSystem().addAddressee(this);
     }
 
-    @Override
-    public long getUserId(String name) {
-        LOG.debug("getUserId for: {}", name);
-        UserDataSet user = loadByName(name);
-
-        if (null != user) {
-            return user.getId();
-        } else {
-            return -1;
-        }
-    }
-
-    @Override
-    public String getPasswordById(long id) {
-        LOG.debug("getPasswordById for: {}", id);
-        UserDataSet user = load(id, UserDataSet.class);
-
-        return user.getPassword();
-    }
-
     /**
      * TODO
      * @param adapter
@@ -186,6 +166,7 @@ public class DBServiceImpl implements DBService {
         });
     }
 
+    @Override
     public UserDataSet loadByName(String name) {
         return runInSession(session -> {
             UserDataSetDAO dao = new UserDataSetDAO(session);
@@ -228,17 +209,6 @@ public class DBServiceImpl implements DBService {
     @Override
     public void close() throws Exception {
         sessionFactory.close();
-    }
-
-    @Override
-    public long newUser(String login, String password) {
-        if (-1 == getUserId(login)) {
-            UserDataSet user = new UserDataSet(login, password);
-            save(user);
-
-            return getUserId(login);
-        }
-        return -1;
     }
 
     @Override

@@ -20,9 +20,17 @@
     var msgField = document.getElementById("messageField");
     var divMsg = document.getElementById("msg-box");
 
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
     function sendMsg() {
         var msgToSend = msgField.value;
-        webSocket.send(msgToSend);
+        var login = getCookie("auth");
+        webSocket.send("{auth:" + login + ",text:" + msgToSend + "}");
         divMsg.innerHTML += "<div style='color:red'>Client> " + msgToSend + "</div>"
         msgField.value = "";
     }
@@ -32,6 +40,8 @@
     }
 
     webSocket.onopen = function() {
+        var login = getCookie("auth");
+        webSocket.send("{auth:" + login + "}");
         console.log("connection opened");
     };
 

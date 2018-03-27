@@ -6,19 +6,7 @@ set OUTLOG=%LOGDIR%\std_out.log
 set GCLOG=%LOGDIR%"\gc_pid_%p.log"
 set DUMPDIR=dumps
 mkdir %DUMPDIR%
-set CP="-cp target\classes;target\test-classes;target\libs:target"
-set CP=%CP%;target\gson-2.8.2.jar
-set CP=%CP%;target\guava-21.0.jar
-set CP=%CP%;target\hamcrest-core-1.3.jar
-set CP=%CP%;target\javassist-3.21.0-GA.jar
-set CP=%CP%;target\javax.json-1.0.4.jar
-set CP=%CP%;target\json-simple-1.1.1.jar
-set CP=%CP%;target\junit-4.12.jar
-set CP=%CP%;target\log4j-api-2.10.0.jar
-set CP=%CP%;target\log4j-core-2.10.0.jar
-set CP=%CP%;target\postgresql-9.1-901-1.jdbc4.jar
-set CP=%CP%;target\reflections-0.9.11.jar
-set CP=%CP%;postgresql-9.1-901-1.jdbc4.jar
+set CP="target\classes;target\test-classes;target\classes\public_html;target\*"
 set REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n"
 set MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 set GC="-XX:+UseG1GC"
@@ -35,4 +23,4 @@ set JMX=%JMX%" -Dcom.sun.management.jmxremote.authenticate=false"
 set JMX=%JMX%" -Dcom.sun.management.jmxremote.ssl=false"
 set DUMP="-XX:+HeapDumpOnOutOfMemoryError"
 set DUMP=%DUMP%" -XX:HeapDumpPath="%DUMPDIR%
-java %CP% %REMOTE_DEBUG% %MEMORY% %GC% %GC_LOG% %JMX% %DUMP% ru.otus.l151.MainTest 2> %ERRLOG% > %OUTLOG%
+java -cp %CP% ru.otus.l151.Main

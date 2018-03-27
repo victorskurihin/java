@@ -6,21 +6,9 @@
 
 <body style="margin: 35px">
 
+<div id="title1" style="width:250px; background: #ee; overflow:auto;"><a href="singup.html">Sing-up login</a></div>
 
-<table>
-    <tr>
-        <td>
-            <div id="title1" style="width:250px; background: #ee; overflow:auto;">
-                <a href="singup.html">Sing-up login</a>
-            </div>
-        </td>
-        <td>
-            <div id="title2" style="width:250px; background: #ee; overflow:auto;">
-                Sing in to chat:
-            </div>
-        </td>
-    </tr>
-</table>
+<div id="title2" style="width:250px; background: #ee; overflow:auto;">Sing in to chat:</div>
 
 <div id="form" class="auth">
     <form>
@@ -73,8 +61,11 @@
     webSocket.onmessage = function(message) {
         var answer = JSON.parse(message.data)
         if (answer["result"] == "ok") {
-            redirect("chat.html")
-        } else if (array["Impression"] === undefined) {
+            var myDate = new Date();
+            myDate.setMonth(myDate.getMonth() + 12);
+            document.cookie = "auth=" + login.value + ";expires=" + myDate + ";domain=localhost;path=/";
+            redirect("chat.html");
+        } else if (!(answer["result"] === undefined)) {
             divMsg.innerHTML = "Server: " + answer["result"];
         }
     }

@@ -6,20 +6,9 @@
 
 <body style="margin: 35px">
 
-<table>
-    <tr>
-        <td>
-            <div id="title1" style="width:250px; background: #ee; overflow:auto;">
-                <a href="auth.html">Sing in to chat</a>
-            </div>
-        </td>
-        <td>
-            <div id="title2" style="width:250px; background: #ee; overflow:auto;">
-                Sing-up login:
-            </div>
-        </td>
-    </tr>
-</table>
+<div id="title1" style="width:250px; background: #ee; overflow:auto;"><a href="auth.html">Sing in to chat</a></div>
+
+<div id="title2" style="width:250px; background: #ee; overflow:auto;">Sing-up login:</div>
 
 <div id="form" class="singup">
     <form>
@@ -69,11 +58,21 @@
         }
     }
 
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
     webSocket.onmessage = function(message) {
         var answer = JSON.parse(message.data)
         if (answer["result"] == "ok") {
-            redirect("auth.html")
-        } else if (array["Impression"] === undefined) {
+            var myDate = new Date();
+            myDate.setMonth(myDate.getMonth() + 12);
+            document.cookie = "auth=" + login.value + ";expires=" + myDate + ";domain=localhost;path=/";
+            redirect("chat.html");
+        } else if (!(answer["result"] === undefined)) {
             divMsg.innerHTML = "Server: " + answer["result"];
         }
     }
