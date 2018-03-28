@@ -1,4 +1,4 @@
-package ru.otus.l151.app;
+package ru.otus.l151.front;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
@@ -7,6 +7,8 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+
+import ru.otus.l151.app.MessageSystemContext;
 import ru.otus.l151.messageSystem.Address;
 
 import javax.servlet.ServletException;

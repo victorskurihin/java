@@ -35,6 +35,10 @@ public class ControlBlock {
         return map.getOrDefault(key, null);
     }
 
+    public String getOrDefault(String key, String defaultValue) {
+        return map.getOrDefault(key, defaultValue);
+    }
+
     public static String keyS(Keys keys) {
         return keys.toString();
     }

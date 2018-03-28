@@ -1,14 +1,10 @@
 package ru.otus.l151.db;
 
-import ru.otus.l151.app.DBService;
 import ru.otus.l151.app.MsgToDB;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messageSystem.Address;
 import ru.otus.l151.messageSystem.ControlBlock;
 
-/**
- * Created by tully.
- */
 public class MsgGetUserDataSet extends MsgToDB {
     private final String login;
     private final ControlBlock controlBlock;

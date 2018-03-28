@@ -4,13 +4,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.l151.app.DBService;
 import ru.otus.l151.app.MessageSystemContext;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messageSystem.Address;
 import ru.otus.l151.messageSystem.MessageSystem;
-
-import static org.junit.Assert.*;
 
 public class DBServiceImplTest {
     private DBServiceImpl dbService;

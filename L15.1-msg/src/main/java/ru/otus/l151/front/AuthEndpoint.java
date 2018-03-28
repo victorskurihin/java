@@ -1,9 +1,11 @@
-package ru.otus.l151.app;
+package ru.otus.l151.front;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+
+import ru.otus.l151.app.StringHandler;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messageSystem.ControlBlock;
 

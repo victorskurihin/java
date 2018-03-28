@@ -1,4 +1,4 @@
-package ru.otus.l151.app;
+package ru.otus.l151.front;
 
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messageSystem.Addressee;
@@ -9,6 +9,8 @@ public interface FrontendService extends Addressee {
     void init();
 
     void handleRequest(Message message);
+
+    void deliverString(ControlBlock control, String text);
 
     void deliverUserDataSet(ControlBlock control, UserDataSet user);
 }

@@ -1,4 +1,4 @@
-package ru.otus.l151.app;
+package ru.otus.l151.db;
 
 import ru.otus.l151.dataset.DataSet;
 import ru.otus.l151.dataset.UserDataSet;

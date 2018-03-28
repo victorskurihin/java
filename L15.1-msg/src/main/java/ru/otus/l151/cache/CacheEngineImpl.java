@@ -1,9 +1,5 @@
 package ru.otus.l151.cache;
 
-/*
- * Created by VSkurikhin at winter 2018.
- */
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Timer;

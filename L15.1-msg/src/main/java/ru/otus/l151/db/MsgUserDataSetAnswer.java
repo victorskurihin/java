@@ -1,14 +1,11 @@
 package ru.otus.l151.db;
 
-import ru.otus.l151.app.FrontendService;
+import ru.otus.l151.front.FrontendService;
 import ru.otus.l151.app.MsgToFrontend;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messageSystem.Address;
 import ru.otus.l151.messageSystem.ControlBlock;
 
-/**
- * Created by tully.
- */
 public class MsgUserDataSetAnswer extends MsgToFrontend {
     private final ControlBlock controlBlock;
     private final UserDataSet userDataSet;

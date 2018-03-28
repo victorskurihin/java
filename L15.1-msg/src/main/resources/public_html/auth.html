@@ -20,7 +20,9 @@
                 <td>password:</td><td><input id="password" type="password"/></td>
             </tr>
             <tr>
-                <td><input onclick="sendAuth();" value="login" type="button"></td>
+                <td>
+                    <input type="button" id="auth" value="Login" onclick="sendAuth();"/>
+                </td>
             </tr>
         </table>
     </form>
@@ -34,6 +36,15 @@
     var login = document.getElementById("login");
     var password = document.getElementById("password");
     var divMsg = document.getElementById("msg-box");
+
+    document.onkeypress = keyPress;
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
 
     function sendAuth() {
         webSocket.send(JSON.stringify({ form: formClass, user: login.value, pass: password.value }));
@@ -80,6 +91,14 @@
 
     webSocket.onerror = function wserror(message) {
         console.log("error: " + message);
+    }
+
+    function keyPress(e) {
+        var x = e || window.event;
+        var key = (x.keyCode || x.which);
+        if (key == 13 || key == 3){
+            document.getElementById("auth").click();
+        }
     }
 </script>
 </body>

@@ -11,10 +11,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.service.ServiceRegistry;
-import ru.otus.l151.app.DBService;
+
 import ru.otus.l151.app.MessageSystemContext;
-import ru.otus.l151.cache.CacheEngine;
-import ru.otus.l151.cache.CacheEngineImpl;
+import ru.otus.l151.cache.*;
 import ru.otus.l151.dao.*;
 import ru.otus.l151.dataset.*;
 import ru.otus.l151.messageSystem.Address;
@@ -23,7 +22,6 @@ import ru.otus.l151.messageSystem.MessageSystem;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
-import javax.jws.soap.SOAPBinding;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;

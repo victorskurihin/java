@@ -1,5 +1,7 @@
-package ru.otus.l151.app;
+package ru.otus.l151.front;
 
+import ru.otus.l151.app.MessageSystemContext;
+import ru.otus.l151.app.MsgChat;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.db.MsgGetUserDataSet;
 import ru.otus.l151.db.MsgNewUserDataSet;
@@ -9,7 +11,6 @@ import ru.otus.l151.messageSystem.Message;
 import ru.otus.l151.messageSystem.MessageSystem;
 
 import javax.websocket.Endpoint;
-import javax.websocket.RemoteEndpoint;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,6 +53,9 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     }
 
     @Override
+    public void deliverString(ControlBlock control, String text) { /* none */ }
+
+    @Override
     public void deliverUserDataSet(ControlBlock control, UserDataSet user) {
         if (null != user && user.getId() > -1) {
             users.put(user.getName(), user.getId());
@@ -70,6 +74,11 @@ public abstract class FrontendEndpoint extends Endpoint implements FrontendServi
     public Message msgChatUserDataSet(ControlBlock control, String login) {
         Address chatAddress = new Address("Frontend service chat");
         return new MsgGetUserDataSet(chatAddress, context.getDbAddress(), control, login);
+    }
+
+    public Message msgChat(ControlBlock control, String text) {
+        Address chatAddress = new Address("Frontend service chat");
+        return new MsgChat(chatAddress, chatAddress, control, text);
     }
 
     public long lookup(String username) {

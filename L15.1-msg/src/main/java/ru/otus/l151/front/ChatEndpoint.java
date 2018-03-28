@@ -1,9 +1,12 @@
-package ru.otus.l151.app;
+package ru.otus.l151.front;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
+
+import ru.otus.l151.app.AuthenticatedSessions;
+import ru.otus.l151.app.StringHandler;
 import ru.otus.l151.dataset.UserDataSet;
 import ru.otus.l151.messageSystem.ControlBlock;
 
@@ -14,13 +17,14 @@ import java.util.Map;
 
 public class ChatEndpoint extends FrontendEndpoint  {
 
+    private static final String K_LOGIN = ControlBlock.Keys.LOGIN.toString();
     private static final Logger LOG = Log.getLogger(ChatEndpoint.class);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private final AuthenticatedSessions sessions = new AuthenticatedSessions();
 
     public ChatEndpoint() {
-        LOG.info("class loaded {}", this.getClass());
+        LOG.debug("class loaded {}", this.getClass());
     }
 
     private void doAuth(String user, Session session) {
@@ -37,7 +41,7 @@ public class ChatEndpoint extends FrontendEndpoint  {
             try {
                 session.close();
             } catch (IOException e) {
-                LOG.info(e);
+                LOG.warn(e);
             }
         }
     }
@@ -49,15 +53,15 @@ public class ChatEndpoint extends FrontendEndpoint  {
     }
 
     private void greeting(String user, Session session) {
-        sendTextToRemote(session.getId(), "Hello " + user + "<br>");
+        sendTextToRemote(session.getId(), "Server> Hello " + user + "<br>");
         sendTextToRemote(session.getId(),
-            "You are now connected to " + this.getClass().getName()
+            "Server> You are now connected to " + this.getClass().getName() + "<br>"
         );
     }
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-        LOG.info("Session opened, id: {}", session.getId());
+        LOG.debug("Session opened, id: {}", session.getId());
 
         // attach message handler
         session.addMessageHandler(new StringHandler(endpointConfig, session) {
@@ -80,11 +84,13 @@ public class ChatEndpoint extends FrontendEndpoint  {
                     greeting(user, session);
                     // TODO chat
                 } else {
+                    ControlBlock control = new ControlBlock();
+                    control.put(K_LOGIN, user);
+                    handleRequest(msgChat(control, text));
                     // TODO chat
                 }
             }
         });
-
     }
 
     @Override
@@ -98,32 +104,21 @@ public class ChatEndpoint extends FrontendEndpoint  {
     }
 
     @Override
+    public void deliverString(ControlBlock control, String text) {
+        String user = control != null
+                    ? control.getOrDefault("LOGIN", "UNKNOW")
+                    : "NULL";
+        LOG.warn("deliverString Chat User: {} msg: {}", user, text);
+        for (Map.Entry<String, Session> entry : sessions.entrySet()) {
+            sendTextToRemote(entry.getValue().getId(), user + "> " + text + "<br>");
+        }
+    }
+
+    @Override
     public void deliverUserDataSet(ControlBlock control, UserDataSet user) {
-        LOG.info("deliverUserDataSet Chat User: {} exists!", user);
+        LOG.warn("deliverUserDataSet Chat User: {} exists!", user);
         super.deliverUserDataSet(control, user);
     }
-/*
-    private void doAuth(String user) {
-        for(int i = 0; i < 9 && ! isUserExists(user); ++i) {
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                LOG.warn(e);
-            }
-        }
-        if (isUserExists(user)) {
-            auths.add(user);
-            remote.sendText("Hello " + user + "<br>");
-            remote.sendText("You are now connected to " + this.getClass().getName());
-        } else {
-            try {
-                session.close(); // Timeout???
-            } catch (IOException e) {
-                LOG.warn(e);
-            }
-        }
-    }
-*/
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

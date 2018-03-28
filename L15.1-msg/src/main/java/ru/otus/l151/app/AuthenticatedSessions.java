@@ -3,19 +3,26 @@ package ru.otus.l151.app;
 import javax.websocket.Session;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AuthenticatedSessions {
+    // TODO synchronized
     private final Map<String, Session> mapAuths = new ConcurrentHashMap<>();
     private final Map<String, String> sessionToAuth = new ConcurrentHashMap<>();
 
     public Session put(String auth, Session session) {
+        // TODO synchronized
         sessionToAuth.put(session.getId(), auth);
         return mapAuths.put(auth, session);
     }
 
     public Session get(String auth) {
         return mapAuths.get(auth);
+    }
+
+    public Session getOrNull(String auth) {
+        return mapAuths.getOrDefault(auth, null);
     }
 
     public Session getOrDefault(String auth, Session session) {
@@ -43,6 +50,7 @@ public class AuthenticatedSessions {
     }
 
     public Session remove(String auth) {
+        // TODO synchronized
         Session session = mapAuths.remove(auth);
         if (null != session) {
             sessionToAuth.remove(session.getId());
@@ -51,11 +59,16 @@ public class AuthenticatedSessions {
     }
 
     public String removeBySessionId(String sessionId) {
+        // TODO synchronized
         String user = sessionToAuth.get(sessionId);
         if (null != user) {
             mapAuths.remove(user);
         }
         return sessionToAuth.remove(sessionId);
+    }
+
+    public Set<Map.Entry<String, Session>> entrySet() {
+        return mapAuths.entrySet();
     }
 
     @Override
@@ -80,3 +93,7 @@ public class AuthenticatedSessions {
             '}';
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

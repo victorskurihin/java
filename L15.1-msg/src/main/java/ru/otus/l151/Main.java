@@ -2,7 +2,11 @@ package ru.otus.l151;
 
 import org.eclipse.jetty.server.Server;
 import ru.otus.l151.app.*;
+import ru.otus.l151.db.DBService;
 import ru.otus.l151.db.DBServiceImpl;
+import ru.otus.l151.front.AuthEndpoint;
+import ru.otus.l151.front.ChatEndpoint;
+import ru.otus.l151.front.EndpointFabric;
 import ru.otus.l151.messageSystem.Address;
 import ru.otus.l151.messageSystem.MessageSystem;
 
@@ -14,7 +18,6 @@ import ru.otus.l151.messageSystem.MessageSystem;
  * PreReq: A DB compatible with Hibernate ORM.
  *
  * Configure application in db/DBServiceImpl.java
- * and resources/admins.properties
  *
  * To start:
  * mvn clean package
