@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Chat</title>
+</head>
+
+<body style="margin: 35px">
+
+<div id="title" style="width:500px; background: #ee; overflow:auto;">Welcome to chat:</div>
+
+<form>
+    <input id="messageField" type="text"  onPaste="" onkeydown="if(event.keyCode == 13){document.getElementById('send').click();return false;}"/>
+    <input type="button" id="send" value="Send" onclick="sendMsg();"/>
+</form>
+
+<div id="msg-box" style="width:500px; height: 400px; background: #eee; overflow:auto;"></div>
+
+<script>
+    var webSocket = new WebSocket("ws://localhost:8090/chat");
+    var msgField = document.getElementById("messageField");
+    var divMsg = document.getElementById("msg-box");
+
+    document.onkeypress = keyPress;
+
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+            "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+    function sendMsg() {
+        var msgToSend = msgField.value;
+        var login = getCookie("auth");
+
+        if ( ! (login === undefined)) {
+            webSocket.send(JSON.stringify({ auth: login, text: msgToSend }));
+            // divMsg.innerHTML += "<div style='color:red'>" +  login + "> " + msgToSend + "</div>"
+            msgField.value = "";
+        }
+    }
+
+    function move_up() {
+        divMsg.scrollTop += 32;
+    }
+
+    function move_down() {
+        divMsg.scrollTop -= 32;
+    }
+
+    webSocket.onmessage = function(message) {
+        divMsg.innerHTML += message.data;
+        move_up();
+    }
+
+    webSocket.onopen = function() {
+        var login = getCookie("auth");
+        webSocket.send("{auth:" + login + "}");
+        console.log("connection opened");
+    };
+
+    webSocket.onclose = function() {
+        console.log("connection closed");
+    };
+
+    webSocket.onerror = function wserror(message) {
+        console.log("error: " + message);
+    }
+
+    function keyPress(e) {
+        var x = e || window.event;
+        var key = (x.keyCode || x.which);
+        if (key == 13 || key == 3){
+            document.getElementById("send").click();
+        }
+    }
+</script>
+</body>
+</html>
