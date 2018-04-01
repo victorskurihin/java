@@ -2,7 +2,7 @@ package ru.otus.l161;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.l161.app.Msg;
+import ru.otus.l161.messages.Msg;
 import ru.otus.l161.channel.SocketMsgWorker;
 import ru.otus.l161.messages.Address;
 import ru.otus.l161.messages.PingMsg;

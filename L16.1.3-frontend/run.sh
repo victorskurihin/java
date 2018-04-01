@@ -5,7 +5,7 @@ OUTLOG=$LOGDIR/std_out.log
 GCLOG="$LOGDIR/gc_pid_%p.log"
 WCGCLOG="$LOGDIR/gc_pid_*.log*"
 DUMPDIR=./dumps
-CP="./target/classes:./target/test-classes:./target/libs:target\classes\public_html:./target/*"
+CP="./target/classes:./target/test-classes:./target/libs:./target/classes/public_html:./target/*"
 MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 GC="-XX:+UseG1GC"
 GC="${GC} -XX:MaxGCPauseMillis=500"

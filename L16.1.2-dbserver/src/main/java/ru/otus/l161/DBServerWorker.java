@@ -1,8 +1,6 @@
 package ru.otus.l161;
 
-import ru.otus.l161.app.Msg;
 import ru.otus.l161.channel.SocketMsgWorker;
-import ru.otus.l161.messages.CloseSocketMsg;
 
 import java.io.IOException;
 import java.net.Socket;

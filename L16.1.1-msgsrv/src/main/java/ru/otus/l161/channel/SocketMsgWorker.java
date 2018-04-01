@@ -7,7 +7,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ru.otus.l161.MsgServerMain;
-import ru.otus.l161.app.Msg;
+import ru.otus.l161.messages.Msg;
 import ru.otus.l161.app.MsgWorker;
 import ru.otus.l161.messages.Address;
 import ru.otus.l161.messages.CloseSocketMsg;

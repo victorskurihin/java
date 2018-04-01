@@ -1,4 +1,4 @@
-package ru.otus.l161.app;
+package ru.otus.l161.messages;
 
 import ru.otus.l161.messages.Address;
 import ru.otus.l161.messages.Addressee;
@@ -27,5 +27,7 @@ public abstract class Msg {
         return to;
     }
 
-    public abstract void exec(Addressee addressee);
+    public void exec(Runnable runnable) {
+        runnable.run();
+    }
 }

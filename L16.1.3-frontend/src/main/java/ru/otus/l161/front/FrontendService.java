@@ -1,13 +1,13 @@
 package ru.otus.l161.front;
 
-public interface FrontendService {
-    void init();
+import ru.otus.l161.messages.Address;
+import ru.otus.l161.messages.Addressee;
 
-    // void handleRequest(Message message);
+public interface FrontendService extends Addressee {
 
-    // void deliverString(ControlBlock control, String text);
+    boolean knowsHisAddress(Address address);
 
-    // void deliverUserDataSet(ControlBlock control, UserDataSet user);
+    void setDbServerAddress(Address dbServerAddress);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

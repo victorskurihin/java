@@ -3,7 +3,7 @@ package ru.otus.l161.server;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ru.otus.l161.app.Msg;
+import ru.otus.l161.messages.Msg;
 import ru.otus.l161.app.MsgWorker;
 import ru.otus.l161.channel.Blocks;
 import ru.otus.l161.channel.SocketMsgWorker;
@@ -23,8 +23,8 @@ import java.util.concurrent.Executors;
 public class MsgServer implements MsgServerMBean {
     private static final Logger LOG = LogManager.getLogger(MsgServerMBean.class);
 
-    private static final int THREADS_NUMBER = 1;
     private static final int PORT = 5050;
+    private static final int THREADS_NUMBER = 1;
     private static final int MIRROR_DELAY_MS = 100;
 
     private final ExecutorService executor;
@@ -96,7 +96,7 @@ public class MsgServer implements MsgServerMBean {
                             LOG.warn("Delivering the message: {}", msg.toString());
                             recipient.send(msg);
                         } else {
-                            LOG.warn(
+                            LOG.error(
                                 "Recipient {} can't find and the message: {} is droped.",
                                 msg.getTo(), msg.toString()
                             );

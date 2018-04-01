@@ -2,6 +2,7 @@ package ru.otus.l161.app;
 
 import ru.otus.l161.channel.Blocks;
 import ru.otus.l161.messages.Address;
+import ru.otus.l161.messages.Msg;
 
 import java.io.IOException;
 

@@ -1,7 +1,5 @@
 package ru.otus.l161.messages;
 
-import ru.otus.l161.app.Msg;
-
 /**
  * Created by tully.
  */
@@ -19,10 +17,5 @@ public class RequestDBServerMsg extends Msg {
                " from=" + super.getFrom() +
                ", to=" + super.getTo() +
                " }";
-    }
-
-    @Override
-    public void exec(Addressee addressee) {
-        // TODO
     }
 }
