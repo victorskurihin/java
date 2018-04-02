@@ -14,23 +14,26 @@ import javax.servlet.ServletException;
 import javax.websocket.DeploymentException;
 import javax.websocket.server.ServerContainer;
 import javax.websocket.server.ServerEndpointConfig;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class EndpointFabric {
     private static final String PUBLIC_HTML = "public_html";
     private static final Logger LOG = Log.getLogger(EndpointFabric.class);
+    private static final Pattern urlWindowsPattern = Pattern.compile("^file:/+[A-Z]:/");
 
     private ServletContextHandler context;
 
     // Add javax.websocket support
     private ServerContainer container;
-
     private SocketMsgWorker client;
-
     private boolean isDefinedDefault = false;
 
-    public EndpointFabric(Server server, SocketMsgWorker client) throws ServletException {
+    public EndpointFabric(Server server, SocketMsgWorker client) throws ServletException, IOException {
+
         this.context = new ServletContextHandler(
             ServletContextHandler.SESSIONS
         );
@@ -64,20 +67,33 @@ public class EndpointFabric {
         container.addEndpoint(config);
     }
 
-    private void addDefaultServletEndpoint(String name) {
+    private String urlBase(URL urlStatics) {
+        String url = urlStatics.toExternalForm().replaceFirst("/[^/]*$","/");
+        if (urlWindowsPattern.matcher(url).find()) {
+            String result = url.replaceFirst("^file:/", "");
+            try {
+                return Paths.get(result).toRealPath().toString() + "\\";
+            } catch (IOException e) {
+                LOG.warn(e);
+            }
+        }
+        return url;
+    }
+
+    private void addDefaultServletEndpoint(String name) throws IOException {
         // Add default servlet (to serve the html/css/js)
         // Figure out where the static files are stored.
         URL urlStatics = Thread.currentThread()
             .getContextClassLoader()
             .getResource(PUBLIC_HTML + "/" + name + ".html");
-
         Objects.requireNonNull(
             urlStatics,"Unable to find " + name + ".html in classpath"
         );
-        String urlBase = urlStatics.toExternalForm().replaceFirst("/[^/]*$","/");
+
         ServletHolder defHolder = new ServletHolder("default", new DefaultServlet());
-        defHolder.setInitParameter("resourceBase",urlBase);
+        defHolder.setInitParameter("resourceBase", urlBase(urlStatics));
         defHolder.setInitParameter("dirAllowed","true");
+
         if (! isDefinedDefault){
             isDefinedDefault = true;
             context.addServlet(defHolder, "/");
@@ -99,6 +115,8 @@ public class EndpointFabric {
             LOG.debug(e);
         } catch (DeploymentException e) {
             LOG.warn(e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 
 public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCloseable {
 
-    private static final int PAUSE_MS = 5000;
+    private static final int PAUSE_MS = 10000;
     private static final Logger LOG = Log.getLogger(FrontendWorker.class);
 
     private final Address address = new Address();

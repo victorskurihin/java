@@ -19,7 +19,7 @@ public class DBServerMain {
 
     private static final String HOST = "localhost";
     private static final int PORT = 5050;
-    private static final int PAUSE_MS = 5000;
+    private static final int PAUSE_MS = 10000;
 
     public static void main(String[] args) throws Exception {
         new DBServerMain().start();
