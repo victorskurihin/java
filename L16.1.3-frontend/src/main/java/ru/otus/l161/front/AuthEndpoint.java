@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
+import ru.otus.l161.dataset.UserDataSet;
 import ru.otus.l161.messages.Msg;
 import ru.otus.l161.messages.Address;
 import ru.otus.l161.messages.SingupMsg;
@@ -32,7 +33,9 @@ public class AuthEndpoint extends FrontEndpoint {
     }
 
     private void singup(String username, String password, Session session) {
-        Msg msg = new SingupMsg(address, dbServerAddress);
+        Msg msg = new SingupMsg(
+            address, session.getId(), dbServerAddress, new UserDataSet(username, password)
+        );
         client.send(msg);
         LOG.info("sent {}", msg);
     }

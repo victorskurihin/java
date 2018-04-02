@@ -5,6 +5,8 @@ package ru.otus.l161.messages;
  */
 public class RequestDBServerMsg extends Msg {
 
+    public static final String ID = RequestDBServerMsg.class.getName();
+
     public static final String REQUEST_DB_SERVER = "REQUEST DB SERVER";
 
     public RequestDBServerMsg(Address from) {
@@ -13,8 +15,8 @@ public class RequestDBServerMsg extends Msg {
 
     @Override
     public String toString() {
-        return "RegisterDBServerMsg{" +
-               " from=" + super.getFrom() +
+        return  ID +
+               "{ from=" + super.getFrom() +
                ", to=" + super.getTo() +
                " }";
     }
