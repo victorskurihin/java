@@ -4,7 +4,7 @@ set ERRLOG=%LOGDIR%\std_err.log
 set OUTLOG=%LOGDIR%\std_out.log
 set GCLOG=%LOGDIR%\gc_pid_%p.log
 set DUMPDIR=dumps
-set CP="target\classes;target\test-classes;target\libs;target\classes\public_html;target\*"
+set CP="target\classes;target\test-classes;target\libs;target\*"
 set MEMORY=-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m
 set GC_LOG=-verbose:gc
 set GC_LOG=%GC_LOG% -Xloggc:%LOGDIR%\gc_pid_%p.log

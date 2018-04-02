@@ -7,7 +7,7 @@ GCLOG="$LOGDIR/gc_pid_%p.log"
 WCGCLOG="$LOGDIR/gc_pid_*.log*"
 DUMPDIR=./dumps
 mkdir -p $DUMPDIR
-CP="./target/classes:./target/test-classes:./target/libs:target\classes\public_html:./target*"
+CP="./target/classes:./target/test-classes:./target/libs:./target*"
 REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n"
 MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 GC="-XX:+UseG1GC"

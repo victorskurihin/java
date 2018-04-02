@@ -6,45 +6,20 @@ import java.util.Objects;
 
 public class SingupMsg extends Msg {
 
-    public static final String ID = SingupMsg.class.getName();
-
-    public class Outcome {
-        public final String id = Outcome.class.getSimpleName();
-
-        private final boolean isPositive;
-        private final String message;
-
-        public Outcome(boolean isPositive, String message) {
-            this.isPositive = isPositive;
-            this.message = message;
-        }
-
-        @Override
-        public String toString() {
-            return id +
-                "{ isPositive=" + isPositive +
-                ", message='" + message + '\'' +
-                '}';
-        }
-
-        public boolean isPositive() {
-            return isPositive;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    };
+    public static final String ID = SingupMsg.class.getSimpleName();
 
     private final UserDataSet user;
     private final String sessionId;
-
-    private Outcome outcome;
 
     public SingupMsg(Address from, String sid, Address to, UserDataSet userDataSet) {
         super(SingupMsg.class, from, to);
         this.user = userDataSet;
         sessionId = sid;
+    }
+
+    @Override
+    public String getId() {
+        return ID;
     }
 
     @Override
@@ -54,7 +29,6 @@ public class SingupMsg extends Msg {
                ", sid="  + sessionId +
                ", to="   + super.getTo() +
                ", user=" + user +
-               ", outcome=" + outcome +
                " }";
     }
 
@@ -64,25 +38,22 @@ public class SingupMsg extends Msg {
         if ( ! (o instanceof SingupMsg)) return false;
         SingupMsg singupMsg = (SingupMsg) o;
         return Objects.equals(user, singupMsg.user) &&
-            Objects.equals(sessionId, singupMsg.sessionId) &&
-            Objects.equals(outcome, singupMsg.outcome);
+            Objects.equals(sessionId, singupMsg.sessionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, sessionId, outcome);
+        return Objects.hash(user, sessionId);
     }
 
-    public void setAnswer(boolean isPositive, String message) {
-        outcome = new Outcome(isPositive, message);
+    public UserDataSet getUser() {
+        return user;
     }
 
-    public boolean isPositive() {
-        return outcome.isPositive();
-    }
-
-    public String getMessage() {
-        return outcome.getMessage();
+    public SingedMsg createAnswer(boolean isPositive, String answer) {
+        SingedMsg msg = new SingedMsg(getTo(), sessionId, getFrom(), user.getName(), isPositive);
+        msg.setMessage(answer);
+        return msg;
     }
 }
 

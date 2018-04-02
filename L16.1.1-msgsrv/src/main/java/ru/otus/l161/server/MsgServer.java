@@ -17,92 +17,141 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by tully.
- */
 public class MsgServer implements MsgServerMBean {
-    private static final Logger LOG = LogManager.getLogger(MsgServerMBean.class);
 
+    private static final Logger LOG = LogManager.getLogger(MsgServerMBean.class);
     private static final int PORT = 5050;
     private static final int THREADS_NUMBER = 1;
     private static final int MIRROR_DELAY_MS = 100;
 
     private final ExecutorService executor;
-    private final Map<Address, MsgWorker> clients;
+    private final Map<Socket, MsgWorker> sockets;
+    private final Map<MsgWorker, Address> clients;
+    private final Map<Address, MsgWorker> recipients;
     private final Map<Address, Integer> dbServers;
 
     public MsgServer() {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
+        sockets = new ConcurrentHashMap<>();
         clients = new ConcurrentHashMap<>();
+        recipients = new ConcurrentHashMap<>();
         dbServers = new ConcurrentHashMap<>();
+    }
+
+    private void onClose(Socket socket) {
+        MsgWorker client = sockets.getOrDefault(socket, null);
+        if (null != client) {
+            Address address = clients.getOrDefault(client, null);
+            LOG.info("address {}", address);
+            if (null != dbServers.remove(address)) {
+                LOG.info("Remove DB Server {}", client);
+            }
+            if (null != recipients.remove(address)) {
+                LOG.info("Remove client {}", client);
+            }
+            clients.remove(client);
+            sockets.remove(socket);
+        }
     }
 
     @Blocks
     public void start() throws Exception {
-        executor.submit(this::mirror);
+        executor.submit(this::iterateByClients);
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             LOG.info("Server started on port: " + serverSocket.getLocalPort());
+
             while (!executor.isShutdown()) {
                 Socket socket = serverSocket.accept(); //blocks
-                SocketMsgWorker client = new SocketMsgWorker(socket);
+                SocketMsgWorker client = new SocketMsgWorker(socket, this::onClose);
+
                 client.init();
-                // clients.put(client, client.getAddress());
-                clients.put(client.getAddress(), client);
+                sockets.put(socket, client);
+
                 LOG.info("New socket for client: " + client);
             }
         }
     }
 
     private Address getMinimumLoadingDBServer() {
-        return dbServers.entrySet()
+        //noinspection ConstantConditions
+        Address address = dbServers
+                .entrySet()
                 .stream()
-                .sorted(Comparator.comparingDouble(Map.Entry::getValue))
-                .findFirst()
+                .min(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(Map.Entry::getKey).get();
+        LOG.info("Minimum Loading {}", address);
+
+        return address;
+    }
+
+    private void loop(MsgWorker client, Msg msg) {
+        while (msg != null) {
+            if (CloseSocketMsg.ID.equals(msg.getTo().getId())) {
+                LOG.info("Close socket from client: {}", client.toString());
+
+                dbServers.remove(msg.getFrom());
+                recipients.remove(client.getAddress());
+            } else if (RequestDBServerMsg.ID.equals(msg.getTo().getId())) {
+                LOG.info("Register the client: {}", msg.getFrom());
+                recipients.put(msg.getFrom(), client);
+                clients.put(client, msg.getFrom());
+
+                Address dbServerAddress = getMinimumLoadingDBServer();
+                dbServers.compute(dbServerAddress, (address, count) -> count++);
+
+                LOG.info("Fount DB Server: {}", dbServerAddress);
+                RequestDBServerMsg answer = new RequestDBServerMsg(dbServerAddress);
+
+                LOG.info("Answer: {}", answer);
+                client.send(answer);
+            } else if (RegisterDBServerMsg.ID.equals(msg.getTo().getId())) {
+                LOG.info("Register the DBService: {}", msg.getFrom());
+
+                recipients.put(msg.getFrom(), client);
+                dbServers.put(msg.getFrom(), 0);
+                clients.put(client, msg.getFrom());
+            } else {
+                MsgWorker recipient = recipients.getOrDefault(msg.getTo(), null);
+
+                if (null != recipient) {
+                    LOG.warn("Delivering the message: {}", msg.toString());
+                    recipient.send(msg);
+                } else {
+                    LOG.error(
+                        "Recipient {} can't find and the message: {} is droped.",
+                        msg.getTo(), msg.toString()
+                    );
+                }
+            }
+            msg = client.pool();
+        }
+    }
+
+    private void checkAliveClient(MsgWorker client) {
+        // Address address = client.getAddress();
+        Address address = clients.getOrDefault(client, null);
+        if (null != address) {
+            Msg ping = new PingMsg(address, address);
+            client.send(ping);
+        }
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
-    private void mirror() {
+    private void iterateByClients() {
+        long count = 0;
         while (true) {
             long startNs = System.nanoTime();
-            for (Map.Entry<Address, MsgWorker> entry : clients.entrySet()) {
+
+            for (Map.Entry<Socket, MsgWorker> entry : sockets.entrySet()) {
+
                 MsgWorker client = entry.getValue();
                 Msg msg = client.pool();
-                if (msg == null) {
-                    LOG.debug("msg is null from client: {}", client.toString());
-                }
-                while (msg != null) {
-                    if (CloseSocketMsg.CLOSE_SOCKET.equals(msg.getTo().getId())) {
-                        LOG.info("Close socket from client: {}", client.toString());
-                        dbServers.remove(msg.getFrom());
-                        clients.remove(client);
-                    } else if (RequestDBServerMsg.REQUEST_DB_SERVER.equals(msg.getTo().getId())) {
-                        LOG.info("Register the client: {}", msg.getFrom());
-                        clients.put(msg.getFrom(), client);
-                        Address dbServerAddress = getMinimumLoadingDBServer();
-                        dbServers.compute(dbServerAddress, (address, count) -> count++);
-                        LOG.info("Fount DB Server: {}", dbServerAddress);
-                        RequestDBServerMsg answer = new RequestDBServerMsg(dbServerAddress);
-                        LOG.info("Answer: {}", answer);
-                        client.send(answer);
-                    } else if (RegisterDBServerMsg.DB_REGISTRATOR.equals(msg.getTo().getId())) {
-                        LOG.info("Register the DBService: {}", msg.getFrom());
-                        clients.put(msg.getFrom(), client);
-                        dbServers.put(msg.getFrom(), 0);
-                    } else {
-                        MsgWorker recipient = clients.getOrDefault(msg.getTo(), null);
-                        if (null != recipient) {
-                            LOG.warn("Delivering the message: {}", msg.toString());
-                            recipient.send(msg);
-                        } else {
-                            LOG.error(
-                                "Recipient {} can't find and the message: {} is droped.",
-                                msg.getTo(), msg.toString()
-                            );
-                        }
-                    }
-                    msg = client.pool();
+
+                if (msg == null && count % MIRROR_DELAY_MS == 0) {
+                    checkAliveClient(client);
+                } else {
+                    loop(client, msg);
                 }
             }
             try {
@@ -111,6 +160,7 @@ public class MsgServer implements MsgServerMBean {
             } catch (InterruptedException e) {
                 LOG.error(e);
             }
+            count++;
         }
     }
 

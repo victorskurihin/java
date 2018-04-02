@@ -1,8 +1,5 @@
 package ru.otus.l161.messages;
 
-import ru.otus.l161.messages.Address;
-import ru.otus.l161.messages.Addressee;
-
 /**
  * Created by tully.
  */
@@ -18,6 +15,8 @@ public abstract class Msg {
         this.from = from;
         this.to = to;
     }
+
+    public abstract String getId();
 
     public Address getFrom() {
         return from;

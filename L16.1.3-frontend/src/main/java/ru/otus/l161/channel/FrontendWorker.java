@@ -30,8 +30,13 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         this(new Socket(host, port));
     }
 
+    private static void onClose(Socket socket) {
+        LOG.info("tut4 {}", socket);
+        // TODO
+    }
+
     private FrontendWorker(Socket socket) throws IOException {
-        super(socket);
+        super(socket, FrontendWorker::onClose);
         this.socket = socket;
         this.client = this;
         LOG.info("Frontend Address: " + getAddress());
@@ -49,7 +54,7 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
                 Msg msg = client.take();
                 boolean delivered = false;
 
-                if (RequestDBServerMsg.REQUEST_DB_SERVER.equals(msg.getTo().getId())) {
+                if (RequestDBServerMsg.ID.equals(msg.getTo().getId())) {
                     dbServerAddress = msg.getFrom();
                     for (FrontendService service : services) {
                         service.setDbServerAddress(dbServerAddress);

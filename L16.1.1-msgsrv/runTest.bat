@@ -6,7 +6,7 @@ set OUTLOG=%LOGDIR%\std_out.log
 set GCLOG=%LOGDIR%"\gc_pid_%p.log"
 set DUMPDIR=dumps
 mkdir %DUMPDIR%
-set CP="target\classes;target\test-classes;target\libs;target\classes\public_html;target\*"
+set CP="target\classes;target\test-classes;target\libs;target\*"
 set REMOTE_DEBUG="-agentlib:jdwp=transport=dt_socket,address=14025,server=y,suspend=n"
 set MEMORY="-Xms512m -Xmx512m -XX:MaxMetaspaceSize=256m"
 set GC="-XX:+UseG1GC"

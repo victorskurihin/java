@@ -5,13 +5,18 @@ package ru.otus.l161.messages;
  */
 public class PingMsg extends Msg {
 
-    public static final String ID = PingMsg.class.getName();
+    public static final String ID = PingMsg.class.getSimpleName();
 
     private final long time;
 
     public PingMsg(Address from, Address to) {
         super(PingMsg.class, from, to);
         time = System.currentTimeMillis();
+    }
+
+    @Override
+    public String getId() {
+        return ID;
     }
 
     public long getTime() {
@@ -21,9 +26,9 @@ public class PingMsg extends Msg {
     @Override
     public String toString() {
         return ID +
-               " time=" + time +
+               "{ time=" + time +
                ", from=" + super.getFrom() +
-               ", to=" + super.getTo() +
+               ", to="   + super.getTo() +
                " }";
     }
 }
