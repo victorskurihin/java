@@ -92,6 +92,9 @@ public class SocketMsgWorker implements MsgWorker {
             onClose.onClose(socket);
             LOG.error(e);
         }
+        if ( ! socket.isConnected()) {
+            onClose.onClose(socket);
+        }
     }
 
     @Blocks

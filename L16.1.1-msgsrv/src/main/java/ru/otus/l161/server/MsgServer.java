@@ -130,6 +130,7 @@ public class MsgServer implements MsgServerMBean {
 
     private void checkAliveClient(MsgWorker client) {
         // Address address = client.getAddress();
+        LOG.info("check client {}", client);
         Address address = clients.getOrDefault(client, null);
         if (null != address) {
             Msg ping = new PingMsg(address, address);
