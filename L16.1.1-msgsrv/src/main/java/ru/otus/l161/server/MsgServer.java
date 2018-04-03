@@ -22,7 +22,7 @@ public class MsgServer implements MsgServerMBean {
     private static final Logger LOG = LogManager.getLogger(MsgServerMBean.class);
     private static final int PORT = 5050;
     private static final int THREADS_NUMBER = 1;
-    private static final int MIRROR_DELAY_MS = 100;
+    private static final int MESSAGE_DELAY_MS = 100;
 
     private final ExecutorService executor;
     private final Map<Socket, MsgWorker> sockets;
@@ -38,6 +38,7 @@ public class MsgServer implements MsgServerMBean {
         dbServers = new ConcurrentHashMap<>();
     }
 
+    // TODO
     private void onClose(Socket socket) {
         MsgWorker client = sockets.getOrDefault(socket, null);
         if (null != client) {
@@ -63,7 +64,7 @@ public class MsgServer implements MsgServerMBean {
 
             while (!executor.isShutdown()) {
                 Socket socket = serverSocket.accept(); //blocks
-                SocketMsgWorker client = new SocketMsgWorker(socket, this::onClose);
+                SocketMsgWorker client = new SocketMsgWorker(socket);
 
                 client.init();
                 sockets.put(socket, client);
@@ -99,10 +100,10 @@ public class MsgServer implements MsgServerMBean {
 
                 Address dbServerAddress = getMinimumLoadingDBServer();
                 dbServers.compute(dbServerAddress, (address, count) -> count++);
-
                 LOG.info("Fount DB Server: {}", dbServerAddress);
-                RequestDBServerMsg answer = new RequestDBServerMsg(dbServerAddress);
 
+                RequestDBServerMsg answer = ((RequestDBServerMsg) msg)
+                    .createAnswer(dbServerAddress);
                 LOG.info("Answer: {}", answer);
                 client.send(answer);
             } else if (RegisterDBServerMsg.ID.equals(msg.getTo().getId())) {
@@ -128,6 +129,7 @@ public class MsgServer implements MsgServerMBean {
         }
     }
 
+    // TODO
     private void checkAliveClient(MsgWorker client) {
         // Address address = client.getAddress();
         LOG.info("check client {}", client);
@@ -149,15 +151,15 @@ public class MsgServer implements MsgServerMBean {
                 MsgWorker client = entry.getValue();
                 Msg msg = client.pool();
 
-                if (msg == null && count % MIRROR_DELAY_MS == 0) {
-                    checkAliveClient(client);
+                if (msg == null && count % MESSAGE_DELAY_MS == 0) {
+                    // TODO checkAliveClient(client);
                 } else {
                     loop(client, msg);
                 }
             }
             try {
                 long delta = (System.nanoTime() - startNs)/1_000_000;
-                Thread.sleep(MIRROR_DELAY_MS - (delta < MIRROR_DELAY_MS ? delta : 0));
+                Thread.sleep(MESSAGE_DELAY_MS - (delta < MESSAGE_DELAY_MS ? delta : 0));
             } catch (InterruptedException e) {
                 LOG.error(e);
             }
@@ -178,3 +180,7 @@ public class MsgServer implements MsgServerMBean {
         }
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

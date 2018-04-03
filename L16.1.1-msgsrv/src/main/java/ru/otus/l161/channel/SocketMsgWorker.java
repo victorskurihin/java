@@ -7,11 +7,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ru.otus.l161.MsgServerMain;
-import ru.otus.l161.messages.Msg;
 import ru.otus.l161.app.MsgWorker;
+import ru.otus.l161.messages.Msg;
 import ru.otus.l161.messages.Address;
 import ru.otus.l161.messages.CloseSocketMsg;
-import ru.otus.l161.server.OnSocketClose;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,11 +37,9 @@ public class SocketMsgWorker implements MsgWorker {
 
     private final ExecutorService executor;
     private final Socket socket;
-    private final OnSocketClose onClose;
 
-    public SocketMsgWorker(Socket socket, OnSocketClose onClose) {
+    public SocketMsgWorker(Socket socket) {
         this.socket = socket;
-        this.onClose = onClose;
         this.executor = Executors.newFixedThreadPool(WORKERS_COUNT);
     }
 
@@ -89,11 +86,7 @@ public class SocketMsgWorker implements MsgWorker {
                 out.println();//line with json + an empty line
             }
         } catch (InterruptedException | IOException e) {
-            onClose.onClose(socket);
             LOG.error(e);
-        }
-        if ( ! socket.isConnected()) {
-            onClose.onClose(socket);
         }
     }
 
@@ -113,7 +106,6 @@ public class SocketMsgWorker implements MsgWorker {
                 }
             }
         } catch (IOException | ParseException e) {
-            onClose.onClose(socket);
             LOG.error(e);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -141,3 +133,7 @@ public class SocketMsgWorker implements MsgWorker {
         return Objects.hash(ADDRESS);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

@@ -8,6 +8,10 @@ public class RequestDBServerMsg extends Msg {
         super(RequestDBServerMsg.class, from, new Address(ID));
     }
 
+    private RequestDBServerMsg(Address from, Address to) {
+        super(RequestDBServerMsg.class, from, to);
+    }
+
     @Override
     public String getId() {
         return ID;
@@ -19,5 +23,9 @@ public class RequestDBServerMsg extends Msg {
                "{ from=" + super.getFrom() +
                ", to="   + super.getTo() +
                " }";
+    }
+
+    public RequestDBServerMsg createAnswer(Address dbServerAddress) {
+        return new RequestDBServerMsg(dbServerAddress, getFrom());
     }
 }

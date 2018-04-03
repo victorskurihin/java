@@ -4,7 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ru.otus.l161.DBServerMain;
+import ru.otus.l161.dataset.UserDataSet;
 import ru.otus.l161.db.DBService;
+import ru.otus.l161.db.DBServiceImpl;
 import ru.otus.l161.messages.*;
 
 import java.io.IOException;
@@ -32,10 +34,10 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
     }
 
     private DBServerWorker(Socket socket) throws IOException {
-        super(socket, DBServerWorker::onClose);
+        super(socket);
         this.socket = socket;
         this.client = this;
-        // dbService = new DBServiceImpl(address);
+        dbService = new DBServiceImpl(address);
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -49,9 +51,19 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
             try {
                 while (true) {
                     Msg msg = client.take();
-                    System.out.println("Message received: " + msg.toString());
                     if (SingupMsg.ID.equals(msg.getId())) {
-                        // TODO
+                        SingupMsg singup = (SingupMsg) msg;
+                        System.out.println("Message received: " + msg.toString());
+                        UserDataSet usr = singup.getUser();
+                        dbService.save(usr);
+                        UserDataSet user = dbService.loadByName(usr.getName());
+                        if (null != user) {
+                            SingedMsg singed = singup.createAnswer(true, "ok");
+                            System.out.println("singed = " + singed);
+                            client.send(singed);
+                        } else {
+                            // TODO
+                        }
                     }
                 }
             } catch (InterruptedException e) {
@@ -88,3 +100,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         // TODO
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

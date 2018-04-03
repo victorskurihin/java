@@ -8,6 +8,7 @@ import org.eclipse.jetty.util.log.Logger;
 import ru.otus.l161.dataset.UserDataSet;
 import ru.otus.l161.messages.Msg;
 import ru.otus.l161.messages.Address;
+import ru.otus.l161.messages.RequestDBServerMsg;
 import ru.otus.l161.messages.SingupMsg;
 
 import javax.websocket.*;
@@ -24,7 +25,7 @@ public class AuthEndpoint extends FrontEndpoint {
     private final Address address = new Address();
 
     private final Map<String, RemoteEndpoint.Async> sessions = new ConcurrentHashMap<>();
-    private final Map<Address, RemoteEndpoint.Async> addresses = new ConcurrentHashMap<>();
+    // private final Map<Address, RemoteEndpoint.Async> addresses = new ConcurrentHashMap<>();
 
     private Address dbServerAddress;
 
@@ -49,7 +50,7 @@ public class AuthEndpoint extends FrontEndpoint {
         LOG.warn("Session opened, id: {}", session.getId());
 
         sessions.put(session.getId(), session.getAsyncRemote());
-        addresses.put(new Address(), session.getAsyncRemote());
+        // addresses.put(new Address(), session.getAsyncRemote());
         // attach message handler
         session.addMessageHandler(new StringHandler(endpointConfig, session) {
 
@@ -93,12 +94,13 @@ public class AuthEndpoint extends FrontEndpoint {
 
     @Override
     public boolean knowsHisAddress(Address address) {
-        return addresses.containsKey(address);
+        return this.address.equals(address); // || addresses.containsKey(address);
     }
 
     @Override
     public void setDbServerAddress(Address dbServerAddress) {
         this.dbServerAddress = dbServerAddress;
+        this.client.send(new RequestDBServerMsg(address));
     }
 
     @Override
@@ -109,6 +111,10 @@ public class AuthEndpoint extends FrontEndpoint {
     @Override
     public void deliver(Msg msg) {
         LOG.info("Message is delivered: {}", msg.toString());
+        if (RequestDBServerMsg.ID.equals(msg.getId())) {
+            dbServerAddress = msg.getFrom();
+            LOG.warn("Get DB Server Address: {}", dbServerAddress);
+        }
     }
 }
 

@@ -19,7 +19,7 @@
         <guava.version>21.0</guava.version>
         <junit.version>4.12</junit.version>
         <log4j.version>2.10.0</log4j.version>
-        <hibernate.version>5.2.12.Final</hibernate.version>
+        <hibernate.version>5.2.16.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -89,30 +89,30 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>maven-assembly-plugin</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
                 <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>ru.otus.l161.MsgServerMain</mainClass>
+                            <mainClass>${project.mainclass}</mainClass>
+                            <addClasspath>true</addClasspath>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

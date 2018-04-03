@@ -18,12 +18,12 @@ import java.util.concurrent.Executors;
 public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCloseable {
 
     private static final int PAUSE_MS = 10000;
+    private static final int MESSAGE_DELAY_MS = 100;
     private static final Logger LOG = Log.getLogger(FrontendWorker.class);
 
     private final Address address = new Address();
     private final Socket socket;
     private SocketMsgWorker client;
-    private Address dbServerAddress;
     private List<FrontendService> services = new CopyOnWriteArrayList<>();
 
     public FrontendWorker(String host, int port) throws IOException {
@@ -31,12 +31,12 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     }
 
     private static void onClose(Socket socket) {
-        LOG.info("tut4 {}", socket);
+        LOG.info("Close socket {}", socket);
         // TODO
     }
 
     private FrontendWorker(Socket socket) throws IOException {
-        super(socket, FrontendWorker::onClose);
+        super(socket);
         this.socket = socket;
         this.client = this;
         LOG.info("Frontend Address: " + getAddress());
@@ -54,26 +54,40 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
                 Msg msg = client.take();
                 boolean delivered = false;
 
-                if (RequestDBServerMsg.ID.equals(msg.getTo().getId())) {
-                    dbServerAddress = msg.getFrom();
-                    for (FrontendService service : services) {
-                        service.setDbServerAddress(dbServerAddress);
+                for (FrontendService service : services) {
+                    if (service.knowsHisAddress(msg.getTo())) {
+                        service.deliver(msg);
+                        delivered = true;
                     }
-                    LOG.warn("Get DB Server Address: {}", dbServerAddress);
-                } else {
-                    for (FrontendService service : services) {
-                        if (service.knowsHisAddress(msg.getTo())) {
-                            service.deliver(msg);
-                            delivered = true;
-                        }
-                    }
-                    if ( ! delivered) {
-                        LOG.info("Message is not delivered: {}", msg.toString());
-                    }
+                }
+                if (address.equals(msg.getTo())) {
+                    //noinspection UnusedAssignment
+                    delivered = true;
+                    LOG.info("Message is delivered: {}", msg.toString());
+                } else if ( ! delivered) {
+                    LOG.info("Message is not delivered: {}", msg.toString());
                 }
             }
         } catch (InterruptedException e) {
             LOG.info(e.getMessage());
+        }
+    }
+
+    private void registeringServices() throws InterruptedException {
+        Msg registerMeMsg = new RequestDBServerMsg(address);
+        send(registerMeMsg);
+        Thread.sleep(MESSAGE_DELAY_MS);
+
+        for (FrontendService service : services) {
+            Address serviceAddress = service.getAddress();
+            LOG.info("Registering: {}", serviceAddress);
+
+            Msg pingMsg = new PingMsg(serviceAddress, serviceAddress);
+            send(pingMsg);
+            Thread.sleep(2*MESSAGE_DELAY_MS);
+
+            Msg registerMsg = new RequestDBServerMsg(serviceAddress);
+            send(registerMsg);
         }
     }
 
@@ -85,20 +99,12 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         executorService = Executors.newSingleThreadExecutor();
         executorService.submit(this::call);
 
-        Msg registerMsg = new RequestDBServerMsg(address);
-        send(registerMsg);
+        registeringServices();
 
         while (true) {
             Msg msg = new PingMsg(address, address);
             client.send(msg);
-
             LOG.debug("Message sent: {}", msg.toString());
-
-            if (dbServerAddress != null) {
-                Msg msgToDbServer = new PingMsg(address, dbServerAddress);
-                client.send(msgToDbServer);
-                LOG.debug("Message sent: {}", msgToDbServer.toString());
-            }
             Thread.sleep(PAUSE_MS);
         }
     }
