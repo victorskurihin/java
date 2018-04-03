@@ -1,27 +1,30 @@
 package ru.otus.l161.front;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
-import ru.otus.l161.messages.Address;
-import ru.otus.l161.messages.Msg;
+import ru.otus.l161.messages.*;
 
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatEndpoint extends FrontEndpoint {
 
+    private static final int DELAY_MS = 100;
     private static final Logger LOG = Log.getLogger(ChatEndpoint.class);
     private final Address address = new Address();
-    // private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private final Map<String, RemoteEndpoint.Async> sessions = new ConcurrentHashMap<>();
-    private final Map<Address, RemoteEndpoint.Async> addresses = new ConcurrentHashMap<>();
+    private final Map<String, Integer> auths = new ConcurrentHashMap<>();
+    private final AuthenticatedSessions sessions = new AuthenticatedSessions();
 
     private Address dbServerAddress;
 
@@ -29,28 +32,79 @@ public class ChatEndpoint extends FrontEndpoint {
         LOG.debug("class loaded {}", this.getClass());
     }
 
+    private boolean isAuthExists(String user, int authId) {
+        Integer id = auths.getOrDefault(user, null);
+        return null != id && id == authId;
+    }
+
+    private void doAuth(String user, int authId, Session session) {
+        for(int i = 0; i < 9 && ! isAuthExists(user, authId); ++i) {
+            try {
+                Thread.sleep(2*DELAY_MS);
+            } catch (InterruptedException e) {
+                LOG.warn(e);
+            }
+
+        }
+        if (isAuthExists(user, authId)) {
+            LOG.info("User {} authId {}", user, authId);
+            sessions.put(user, session);
+        } else {
+            try {
+                session.close();
+            } catch (IOException e) {
+                LOG.warn(e);
+            }
+        }
+    }
+
+    private void sendTextToRemote(String sessionId, String text) {
+        String user = sessions.getAuth(sessionId);
+        RemoteEndpoint.Async remote = sessions.get(user).getAsyncRemote();
+        remote.sendText(text);
+    }
+
+    private void greeting(String user, Session session) {
+        sendTextToRemote(session.getId(), "Server> Hello " + user + "<br>");
+        sendTextToRemote(session.getId(),
+            "Server> You are now connected to " + this.getClass().getName() + "<br>"
+        );
+    }
+
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
         LOG.warn("Session opened, id: {}", session.getId());
 
-        sessions.put(session.getId(), session.getAsyncRemote());
         // attach message handler
         session.addMessageHandler(new StringHandler(endpointConfig, session) {
 
             @Override
             public void onMessage(String message) {
-                LOG.warn(
+                LOG.info(
                     "Message received. Session id: {} Message: {}",
                     session.getId(), message
                 );
-                Map<String, String> authData = new HashMap<>();
+                Map<String, String> map = new HashMap<>();
                 //noinspection unchecked
-                //authData = GSON.fromJson(message, authData.getClass());
-                //
-                //String form = authData.getOrDefault("form", null);
-                //String username = authData.getOrDefault("user", null);
-                //String password = authData.getOrDefault("pass", null);
-          }
+                map = GSON.fromJson(message, map.getClass());
+
+                String user = map.getOrDefault("auth", null);
+                int authId = Integer.parseInt(
+                    map.getOrDefault("authid", null)
+                );
+                String text = map.getOrDefault("text", null);
+
+                if ( ! sessions.containsAuth(user)) {
+                    doAuth(user, authId, session);
+                    greeting(user, session);
+                    // TODO chat
+                } else {
+                    // TODO chat
+                    // ControlBlock control = new ControlBlock();
+                    // control.put(K_LOGIN, user);
+                    // handleRequest(msgChat(control, text));
+                }
+            }
         });
     }
 
@@ -64,19 +118,9 @@ public class ChatEndpoint extends FrontEndpoint {
         super.onClose(session, close);
     }
 
-    private void sendJsonToRemote(String sessionId, String jsonString) {
-        RemoteEndpoint.Async remote = sessions.get(sessionId);
-        remote.sendText(jsonString);
-    }
-
     @Override
     public boolean knowsHisAddress(Address address) {
-        return addresses.containsKey(address);
-    }
-
-    @Override
-    public void setDbServerAddress(Address dbServerAddress) {
-        this.dbServerAddress = dbServerAddress;
+        return this.address.equals(address); // || addresses.containsKey(address);
     }
 
     @Override
@@ -85,8 +129,18 @@ public class ChatEndpoint extends FrontEndpoint {
     }
 
     @Override
+    public void setChatEndpoint(FrontEndpoint chat) { /* None TODO */ }
+
+    @Override
     public void deliver(Msg msg) {
         LOG.info("Message is delivered: {}", msg.toString());
+        if (RequestDBServerMsg.ID.equals(msg.getId())) {
+            dbServerAddress = msg.getFrom();
+            LOG.warn("Get DB Server Address: {}", dbServerAddress);
+        } else if (AuthenticatedMsg.ID.equals(msg.getId())) {
+            AuthenticatedMsg authenticated = (AuthenticatedMsg) msg;
+            auths.put(authenticated.getUser(), authenticated.getAuth());
+        }
     }
 }
 

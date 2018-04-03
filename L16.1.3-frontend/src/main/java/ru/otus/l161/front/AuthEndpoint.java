@@ -6,14 +6,13 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 import ru.otus.l161.dataset.UserDataSet;
-import ru.otus.l161.messages.Msg;
-import ru.otus.l161.messages.Address;
-import ru.otus.l161.messages.RequestDBServerMsg;
-import ru.otus.l161.messages.SingupMsg;
+import ru.otus.l161.messages.*;
 
 import javax.websocket.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AuthEndpoint extends FrontEndpoint {
@@ -25,9 +24,9 @@ public class AuthEndpoint extends FrontEndpoint {
     private final Address address = new Address();
 
     private final Map<String, RemoteEndpoint.Async> sessions = new ConcurrentHashMap<>();
-    // private final Map<Address, RemoteEndpoint.Async> addresses = new ConcurrentHashMap<>();
 
     private Address dbServerAddress;
+    private ChatEndpoint chat;
 
     public AuthEndpoint() {
         LOG.debug("class loaded {}", this.getClass());
@@ -42,7 +41,7 @@ public class AuthEndpoint extends FrontEndpoint {
     }
 
     private void authenticate(String username, String password, Session session) {
-
+        // TODO
     }
 
     @Override
@@ -56,7 +55,7 @@ public class AuthEndpoint extends FrontEndpoint {
 
             @Override
             public void onMessage(String message) {
-                LOG.warn(
+                LOG.info(
                     "Message received. Session id: {} Message: {}",
                     session.getId(), message
                 );
@@ -98,14 +97,40 @@ public class AuthEndpoint extends FrontEndpoint {
     }
 
     @Override
-    public void setDbServerAddress(Address dbServerAddress) {
-        this.dbServerAddress = dbServerAddress;
-        this.client.send(new RequestDBServerMsg(address));
+    public void setChatEndpoint(FrontEndpoint chat) {
+        if (chat instanceof ChatEndpoint) {
+            this.chat = (ChatEndpoint) chat;
+        }
     }
 
     @Override
     public Address getAddress() {
         return address;
+    }
+
+    private void handleSingedMsg(SingedMsg msg) {
+        LOG.info("Handle Singed Message OK: {}", msg.toString());
+        String sid = msg.getSessionId();
+
+        if (msg.isPositive()) {
+            Objects.requireNonNull(chat);
+            LOG.info("Handle Singed Message Chat OK: {}", chat.getAddress());
+
+            Random random = new Random();
+            int authId = (int) (random.nextLong() & 0xffffffffL);
+            LOG.info("Handle Singed Message authId: {}", authId);
+
+            sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(authId))));
+
+            AuthenticatedMsg authenticated = new AuthenticatedMsg(
+                address, chat.getAddress(), msg.getUser(), authId
+            );
+            chat.deliver(authenticated);
+        } else {
+            sendJsonToRemote(
+                sid, GSON.toJson(getErrorResult(msg.getMessage()))
+            );
+        }
     }
 
     @Override
@@ -114,6 +139,8 @@ public class AuthEndpoint extends FrontEndpoint {
         if (RequestDBServerMsg.ID.equals(msg.getId())) {
             dbServerAddress = msg.getFrom();
             LOG.warn("Get DB Server Address: {}", dbServerAddress);
+        } else if (SingedMsg.ID.equals(msg.getId())) {
+            handleSingedMsg((SingedMsg) msg);
         }
     }
 }

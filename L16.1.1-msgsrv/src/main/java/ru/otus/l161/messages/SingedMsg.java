@@ -12,7 +12,9 @@ public class SingedMsg extends Msg {
 
     private String message;
 
-    public SingedMsg(Address from, String sid, Address to, String username, boolean isPositive) {
+    public SingedMsg(
+        Address from, String sid, Address to, String username, boolean isPositive
+    ) {
         super(SingedMsg.class, from, to);
         sessionId = sid;
         this.isPositive = isPositive;
@@ -27,11 +29,12 @@ public class SingedMsg extends Msg {
     @Override
     public String toString() {
         return ID +
-               "{ from="    + super.getFrom() +
-               ", sid="     + sessionId +
-               ", to="      + super.getTo() +
-               ", user="    + user +
-               ", message=" + message +
+               "{ from="     + super.getFrom() +
+               ", sid="      + sessionId +
+               ", to="       + super.getTo() +
+               ", positive=" + isPositive  +
+               ", user="     + user +
+               ", message="  + message +
                " }";
     }
 
@@ -65,6 +68,10 @@ public class SingedMsg extends Msg {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 }
 

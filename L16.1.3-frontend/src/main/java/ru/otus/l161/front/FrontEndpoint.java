@@ -12,10 +12,10 @@ public abstract class FrontEndpoint extends Endpoint implements FrontendService 
     @SuppressWarnings("WeakerAccess")
     protected SocketMsgWorker client;
 
-    public Map<String, String> getOkResult(String sessionId) {
+    public Map<String, String> getOkResult(String authId) {
         Map<String, String> result = new HashMap<>();
         result.put("result", "ok");
-        result.put("session", sessionId);
+        result.put("authid", authId);
         return result;
     }
 
@@ -32,6 +32,8 @@ public abstract class FrontEndpoint extends Endpoint implements FrontendService 
     public Address getAddress() {
         return client.getAddress();
     }
+
+    public abstract void setChatEndpoint(FrontEndpoint chat);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

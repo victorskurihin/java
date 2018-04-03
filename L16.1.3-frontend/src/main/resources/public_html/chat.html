@@ -32,10 +32,12 @@
     function sendMsg() {
         var msgToSend = msgField.value;
         var login = getCookie("auth");
+        var authId = getCookie("authid");
 
         if ( ! (login === undefined)) {
-            webSocket.send(JSON.stringify({ auth: login, text: msgToSend }));
-            // divMsg.innerHTML += "<div style='color:red'>" +  login + "> " + msgToSend + "</div>"
+            webSocket.send(
+                JSON.stringify({ auth: login, authid: authId,  text: msgToSend })
+            );
             msgField.value = "";
         }
     }
@@ -55,7 +57,8 @@
 
     webSocket.onopen = function() {
         var login = getCookie("auth");
-        webSocket.send("{auth:" + login + "}");
+        var authId = getCookie("authid");
+        webSocket.send(JSON.stringify({ auth: login, authid: authId }));
         console.log("connection opened");
     };
 

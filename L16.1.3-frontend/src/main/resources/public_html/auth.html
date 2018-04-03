@@ -39,12 +39,19 @@
 
     document.onkeypress = keyPress;
 
-    function getCookie(name) {
+    function getCookie2h(name) {
         var matches = document.cookie.match(new RegExp(
             "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
         ));
         return matches ? decodeURIComponent(matches[1]) : undefined;
     }
+
+    function setCookie2h(cname, cvalue) {
+        var d = new Date(new Date().getTime() + 7200 * 1000);
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    }
+
 
     function sendAuth() {
         webSocket.send(JSON.stringify({ form: formClass, user: login.value, pass: password.value }));
@@ -72,9 +79,8 @@
     webSocket.onmessage = function(message) {
         var answer = JSON.parse(message.data)
         if (answer["result"] == "ok") {
-            var myDate = new Date();
-            myDate.setMonth(myDate.getMonth() + 12);
-            document.cookie = "auth=" + login.value + ";expires=" + myDate + ";domain=localhost;path=/";
+            setCookie2h("auth", login.value);
+            setCookie2h("authid", answer["authid"]);
             redirect("chat.html");
         } else if (!(answer["result"] === undefined)) {
             divMsg.innerHTML = "Server: " + answer["result"];

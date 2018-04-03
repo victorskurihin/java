@@ -19,10 +19,10 @@ public class FrontendMain {
         Server server = new Server(HTTP_PORT);
         try (FrontendWorker client = new FrontendWorker(HOST, MESSAGES_PORT)) {
             EndpointFabric fabric = new EndpointFabric(server, client);
-            client.init(
-                fabric.createEndpoint("auth", AuthEndpoint.class),
-                fabric.createEndpoint("chat", ChatEndpoint.class)
-            );
+            FrontEndpoint auth = fabric.createEndpoint("auth", AuthEndpoint.class);
+            FrontEndpoint chat = fabric.createEndpoint("chat", ChatEndpoint.class);
+            auth.setChatEndpoint(chat);
+            client.init(auth, chat);
             server.start();
             client.loop();
             server.join();

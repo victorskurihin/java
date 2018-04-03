@@ -40,6 +40,36 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         dbService = new DBServiceImpl(address);
     }
 
+    private boolean userExists(String name) {
+        UserDataSet user = dbService.loadByName(name);
+        return null != user;
+    }
+
+    private void singUp(Msg msg) {
+        SingupMsg singup = (SingupMsg) msg;
+        System.out.println("Message received: " + msg.toString());
+        UserDataSet user = singup.getUser();
+        SingedMsg singed = null;
+
+        if (userExists(user.getName())) {
+            singed = singup.createAnswer(false, "User exists!");
+        } else if (user.getPassword().length() < 2) {
+            singed = singup.createAnswer(
+                false, "Password must be more than 2 symbols!"
+            );
+        } else {
+            dbService.save(user);
+            if (userExists(user.getName())) {
+                singed = singup.createAnswer(true, "Ok");
+            } else {
+                singed = singup.createAnswer(false, "DB error!");
+            }
+        }
+        if (null != singed) {
+            client.send(singed);
+        }
+    }
+
     @SuppressWarnings("InfiniteLoopStatement")
     public void loop() throws Exception {
         client.init();
@@ -52,18 +82,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
                 while (true) {
                     Msg msg = client.take();
                     if (SingupMsg.ID.equals(msg.getId())) {
-                        SingupMsg singup = (SingupMsg) msg;
-                        System.out.println("Message received: " + msg.toString());
-                        UserDataSet usr = singup.getUser();
-                        dbService.save(usr);
-                        UserDataSet user = dbService.loadByName(usr.getName());
-                        if (null != user) {
-                            SingedMsg singed = singup.createAnswer(true, "ok");
-                            System.out.println("singed = " + singed);
-                            client.send(singed);
-                        } else {
-                            // TODO
-                        }
+                        singUp(msg);
                     }
                 }
             } catch (InterruptedException e) {

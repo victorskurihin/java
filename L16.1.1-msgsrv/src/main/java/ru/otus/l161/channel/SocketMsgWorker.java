@@ -38,6 +38,9 @@ public class SocketMsgWorker implements MsgWorker {
     private final ExecutorService executor;
     private final Socket socket;
 
+    private boolean reset = false;
+    private boolean receivedOk = true;
+
     public SocketMsgWorker(Socket socket) {
         this.socket = socket;
         this.executor = Executors.newFixedThreadPool(WORKERS_COUNT);
@@ -86,6 +89,7 @@ public class SocketMsgWorker implements MsgWorker {
                 out.println();//line with json + an empty line
             }
         } catch (InterruptedException | IOException e) {
+            reset = true;
             LOG.error(e);
         }
     }
@@ -106,6 +110,7 @@ public class SocketMsgWorker implements MsgWorker {
                 }
             }
         } catch (IOException | ParseException e) {
+            receivedOk = false;
             LOG.error(e);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -131,6 +136,18 @@ public class SocketMsgWorker implements MsgWorker {
     @Override
     public int hashCode() {
         return Objects.hash(ADDRESS);
+    }
+
+    public boolean isConnected() {
+        return socket.isConnected();
+    }
+
+    public boolean isReset() {
+        return reset;
+    }
+
+    public boolean isReceivedOk() {
+        return receivedOk;
     }
 }
 

@@ -25,8 +25,8 @@ public class MsgServer implements MsgServerMBean {
     private static final int MESSAGE_DELAY_MS = 100;
 
     private final ExecutorService executor;
-    private final Map<Socket, MsgWorker> sockets;
-    private final Map<MsgWorker, Address> clients;
+    private final Map<Socket, SocketMsgWorker> sockets;
+    private final Map<SocketMsgWorker, Address> clients; // TODO List of addresses
     private final Map<Address, MsgWorker> recipients;
     private final Map<Address, Integer> dbServers;
 
@@ -38,20 +38,22 @@ public class MsgServer implements MsgServerMBean {
         dbServers = new ConcurrentHashMap<>();
     }
 
-    // TODO
-    private void onClose(Socket socket) {
-        MsgWorker client = sockets.getOrDefault(socket, null);
+    private void dropBySocket(Socket socket) {
+        SocketMsgWorker client = sockets.getOrDefault(socket, null);
+        if (null != sockets.remove(socket)) {
+            LOG.info("Droped socket:{}", socket);
+        }
         if (null != client) {
-            Address address = clients.getOrDefault(client, null);
-            LOG.info("address {}", address);
-            if (null != dbServers.remove(address)) {
-                LOG.info("Remove DB Server {}", client);
+            Address address = clients.remove(client);
+            if (null != address) {
+                LOG.info("Droped client:{}", client);
+                if (null != recipients.remove(address)) {
+                    LOG.info("Droped recipient:{}", address);
+                }
+                if (null != dbServers.remove(address)) {
+                    LOG.info("Droped DB Server:{}", address);
+                }
             }
-            if (null != recipients.remove(address)) {
-                LOG.info("Remove client {}", client);
-            }
-            clients.remove(client);
-            sockets.remove(socket);
         }
     }
 
@@ -86,58 +88,78 @@ public class MsgServer implements MsgServerMBean {
         return address;
     }
 
-    private void loop(MsgWorker client, Msg msg) {
+    private void closeSocket(SocketMsgWorker client, Msg msg) {
+        LOG.info("Close socket from client: {}", client.toString());
+
+        dbServers.remove(msg.getFrom());
+        recipients.remove(client.getAddress());
+    }
+
+    private void requestDBServer(SocketMsgWorker client, Msg msg) {
+        LOG.info("Register the client: {}", msg.getFrom());
+
+        recipients.put(msg.getFrom(), client);
+        clients.put(client, msg.getFrom());
+
+        Address dbServerAddress = getMinimumLoadingDBServer();
+        dbServers.compute(dbServerAddress, (address, count) -> count++);
+        LOG.info("Fount DB Server: {}", dbServerAddress);
+
+        RequestDBServerMsg answer = ((RequestDBServerMsg) msg).createAnswer(dbServerAddress);
+        LOG.info("Answer: {}", answer);
+        client.send(answer);
+    }
+
+    private void registerDBServer(SocketMsgWorker client, Msg msg) {
+        LOG.info("Register the DBService: {}", msg.getFrom());
+
+        recipients.put(msg.getFrom(), client);
+        dbServers.put(msg.getFrom(), 0);
+        clients.put(client, msg.getFrom()); // TODO List of addresses
+    }
+
+    private void delivering(Msg msg) {
+        MsgWorker recipient = recipients.getOrDefault(msg.getTo(), null);
+
+        if (null != recipient) {
+            LOG.warn("Delivering the message: {}", msg.toString());
+            recipient.send(msg);
+        } else {
+            LOG.error(
+                "Recipient {} can't find and the message: {} is droped.",
+                msg.getTo(), msg.toString()
+            );
+        }
+    }
+
+    private void loop(SocketMsgWorker client, Msg msg) {
         while (msg != null) {
             if (CloseSocketMsg.ID.equals(msg.getTo().getId())) {
-                LOG.info("Close socket from client: {}", client.toString());
-
-                dbServers.remove(msg.getFrom());
-                recipients.remove(client.getAddress());
+                closeSocket(client, msg);
             } else if (RequestDBServerMsg.ID.equals(msg.getTo().getId())) {
-                LOG.info("Register the client: {}", msg.getFrom());
-                recipients.put(msg.getFrom(), client);
-                clients.put(client, msg.getFrom());
-
-                Address dbServerAddress = getMinimumLoadingDBServer();
-                dbServers.compute(dbServerAddress, (address, count) -> count++);
-                LOG.info("Fount DB Server: {}", dbServerAddress);
-
-                RequestDBServerMsg answer = ((RequestDBServerMsg) msg)
-                    .createAnswer(dbServerAddress);
-                LOG.info("Answer: {}", answer);
-                client.send(answer);
+                requestDBServer(client, msg);
             } else if (RegisterDBServerMsg.ID.equals(msg.getTo().getId())) {
-                LOG.info("Register the DBService: {}", msg.getFrom());
-
-                recipients.put(msg.getFrom(), client);
-                dbServers.put(msg.getFrom(), 0);
-                clients.put(client, msg.getFrom());
+                registerDBServer(client, msg);
             } else {
-                MsgWorker recipient = recipients.getOrDefault(msg.getTo(), null);
-
-                if (null != recipient) {
-                    LOG.warn("Delivering the message: {}", msg.toString());
-                    recipient.send(msg);
-                } else {
-                    LOG.error(
-                        "Recipient {} can't find and the message: {} is droped.",
-                        msg.getTo(), msg.toString()
-                    );
-                }
+                delivering(msg);
             }
             msg = client.pool();
         }
     }
 
     // TODO
-    private void checkAliveClient(MsgWorker client) {
-        // Address address = client.getAddress();
-        LOG.info("check client {}", client);
-        Address address = clients.getOrDefault(client, null);
-        if (null != address) {
-            Msg ping = new PingMsg(address, address);
-            client.send(ping);
+    private void checkAliveClient(Socket socket, SocketMsgWorker client) {
+        LOG.info(
+           "Check socket:{} for client:{}, connected:{}, closed:{} received:{}, reset:{}",
+            socket, client, socket.isConnected(), socket.isClosed(), client.isReceivedOk(), client.isReset()
+        );
+        if (( ! socket.isConnected()) || socket.isClosed()) {
+            dropBySocket(socket);
         }
+        if (( ! client.isReceivedOk()) || client.isReset()) {
+            dropBySocket(socket);
+        }
+        // TODO
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
@@ -146,13 +168,14 @@ public class MsgServer implements MsgServerMBean {
         while (true) {
             long startNs = System.nanoTime();
 
-            for (Map.Entry<Socket, MsgWorker> entry : sockets.entrySet()) {
+            for (Map.Entry<Socket, SocketMsgWorker> entry : sockets.entrySet()) {
 
-                MsgWorker client = entry.getValue();
+                Socket socket = entry.getKey();
+                SocketMsgWorker client = entry.getValue();
                 Msg msg = client.pool();
 
                 if (msg == null && count % MESSAGE_DELAY_MS == 0) {
-                    // TODO checkAliveClient(client);
+                    checkAliveClient(socket, client);
                 } else {
                     loop(client, msg);
                 }
