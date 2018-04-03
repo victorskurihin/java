@@ -1,7 +1,5 @@
 package ru.otus.l161.messages;
 
-import ru.otus.l161.dataset.UserDataSet;
-
 import java.util.Objects;
 
 public class AuthenticatedMsg extends Msg {

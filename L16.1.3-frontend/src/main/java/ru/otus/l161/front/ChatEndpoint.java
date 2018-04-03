@@ -65,6 +65,9 @@ public class ChatEndpoint extends FrontEndpoint {
     }
 
     private void greeting(String user, Session session) {
+        if (null == session) {
+            return;
+        }
         sendTextToRemote(session.getId(), "Server> Hello " + user + "<br>");
         sendTextToRemote(session.getId(),
             "Server> You are now connected to " + this.getClass().getName() + "<br>"

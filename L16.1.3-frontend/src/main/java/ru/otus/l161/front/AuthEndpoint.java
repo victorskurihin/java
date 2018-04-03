@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
+import ru.otus.l161.app.RandomUnsignedInt;
 import ru.otus.l161.dataset.UserDataSet;
 import ru.otus.l161.messages.*;
 
@@ -41,7 +42,11 @@ public class AuthEndpoint extends FrontEndpoint {
     }
 
     private void authenticate(String username, String password, Session session) {
-        // TODO
+        Msg msg = new AuthenticateMsg(
+                address, session.getId(), dbServerAddress, new UserDataSet(username, password)
+        );
+        client.send(msg);
+        LOG.info("sent {}", msg);
     }
 
     @Override
@@ -49,7 +54,6 @@ public class AuthEndpoint extends FrontEndpoint {
         LOG.warn("Session opened, id: {}", session.getId());
 
         sessions.put(session.getId(), session.getAsyncRemote());
-        // addresses.put(new Address(), session.getAsyncRemote());
         // attach message handler
         session.addMessageHandler(new StringHandler(endpointConfig, session) {
 
@@ -67,12 +71,22 @@ public class AuthEndpoint extends FrontEndpoint {
                 String username = authData.getOrDefault("user", null);
                 String password = authData.getOrDefault("pass", null);
 
-                switch (form) {
-                    case SINGUP: singup(username, password, session);
-                        break;
-                    case AUTH: authenticate(username, password, session);
+                if (null != dbServerAddress) {
+                    switch (form) {
+                        case SINGUP:
+                            singup(username, password, session);
+                            break;
+                        case AUTH:
+                            authenticate(username, password, session);
+                    }
+                } else {
+                    sendJsonToRemote(
+                        session.getId(),
+                        GSON.toJson(getErrorResult("Can't connect to DB Server!"))
+                    );
+                    // TODO reconnect
                 }
-          }
+            }
         });
     }
 
@@ -116,9 +130,32 @@ public class AuthEndpoint extends FrontEndpoint {
             Objects.requireNonNull(chat);
             LOG.info("Handle Singed Message Chat OK: {}", chat.getAddress());
 
-            Random random = new Random();
-            int authId = (int) (random.nextLong() & 0xffffffffL);
+            int authId = RandomUnsignedInt.get();
             LOG.info("Handle Singed Message authId: {}", authId);
+
+            sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(authId))));
+
+            AuthenticatedMsg authenticated = new AuthenticatedMsg(
+                address, chat.getAddress(), msg.getUser(), authId
+            );
+            chat.deliver(authenticated);
+        } else {
+            sendJsonToRemote(
+                sid, GSON.toJson(getErrorResult(msg.getMessage()))
+            );
+        }
+    }
+
+    private void handleAuthenticatedMsg(AuthenticatedMsg msg) {
+        LOG.info("Handle Authenticated Message OK: {}", msg.toString());
+        String sid = msg.getSessionId();
+
+        if (msg.isPositive()) {
+            Objects.requireNonNull(chat);
+            LOG.info("Handle Authenticated Message Chat OK: {}", chat.getAddress());
+
+            int authId = RandomUnsignedInt.get();
+            LOG.info("Handle Authenticated Message authId: {}", authId);
 
             sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(authId))));
 
@@ -136,7 +173,9 @@ public class AuthEndpoint extends FrontEndpoint {
     @Override
     public void deliver(Msg msg) {
         LOG.info("Message is delivered: {}", msg.toString());
-        if (RequestDBServerMsg.ID.equals(msg.getId())) {
+        if (AuthenticatedMsg.ID.equals(msg.getId())) {
+            handleAuthenticatedMsg((AuthenticatedMsg) msg);
+        } else if (RequestDBServerMsg.ID.equals(msg.getId())) {
             dbServerAddress = msg.getFrom();
             LOG.warn("Get DB Server Address: {}", dbServerAddress);
         } else if (SingedMsg.ID.equals(msg.getId())) {

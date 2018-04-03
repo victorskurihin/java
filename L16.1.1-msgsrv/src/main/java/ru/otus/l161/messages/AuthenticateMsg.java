@@ -1,5 +1,6 @@
 package ru.otus.l161.messages;
 
+import ru.otus.l161.app.RandomUnsignedInt;
 import ru.otus.l161.dataset.UserDataSet;
 
 import java.util.Objects;
@@ -26,9 +27,11 @@ public class AuthenticateMsg extends Msg {
     @Override
     public String toString() {
         return ID +
-               "{ user=" + user +
-               ", sessionId='" + sessionId + '\'' +
-               " }";
+                "{ from=" + super.getFrom() +
+                ", sid="  + sessionId +
+                ", to="   + super.getTo() +
+                ", user=" + user +
+                " }";
     }
 
     @Override
@@ -50,8 +53,8 @@ public class AuthenticateMsg extends Msg {
     }
 
     public AuthenticatedMsg createAnswer(boolean isPositive, String answer) {
-        Random random = new Random();
-        int authId = (int) (random.nextLong() & 0xffffffffL);
+        int authId = RandomUnsignedInt.get();
+
         AuthenticatedMsg msg = new AuthenticatedMsg(
             getTo(), sessionId, getFrom(), user.getName(), isPositive, authId
         );

@@ -45,28 +45,53 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         return null != user;
     }
 
-    private void singUp(Msg msg) {
-        SingupMsg singup = (SingupMsg) msg;
-        System.out.println("Message received: " + msg.toString());
-        UserDataSet user = singup.getUser();
+    private void singUp(SingupMsg msg) {
+        LOG.warn("Message received: {}", msg.toString());
+        UserDataSet user = msg.getUser();
         SingedMsg singed = null;
 
         if (userExists(user.getName())) {
-            singed = singup.createAnswer(false, "User exists!");
+            singed = msg.createAnswer(false, "User exists!");
         } else if (user.getPassword().length() < 2) {
-            singed = singup.createAnswer(
+            singed = msg.createAnswer(
                 false, "Password must be more than 2 symbols!"
             );
         } else {
             dbService.save(user);
+
             if (userExists(user.getName())) {
-                singed = singup.createAnswer(true, "Ok");
+                singed = msg.createAnswer(true, "Ok");
             } else {
-                singed = singup.createAnswer(false, "DB error!");
+                singed = msg.createAnswer(false, "DB error!");
             }
         }
         if (null != singed) {
             client.send(singed);
+        }
+    }
+
+    private boolean doAuthenticate(AuthenticateMsg msg, UserDataSet user) {
+        UserDataSet dbUser = dbService.loadByName(msg.getUser().getName());
+
+        return ( dbUser.getName().equals(user.getName())
+                && dbUser.getPassword().equals(user.getPassword()));
+    }
+
+    private void authenticate(AuthenticateMsg msg) {
+        LOG.warn("Message received: {}", msg.toString());
+        AuthenticatedMsg authenticated = null;
+        UserDataSet user = msg.getUser();
+
+        if (doAuthenticate(msg, user)) {
+            authenticated = msg.createAnswer(true, "ok");
+        } else if (userExists(msg.getUser().getName())) {
+            authenticated = msg.createAnswer(false, "Bad password!");
+        } else {
+            authenticated = msg.createAnswer(false, "User doesn't exists!");
+        }
+
+        if (null != authenticated) {
+            client.send(authenticated);
         }
     }
 
@@ -81,8 +106,10 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
             try {
                 while (true) {
                     Msg msg = client.take();
-                    if (SingupMsg.ID.equals(msg.getId())) {
-                        singUp(msg);
+                    if (AuthenticateMsg.ID.equals(msg.getId())) {
+                        authenticate((AuthenticateMsg) msg);
+                    } else if (SingupMsg.ID.equals(msg.getId())) {
+                        singUp((SingupMsg) msg);
                     }
                 }
             } catch (InterruptedException e) {
