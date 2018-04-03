@@ -93,3 +93,10 @@ CommandLine flags: -XX:GCLogFileSize=104857600 -XX:+HeapDumpOnOutOfMemoryError -
  [Times: user=0,01 sys=0,00, real=0,00 secs] 
 2018-04-03T22:48:30.774-0300: 2,044: [GC cleanup 10239K->8191K(512M), 0,0004702 secs]
  [Times: user=0,00 sys=0,00, real=0,00 secs] 
+2018-04-03T22:48:30.775-0300: 2,045: [GC concurrent-cleanup-start]
+2018-04-03T22:48:30.775-0300: 2,045: [GC concurrent-cleanup-end, 0,0000147 secs]
+Heap
+ garbage-first heap   total 524288K, used 65023K [0x00000007a0000000, 0x00000007a0101000, 0x00000007c0000000)
+  region size 1024K, 65 young (66560K), 8 survivors (8192K)
+ Metaspace       used 28999K, capacity 29278K, committed 29744K, reserved 1075200K
+  class space    used 3785K, capacity 3872K, committed 3888K, reserved 1048576K

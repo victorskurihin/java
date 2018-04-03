@@ -43,7 +43,7 @@ public class AuthEndpoint extends FrontEndpoint {
 
     private void authenticate(String username, String password, Session session) {
         Msg msg = new AuthenticateMsg(
-                address, session.getId(), dbServerAddress, new UserDataSet(username, password)
+            address, session.getId(), dbServerAddress, new UserDataSet(username, password)
         );
         client.send(msg);
         LOG.info("sent {}", msg);
@@ -155,13 +155,11 @@ public class AuthEndpoint extends FrontEndpoint {
             LOG.info("Handle Authenticated Message Chat OK: {}", chat.getAddress());
 
             int authId = RandomUnsignedInt.get();
-            LOG.info("Handle Authenticated Message authId: {}", authId);
+            LOG.info("Handle Authenticated Message authId: {}", msg.getAuth());
 
-            sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(authId))));
+            sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(msg.getAuth()))));
 
-            AuthenticatedMsg authenticated = new AuthenticatedMsg(
-                address, chat.getAddress(), msg.getUser(), authId
-            );
+            AuthenticatedMsg authenticated = msg.forward(address, chat.getAddress());
             chat.deliver(authenticated);
         } else {
             sendJsonToRemote(

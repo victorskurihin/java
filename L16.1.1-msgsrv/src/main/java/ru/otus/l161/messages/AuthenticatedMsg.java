@@ -1,5 +1,7 @@
 package ru.otus.l161.messages;
 
+import ru.otus.l161.app.RandomUnsignedInt;
+
 import java.util.Objects;
 
 public class AuthenticatedMsg extends Msg {
@@ -84,6 +86,14 @@ public class AuthenticatedMsg extends Msg {
 
     public String getMessage() {
         return message;
+    }
+
+    public AuthenticatedMsg forward(Address from, Address to) {
+        AuthenticatedMsg msg = new AuthenticatedMsg(
+            from, sessionId, to, user, isPositive, auth
+        );
+        msg.setMessage(message);
+        return msg;
     }
 }
 
