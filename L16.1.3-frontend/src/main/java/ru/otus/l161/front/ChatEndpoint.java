@@ -95,6 +95,7 @@ public class ChatEndpoint extends FrontEndpoint {
                 int authId = Integer.parseInt(
                     map.getOrDefault("authid", null)
                 );
+                LOG.info("Get from html form auth:{} authId:{}", user, authId);
                 String text = map.getOrDefault("text", null);
 
                 if ( ! sessions.containsAuth(user)) {
@@ -113,10 +114,13 @@ public class ChatEndpoint extends FrontEndpoint {
 
     @Override
     public void onClose(Session session, CloseReason close) {
-        sessions.remove(session.getId());
+        String user = sessions.getAuth(session.getId());
+        sessions.remove(user);
+        auths.remove(user);
+
         LOG.warn(
-            "WebSocket Close session({}): {} - {}",
-            session.getId(), close.getCloseCode(), close.getReasonPhrase()
+            "WebSocket Close session({}): {} - {}, user:{}",
+            session.getId(), close.getCloseCode(), close.getReasonPhrase(), user
         );
         super.onClose(session, close);
     }
@@ -142,6 +146,10 @@ public class ChatEndpoint extends FrontEndpoint {
             LOG.warn("Get DB Server Address: {}", dbServerAddress);
         } else if (AuthenticatedMsg.ID.equals(msg.getId())) {
             AuthenticatedMsg authenticated = (AuthenticatedMsg) msg;
+            LOG.info(
+                "Message is delivered and put user:{} auth:{}",
+                authenticated.getUser(), authenticated.getAuth()
+                );
             auths.put(authenticated.getUser(), authenticated.getAuth());
         }
     }

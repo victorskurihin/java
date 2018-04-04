@@ -18,6 +18,7 @@ public class FrontendMain {
     public static void main(String[] args) {
         Server server = new Server(HTTP_PORT);
         try (FrontendWorker client = new FrontendWorker(HOST, MESSAGES_PORT)) {
+            LOG.info("FrontendWorker address:{}", client.getAddress());
             EndpointFabric fabric = new EndpointFabric(server, client);
             FrontEndpoint auth = fabric.createEndpoint("auth", AuthEndpoint.class);
             FrontEndpoint chat = fabric.createEndpoint("chat", ChatEndpoint.class);

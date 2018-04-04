@@ -12,6 +12,7 @@ public class DBServerMain {
 
     public static void main(String[] args) {
         try (DBServerWorker client = new DBServerWorker(HOST, MESSAGES_PORT)) {
+            LOG.info("DBServerWorker address:{}", client.getAddress());
             client.init();
             client.loop();
         } catch (Exception e) {
