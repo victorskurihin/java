@@ -21,8 +21,9 @@ import java.util.concurrent.Executors;
 
 public class MsgServer implements MsgServerMBean {
 
+    public static final int PORT = 5050;
+
     private static final Logger LOG = LogManager.getLogger(MsgServerMBean.class);
-    private static final int PORT = 5050;
     private static final int THREADS_NUMBER = 1;
     private static final int MESSAGE_DELAY_MS = 100;
 

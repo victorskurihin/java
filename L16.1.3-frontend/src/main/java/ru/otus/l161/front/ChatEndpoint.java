@@ -14,6 +14,7 @@ import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatEndpoint extends FrontEndpoint {
@@ -29,7 +30,7 @@ public class ChatEndpoint extends FrontEndpoint {
     private Address dbServerAddress;
 
     public ChatEndpoint() {
-        LOG.debug("class loaded {}", this.getClass());
+        LOG.warn("class loaded {}", this.getClass());
     }
 
     private boolean isAuthExists(String user, int authId) {
@@ -65,9 +66,7 @@ public class ChatEndpoint extends FrontEndpoint {
     }
 
     private void greeting(String user, Session session) {
-        if (null == session) {
-            return;
-        }
+        Objects.requireNonNull(session);
         sendTextToRemote(session.getId(), "Server> Hello " + user + "<br>");
         sendTextToRemote(session.getId(),
             "Server> You are now connected to " + this.getClass().getName() + "<br>"
@@ -83,10 +82,10 @@ public class ChatEndpoint extends FrontEndpoint {
 
             @Override
             public void onMessage(String message) {
-                LOG.info(
-                    "Message received. Session id: {} Message: {}",
-                    session.getId(), message
-                );
+                String sid = session.getId();
+
+                LOG.info("Message received. Session id: {} Message: {}", sid, message );
+
                 Map<String, String> map = new HashMap<>();
                 //noinspection unchecked
                 map = GSON.fromJson(message, map.getClass());
@@ -102,11 +101,9 @@ public class ChatEndpoint extends FrontEndpoint {
                     doAuth(user, authId, session);
                     greeting(user, session);
                     // TODO chat
-                } else {
+                } else if (null != text) {
+                    client.send(new UserToChatMsg(address, sid, address, user, text));
                     // TODO chat
-                    // ControlBlock control = new ControlBlock();
-                    // control.put(K_LOGIN, user);
-                    // handleRequest(msgChat(control, text));
                 }
             }
         });
@@ -140,17 +137,28 @@ public class ChatEndpoint extends FrontEndpoint {
 
     @Override
     public void deliver(Msg msg) {
-        LOG.info("Message is delivered: {}", msg.toString());
-        if (RequestDBServerMsg.ID.equals(msg.getId())) {
+        String mid = msg.getId();
+        LOG.debug("Message is delivered: {}", msg.toString());
+
+        if (RequestDBServerMsg.ID.equals(mid)) {
             dbServerAddress = msg.getFrom();
-            LOG.warn("Get DB Server Address: {}", dbServerAddress);
-        } else if (AuthenticatedMsg.ID.equals(msg.getId())) {
+            LOG.warn("Got DB Server Address: {}", dbServerAddress);
+        } else if (AuthenticatedMsg.ID.equals(mid)) {
             AuthenticatedMsg authenticated = (AuthenticatedMsg) msg;
-            LOG.info(
+            auths.put(authenticated.getUser(), authenticated.getAuth());
+
+            LOG.warn(
                 "Message is delivered and put user:{} auth:{}",
                 authenticated.getUser(), authenticated.getAuth()
-                );
-            auths.put(authenticated.getUser(), authenticated.getAuth());
+            );
+        } else if (ChatToUsersMsg.ID.equals(mid)) {
+            ChatToUsersMsg chatMsg = (ChatToUsersMsg) msg;
+
+            for (Map.Entry<String, Session> entry : sessions.entrySet()) {
+                Session session = entry.getValue();
+                String outputMessage = chatMsg.getUser() + "> " + chatMsg.getText();
+                sendTextToRemote(session.getId(), outputMessage);
+            }
         }
     }
 }

@@ -30,7 +30,7 @@ public class AuthEndpoint extends FrontEndpoint {
     private ChatEndpoint chat;
 
     public AuthEndpoint() {
-        LOG.debug("class loaded {}", this.getClass());
+        LOG.warn("class loaded {}", this.getClass());
     }
 
     private void singup(String username, String password, Session session) {
@@ -38,7 +38,7 @@ public class AuthEndpoint extends FrontEndpoint {
             address, session.getId(), dbServerAddress, new UserDataSet(username, password)
         );
         client.send(msg);
-        LOG.info("sent {}", msg);
+        LOG.debug("singup msg:{}", msg);
     }
 
     private void authenticate(String username, String password, Session session) {
@@ -46,7 +46,7 @@ public class AuthEndpoint extends FrontEndpoint {
             address, session.getId(), dbServerAddress, new UserDataSet(username, password)
         );
         client.send(msg);
-        LOG.info("sent {}", msg);
+        LOG.debug("authenticate msg:{}", msg);
     }
 
     @Override
@@ -59,10 +59,9 @@ public class AuthEndpoint extends FrontEndpoint {
 
             @Override
             public void onMessage(String message) {
-                LOG.info(
-                    "Message received. Session id: {} Message: {}",
-                    session.getId(), message
-                );
+                String sid = session.getId();
+                LOG.info("Message received. Session id: {} Message: {}", sid, message);
+
                 Map<String, String> authData = new HashMap<>();
                 //noinspection unchecked
                 authData = GSON.fromJson(message, authData.getClass());
@@ -80,10 +79,9 @@ public class AuthEndpoint extends FrontEndpoint {
                             authenticate(username, password, session);
                     }
                 } else {
-                    sendJsonToRemote(
-                        session.getId(),
-                        GSON.toJson(getErrorResult("Can't connect to DB Server!"))
-                    );
+                    sendJsonToRemote(sid, GSON.toJson(
+                            getErrorResult("Can't connect to DB Server!")
+                    ));
                     // TODO reconnect
                 }
             }
@@ -92,10 +90,10 @@ public class AuthEndpoint extends FrontEndpoint {
 
     @Override
     public void onClose(Session session, CloseReason close) {
-        sessions.remove(session.getId());
-        LOG.warn(
-            "WebSocket Close session({}): {} - {}",
-            session.getId(), close.getCloseCode(), close.getReasonPhrase()
+        String sid = session.getId();
+        sessions.remove(sid);
+        LOG.info("WebSocket Close session({}): {} - {}",
+            sid, close.getCloseCode(), close.getReasonPhrase()
         );
         super.onClose(session, close);
     }
@@ -123,16 +121,14 @@ public class AuthEndpoint extends FrontEndpoint {
     }
 
     private void handleSingedMsg(SingedMsg msg) {
-        LOG.info("Handle Singed Message OK: {}", msg.toString());
+        LOG.debug("Handle Singed Message OK: {}", msg.toString());
         String sid = msg.getSessionId();
 
         if (msg.isPositive()) {
             Objects.requireNonNull(chat);
-            LOG.info("Handle Singed Message Chat OK: {}", chat.getAddress());
+            LOG.warn("Handle Singed Message Chat positive: {}", chat.getAddress());
 
             int authId = RandomUnsignedInt.get();
-            LOG.info("Handle Singed Message authId: {}", authId);
-
             sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(authId))));
 
             AuthenticatedMsg authenticated = new AuthenticatedMsg(
@@ -147,18 +143,14 @@ public class AuthEndpoint extends FrontEndpoint {
     }
 
     private void handleAuthenticatedMsg(AuthenticatedMsg msg) {
-        LOG.info("Handle Authenticated Message OK: {}", msg.toString());
+        LOG.debug("Handle Authenticated Message OK: {}", msg.toString());
         String sid = msg.getSessionId();
 
         if (msg.isPositive()) {
             Objects.requireNonNull(chat);
-            LOG.info("Handle Authenticated Message Chat OK: {}", chat.getAddress());
-
-            int authId = RandomUnsignedInt.get();
-            LOG.info("Handle Authenticated Message authId: {}", msg.getAuth());
+            LOG.info("Handle Authenticated Message Chat positive: {}", chat.getAddress());
 
             sendJsonToRemote(sid, GSON.toJson(getOkResult(Integer.toString(msg.getAuth()))));
-
             AuthenticatedMsg authenticated = msg.forward(address, chat.getAddress());
             chat.deliver(authenticated);
         } else {
@@ -170,12 +162,12 @@ public class AuthEndpoint extends FrontEndpoint {
 
     @Override
     public void deliver(Msg msg) {
-        LOG.info("Message is delivered: {}", msg.toString());
+        LOG.debug("Message is delivered: {}", msg.toString());
         if (AuthenticatedMsg.ID.equals(msg.getId())) {
             handleAuthenticatedMsg((AuthenticatedMsg) msg);
         } else if (RequestDBServerMsg.ID.equals(msg.getId())) {
             dbServerAddress = msg.getFrom();
-            LOG.warn("Get DB Server Address: {}", dbServerAddress);
+            LOG.info("Got DB Server Address: {}", dbServerAddress);
         } else if (SingedMsg.ID.equals(msg.getId())) {
             handleSingedMsg((SingedMsg) msg);
         }

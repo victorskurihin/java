@@ -31,11 +31,11 @@ public class ProcessRunnerImpl implements ProcessRunner {
 
     private Process runProcess(String command) throws IOException {
         ProcessBuilder pb = new ProcessBuilder(command.split(" "));
-        pb.redirectErrorStream(true);
+        // pb.redirectErrorStream(true);
         Process p = pb.start();
 
-        StreamListener output = new StreamListener(p.getInputStream(), "OUTPUT");
-        output.start();
+        // StreamListener output = new StreamListener(p.getInputStream(), "OUTPUT");
+        // output.start();
 
         return p;
     }

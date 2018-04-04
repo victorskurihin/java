@@ -6,11 +6,13 @@ public class UserToChatMsg extends Msg {
 
     public static final String ID = UserToChatMsg.class.getSimpleName();
 
+    private final String user;
     private final String text;
     private final String sessionId;
 
-    public UserToChatMsg(Address from, String sid, Address to, String text) {
+    public UserToChatMsg(Address from, String sid, Address to, String user, String text) {
         super(UserToChatMsg.class, from, to);
+        this.user = user;
         this.text = text;
         sessionId = sid;
     }
@@ -26,6 +28,7 @@ public class UserToChatMsg extends Msg {
                "{ from=" + super.getFrom() +
                ", sid="  + sessionId +
                ", to="   + super.getTo() +
+               ", user=" + user +
                ", text=" + text +
                " }";
     }
@@ -33,23 +36,29 @@ public class UserToChatMsg extends Msg {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserToChatMsg)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         UserToChatMsg that = (UserToChatMsg) o;
-        return Objects.equals(text, that.text) &&
-            Objects.equals(sessionId, that.sessionId);
+
+        return Objects.equals(user, that.user) &&
+               Objects.equals(text, that.text) &&
+               Objects.equals(sessionId, that.sessionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(text, sessionId);
+        return Objects.hash(user, text, sessionId);
     }
 
     public String getText() {
         return text;
     }
 
+    public String getUser() {
+        return user;
+    }
+
     public ChatToUsersMsg forward(Address to) {
-        return new ChatToUsersMsg(getFrom(), sessionId, to, getText());
+        return new ChatToUsersMsg(getFrom(), sessionId, to, user, getText());
     }
 }
 

@@ -5,7 +5,6 @@ import org.eclipse.jetty.util.log.Logger;
 
 import ru.otus.l161.front.ChatEndpoint;
 import ru.otus.l161.front.FrontendService;
-import ru.otus.l161.messages.Msg;
 import ru.otus.l161.messages.*;
 
 import java.io.IOException;
@@ -31,12 +30,7 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         this(new Socket(host, port));
     }
 
-    private static void onClose(Socket socket) {
-        LOG.info("Close socket {}", socket);
-        // TODO
-    }
-
-    private FrontendWorker(Socket socket) throws IOException {
+    private FrontendWorker(Socket socket) {
         super(socket);
         this.socket = socket;
         this.client = this;
@@ -64,9 +58,9 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
                 if (address.equals(msg.getTo())) {
                     //noinspection UnusedAssignment
                     delivered = true;
-                    LOG.info("Message is delivered: {}", msg.toString());
+                    LOG.debug("Message is delivered: {}", msg.toString());
                 } else if ( ! delivered) {
-                    LOG.info("Message is not delivered: {}", msg.toString());
+                    LOG.warn("Message is not delivered: {}", msg.toString());
                 }
             }
         } catch (InterruptedException e) {
@@ -120,7 +114,7 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         executorService.shutdown();
         super.close();
         socket.close();
-        LOG.warn("close!!!");
+        LOG.warn("close!");
     }
 
     @Override

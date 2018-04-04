@@ -20,7 +20,8 @@ import java.util.concurrent.TimeUnit;
 public class MsgServerMain {
     private static final Logger LOG = LogManager.getLogger(MsgServerMain.class);
 
-    private static final String CLIENT_START_COMMAND = "java -jar ../L16.1.2-client/target/client.jar";
+    private static final String DBSERVER_START_COMMAND = "java -jar ../L16.1.2-dbserver/target/dbserver.jar";
+    private static final String FRONTEND_START_COMMAND = "java -jar ../L16.1.3-frontend/target/frontend.jar";
     private static final int CLIENT_START_DELAY_SEC = 5;
 
     public static void main(String[] args) throws Exception {
@@ -28,8 +29,22 @@ public class MsgServerMain {
     }
 
     private void start() throws Exception {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        //startClient(executorService);
+        ScheduledExecutorService executorService1 = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService executorService2 = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService executorService3 = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService executorService4 = Executors.newSingleThreadScheduledExecutor();
+
+        new Thread(() -> {
+            try {
+                Thread.currentThread().sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            startClient(executorService1, DBSERVER_START_COMMAND + " localhost " + MsgServer.PORT);
+            // startClient(executorService2, DBSERVER_START_COMMAND + " localhost " + MsgServer.PORT);
+            startClient(executorService3, FRONTEND_START_COMMAND + " localhost " + MsgServer.PORT + " 8090");
+            // startClient(executorService4, FRONTEND_START_COMMAND + " localhost " + MsgServer.PORT + " 8091");
+        }).start();
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=Server");
@@ -38,13 +53,16 @@ public class MsgServerMain {
 
         server.start();
 
-        executorService.shutdown();
+        executorService4.shutdown();
+        executorService3.shutdown();
+        executorService2.shutdown();
+        executorService1.shutdown();
     }
 
-    private void startClient(ScheduledExecutorService executorService) {
+    private void startClient(ScheduledExecutorService executorService, String command) {
         executorService.schedule(() -> {
             try {
-                new ProcessRunnerImpl().start(CLIENT_START_COMMAND);
+                new ProcessRunnerImpl().start(command);
             } catch (IOException e) {
                 LOG.info(e);
             }

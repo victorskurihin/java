@@ -16,8 +16,12 @@ public class FrontendMain {
     private static final int HTTP_PORT = 8090;
 
     public static void main(String[] args) {
-        Server server = new Server(HTTP_PORT);
-        try (FrontendWorker client = new FrontendWorker(HOST, MESSAGES_PORT)) {
+        String host = (args.length > 0) ? args[0] : HOST;
+        int msgSrvPort = (args.length > 1) ? Integer.parseInt(args[1]) : MESSAGES_PORT;
+        int httpPort = (args.length > 2) ? Integer.parseInt(args[2]) : HTTP_PORT;
+
+        Server server = new Server(httpPort);
+        try (FrontendWorker client = new FrontendWorker(host, msgSrvPort)) {
             LOG.info("FrontendWorker address:{}", client.getAddress());
             EndpointFabric fabric = new EndpointFabric(server, client);
             FrontEndpoint auth = fabric.createEndpoint("auth", AuthEndpoint.class);

@@ -32,7 +32,7 @@ public class EndpointFabric {
     private SocketMsgWorker client;
     private boolean isDefinedDefault = false;
 
-    public EndpointFabric(Server server, SocketMsgWorker client) throws ServletException, IOException {
+    public EndpointFabric(Server server, SocketMsgWorker client) throws ServletException {
 
         this.context = new ServletContextHandler(
             ServletContextHandler.SESSIONS
@@ -80,7 +80,7 @@ public class EndpointFabric {
         return url;
     }
 
-    private void addDefaultServletEndpoint(String name) throws IOException {
+    private void addDefaultServletEndpoint(String name) {
         // Add default servlet (to serve the html/css/js)
         // Figure out where the static files are stored.
         URL urlStatics = Thread.currentThread()
@@ -105,18 +105,18 @@ public class EndpointFabric {
         try {
             T endpoint = clazz.newInstance();
             LOG.info("Create endpoint: {}", endpoint);
+
             endpoint.setClient(client);
             //noinspection RedundantCast
             createEndpointServerConfig(name, clazz, (T) endpoint);
             addDefaultServletEndpoint(name);
             LOG.info("Deploy endpoint: {}", endpoint);
+
             return endpoint;
         } catch (InstantiationException | IllegalAccessException e) {
             LOG.debug(e);
         } catch (DeploymentException e) {
             LOG.warn(e);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return null;
     }

@@ -11,7 +11,10 @@ public class DBServerMain {
     private static final int MESSAGES_PORT = 5050;
 
     public static void main(String[] args) {
-        try (DBServerWorker client = new DBServerWorker(HOST, MESSAGES_PORT)) {
+        String host = (args.length > 0) ? args[0] : HOST;
+        int msgSrvPort = (args.length > 1) ? Integer.parseInt(args[1]) : MESSAGES_PORT;
+
+        try (DBServerWorker client = new DBServerWorker(host, msgSrvPort)) {
             LOG.info("DBServerWorker address:{}", client.getAddress());
             client.init();
             client.loop();

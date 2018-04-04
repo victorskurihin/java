@@ -28,11 +28,6 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         this(new Socket(host, port));
     }
 
-    private static void onClose(Socket socket) {
-        LOG.info("tut5 {}", socket);
-        // TODO
-    }
-
     private DBServerWorker(Socket socket) throws IOException {
         super(socket);
         this.socket = socket;
@@ -113,7 +108,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
                     }
                 }
             } catch (InterruptedException e) {
-                LOG.warn(e);
+                LOG.error(e);
             }
         });
 
@@ -124,7 +119,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
             while (true) {
                 Msg msg = new PingMsg(address, address);
                 client.send(msg);
-                System.out.println("Message sent: " + msg.toString());
+                LOG.debug("Message sent: {}", msg.toString());
                 Thread.sleep(PAUSE_MS);
             }
         } catch (Exception e) {
@@ -143,7 +138,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
     @Override
     public void deliver(Msg msg) {
-        // TODO
+        LOG.debug("Message is delivered: {}", msg.toString());
     }
 }
 
