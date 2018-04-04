@@ -3,6 +3,7 @@ package ru.otus.l161.channel;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
+import ru.otus.l161.front.ChatEndpoint;
 import ru.otus.l161.front.FrontendService;
 import ru.otus.l161.messages.Msg;
 import ru.otus.l161.messages.*;
@@ -86,8 +87,13 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
             send(pingMsg);
             Thread.sleep(2*MESSAGE_DELAY_MS);
 
-            Msg registerMsg = new RequestDBServerMsg(serviceAddress);
-            send(registerMsg);
+            Msg requestMsg = new RequestDBServerMsg(serviceAddress);
+            send(requestMsg);
+
+            if (service instanceof ChatEndpoint) {
+                Msg registerMsg = new RegisterChatFrontendMsg(serviceAddress);
+                send(registerMsg);
+            }
         }
     }
 

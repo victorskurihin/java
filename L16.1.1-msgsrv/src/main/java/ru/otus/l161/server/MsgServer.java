@@ -13,7 +13,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,6 +31,7 @@ public class MsgServer implements MsgServerMBean {
     private final Map<SocketMsgWorker, Address> clients; // TODO List of addresses
     private final Map<Address, MsgWorker> recipients;
     private final Map<Address, Integer> dbServers;
+    private final Set<Address> chatEndpointAddresses;
 
     public MsgServer() {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
@@ -36,6 +39,7 @@ public class MsgServer implements MsgServerMBean {
         clients = new ConcurrentHashMap<>();
         recipients = new ConcurrentHashMap<>();
         dbServers = new ConcurrentHashMap<>();
+        chatEndpointAddresses = new ConcurrentSkipListSet<>();
     }
 
     private void dropBySocket(Socket socket) {
@@ -52,6 +56,9 @@ public class MsgServer implements MsgServerMBean {
                 }
                 if (null != dbServers.remove(address)) {
                     LOG.info("Droped DB Server:{}", address);
+                }
+                if (chatEndpointAddresses.remove(address)) {
+                    LOG.info("Droped Chat Endpoint:{}", address);
                 }
             }
         }
@@ -132,6 +139,12 @@ public class MsgServer implements MsgServerMBean {
         }
     }
 
+    private void sendChatMessage(UserToChatMsg msg) {
+        for (Address address : chatEndpointAddresses) {
+            delivering(msg.forward(address));
+        }
+    }
+
     private void loop(SocketMsgWorker client, Msg msg) {
         while (msg != null) {
             if (CloseSocketMsg.ID.equals(msg.getTo().getId())) {
@@ -140,6 +153,10 @@ public class MsgServer implements MsgServerMBean {
                 requestDBServer(client, msg);
             } else if (RegisterDBServerMsg.ID.equals(msg.getTo().getId())) {
                 registerDBServer(client, msg);
+            } else if (RegisterChatFrontendMsg.ID.equals(msg.getTo().getId())) {
+                chatEndpointAddresses.add(msg.getFrom());
+            } else if (UserToChatMsg.ID.equals(msg.getId())) {
+                sendChatMessage((UserToChatMsg) msg);
             } else {
                 delivering(msg);
             }
