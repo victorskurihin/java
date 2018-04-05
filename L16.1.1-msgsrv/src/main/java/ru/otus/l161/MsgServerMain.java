@@ -8,8 +8,11 @@ import org.apache.logging.log4j.Logger;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -18,33 +21,61 @@ import java.util.concurrent.TimeUnit;
  * Created by tully.
  */
 public class MsgServerMain {
+    private static final char FS = File.separatorChar;
     private static final Logger LOG = LogManager.getLogger(MsgServerMain.class);
 
-    private static final String DBSERVER_START_COMMAND = "java -jar ../L16.1.2-dbserver/target/dbserver.jar";
-    private static final String FRONTEND_START_COMMAND = "java -jar ../L16.1.3-frontend/target/frontend.jar";
+    private static final String DBSERVER_DIR = "L16.1.2-dbserver";
+    private static final String DBSERVER_JAR = "dbserver.jar";
+    private static final String FRONTEND_DIR = "L16.1.3-frontend";
+    private static final String FRONTEND_JAR = "frontend.jar";
+    private static final String MESSAGE_SERVER_HOST = "localhost";
+    private static final String MESSAGE_SERVER_PORT = Integer.toString(MsgServer.PORT);
     private static final int CLIENT_START_DELAY_SEC = 5;
 
     public static void main(String[] args) throws Exception {
         new MsgServerMain().start();
     }
 
-    private void start() throws Exception {
-        ScheduledExecutorService executorService1 = Executors.newSingleThreadScheduledExecutor();
-        ScheduledExecutorService executorService2 = Executors.newSingleThreadScheduledExecutor();
-        ScheduledExecutorService executorService3 = Executors.newSingleThreadScheduledExecutor();
-        ScheduledExecutorService executorService4 = Executors.newSingleThreadScheduledExecutor();
+    private static String javaExeJar() {
+        final String JAVA_HOME = System.getProperty("java.home");
+        final File BIN = new File(JAVA_HOME, "bin");
+        File exe = new File(BIN, "java");
 
-        new Thread(() -> {
-            try {
-                Thread.currentThread().sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            startClient(executorService1, DBSERVER_START_COMMAND + " localhost " + MsgServer.PORT);
-            // startClient(executorService2, DBSERVER_START_COMMAND + " localhost " + MsgServer.PORT);
-            startClient(executorService3, FRONTEND_START_COMMAND + " localhost " + MsgServer.PORT + " 8090");
-            // startClient(executorService4, FRONTEND_START_COMMAND + " localhost " + MsgServer.PORT + " 8091");
-        }).start();
+        if (!exe.exists()) {
+            // We might be on Windows, which needs an exe extension
+            exe = new File(BIN, "java.exe");
+        }
+        if (exe.exists()) {
+            return exe.getAbsolutePath();
+        }
+
+        return null;
+    }
+
+    private String clientCommand(String dir, String jar) {
+        String cmd = String.format(
+            "%s -jar ..%c%s%ctarget%c%s %s %s",
+            javaExeJar(), FS, dir, FS, FS, jar, MESSAGE_SERVER_HOST, MESSAGE_SERVER_PORT
+        );
+        System.out.println("cmd = " + cmd);
+        return cmd;
+    }
+
+    private String frontendCommand(String dir, String jar, String httpPort) {
+        return String.format("%s %s", clientCommand(dir, jar), httpPort);
+    }
+
+    private void start() throws Exception {
+//        List<ScheduledExecutorService> serviceExecutors = new ArrayList<>(4);
+//
+//        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+//        startClient(serviceExecutors.get(0), clientCommand(DBSERVER_DIR, DBSERVER_JAR));
+//
+//        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+//        startClient(serviceExecutors.get(1), clientCommand(DBSERVER_DIR, DBSERVER_JAR));
+//
+//        frontendCommand(FRONTEND_DIR, FRONTEND_JAR, "8090");
+        // startClient(executorService, frontendCommand(FRONTEND_DIR, FRONTEND_JAR, "8090"));
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=Server");
@@ -52,17 +83,17 @@ public class MsgServerMain {
         mbs.registerMBean(server, name);
 
         server.start();
-
-        executorService4.shutdown();
-        executorService3.shutdown();
-        executorService2.shutdown();
-        executorService1.shutdown();
+//
+//        for (ScheduledExecutorService serviceExecutor : serviceExecutors) {
+//            serviceExecutor.shutdown();
+//        }
     }
 
-    private void startClient(ScheduledExecutorService executorService, String command) {
+
+    private void startClient(ScheduledExecutorService executorService, String cmd) {
         executorService.schedule(() -> {
             try {
-                new ProcessRunnerImpl().start(command);
+                new ProcessRunnerImpl().start(cmd);
             } catch (IOException e) {
                 LOG.info(e);
             }
