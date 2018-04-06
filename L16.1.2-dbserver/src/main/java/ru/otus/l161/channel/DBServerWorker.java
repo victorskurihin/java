@@ -92,7 +92,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void loop() throws Exception {
-        client.init();
+        // client.init();
 
         LOG.info("DB Server Address: " + client.getAddress());
 
@@ -100,7 +100,9 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         executorService.submit(() -> {
             try {
                 while (true) {
+                    LOG.info("Call loop.");
                     Msg msg = client.take();
+                    LOG.info("Call loop take:{}", msg);
                     if (AuthenticateMsg.ID.equals(msg.getId())) {
                         authenticate((AuthenticateMsg) msg);
                     } else if (SingupMsg.ID.equals(msg.getId())) {
@@ -117,8 +119,10 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
         try {
             while (true) {
+                LOG.info("Loop loop.");
                 Msg msg = new PingMsg(address, address);
                 client.send(msg);
+                LOG.info("Loop loop send:{}", msg);
                 LOG.debug("Message sent: {}", msg.toString());
                 Thread.sleep(PAUSE_MS);
             }

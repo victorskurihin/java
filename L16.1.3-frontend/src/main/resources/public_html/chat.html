@@ -16,7 +16,7 @@
 <div id="msg-box" style="width:500px; height: 400px; background: #eee; overflow:auto;"></div>
 
 <script>
-    var webSocket = new WebSocket("ws://localhost:8090/chat");
+    var webSocket = new WebSocket("ws://" + location.host + "/chat");
     var msgField = document.getElementById("messageField");
     var divMsg = document.getElementById("msg-box");
 

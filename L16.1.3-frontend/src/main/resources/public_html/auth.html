@@ -31,7 +31,7 @@
 <div id="msg-box" style="width:500px; background: #eee; overflow:auto;">Server: </div>
 
 <script>
-    var webSocket = new WebSocket("ws://localhost:8090/auth");
+    var webSocket = new WebSocket("ws://" + location.host + "/auth");
     var formClass = document.getElementById("form").className;
     var login = document.getElementById("login");
     var password = document.getElementById("password");

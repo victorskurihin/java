@@ -3,7 +3,9 @@ package ru.otus.l161.channel;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
+import ru.otus.l161.front.AuthEndpoint;
 import ru.otus.l161.front.ChatEndpoint;
+import ru.otus.l161.front.FrontEndpoint;
 import ru.otus.l161.front.FrontendService;
 import ru.otus.l161.messages.*;
 
@@ -18,13 +20,13 @@ import java.util.concurrent.Executors;
 public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCloseable {
 
     private static final int PAUSE_MS = 10000;
-    private static final int MESSAGE_DELAY_MS = 100;
+    private static final int MESSAGE_DELAY_MS = 1;
     private static final Logger LOG = Log.getLogger(FrontendWorker.class);
 
     private final Address address = new Address();
     private final Socket socket;
     private SocketMsgWorker client;
-    private List<FrontendService> services = new CopyOnWriteArrayList<>();
+    private List<FrontEndpoint> services = new CopyOnWriteArrayList<>();
 
     public FrontendWorker(String host, int port) throws IOException {
         this(new Socket(host, port));
@@ -37,8 +39,14 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         LOG.info("Frontend Address: " + getAddress());
     }
 
-    public void init(FrontendService ... frontendServices) {
-        services.addAll(Arrays.asList(frontendServices));
+    public void init(FrontEndpoint ... frontendServices) {
+        for (FrontEndpoint service : frontendServices) {
+            System.out.println("service.getClass().getName() = " + service.getClass().getName());
+            if ((service instanceof AuthEndpoint) || (service instanceof ChatEndpoint)) {
+                services.add(service);
+            }
+        }
+        // services.addAll(Arrays.asList(frontendServices));
         super.init();
     }
 
@@ -46,7 +54,9 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     private void call() {
         try {
             while (true) {
+                LOG.info("Call loop.");
                 Msg msg = client.take();
+                LOG.info("Call loop take:{}", msg);
                 boolean delivered = false;
 
                 for (FrontendService service : services) {
@@ -58,7 +68,7 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
                 if (address.equals(msg.getTo())) {
                     //noinspection UnusedAssignment
                     delivered = true;
-                    LOG.debug("Message is delivered: {}", msg.toString());
+                    // LOG.debug("Message is delivered: {}", msg.toString());
                 } else if ( ! delivered) {
                     LOG.warn("Message is not delivered: {}", msg.toString());
                 }
@@ -69,9 +79,9 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     }
 
     private void registeringServices() throws InterruptedException {
-        Msg registerMeMsg = new RequestDBServerMsg(address);
-        send(registerMeMsg);
-        Thread.sleep(MESSAGE_DELAY_MS);
+//        Msg registerMeMsg = new RequestDBServerMsg(address);
+//        send(registerMeMsg);
+//        Thread.sleep(MESSAGE_DELAY_MS);
 
         for (FrontendService service : services) {
             Address serviceAddress = service.getAddress();
@@ -102,9 +112,11 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         registeringServices();
 
         while (true) {
+            LOG.info("Loop loop.");
             Msg msg = new PingMsg(address, address);
             client.send(msg);
-            LOG.debug("Message sent: {}", msg.toString());
+            LOG.info("Loop loop send:{}", msg);
+            // LOG.debug("In loop Message sent: {}", msg.toString());
             Thread.sleep(PAUSE_MS);
         }
     }
