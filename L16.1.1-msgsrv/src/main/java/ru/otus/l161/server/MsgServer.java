@@ -91,7 +91,7 @@ public class MsgServer implements MsgServerMBean {
                 .stream()
                 .min(Comparator.comparingDouble(Map.Entry::getValue))
                 .map(Map.Entry::getKey).get();
-        LOG.info("Minimum Loading {}", address);
+        LOG.debug("Minimum Loading {}", address);
 
         return address;
     }
@@ -111,12 +111,11 @@ public class MsgServer implements MsgServerMBean {
 
         Address dbServerAddress = getMinimumLoadingDBServer();
         dbServers.compute(dbServerAddress, (address, count) -> ++count);
-        LOG.info("Fount DB Server: {}", dbServerAddress);
+        LOG.warn("Fount DB Server: {}", dbServerAddress);
 
         RequestDBServerMsg answer = ((RequestDBServerMsg) msg).createAnswer(dbServerAddress);
-        LOG.info("Answer: {}", answer);
+        LOG.warn("Answer: {}", answer);
         client.send(answer);
-        LOG.info("Answer: {} Ok", answer);
     }
 
     private void registerDBServer(SocketMsgWorker client, Msg msg) {
@@ -156,17 +155,15 @@ public class MsgServer implements MsgServerMBean {
             } else if (RegisterDBServerMsg.ID.equals(msg.getTo().getId())) {
                 registerDBServer(client, msg);
             } else if (RegisterChatFrontendMsg.ID.equals(msg.getTo().getId())) {
-                LOG.info("loop chatEndpointAddresses.add:{}", msg.getFrom());
                 chatEndpointAddresses.add(msg.getFrom());
-                LOG.info("loop chatEndpointAddresses.add:{} Ok", msg.getFrom());
+                LOG.debug("loop chatEndpointAddresses.add:{} Ok", msg.getFrom());
             } else if (UserToChatMsg.ID.equals(msg.getId())) {
                 sendChatMessage((UserToChatMsg) msg);
             } else {
                 delivering(msg);
             }
-            LOG.info("loop pool");
             msg = client.pool();
-            LOG.info("loop pool Ok:{}", msg);
+            LOG.debug("loop pool Ok:{}", msg);
         }
     }
 
@@ -182,40 +179,37 @@ public class MsgServer implements MsgServerMBean {
         if (( ! client.isReceivedOk()) || client.isReset()) {
             dropBySocket(socket);
         }
-        // TODO
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
     private void iterateByClients() {
+        long count = 0;
         while (true) {
-            // long startNs = System.nanoTime();
+            long startNs = System.nanoTime();
 
             for (Map.Entry<Socket, SocketMsgWorker> entry : sockets.entrySet()) {
 
                 Socket socket = entry.getKey();
                 SocketMsgWorker client = entry.getValue();
-                LOG.info("iterateByClients socket:{} worker:{} pool", socket, client);
                 Msg msg = client.pool();
-                LOG.info("iterateByClients socket:{} worker:{} pool Ok", socket, client);
+                LOG.debug("iterateByClients socket:{} worker:{} pool Ok", socket, client);
 
-                //   if (msg == null && count % MESSAGE_DELAY_MS == 0) {
-                //       checkAliveClient(socket, client);
-                //   } else {
-                //       loop(client, msg);
-                //   }
-                loop(client, msg);
+                if (msg == null && count % MESSAGE_DELAY_MS == 0) {
+                    checkAliveClient(socket, client);
+                } else {
+                    loop(client, msg);
+                }
             }
             try {
-                // long delta = (System.nanoTime() - startNs)/1_000_000;
+                long delta = (System.nanoTime() - startNs)/1_000_000;
                 // LOG.info("iterateByClients sleep delta:{}", delta);
-                LOG.info("iterateByClients sleep");
-                // Thread.sleep(MESSAGE_DELAY_MS - (delta < MESSAGE_DELAY_MS ? delta :
-                // 0));
+                Thread.sleep(MESSAGE_DELAY_MS - (delta < MESSAGE_DELAY_MS ? delta : 0));
                 Thread.sleep(MESSAGE_DELAY_MS);
-                LOG.info("iterateByClients sleep Ok");
+                LOG.debug("iterateByClients sleep Ok");
             } catch (InterruptedException e) {
-                LOG.info(e);
+                LOG.error(e);
             }
+            count++;
         }
     }
 

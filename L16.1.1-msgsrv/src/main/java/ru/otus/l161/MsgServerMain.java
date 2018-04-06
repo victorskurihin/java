@@ -57,7 +57,7 @@ public class MsgServerMain {
             "%s -jar ..%c%s%ctarget%c%s %s %s",
             javaExeJar(), FS, dir, FS, FS, jar, MESSAGE_SERVER_HOST, MESSAGE_SERVER_PORT
         );
-        System.out.println("cmd = " + cmd);
+
         return cmd;
     }
 
@@ -66,16 +66,27 @@ public class MsgServerMain {
     }
 
     private void start() throws Exception {
-//        List<ScheduledExecutorService> serviceExecutors = new ArrayList<>(4);
-//
-//        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
-//        startClient(serviceExecutors.get(0), clientCommand(DBSERVER_DIR, DBSERVER_JAR));
-//
-//        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
-//        startClient(serviceExecutors.get(1), clientCommand(DBSERVER_DIR, DBSERVER_JAR));
-//
-//        frontendCommand(FRONTEND_DIR, FRONTEND_JAR, "8090");
-        // startClient(executorService, frontendCommand(FRONTEND_DIR, FRONTEND_JAR, "8090"));
+        List<ScheduledExecutorService> serviceExecutors = new ArrayList<>(4);
+
+        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        String cmd = clientCommand(DBSERVER_DIR, DBSERVER_JAR);
+        startClient(serviceExecutors.get(0), cmd);
+        LOG.warn("cmd = {}", cmd);
+
+        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        cmd = clientCommand(DBSERVER_DIR, DBSERVER_JAR);
+        startClient(serviceExecutors.get(1), cmd);
+        LOG.warn("cmd = {}", cmd);
+
+        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        cmd = frontendCommand(FRONTEND_DIR, FRONTEND_JAR,"8090");
+        startClient(serviceExecutors.get(2), cmd);
+        LOG.warn("cmd = {}", cmd);
+
+        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        cmd = frontendCommand(FRONTEND_DIR, FRONTEND_JAR,"8091");
+        startClient(serviceExecutors.get(3), cmd);
+        LOG.warn("cmd = {}", cmd);
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=Server");
@@ -83,12 +94,11 @@ public class MsgServerMain {
         mbs.registerMBean(server, name);
 
         server.start();
-//
-//        for (ScheduledExecutorService serviceExecutor : serviceExecutors) {
-//            serviceExecutor.shutdown();
-//        }
-    }
 
+        for (ScheduledExecutorService serviceExecutor : serviceExecutors) {
+            serviceExecutor.shutdown();
+        }
+    }
 
     private void startClient(ScheduledExecutorService executorService, String cmd) {
         executorService.schedule(() -> {
@@ -99,7 +109,6 @@ public class MsgServerMain {
             }
         }, CLIENT_START_DELAY_SEC, TimeUnit.SECONDS);
     }
-
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

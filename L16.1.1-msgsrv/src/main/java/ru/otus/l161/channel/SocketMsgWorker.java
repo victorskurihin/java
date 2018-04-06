@@ -102,11 +102,8 @@ public class SocketMsgWorker implements MsgWorker {
                 stringBuilder.append(inputLine);
                 if (inputLine.isEmpty()) { //empty line is the end of the message
                     String json = stringBuilder.toString();
-                    LOG.info("receiveMessage json:{}", json);
                     Msg msg = getMsgFromJSON(json);
-                    LOG.info("receiveMessage json:{} ok:{}", json, msg);
                     input.add(msg);
-                    LOG.info("receiveMessage ok:{} added", json, msg);
                     stringBuilder = new StringBuilder();
                 }
             }

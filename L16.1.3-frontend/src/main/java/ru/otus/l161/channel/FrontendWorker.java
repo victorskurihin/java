@@ -40,13 +40,7 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     }
 
     public void init(FrontEndpoint ... frontendServices) {
-        for (FrontEndpoint service : frontendServices) {
-            System.out.println("service.getClass().getName() = " + service.getClass().getName());
-            if ((service instanceof AuthEndpoint) || (service instanceof ChatEndpoint)) {
-                services.add(service);
-            }
-        }
-        // services.addAll(Arrays.asList(frontendServices));
+        services.addAll(Arrays.asList(frontendServices));
         super.init();
     }
 
@@ -54,9 +48,8 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     private void call() {
         try {
             while (true) {
-                LOG.info("Call loop.");
                 Msg msg = client.take();
-                LOG.info("Call loop take:{}", msg);
+                LOG.debug("Call loop take:{}", msg);
                 boolean delivered = false;
 
                 for (FrontendService service : services) {
@@ -79,17 +72,10 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     }
 
     private void registeringServices() throws InterruptedException {
-//        Msg registerMeMsg = new RequestDBServerMsg(address);
-//        send(registerMeMsg);
-//        Thread.sleep(MESSAGE_DELAY_MS);
 
         for (FrontendService service : services) {
             Address serviceAddress = service.getAddress();
             LOG.info("Registering: {}", serviceAddress);
-
-//            Msg pingMsg = new PingMsg(serviceAddress, serviceAddress);
-//            send(pingMsg);
-//            Thread.sleep(2*MESSAGE_DELAY_MS);
 
             Msg requestMsg = new RequestDBServerMsg(serviceAddress);
             send(requestMsg);
@@ -112,11 +98,9 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         registeringServices();
 
         while (true) {
-            LOG.info("Loop loop.");
-//            Msg msg = new PingMsg(address, address);
-//            client.send(msg);
-//            LOG.info("Loop loop send:{}", msg);
-//             LOG.debug("In loop Message sent: {}", msg.toString());
+            Msg msg = new PingMsg(address, address);
+            client.send(msg);
+            LOG.info("Loop ping:{}", msg.getTo());
             Thread.sleep(PAUSE_MS);
         }
     }
@@ -131,7 +115,7 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
 
     @Override
     public void deliver(Msg msg) {
-        LOG.debug("Message is delivered: {}", msg.toString());
+        LOG.warn("Message is delivered: {}", msg.toString());
     }
 }
 
