@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * @author tully
  */
-public final class Address {
+public final class Address implements Comparable {
     private static final String COLON = ":";
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
     private final String id;
@@ -43,6 +43,14 @@ public final class Address {
     @Override
     public String toString() {
         return "Address{ " + "id='" + id + "' }";
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o instanceof Address) {
+            return id.compareTo(((Address) o).id);
+        } else
+            throw new RuntimeException();
     }
 }
 

@@ -56,7 +56,7 @@ public class DBServiceImpl implements DBService {
         cfg.setProperty("hibernate.connection.username", "dbuser");
         cfg.setProperty("hibernate.connection.password", "password");
         cfg.setProperty("hibernate.show_sql", "false");
-        cfg.setProperty("hibernate.hbm2ddl.auto", "create");
+        cfg.setProperty("hibernate.hbm2ddl.auto", "validate");
         cfg.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 
         return cfg;

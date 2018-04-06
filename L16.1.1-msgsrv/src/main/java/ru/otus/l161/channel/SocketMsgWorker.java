@@ -8,9 +8,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ru.otus.l161.MsgServerMain;
 import ru.otus.l161.app.MsgWorker;
-import ru.otus.l161.messages.Msg;
-import ru.otus.l161.messages.Address;
-import ru.otus.l161.messages.CloseSocketMsg;
+import ru.otus.l161.messages.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -104,8 +102,11 @@ public class SocketMsgWorker implements MsgWorker {
                 stringBuilder.append(inputLine);
                 if (inputLine.isEmpty()) { //empty line is the end of the message
                     String json = stringBuilder.toString();
+                    LOG.info("receiveMessage json:{}", json);
                     Msg msg = getMsgFromJSON(json);
+                    LOG.info("receiveMessage json:{} ok:{}", json, msg);
                     input.add(msg);
+                    LOG.info("receiveMessage ok:{} added", json, msg);
                     stringBuilder = new StringBuilder();
                 }
             }
@@ -113,6 +114,7 @@ public class SocketMsgWorker implements MsgWorker {
             receivedOk = false;
             LOG.error(e);
         } catch (ClassNotFoundException e) {
+            LOG.error(e);
             e.printStackTrace();
         }
     }
@@ -130,12 +132,12 @@ public class SocketMsgWorker implements MsgWorker {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SocketMsgWorker that = (SocketMsgWorker) o;
-        return Objects.equals(ADDRESS, that.ADDRESS);
+        return Objects.equals(getAddress(), that.getAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ADDRESS);
+        return Objects.hash(getAddress());
     }
 
     public boolean isConnected() {

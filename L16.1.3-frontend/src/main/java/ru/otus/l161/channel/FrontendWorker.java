@@ -87,9 +87,9 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
             Address serviceAddress = service.getAddress();
             LOG.info("Registering: {}", serviceAddress);
 
-            Msg pingMsg = new PingMsg(serviceAddress, serviceAddress);
-            send(pingMsg);
-            Thread.sleep(2*MESSAGE_DELAY_MS);
+//            Msg pingMsg = new PingMsg(serviceAddress, serviceAddress);
+//            send(pingMsg);
+//            Thread.sleep(2*MESSAGE_DELAY_MS);
 
             Msg requestMsg = new RequestDBServerMsg(serviceAddress);
             send(requestMsg);
@@ -113,10 +113,10 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
 
         while (true) {
             LOG.info("Loop loop.");
-            Msg msg = new PingMsg(address, address);
-            client.send(msg);
-            LOG.info("Loop loop send:{}", msg);
-            // LOG.debug("In loop Message sent: {}", msg.toString());
+//            Msg msg = new PingMsg(address, address);
+//            client.send(msg);
+//            LOG.info("Loop loop send:{}", msg);
+//             LOG.debug("In loop Message sent: {}", msg.toString());
             Thread.sleep(PAUSE_MS);
         }
     }

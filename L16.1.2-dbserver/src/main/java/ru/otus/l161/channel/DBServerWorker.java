@@ -119,11 +119,11 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
         try {
             while (true) {
-                LOG.info("Loop loop.");
-                Msg msg = new PingMsg(address, address);
-                client.send(msg);
-                LOG.info("Loop loop send:{}", msg);
-                LOG.debug("Message sent: {}", msg.toString());
+//                LOG.info("Loop loop.");
+//                Msg msg = new PingMsg(address, address);
+//                client.send(msg);
+//                LOG.info("Loop loop send:{}", msg);
+//                LOG.debug("Message sent: {}", msg.toString());
                 Thread.sleep(PAUSE_MS);
             }
         } catch (Exception e) {

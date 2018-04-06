@@ -24,7 +24,7 @@ public class MsgServer implements MsgServerMBean {
     public static final int PORT = 5050;
 
     private static final Logger LOG = LogManager.getLogger(MsgServerMBean.class);
-    private static final int THREADS_NUMBER = 10;
+    private static final int THREADS_NUMBER = 2;
     private static final int MESSAGE_DELAY_MS = 100;
 
     private final ExecutorService executor;
@@ -116,6 +116,7 @@ public class MsgServer implements MsgServerMBean {
         RequestDBServerMsg answer = ((RequestDBServerMsg) msg).createAnswer(dbServerAddress);
         LOG.info("Answer: {}", answer);
         client.send(answer);
+        LOG.info("Answer: {} Ok", answer);
     }
 
     private void registerDBServer(SocketMsgWorker client, Msg msg) {
@@ -155,13 +156,17 @@ public class MsgServer implements MsgServerMBean {
             } else if (RegisterDBServerMsg.ID.equals(msg.getTo().getId())) {
                 registerDBServer(client, msg);
             } else if (RegisterChatFrontendMsg.ID.equals(msg.getTo().getId())) {
+                LOG.info("loop chatEndpointAddresses.add:{}", msg.getFrom());
                 chatEndpointAddresses.add(msg.getFrom());
+                LOG.info("loop chatEndpointAddresses.add:{} Ok", msg.getFrom());
             } else if (UserToChatMsg.ID.equals(msg.getId())) {
                 sendChatMessage((UserToChatMsg) msg);
             } else {
                 delivering(msg);
             }
+            LOG.info("loop pool");
             msg = client.pool();
+            LOG.info("loop pool Ok:{}", msg);
         }
     }
 
@@ -182,29 +187,35 @@ public class MsgServer implements MsgServerMBean {
 
     @SuppressWarnings("InfiniteLoopStatement")
     private void iterateByClients() {
-        long count = 0;
         while (true) {
-            long startNs = System.nanoTime();
+            // long startNs = System.nanoTime();
 
             for (Map.Entry<Socket, SocketMsgWorker> entry : sockets.entrySet()) {
 
                 Socket socket = entry.getKey();
                 SocketMsgWorker client = entry.getValue();
+                LOG.info("iterateByClients socket:{} worker:{} pool", socket, client);
                 Msg msg = client.pool();
+                LOG.info("iterateByClients socket:{} worker:{} pool Ok", socket, client);
 
-                if (msg == null && count % MESSAGE_DELAY_MS == 0) {
-                    checkAliveClient(socket, client);
-                } else {
-                    loop(client, msg);
-                }
+                //   if (msg == null && count % MESSAGE_DELAY_MS == 0) {
+                //       checkAliveClient(socket, client);
+                //   } else {
+                //       loop(client, msg);
+                //   }
+                loop(client, msg);
             }
             try {
-                long delta = (System.nanoTime() - startNs)/1_000_000;
-                Thread.sleep(MESSAGE_DELAY_MS - (delta < MESSAGE_DELAY_MS ? delta : 0));
+                // long delta = (System.nanoTime() - startNs)/1_000_000;
+                // LOG.info("iterateByClients sleep delta:{}", delta);
+                LOG.info("iterateByClients sleep");
+                // Thread.sleep(MESSAGE_DELAY_MS - (delta < MESSAGE_DELAY_MS ? delta :
+                // 0));
+                Thread.sleep(MESSAGE_DELAY_MS);
+                LOG.info("iterateByClients sleep Ok");
             } catch (InterruptedException e) {
-                LOG.error(e);
+                LOG.info(e);
             }
-            count++;
         }
     }
 
