@@ -24,4 +24,4 @@ DUMP="${DUMP} -XX:HeapDumpPath=${DUMPDIR}"
 mkdir -p $LOGDIR
 mkdir -p $DUMPDIR
 java -cp ${CP} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l161.DBServerMain
+    -XX:OnOutOfMemoryError="kill -3 %p" ./target/dbserver.jar

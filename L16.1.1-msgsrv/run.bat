@@ -20,4 +20,4 @@ set DUMP=-XX:+HeapDumpOnOutOfMemoryError
 set DUMP=%DUMP% -XX:HeapDumpPath=%DUMPDIR%
 mkdir %LOGDIR% > nul 2> nul
 mkdir %DUMPDIR% > nul 2> nul
-java -cp %CP% %MEMORY% %GC_LOG% %JMX% %DUMP% -jar
+java -cp %CP% %MEMORY% %GC_LOG% %JMX% %DUMP% -jar targer\L16.1.1-msgsrv-1.0.jar

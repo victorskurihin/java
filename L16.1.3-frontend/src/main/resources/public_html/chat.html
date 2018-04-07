@@ -51,7 +51,7 @@
     }
 
     webSocket.onmessage = function(message) {
-        divMsg.innerHTML += message.data;
+        divMsg.innerHTML += (message.data + "<br>");
         move_up();
     }
 
