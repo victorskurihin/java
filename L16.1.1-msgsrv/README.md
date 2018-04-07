@@ -9,7 +9,9 @@ Configure application in:
  *   ../L16.1.2-dbserver/src/main/resources/createSchema.hibernate.cfg.xml
  *
  * To start:
-    * For UNIX like OS:
+
+ - For UNIX like OS:
+
     $ cd ../L16.1.1-msgsrv
     $ mvn clean install
     $ cd  ../L16.1.2-dbserver
@@ -20,7 +22,8 @@ Configure application in:
     $ cd ../L16.1.1-msgsrv
     $ ./run.sh
 
- * For OS Windows:
+ - For OS Windows:
+
     > cd ..\L16.1.1-msgsrv
     > mvn clean install
     > cd ..\L16.1.2-dbserver
