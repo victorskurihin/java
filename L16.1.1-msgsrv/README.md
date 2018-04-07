@@ -11,7 +11,7 @@ Configure application in:
  * To start:
 
  - For UNIX like OS:
-
+```
     $ cd ../L16.1.1-msgsrv
     $ mvn clean install
     $ cd  ../L16.1.2-dbserver
@@ -21,9 +21,9 @@ Configure application in:
     $ mvn clean package
     $ cd ../L16.1.1-msgsrv
     $ ./run.sh
-
+```
  - For OS Windows:
-
+```
     > cd ..\L16.1.1-msgsrv
     > mvn clean install
     > cd ..\L16.1.2-dbserver
@@ -33,3 +33,4 @@ Configure application in:
     > mvn clean package
     > cd ..\L16.1.1-msgsrv
     > run.bat
+```
