@@ -10,6 +10,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.SessionFactoryBuilder;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionImplementor;
@@ -42,7 +46,7 @@ public class DBServiceImpl implements DBService {
 
     private final Address address;
 
-    private static Configuration defaultConfiguration() {
+    public static Configuration defaultConfiguration() {
         Configuration cfg = new Configuration();
 
         cfg.addAnnotatedClass(AddressDataSet.class);
@@ -78,15 +82,32 @@ public class DBServiceImpl implements DBService {
         addAdapter(new UserDataSetDAO(session));
     }
 
+    public static Metadata getMetadata(StandardServiceRegistryBuilder builder) {
+        StandardServiceRegistry registry = builder.build();
+        MetadataSources sources = new MetadataSources(registry);
+
+        sources.addAnnotatedClass(AddressDataSet.class);
+        sources.addAnnotatedClass(EmptyDataSet.class);
+        sources.addAnnotatedClass(PhoneDataSet.class);
+        sources.addAnnotatedClass(UserDataSet.class);
+
+        return sources.buildMetadata();
+    }
+
     /**
      * TODO
      */
     public DBServiceImpl(Address address) {
+        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+        builder.configure("createSchema.hibernate.cfg.xml");
+
+        Metadata metadata = getMetadata(builder);
+
+        SessionFactoryBuilder sessionFactoryBuilder = metadata.getSessionFactoryBuilder();
+
+        sessionFactory = sessionFactoryBuilder.build();
+        cache = new CacheEngineImpl<>(cacheSize, 10000, 0, false);
         this.address = address;
-        sessionFactory = createSessionFactory(defaultConfiguration());
-        cache = new CacheEngineImpl<>(
-            cacheSize, 10000, 0, false
-        );
     }
 
     /**

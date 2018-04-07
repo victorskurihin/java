@@ -130,10 +130,10 @@ public class MsgServer implements MsgServerMBean {
         MsgWorker recipient = recipients.getOrDefault(msg.getTo(), null);
 
         if (null != recipient) {
-            LOG.warn("Delivering the message: {}", msg.toString());
+            LOG.debug("Delivering the message: {}", msg.toString());
             recipient.send(msg);
         } else {
-            LOG.error(
+            LOG.warn(
                 "Recipient {} can't find and the message: {} is droped.",
                 msg.getTo(), msg.toString()
             );
@@ -156,14 +156,13 @@ public class MsgServer implements MsgServerMBean {
                 registerDBServer(client, msg);
             } else if (RegisterChatFrontendMsg.ID.equals(msg.getTo().getId())) {
                 chatEndpointAddresses.add(msg.getFrom());
-                LOG.debug("loop chatEndpointAddresses.add:{} Ok", msg.getFrom());
             } else if (UserToChatMsg.ID.equals(msg.getId())) {
                 sendChatMessage((UserToChatMsg) msg);
             } else {
                 delivering(msg);
             }
             msg = client.pool();
-            LOG.debug("loop pool Ok:{}", msg);
+            LOG.debug("Got message from client:{}", client);
         }
     }
 
@@ -192,7 +191,7 @@ public class MsgServer implements MsgServerMBean {
                 Socket socket = entry.getKey();
                 SocketMsgWorker client = entry.getValue();
                 Msg msg = client.pool();
-                LOG.debug("iterateByClients socket:{} worker:{} pool Ok", socket, client);
+                LOG.debug("Got message from client:{}, socket:{}", client, socket);
 
                 if (msg == null && count % MESSAGE_DELAY_MS == 0) {
                     checkAliveClient(socket, client);
@@ -202,10 +201,9 @@ public class MsgServer implements MsgServerMBean {
             }
             try {
                 long delta = (System.nanoTime() - startNs)/1_000_000;
-                // LOG.info("iterateByClients sleep delta:{}", delta);
                 Thread.sleep(MESSAGE_DELAY_MS - (delta < MESSAGE_DELAY_MS ? delta : 0));
                 Thread.sleep(MESSAGE_DELAY_MS);
-                LOG.debug("iterateByClients sleep Ok");
+                LOG.debug("Go to next client");
             } catch (InterruptedException e) {
                 LOG.error(e);
             }

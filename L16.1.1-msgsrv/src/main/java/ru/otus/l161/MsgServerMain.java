@@ -11,15 +11,46 @@ import javax.management.ObjectName;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by tully.
+ * Created by VSkurikhin at winter 2018.
+ *
+ * Solution for L16.1
+ *
+ * PreReq: A DB compatible with Hibernate ORM.
+ *
+ * Configure application in:
+ *   ../L16.1.2-dbserver/src/main/resources/hibernate.cfg.xml
+ *   ../L16.1.2-dbserver/src/main/resources/createSchema.hibernate.cfg.xml
+ *
+ * To start:
+ *
+ * For UNIX like OS:
+ * $ cd ../L16.1.1-msgsrv
+ * $ mvn clean install
+ * $ cd  ../L16.1.2-dbserver
+ * $ mvn clean package
+ * $ ./createSchema.sh
+ * $ cd ../L16.1.3-frontend
+ * $ mvn clean package
+ * $ cd ../L16.1.1-msgsrv
+ * $ ./run.sh
+ *
+ * For OS Windows:
+ * > cd ..\L16.1.1-msgsrv
+ * > mvn clean install
+ * > cd ..\L16.1.2-dbserver
+ * > mvn clean package
+ * > createSchema.bat
+ * > cd ..\L16.1.3-frontend
+ * > mvn clean package
+ * > cd ..\L16.1.1-msgsrv
+ * > run.bat
  */
+
 public class MsgServerMain {
     private static final char FS = File.separatorChar;
     private static final Logger LOG = LogManager.getLogger(MsgServerMain.class);
@@ -30,7 +61,7 @@ public class MsgServerMain {
     private static final String FRONTEND_JAR = "frontend.jar";
     private static final String MESSAGE_SERVER_HOST = "localhost";
     private static final String MESSAGE_SERVER_PORT = Integer.toString(MsgServer.PORT);
-    private static final int CLIENT_START_DELAY_SEC = 5;
+    private static final int CLIENT_START_DELAY_MILLISECONDS = 6000;
 
     public static void main(String[] args) throws Exception {
         new MsgServerMain().start();
@@ -65,28 +96,37 @@ public class MsgServerMain {
         return String.format("%s %s", clientCommand(dir, jar), httpPort);
     }
 
+    private void startClient(ScheduledExecutorService executorService, String cmd) {
+        executorService.schedule(() -> {
+            try {
+                new ProcessRunnerImpl().start(cmd);
+            } catch (IOException e) {
+                LOG.info(e);
+            }
+        }, CLIENT_START_DELAY_MILLISECONDS, TimeUnit.MILLISECONDS);
+    }
+
     private void start() throws Exception {
-        List<ScheduledExecutorService> serviceExecutors = new ArrayList<>(4);
+        ScheduledExecutorService serviceExecutor = Executors.newScheduledThreadPool(4);
 
-        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
         String cmd = clientCommand(DBSERVER_DIR, DBSERVER_JAR);
-        startClient(serviceExecutors.get(0), cmd);
-        LOG.warn("cmd = {}", cmd);
+        startClient(serviceExecutor, cmd);
+        LOG.info("run$ {}", cmd);
 
-        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        Thread.sleep(CLIENT_START_DELAY_MILLISECONDS/3 - 100);
         cmd = clientCommand(DBSERVER_DIR, DBSERVER_JAR);
-        startClient(serviceExecutors.get(1), cmd);
-        LOG.warn("cmd = {}", cmd);
+        startClient(serviceExecutor, cmd);
+        LOG.info("run$ {}", cmd);
 
-        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        Thread.sleep(CLIENT_START_DELAY_MILLISECONDS/3 - 100);
         cmd = frontendCommand(FRONTEND_DIR, FRONTEND_JAR,"8090");
-        startClient(serviceExecutors.get(2), cmd);
-        LOG.warn("cmd = {}", cmd);
+        startClient(serviceExecutor, cmd);
+        LOG.info("run$ {}", cmd);
 
-        serviceExecutors.add(Executors.newSingleThreadScheduledExecutor());
+        Thread.sleep(CLIENT_START_DELAY_MILLISECONDS/3 - 100);
         cmd = frontendCommand(FRONTEND_DIR, FRONTEND_JAR,"8091");
-        startClient(serviceExecutors.get(3), cmd);
-        LOG.warn("cmd = {}", cmd);
+        startClient(serviceExecutor, cmd);
+        LOG.info("run$ {}", cmd);
 
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=Server");
@@ -95,19 +135,7 @@ public class MsgServerMain {
 
         server.start();
 
-        for (ScheduledExecutorService serviceExecutor : serviceExecutors) {
-            serviceExecutor.shutdown();
-        }
-    }
-
-    private void startClient(ScheduledExecutorService executorService, String cmd) {
-        executorService.schedule(() -> {
-            try {
-                new ProcessRunnerImpl().start(cmd);
-            } catch (IOException e) {
-                LOG.info(e);
-            }
-        }, CLIENT_START_DELAY_SEC, TimeUnit.SECONDS);
+        serviceExecutor.shutdown();
     }
 }
 

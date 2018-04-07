@@ -20,12 +20,10 @@ import java.util.concurrent.Executors;
 public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCloseable {
 
     private static final int PAUSE_MS = 10000;
-    private static final int MESSAGE_DELAY_MS = 1;
     private static final Logger LOG = Log.getLogger(FrontendWorker.class);
 
     private final Address address = new Address();
     private final Socket socket;
-    private SocketMsgWorker client;
     private List<FrontEndpoint> services = new CopyOnWriteArrayList<>();
 
     public FrontendWorker(String host, int port) throws IOException {
@@ -35,7 +33,6 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     private FrontendWorker(Socket socket) {
         super(socket);
         this.socket = socket;
-        this.client = this;
         LOG.info("Frontend Address: " + getAddress());
     }
 
@@ -48,8 +45,8 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
     private void call() {
         try {
             while (true) {
-                Msg msg = client.take();
-                LOG.debug("Call loop take:{}", msg);
+                Msg msg = take();
+                LOG.debug("Take the message:{}", msg);
                 boolean delivered = false;
 
                 for (FrontendService service : services) {
@@ -61,7 +58,6 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
                 if (address.equals(msg.getTo())) {
                     //noinspection UnusedAssignment
                     delivered = true;
-                    // LOG.debug("Message is delivered: {}", msg.toString());
                 } else if ( ! delivered) {
                     LOG.warn("Message is not delivered: {}", msg.toString());
                 }
@@ -71,11 +67,13 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
         }
     }
 
-    private void registeringServices() throws InterruptedException {
+    private void registeringServices() {
+        Msg requestMeMsg = new RequestDBServerMsg(getAddress());
+        send(requestMeMsg);
 
         for (FrontendService service : services) {
             Address serviceAddress = service.getAddress();
-            LOG.info("Registering: {}", serviceAddress);
+            LOG.info("Please register me: {}", serviceAddress);
 
             Msg requestMsg = new RequestDBServerMsg(serviceAddress);
             send(requestMsg);
@@ -99,10 +97,15 @@ public class FrontendWorker extends SocketMsgWorker implements Addressee, AutoCl
 
         while (true) {
             Msg msg = new PingMsg(address, address);
-            client.send(msg);
-            LOG.info("Loop ping:{}", msg.getTo());
+            send(msg);
+            LOG.debug("ping:{}", msg.getTo());
             Thread.sleep(PAUSE_MS);
         }
+    }
+
+    @Override
+    public Address getAddress() {
+        return address;
     }
 
     @Override

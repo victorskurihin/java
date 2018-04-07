@@ -21,17 +21,15 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
     private final Address address = new Address();
     private final Socket socket;
-    private SocketMsgWorker client;
     private DBService dbService;
 
     public DBServerWorker(String host, int port) throws IOException {
         this(new Socket(host, port));
     }
 
-    private DBServerWorker(Socket socket) throws IOException {
+    private DBServerWorker(Socket socket) {
         super(socket);
         this.socket = socket;
-        this.client = this;
         dbService = new DBServiceImpl(address);
     }
 
@@ -48,9 +46,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         if (userExists(user.getName())) {
             singed = msg.createAnswer(false, "User exists!");
         } else if (user.getPassword().length() < 2) {
-            singed = msg.createAnswer(
-                false, "Password must be more than 2 symbols!"
-            );
+            singed = msg.createAnswer(false, "Password must be more than 2 symbols!");
         } else {
             dbService.save(user);
 
@@ -61,7 +57,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
             }
         }
         if (null != singed) {
-            client.send(singed);
+            send(singed);
         }
     }
 
@@ -86,23 +82,21 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         }
 
         if (null != authenticated) {
-            client.send(authenticated);
+            send(authenticated);
         }
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
     public void loop() throws Exception {
-        // client.init();
 
-        LOG.info("DB Server Address: " + client.getAddress());
+        LOG.info("DB Server Address:{}", getAddress());
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.submit(() -> {
             try {
                 while (true) {
-                    LOG.info("Call loop.");
-                    Msg msg = client.take();
-                    LOG.info("Call loop take:{}", msg);
+                    Msg msg = take();
+                    LOG.debug("Take the message :{}", msg);
                     if (AuthenticateMsg.ID.equals(msg.getId())) {
                         authenticate((AuthenticateMsg) msg);
                     } else if (SingupMsg.ID.equals(msg.getId())) {
@@ -115,21 +109,26 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         });
 
         Msg registerMsg = new RegisterDBServerMsg(address);
-        client.send(registerMsg);
+        send(registerMsg);
 
         try {
             while (true) {
                 Msg msg = new PingMsg(address, address);
-                client.send(msg);
-                LOG.info("Loop ping:{}", msg.getTo());
+                send(msg);
+                LOG.debug("ping:{}", msg.getTo());
                 Thread.sleep(PAUSE_MS);
             }
         } catch (Exception e) {
             LOG.error(e);
         } finally {
-            client.close();
+            close();
             executorService.shutdown();
         }
+    }
+
+    @Override
+    public Address getAddress() {
+        return address;
     }
 
     @Override

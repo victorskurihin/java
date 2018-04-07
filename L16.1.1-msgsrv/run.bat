@@ -20,4 +20,4 @@ set DUMP=-XX:+HeapDumpOnOutOfMemoryError
 set DUMP=%DUMP% -XX:HeapDumpPath=%DUMPDIR%
 mkdir %LOGDIR% > nul 2> nul
 mkdir %DUMPDIR% > nul 2> nul
-java -cp %CP% %MEMORY% %GC_LOG% %JMX% %DUMP% ru.otus.l161.MsgServerMain
+java -cp %CP% %MEMORY% %GC_LOG% %JMX% %DUMP% -jar

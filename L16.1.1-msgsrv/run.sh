@@ -24,4 +24,4 @@ DUMP="${DUMP} -XX:HeapDumpPath=${DUMPDIR}"
 mkdir -p $LOGDIR
 mkdir -p $DUMPDIR
 java -cp ${CP} ${MEMORY} ${GC} ${GC_LOG} ${JMX} ${DUMP} \
-    -XX:OnOutOfMemoryError="kill -3 %p" ru.otus.l161.MsgServerMain
+    -XX:OnOutOfMemoryError="kill -3 %p" -jar L16.1.1-msgsrv-1.0.jar

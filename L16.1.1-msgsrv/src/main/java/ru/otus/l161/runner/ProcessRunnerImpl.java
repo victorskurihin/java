@@ -2,6 +2,7 @@ package ru.otus.l161.runner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.otus.l161.MsgServerMain;
 import ru.otus.l161.app.ProcessRunner;
 
 import java.io.BufferedReader;
@@ -13,6 +14,7 @@ import java.io.InputStreamReader;
  * Created by tully.
  */
 public class ProcessRunnerImpl implements ProcessRunner {
+    private static final Logger LOG = LogManager.getLogger(StreamListener.class);
     private final StringBuffer out = new StringBuffer();
     private Process process;
 
@@ -41,7 +43,6 @@ public class ProcessRunnerImpl implements ProcessRunner {
     }
 
     private class StreamListener extends Thread {
-        private final Logger logger = LogManager.getLogger(getClass());
         private final InputStream is;
         private final String type;
 
@@ -57,9 +58,10 @@ public class ProcessRunnerImpl implements ProcessRunner {
                 String line;
                 while ((line = br.readLine()) != null) {
                     out.append(type).append('>').append(line).append('\n');
+                    LOG.info(line);
                 }
             } catch (IOException e) {
-                logger.error(e);
+                LOG.error(e);
             }
         }
     }
