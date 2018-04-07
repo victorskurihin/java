@@ -1,5 +1,9 @@
 package ru.otus.l161.messages;
 
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
+
 public class RegisterChatFrontendMsg extends Msg {
 
     public static final String ID = RegisterChatFrontendMsg.class.getSimpleName();

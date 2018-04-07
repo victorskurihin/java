@@ -1,5 +1,9 @@
 package ru.otus.l161.messages;
 
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
+
 public class RegisterDBServerMsg extends Msg {
 
     public static final String ID = RegisterDBServerMsg.class.getSimpleName();

@@ -1,13 +1,20 @@
 package ru.otus.l161.messages;
 
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
+
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author tully
+ * This class  is for marking messages with  a label. When creating  an Address
+ * object, the label is generated that consists of a name of RuntimeMXBean plus
+ * the thread number plus a unique index in that thread.
  */
+
 public final class Address implements Comparable {
-    private static final String COLON = ":";
+    public static final String COLON = ":";
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger();
     private final String id;
 
@@ -19,6 +26,10 @@ public final class Address implements Comparable {
 
     public Address(String id) {
         this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @Override
@@ -36,10 +47,6 @@ public final class Address implements Comparable {
         return id != null ? id.hashCode() : 0;
     }
 
-    public String getId() {
-        return id;
-    }
-
     @Override
     public String toString() {
         return "Address{ " + "id='" + id + "' }";
@@ -54,3 +61,6 @@ public final class Address implements Comparable {
     }
 }
 
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

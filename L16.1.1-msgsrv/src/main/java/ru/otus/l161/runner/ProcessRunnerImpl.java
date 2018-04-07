@@ -2,7 +2,6 @@ package ru.otus.l161.runner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.l161.MsgServerMain;
 import ru.otus.l161.app.ProcessRunner;
 
 import java.io.BufferedReader;

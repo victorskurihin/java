@@ -1,8 +1,14 @@
 package ru.otus.l161.messages;
 
-import ru.otus.l161.app.RandomUnsignedInt;
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
 
 import java.util.Objects;
+
+/**
+ * This class has a message about the conducted authentication.
+ */
 
 public class AuthenticatedMsg extends Msg {
 
@@ -23,11 +29,42 @@ public class AuthenticatedMsg extends Msg {
         this.sessionId = sid;
         this.auth = auth;
         this.isPositive = isPositive;
-
     }
 
     public AuthenticatedMsg(Address from, Address to, String user, int auth) {
         this(from, null, to, user, true, auth);
+    }
+
+    public boolean isPositive() {
+        return isPositive;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public int getAuth() {
+        return auth;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public AuthenticatedMsg forward(Address from, Address to) {
+        AuthenticatedMsg msg = new AuthenticatedMsg(
+                from, sessionId, to, user, isPositive, auth
+        );
+        msg.setMessage(message);
+        return msg;
     }
 
     @Override
@@ -62,38 +99,6 @@ public class AuthenticatedMsg extends Msg {
     @Override
     public int hashCode() {
         return Objects.hash(user, isPositive, sessionId, auth, message);
-    }
-
-    public boolean isPositive() {
-        return isPositive;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public int getAuth() {
-        return auth;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public AuthenticatedMsg forward(Address from, Address to) {
-        AuthenticatedMsg msg = new AuthenticatedMsg(
-            from, sessionId, to, user, isPositive, auth
-        );
-        msg.setMessage(message);
-        return msg;
     }
 }
 

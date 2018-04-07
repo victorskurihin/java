@@ -1,5 +1,9 @@
 package ru.otus.l161.messages;
 
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
+
 import ru.otus.l161.dataset.UserDataSet;
 
 import java.util.Objects;

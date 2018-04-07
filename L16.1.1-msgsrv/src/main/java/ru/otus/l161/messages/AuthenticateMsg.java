@@ -1,10 +1,17 @@
 package ru.otus.l161.messages;
 
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
+
 import ru.otus.l161.app.RandomUnsignedInt;
 import ru.otus.l161.dataset.UserDataSet;
 
 import java.util.Objects;
-import java.util.Random;
+
+/**
+ * This class has a message with the authentication for a registering user.
+ */
 
 public class AuthenticateMsg extends Msg {
 
@@ -17,6 +24,20 @@ public class AuthenticateMsg extends Msg {
         super(AuthenticateMsg.class, from, to);
         this.user = userDataSet;
         sessionId = sid;
+    }
+
+    public UserDataSet getUser() {
+        return user;
+    }
+
+    public AuthenticatedMsg createAnswer(boolean isPositive, String answer) {
+        int authId = RandomUnsignedInt.get();
+
+        AuthenticatedMsg msg = new AuthenticatedMsg(
+                getTo(), sessionId, getFrom(), user.getName(), isPositive, authId
+        );
+        msg.setMessage(answer);
+        return msg;
     }
 
     @Override
@@ -46,20 +67,6 @@ public class AuthenticateMsg extends Msg {
     @Override
     public int hashCode() {
         return Objects.hash(user, sessionId);
-    }
-
-    public UserDataSet getUser() {
-        return user;
-    }
-
-    public AuthenticatedMsg createAnswer(boolean isPositive, String answer) {
-        int authId = RandomUnsignedInt.get();
-
-        AuthenticatedMsg msg = new AuthenticatedMsg(
-            getTo(), sessionId, getFrom(), user.getName(), isPositive, authId
-        );
-        msg.setMessage(answer);
-        return msg;
     }
 }
 

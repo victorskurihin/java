@@ -1,8 +1,16 @@
 package ru.otus.l161.messages;
 
-/**
+/*
  * Created by tully.
  */
+
+/**
+ * This is contract for message (Msg) classes with default the helper
+ * realization.
+ *
+ * A class is a superclass for implementing a message (Msg) interfaces.
+ */
+
 public abstract class Msg {
     private final Address from;
     private final Address to;
@@ -25,8 +33,8 @@ public abstract class Msg {
     public Address getTo() {
         return to;
     }
-
-    public void exec(Runnable runnable) {
-        runnable.run();
-    }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

@@ -8,20 +8,25 @@ import org.hibernate.tool.schema.TargetType;
 import ru.otus.l161.db.DBServiceImpl;
 
 import java.util.EnumSet;
+import java.util.concurrent.Executors;
 
 public class CreateSchemaMain {
 
     public static void main(String[] args) {
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
-        builder.configure("createSchema.hibernate.cfg.xml");
+        try {
+            StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder();
+            builder.configure("createSchema.hibernate.cfg.xml");
 
-        Metadata metadata = DBServiceImpl.getMetadata(builder);
+            Metadata metadata = DBServiceImpl.getMetadata(builder);
 
-        new SchemaExport() //
-                .setOutputFile("db-schema.hibernate5.ddl") //
-                .create(EnumSet.of(TargetType.DATABASE, TargetType.SCRIPT), metadata);
+            new SchemaExport() //
+                    .setOutputFile("db-schema.hibernate5.ddl") //
+                    .create(EnumSet.of(TargetType.DATABASE, TargetType.SCRIPT), metadata);
 
-        metadata.buildSessionFactory().close();
+            metadata.buildSessionFactory().close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
 
