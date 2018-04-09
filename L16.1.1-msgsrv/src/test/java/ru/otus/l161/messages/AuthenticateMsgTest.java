@@ -10,6 +10,7 @@ import ru.otus.l161.dataset.UserDataSet;
 import java.lang.reflect.Field;
 
 public class AuthenticateMsgTest {
+
     private static final String NAME = "NAME";
     private static final String PASSWORD = "PASSWORD";
     private static final String ADDRESS = "ADDRESS";

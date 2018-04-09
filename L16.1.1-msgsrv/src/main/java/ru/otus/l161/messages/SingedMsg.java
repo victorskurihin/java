@@ -6,6 +6,10 @@ package ru.otus.l161.messages;
 
 import java.util.Objects;
 
+/**
+ * This class has a message about the conducted registration.
+ */
+
 public class SingedMsg extends Msg {
 
     public static final String ID = SingedMsg.class.getSimpleName();

@@ -1,6 +1,14 @@
 package ru.otus.l161.messages;
 
+/*
+ * Created by VSkurikhin at spring 2018.
+ */
+
 import java.util.Objects;
+
+/**
+ * This class has a message from a user to all registered users.
+ */
 
 public class ChatToUsersMsg extends Msg {
 

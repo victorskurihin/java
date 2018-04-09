@@ -8,6 +8,10 @@ import ru.otus.l161.dataset.UserDataSet;
 
 import java.util.Objects;
 
+/**
+ * This class has a message with the registration information by a user.
+ */
+
 public class SingupMsg extends Msg {
 
     public static final String ID = SingupMsg.class.getSimpleName();

@@ -4,6 +4,10 @@ package ru.otus.l161.messages;
  * Created by VSkurikhin at spring 2018.
  */
 
+/**
+ * This class has a answer for request a DB service in the messages server.
+ */
+
 public class RequestDBServerMsg extends Msg {
 
     public static final String ID = RequestDBServerMsg.class.getSimpleName();

@@ -68,6 +68,8 @@ public class AuthenticatedMsgTest {
     @Test
     public void equals() {
         AuthenticatedMsg authenticatedMsgTest = new AuthenticatedMsg(from, sid, to, name, true, 1);
+        AuthenticatedMsg authenticatedMsgFalseTest = new AuthenticatedMsg(from, sid, to, name, false, 1);
         Assert.assertTrue(authenticatedMsg.equals(authenticatedMsgTest));
+        Assert.assertFalse(authenticatedMsg.equals(authenticatedMsgFalseTest));
     }
 }
