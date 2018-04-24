@@ -1,6 +1,6 @@
 package com.github.intermon.server;
 
-public interface NonBlockingEchoSocketMsgServerMBean {
+public interface MsgServerMBean {
     boolean getRunning();
 
     void setRunning(boolean running);

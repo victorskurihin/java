@@ -2,6 +2,8 @@ package com.github.intermon;
 
 
 import com.github.intermon.runner.ProcessRunnerImpl;
+import com.github.intermon.server.MsgServer;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,16 +24,52 @@ public class Main {
     private static final char FS = File.separatorChar;
     private static final Logger LOG = LogManager.getLogger(Main.class);
 
-    private static final String DBSERVER_DIR = "L16.1.2-dbserver";
+    private static final String DBSERVER_DIR = "IM1.1-dbserver";
     private static final String DBSERVER_JAR = "dbserver.jar";
-    private static final String FRONTEND_DIR = "L16.1.3-frontend";
+    private static final String PROXY_DIR = "IM1.2-proxy";
+    private static final String PROXY_JAR = "proxy.jar";
+    private static final String FRONTEND_DIR = "IM1.3-frontend";
     private static final String FRONTEND_JAR = "frontend.jar";
     private static final String MESSAGE_SERVER_HOST = "localhost";
     private static final String MESSAGE_SERVER_PORT = Integer.toString(5050);
     private static final int CLIENT_START_DELAY_MILLISECONDS = 6000;
+    private static final int CLIENT_START_DELAY_SEC = 1;
+    private static final int CLIENTS_COUNT = 2;
 
-    public static void main(String[] args) {
-        System.out.println("Ok");
+    private void startEchoServer() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        ObjectName name = new ObjectName("ru.otus:type=Server");
+        MsgServer server = new MsgServer();
+        mbs.registerMBean(server, name);
+
+        server.start();
+    }
+
+    private void startClients(int count, ScheduledExecutorService executorService) {
+        for (int i = 0; i < count; i++) {
+            executorService.schedule(() -> {
+                try {
+                    String cmd = clientCommand(DBSERVER_DIR, DBSERVER_JAR);
+                    LOG.info("run$ {}", cmd);
+                    new ProcessRunnerImpl().start(cmd);
+                } catch (IOException e) {
+                    LOG.error(e);
+                }
+            }, CLIENT_START_DELAY_SEC + i, TimeUnit.SECONDS);
+        }
+    }
+
+    private void start() throws Exception {
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        startClients(CLIENTS_COUNT, executorService);
+
+        startEchoServer();
+
+        executorService.shutdown();
+    }
+
+    public static void main(String[] args) throws Exception {
+        new Main().start();
     }
 
     private static String javaExeJar() {
@@ -52,8 +90,8 @@ public class Main {
 
     private String clientCommand(String dir, String jar) {
         String cmd = String.format(
-            "%s -jar ..%c%s%ctarget%c%s %s %s",
-            javaExeJar(), FS, dir, FS, FS, jar, MESSAGE_SERVER_HOST, MESSAGE_SERVER_PORT
+            "%s -jar %s%ctarget%c%s %s %s",
+            javaExeJar(), dir, FS, FS, jar, MESSAGE_SERVER_HOST, MESSAGE_SERVER_PORT
         );
 
         return cmd;
@@ -73,7 +111,7 @@ public class Main {
         }, CLIENT_START_DELAY_MILLISECONDS, TimeUnit.MILLISECONDS);
     }
 
-    private void start() throws Exception {
+    private void startOld() throws Exception {
         ScheduledExecutorService serviceExecutor = Executors.newScheduledThreadPool(4);
 
         String cmd = clientCommand(DBSERVER_DIR, DBSERVER_JAR);

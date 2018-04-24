@@ -43,7 +43,7 @@ public class ProcessRunnerImpl implements ProcessRunner {
     }
 
     private class StreamListener extends Thread {
-        private final Logger logger = Logger.getLogger(StreamListener.class.getName());
+        private final Logger LOG = Logger.getLogger(StreamListener.class.getName());
 
         private final InputStream is;
         private final String type;
@@ -60,9 +60,10 @@ public class ProcessRunnerImpl implements ProcessRunner {
                 String line;
                 while ((line = br.readLine()) != null) {
                     out.append(type).append('>').append(line).append('\n');
+                    LOG.info(line);
                 }
             } catch (IOException e) {
-                logger.log(Level.SEVERE, e.getMessage());
+                LOG.log(Level.SEVERE, e.getMessage());
             }
         }
     }
