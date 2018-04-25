@@ -1,50 +1,24 @@
 package com.github.intermon.runner;
 
+/*
+ * Created by VSkurikhin at Wed, Apr 25, 2018 13:09:37 AM
+ */
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.github.intermon.app.ProcessRunner;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Created by tully.
+ *.
  */
 public class ProcessRunnerImpl implements ProcessRunner {
-    private final StringBuffer out = new StringBuffer();
-    private Process process;
-
-
-    public void start(String command) throws IOException {
-        process = runProcess(command);
-    }
-
-    public void stop() {
-        process.destroy();
-    }
-
-    public String getOutput() {
-        return out.toString();
-    }
-
-    private Process runProcess(String command) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(command.split(" "));
-        pb.redirectErrorStream(true);
-        Process p = pb.start();
-
-        //StreamListener errors = new StreamListener(p.getErrorStream(), "ERROR");
-        StreamListener output = new StreamListener(p.getInputStream(), "OUTPUT");
-
-        output.start();
-        //errors.start();
-        return p;
-    }
 
     private class StreamListener extends Thread {
-        private final Logger LOG = Logger.getLogger(StreamListener.class.getName());
-
         private final InputStream is;
         private final String type;
 
@@ -63,8 +37,40 @@ public class ProcessRunnerImpl implements ProcessRunner {
                     LOG.info(line);
                 }
             } catch (IOException e) {
-                LOG.log(Level.SEVERE, e.getMessage());
+                LOG.error(e);
             }
         }
     }
+
+    private static final Logger LOG = LogManager.getLogger(StreamListener.class);
+    private final StringBuffer out = new StringBuffer();
+    private Process process;
+
+    public void start(String command) throws IOException {
+        process = runProcess(command);
+    }
+
+
+    public void stop() {
+        process.destroy();
+    }
+
+    public String getOutput() {
+        return out.toString();
+    }
+
+    private Process runProcess(String command) throws IOException {
+        ProcessBuilder pb = new ProcessBuilder(command.split(" "));
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+
+        StreamListener output = new StreamListener(p.getInputStream(), "OUTPUT");
+        output.start();
+
+        return p;
+    }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

@@ -1,20 +1,25 @@
 package com.github.intermon;
 
+import com.github.intermon.channel.DBServerWorker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-/**
- * Created by VSkurikhin at winter 2018.
- */
-
 public class DBServerMain {
-    private static final int DELAY = 100;
-    private static final Logger LOG = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) throws InterruptedException {
-        for (int i = 1; i < 100; ++i) {
-            LOG.info("Ok.");
-            Thread.sleep(DELAY);
+    private static final Logger LOG = LogManager.getLogger(DBServerMain.class);
+    private static final String HOST = "localhost";
+    private static final int MESSAGES_PORT = 5050;
+
+    public static void main(String[] args) {
+        String host = (args.length > 0) ? args[0] : HOST;
+        int msgSrvPort = (args.length > 1) ? Integer.parseInt(args[1]) : MESSAGES_PORT;
+
+        try (DBServerWorker client = new DBServerWorker(host, msgSrvPort)) {
+            LOG.info("DBServerWorker address:{}", client.getAddress());
+            client.init();
+            client.loop();
+        } catch (Exception e) {
+            LOG.warn(e);
         }
     }
 }
