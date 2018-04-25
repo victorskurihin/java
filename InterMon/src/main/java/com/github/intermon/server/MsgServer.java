@@ -1,5 +1,9 @@
 package com.github.intermon.server;
 
+/*
+ * Created by VSkurikhin at Wed, Apr 25, 2018 10:06:55 AM
+ */
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * The class implements a non blocking socket message server.
+ */
 public class MsgServer implements MsgServerMBean {
     private static final Logger LOG = LogManager.getLogger(MsgServer.class);
 
@@ -32,6 +39,18 @@ public class MsgServer implements MsgServerMBean {
 
     private Selector selector;
 
+    // The helper class.
+    private class ChannelMessages {
+        private final SocketChannel channel;
+        private final List<String> messages = new ArrayList<>();
+
+        private ChannelMessages(SocketChannel channel) {
+            this.channel = channel;
+        }
+    }
+    /**
+     * Default constructor.
+     */
     public MsgServer() {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
         channelMessages = new ConcurrentHashMap<>();
@@ -64,10 +83,12 @@ public class MsgServer implements MsgServerMBean {
         channelMessages.put(remoteAddress, new ChannelMessages(channel));
     }
 
+    // The second loop.
     @SuppressWarnings("InfiniteLoopStatement")
     private void selectorLoop(ServerSocketChannel serverSocketChannel) throws IOException {
         while (true) {
-            selector.select();//blocks
+            // where will be happen block
+            selector.select();
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
@@ -86,6 +107,20 @@ public class MsgServer implements MsgServerMBean {
         }
     }
 
+    /**
+     * The starting method launches two loops.
+     *
+     * The first loop  iterates by channel messages  and for each entry,
+     * if channel connected and have stored messages, send this messages
+     * to a client connected to the own channel.
+     *
+     * The second loop waits event from selector, if come  the message event
+     * the message from event will be stored or if come about new connection
+     * and ready to accept a new socket connection, this connection  will be
+     * registered.
+     *
+     * @throws Exception
+     */
     public void start() throws Exception {
         executor.submit(this::echo);
 
@@ -112,6 +147,7 @@ public class MsgServer implements MsgServerMBean {
                     buffer.put(message.getBytes());
                     buffer.put(MESSAGES_SEPARATOR.getBytes());
                     buffer.flip();
+
                     while (buffer.hasRemaining()) {
                         channelMessages.channel.write(buffer);
                     }
@@ -123,6 +159,7 @@ public class MsgServer implements MsgServerMBean {
         }
     }
 
+    // the first loop
     @SuppressWarnings("InfiniteLoopStatement")
     private Object echo() throws InterruptedException {
         while (true) {
@@ -143,15 +180,6 @@ public class MsgServer implements MsgServerMBean {
         if (!running) {
             executor.shutdown();
             LOG.info("Bye.");
-        }
-    }
-
-    private class ChannelMessages {
-        private final SocketChannel channel;
-        private final List<String> messages = new ArrayList<>();
-
-        private ChannelMessages(SocketChannel channel) {
-            this.channel = channel;
         }
     }
 }
