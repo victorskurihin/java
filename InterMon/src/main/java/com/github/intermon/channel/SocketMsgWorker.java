@@ -8,6 +8,8 @@ import com.github.intermon.messages.Msg;
 import com.github.intermon.app.MsgWorker;
 
 import com.google.gson.Gson;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -23,8 +25,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The class receives a message from client socket and put this message into
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * it will be sent to the client.
  */
 public class SocketMsgWorker implements MsgWorker {
-    private static final Logger logger = Logger.getLogger(SocketMsgWorker.class.getName());
+    private static final Logger LOG = LogManager.getLogger(SocketMsgWorker.class);
     private static final int WORKERS_COUNT = 2;
 
     private final BlockingQueue<Msg> output = new LinkedBlockingQueue<>();
@@ -138,7 +138,7 @@ public class SocketMsgWorker implements MsgWorker {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            logger.log(Level.SEVERE, "ReceiveMessage: " + e.getMessage());
+            LOG.error("ReceiveMessage catch exeption: {}", e);
         } finally {
             close();
         }
@@ -154,7 +154,7 @@ public class SocketMsgWorker implements MsgWorker {
                 out.println(); //end of the message
             }
         } catch (InterruptedException | IOException e) {
-            logger.log(Level.SEVERE, "SendMessage:" + e.getMessage());
+            LOG.error("SendMessage catch execption: {}", e);
         }
     }
 
@@ -166,7 +166,7 @@ public class SocketMsgWorker implements MsgWorker {
             Class<?> msgClass = Class.forName(className);
             return (Msg) new Gson().fromJson(json, msgClass);
         } catch (ParseException e) {
-            logger.log(Level.SEVERE, "Parsing error: " + e.getMessage());
+            LOG.error("Parsing error: {}", e);
             return null;
         }
     }

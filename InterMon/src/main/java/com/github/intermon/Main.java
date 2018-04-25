@@ -40,8 +40,8 @@ public class Main {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
         ObjectName name = new ObjectName("ru.otus:type=Server");
         MsgServer server = new MsgServer();
-        mbs.registerMBean(server, name);
 
+        mbs.registerMBean(server, name);
         server.start();
     }
 
@@ -59,16 +59,20 @@ public class Main {
         }
     }
 
-    private void start() throws Exception {
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        startClients(CLIENTS_COUNT, executorService);
+    private void start() {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(CLIENTS_COUNT);
+        startClients(CLIENTS_COUNT, executor);
 
-        startEchoServer();
-
-        executorService.shutdown();
+        try {
+            startEchoServer();
+        } catch (Exception e) {
+            LOG.error("Main.start catch: {}", e);
+        } finally {
+            executor.shutdown();
+        }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         new Main().start();
     }
 

@@ -56,6 +56,38 @@ public class MsgServer implements MsgServerMBean {
         channelMessages = new ConcurrentHashMap<>();
     }
 
+    private void channelMessages(String key, ChannelMessages channelMessages) {
+        if (channelMessages.channel.isConnected()) {
+            channelMessages.messages.forEach(message -> {
+                try {
+                    LOG.info("Echoing message to: {}", key);
+                    ByteBuffer buffer = ByteBuffer.allocate(CAPACITY);
+                    buffer.put(message.getBytes());
+                    buffer.put(MESSAGES_SEPARATOR.getBytes());
+                    buffer.flip();
+
+                    while (buffer.hasRemaining()) {
+                        channelMessages.channel.write(buffer);
+                    }
+                } catch (IOException e) {
+                    LOG.error(e);
+                }
+            });
+            channelMessages.messages.clear();
+        }
+    }
+
+    // the first loop
+    @SuppressWarnings("InfiniteLoopStatement")
+    private Object echo() throws InterruptedException {
+        while (true) {
+            for (Map.Entry<String, ChannelMessages> entry : channelMessages.entrySet()) {
+                channelMessages(entry.getKey(), entry.getValue());
+            }
+            Thread.sleep(ECHO_DELAY);
+        }
+    }
+
     private void readChannel(SelectionKey key, SocketChannel channel) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(CAPACITY);
         int read = channel.read(buffer);
@@ -88,7 +120,7 @@ public class MsgServer implements MsgServerMBean {
     private void selectorLoop(ServerSocketChannel serverSocketChannel) throws IOException {
         while (true) {
             // where will be happen block
-            selector.select();
+            selector.();
             Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
@@ -137,39 +169,6 @@ public class MsgServer implements MsgServerMBean {
             selectorLoop(serverSocketChannel);
         }
     }
-
-    private void channelMessages(String key, ChannelMessages channelMessages) {
-        if (channelMessages.channel.isConnected()) {
-            channelMessages.messages.forEach(message -> {
-                try {
-                    LOG.info("Echoing message to: {}", key);
-                    ByteBuffer buffer = ByteBuffer.allocate(CAPACITY);
-                    buffer.put(message.getBytes());
-                    buffer.put(MESSAGES_SEPARATOR.getBytes());
-                    buffer.flip();
-
-                    while (buffer.hasRemaining()) {
-                        channelMessages.channel.write(buffer);
-                    }
-                } catch (IOException e) {
-                    LOG.error(e);
-                }
-            });
-            channelMessages.messages.clear();
-        }
-    }
-
-    // the first loop
-    @SuppressWarnings("InfiniteLoopStatement")
-    private Object echo() throws InterruptedException {
-        while (true) {
-            for (Map.Entry<String, ChannelMessages> entry : channelMessages.entrySet()) {
-                channelMessages(entry.getKey(), entry.getValue());
-            }
-            Thread.sleep(ECHO_DELAY);
-        }
-    }
-
     @Override
     public boolean getRunning() {
         return true;

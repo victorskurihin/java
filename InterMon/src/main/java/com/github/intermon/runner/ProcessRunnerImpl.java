@@ -19,6 +19,7 @@ import java.io.InputStreamReader;
 public class ProcessRunnerImpl implements ProcessRunner {
 
     private class StreamListener extends Thread {
+        private final Logger LOG = LogManager.getLogger(StreamListener.class);
         private final InputStream is;
         private final String type;
 
@@ -42,7 +43,6 @@ public class ProcessRunnerImpl implements ProcessRunner {
         }
     }
 
-    private static final Logger LOG = LogManager.getLogger(StreamListener.class);
     private final StringBuffer out = new StringBuffer();
     private Process process;
 
@@ -62,12 +62,22 @@ public class ProcessRunnerImpl implements ProcessRunner {
     private Process runProcess(String command) throws IOException {
         ProcessBuilder pb = new ProcessBuilder(command.split(" "));
         pb.redirectErrorStream(true);
-        Process p = pb.start();
+        Process child = pb.start();
 
-        StreamListener output = new StreamListener(p.getInputStream(), "OUTPUT");
+        Thread closeChildThread = new Thread() {
+            public void run() {
+                if (child.isAlive()) {
+                    child.destroy();
+                }
+            }
+        };
+
+        Runtime.getRuntime().addShutdownHook(closeChildThread);
+
+        StreamListener output = new StreamListener(child.getInputStream(), "OUTPUT");
         output.start();
 
-        return p;
+        return child;
     }
 }
 
