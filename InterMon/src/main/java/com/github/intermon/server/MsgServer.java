@@ -208,6 +208,7 @@ public class MsgServer implements MsgServerMBean {
                     if (key.isAcceptable()) {
                         nonBockingAccept(serverSocketChannel.accept());
                     } else if (key.isReadable()) {
+                        LOG.info("key:{} isReadable", key);
                         readChannel(key, (SocketChannel) key.channel());
                     }
                 } catch (IOException e) {

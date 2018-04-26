@@ -22,7 +22,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
     private static final int WORKERS_COUNT = 2;
     private static final int PAUSE_MS = 10000;
-    private static final Logger LOG = LogManager.getLogger(DBServerMain.class);
+    private static final Logger LOG = LogManager.getLogger(DBServerWorker.class);
 
     private final Address address = new Address();
     private final Socket socket;
@@ -36,7 +36,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
     private DBServerWorker(Socket socket) {
         super(socket);
         this.socket = socket;
-        dbService = new DBServiceImpl(address);
+        // dbService = new DBServiceImpl(address);
     }
 
     private boolean userExists(String name) {
@@ -66,12 +66,13 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
     private void takeLoop() {
         try {
             while (true) {
-                Msg msg = take();
-                LOG.debug("Take the message :{}", msg);
-                if ( ! handleMsg(msg)) {
-                    LOG.error("Can't handle the message: {}", msg);
-                }
-                Thread.sleep(PAUSE_MS);
+//                Msg msg = take();
+//                LOG.info("Take the message :{}", msg);
+//                if ( ! handleMsg(msg)) {
+//                    LOG.error("Can't handle the message: {}", msg);
+//                }
+                LOG.info("take loop");
+                Thread.sleep(100);
             }
         } catch (Exception e) {
             LOG.error(e);
@@ -85,9 +86,10 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
     private void pingLoop() {
         try {
             while (true) {
-                Msg msg = new PingMsg(address, address);
-                send(msg);
-                LOG.debug("ping:{}", msg.getTo());
+                // Msg msg = new PingMsg(address, address);
+                // send(msg);
+                // LOG.info("ping:{}", msg.getTo());
+                LOG.info("ping loop");
                 Thread.sleep(PAUSE_MS);
             }
         } catch (Exception e) {
@@ -100,11 +102,11 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
 
     public void loops() throws Exception {
         executor = Executors.newFixedThreadPool(WORKERS_COUNT);
-        Msg registerMsg = new RegisterDBServerMsg(address);
+        // Msg registerMsg = new RegisterDBServerMsg(address);
 
         LOG.info("DB Server Address:{}", getAddress());
 
-        send(registerMsg);
+        // send(registerMsg);
         executor.execute(this::takeLoop);
         executor.execute(this::pingLoop);
     }
