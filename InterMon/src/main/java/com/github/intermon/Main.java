@@ -33,8 +33,8 @@ public class Main {
     private static final String MESSAGE_SERVER_HOST = "localhost";
     private static final String MESSAGE_SERVER_PORT = Integer.toString(5050);
     private static final int CLIENT_START_DELAY_MILLISECONDS = 6000;
-    private static final int CLIENT_START_DELAY_SEC = 1;
-    private static final int CLIENTS_COUNT = 2;
+    private static final int CLIENT_START_DELAY_SEC = 2;
+    private static final int CLIENTS_COUNT = 1;
 
     private void startEchoServer() throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();

@@ -10,8 +10,6 @@ import com.github.intermon.app.MsgWorker;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.BufferedReader;
@@ -29,7 +27,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * The class receives a message from client socket and put this message into
  * the input blocking queue and can give this message by the methods pull or
- * take. Also the class gets the message, when the message is in the queue,
+ * take.  Also the class gets the message, when the message is in the queue,
  * it will be sent to the client.
  */
 public class SocketMsgWorker implements MsgWorker {
@@ -120,6 +118,10 @@ public class SocketMsgWorker implements MsgWorker {
         this.shutdownRegistrations.add(runnable);
     }
 
+    private BufferedReader createBufferedReader() throws IOException {
+        return new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    }
+
     @Blocks
     private void receiveMessage() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
@@ -160,16 +162,13 @@ public class SocketMsgWorker implements MsgWorker {
 
     private static Msg getMsgFromJSON(String json) throws ClassNotFoundException {
         try {
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(json);
-            String className = (String) jsonObject.get(Msg.CLASS_NAME_VARIABLE);
-            Class<?> msgClass = Class.forName(className);
-            return (Msg) new Gson().fromJson(json, msgClass);
+            return MsgJson.get(json);
         } catch (ParseException e) {
             LOG.error("Parsing error: {}", e);
             return null;
         }
     }
+
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
