@@ -17,7 +17,7 @@ public class DBServerMain {
         try (DBServerWorker client = new DBServerWorker(host, msgSrvPort)) {
             LOG.info("DBServerWorker address:{}", client.getAddress());
             client.init();
-            client.loops();
+            client.loop();
         } catch (Exception e) {
             LOG.warn(e);
         }

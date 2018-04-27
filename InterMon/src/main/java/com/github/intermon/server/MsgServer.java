@@ -9,11 +9,15 @@ import com.github.intermon.messages.Address;
 import com.github.intermon.messages.LoginMsg;
 import com.github.intermon.messages.Msg;
 import com.github.intermon.messages.RegisterOfMsg;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.parser.ParseException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -22,10 +26,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 /**
  * The class implements a non blocking socket message server.
@@ -36,7 +37,7 @@ public class MsgServer implements MsgServerMBean {
     private static final int THREADS_NUMBER = 1;
     private static final int PORT = 5050;
     private static final int ECHO_DELAY = 100;
-    private static final int CAPACITY = 256;
+    private static final int CAPACITY = 1500;
     private static final String MESSAGES_SEPARATOR = "\n\n";
 
     private final ExecutorService executor;
@@ -47,10 +48,11 @@ public class MsgServer implements MsgServerMBean {
     private Selector selector;
 
     // The helper class.
-    private class ChannelMessages {
+    private class ChannelMessages implements DequeBuffer {
         private final SocketChannel channel;
         private final List<String> messages = new ArrayList<>();
         private final Set<Address> addresses = new ConcurrentSkipListSet<>();
+        private final Deque<StringBuilder> buffer = new ConcurrentLinkedDeque<>();
 
         private ChannelMessages(SocketChannel channel) {
             this.channel = channel;
@@ -62,6 +64,14 @@ public class MsgServer implements MsgServerMBean {
 
         public boolean addAddress(Address address) {
             return addresses.add(address);
+        }
+
+        public int addBuffer(ByteBuffer buffer, int size) {
+            return addBuffer(this.buffer, buffer, size);
+        }
+
+        public List<String> getStringsFromBffer() {
+            return getStringsFromBuffer(buffer);
         }
     }
 
@@ -100,7 +110,14 @@ public class MsgServer implements MsgServerMBean {
     private Object echo() throws InterruptedException {
         while (true) {
             for (Map.Entry<String, ChannelMessages> entry : mapChannelMessages.entrySet()) {
-                LOG.info("Echoing message to: {}", entry.getKey()); // TODO debug
+                // if (LOG.isDebugEnabled()) { // TODO debug
+                    StringBuilder sb = new StringBuilder();
+                    entry.getValue().messages.forEach(sb::append);
+                    LOG.info(
+                        "Echoing message to: {} count: {} of messages: {}",
+                        entry.getKey(), entry.getValue().messages.size(), sb.toString()
+                    );
+                // }
                 sendMessagesToChannel(entry.getValue());
             }
             Thread.sleep(ECHO_DELAY);
@@ -161,6 +178,14 @@ public class MsgServer implements MsgServerMBean {
         mapDbServers.keySet().removeAll(cm.getAddresses());
         //noinspection UnusedAssignment
         cm = null;
+    }
+
+    private BufferedReader bufferReader(InputStream in) {
+        return new BufferedReader(new InputStreamReader(in));
+    }
+
+    private InputStream getInputStream(SocketChannel channel) throws IOException {
+        return channel.socket().getInputStream();
     }
 
     private void readChannel(SelectionKey key, SocketChannel channel) throws IOException {
