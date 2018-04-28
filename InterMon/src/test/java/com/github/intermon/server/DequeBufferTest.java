@@ -143,8 +143,19 @@ public class DequeBufferTest {
     }
 
     @Test
+    public void readBuffer1() throws Exception {
+        int i = 1;
+        logDebugOutBuffer(i);
+        queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+        logDebugQueueBuffer();
+        expected.add(new StringBuilder(ConvertUtil.byteByfferToString(buffers[i])));
+        logDebugExpected();
+        assertEquals();
+    }
+
+    @Test
     public void readBuffer() throws Exception {
-        for (int i = 1; i < 14; ++i) {
+        for (int i = 1; i < buffers.length; ++i) {
             setUp();
             logDebugOutBuffer(i);
             queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
@@ -154,6 +165,17 @@ public class DequeBufferTest {
             assertEquals();
             tearDown();
         }
+    }
+
+    @Test
+    public void readBuffer2() throws Exception {
+        queueBuffer.addBuffer(buffers[3], bufferLengths[3]);
+        queueBuffer.addBuffer(buffers[1], bufferLengths[1]);
+        queueBuffer.addBuffer(buffers[3], bufferLengths[3]);
+        Assert.assertEquals("tette",
+            queueBuffer.inQueue.stream()
+                .map(StringBuilder::toString).reduce("", String::concat)
+        );
     }
 
     @Test

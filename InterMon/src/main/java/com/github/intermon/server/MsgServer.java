@@ -37,7 +37,8 @@ public class MsgServer implements MsgServerMBean {
     private static final int THREADS_NUMBER = 1;
     private static final int PORT = 5050;
     private static final int ECHO_DELAY = 100;
-    private static final int CAPACITY = 1500;
+    private static final int CAPACITY = 100;
+    // private static final int CAPACITY = 1500;
     private static final String MESSAGES_SEPARATOR = "\n\n";
 
     private final ExecutorService executor;
@@ -110,15 +111,18 @@ public class MsgServer implements MsgServerMBean {
     private Object echo() throws InterruptedException {
         while (true) {
             for (Map.Entry<String, ChannelMessages> entry : mapChannelMessages.entrySet()) {
-                // if (LOG.isDebugEnabled()) { // TODO debug
-                    StringBuilder sb = new StringBuilder();
-                    entry.getValue().messages.forEach(sb::append);
-                    LOG.info(
-                        "Echoing message to: {} count: {} of messages: {}",
-                        entry.getKey(), entry.getValue().messages.size(), sb.toString()
-                    );
-                // }
-                sendMessagesToChannel(entry.getValue());
+                List<String> listMessages = entry.getValue().messages;
+                if (listMessages.size() > 0) {
+                    if (LOG.isInfoEnabled()) { // TODO debug
+                        StringBuilder sb = new StringBuilder();
+                        listMessages.forEach(sb::append);
+                        LOG.info(
+                                "Echoing message to: {} count: {} of messages: {}",
+                                entry.getKey(), entry.getValue().messages.size(), sb.toString()
+                        );
+                    }
+                    sendMessagesToChannel(entry.getValue());
+                }
             }
             Thread.sleep(ECHO_DELAY);
         }
@@ -168,7 +172,6 @@ public class MsgServer implements MsgServerMBean {
                 return registerAddressDBServers(msg.getFrom());
         }
         return false;
-        // sendMessagesToChannel.get(socketAddress.toString()).messages.add(result);
     }
 
     private void removeRemoteAddresses(SocketChannel channel) throws IOException {
@@ -188,17 +191,36 @@ public class MsgServer implements MsgServerMBean {
         return channel.socket().getInputStream();
     }
 
+    private void putToBuffer(String remoteAddress, ByteBuffer buffer, int size) {
+        mapChannelMessages.get(remoteAddress).addBuffer(buffer, size);
+        if (LOG.isInfoEnabled()) { // TODO debug
+            String result = new String(buffer.array()).trim();
+            LOG.info("Message received: {} from: {}", result, remoteAddress);
+        }
+    }
+
+    private void handleBuffer(String remoteAddress) {
+        List<String> listOfLines = mapChannelMessages.get(remoteAddress).getStringsFromBffer();
+        if (LOG.isInfoEnabled()) { // TODO debug
+            LOG.info("Handle list of messages received: {}", listOfLines.toString());
+        }
+        for (String line : listOfLines) {
+            Msg msg = getMsgFromJson(line);
+            if (LOG.isInfoEnabled()) { // TODO debug
+                assert msg != null;
+                LOG.info("Decode Msg: {}", msg.toString());
+            }
+        }
+    }
+
     private void readChannel(SelectionKey key, SocketChannel channel) throws IOException {
         ByteBuffer buffer = ByteBuffer.allocate(CAPACITY);
         int read = channel.read(buffer);
 
         if (read != -1) {
-            String result = new String(buffer.array()).trim();
-            SocketAddress socketAddress = channel.getRemoteAddress();
-            LOG.info("Message received: {} from: {}", result, socketAddress); // TODO debug
-            if ( ! handleMsg(channel, getMsgFromJson(result)) ) {
-                LOG.error("Can't handle the message: {}", result);
-            }
+            String remoteAddress = channel.getRemoteAddress().toString();
+            putToBuffer(remoteAddress, buffer, read);
+            handleBuffer(remoteAddress);
         } else {
             key.cancel();
             removeRemoteAddresses(channel);

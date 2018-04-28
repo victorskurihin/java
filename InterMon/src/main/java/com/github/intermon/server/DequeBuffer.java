@@ -42,32 +42,56 @@ public interface DequeBuffer {
     default int addBuffer(Deque<StringBuilder> deque, ByteBuffer buffer, int size) {
         int offset = 0, index = 0;
 
+        StringBuilder sb = ! deque.isEmpty() && lastNotString(deque)
+                         ? deque.pollLast()
+                         : new StringBuilder();
+
+        while (index < size) {
+            if (isDoubleNewLine(buffer, size, index)) {
+                // System.out.printf("1 index = %d, offset = %d\n", index, offset);
+                deque.add(addToStringBuilder(sb, buffer, offset, index).append("\n\n"));
+                sb = new StringBuilder();
+                offset = index += 2;
+            } else
+                ++index;
+        }
+
+        if (index > offset) {
+            // System.out.printf("2 index = %d, offset = %d\n", index, offset);
+            deque.add(addToStringBuilder(sb, buffer, offset, index));
+        }
+
+        return index;
+    }
+
+    default int addBuffer1(Deque<StringBuilder> deque, ByteBuffer buffer, int size) {
+        int offset = 0, index = 0;
+
         if ( ! deque.isEmpty() && lastNotString(deque)) {
             boolean isLine = false;
-            StringBuilder sb = deque.getLast();
+            StringBuilder sb = deque.pollLast();
 
-            while (index < (size - 1)) {
-                // System.out.printf("index = %d, offset = %d\n", index, offset);
-                if (isLine = isNewLine(buffer, index) && isNewLine(buffer, index + 1))
+            while (index < size) {
+                if (isLine = isDoubleNewLine(buffer, size, index))
                     break;
                 ++index;
             }
 
             if (isLine) {
-                // System.out.printf("index = %d, offset = %d\n", index, offset);
+                // System.out.printf("1 index = %d, offset = %d\n", index, offset);
                 deque.add(addToStringBuilder(sb, buffer, offset, index).append("\n\n"));
                 index += 2;
             } else if (index > offset) {
-                // System.out.printf("index = %d, offset = %d\n", index, offset);
+                // System.out.printf("2 index = %d, offset = %d\n", index, offset);
                 deque.add(addToStringBuilder(sb, buffer, offset, index));
             }
             offset = index;
         }
 
         while (index < size) {
-            // System.out.printf("index = %d, offset = %d\n", index, offset);
             if (isDoubleNewLine(buffer, size, index)) {
                 StringBuilder sb = createStringBuilder(buffer, offset, index);
+                // System.out.printf("3 index = %d, offset = %d\n", index, offset);
                 deque.add(sb.append('\n').append('\n'));
                 index += 2;
                 offset = index;
@@ -75,8 +99,10 @@ public interface DequeBuffer {
                 ++index;
             }
         }
-        if (index > offset)
+        if (index > offset) {
+            // System.out.printf("4 index = %d, offset = %d\n", index, offset);
             deque.add(createStringBuilder(buffer, offset, index));
+        }
 
         return index;
     }
@@ -85,7 +111,7 @@ public interface DequeBuffer {
         if ( ! deque.isEmpty()) {
             StringBuilder sb = deque.peek();
             if (sb.length() > 1)
-                return '\n' == sb.charAt(sb.length() - 1)
+                return '\n' == sb.charAt(sb.length() - 2)
                     && '\n' == sb.charAt(sb.length() - 1);
         }
         return false;
@@ -97,7 +123,7 @@ public interface DequeBuffer {
         while (lineExists(deque)) {
             StringBuilder sb = deque.poll();
             sb.delete(sb.length() - 2, sb.length() - 1);
-            result.add(sb.toString());
+            result.add(sb.toString().trim());
         }
         return result;
     }
