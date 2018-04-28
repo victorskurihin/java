@@ -6,12 +6,18 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.nio.ByteBuffer;
+import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class DequeBufferTest {
+
+    private static final Logger LOG = LogManager.getLogger(DequeBufferTest.class);
 
     // The helper class.
     private class DequeBufferImpl implements DequeBuffer {
@@ -26,44 +32,128 @@ public class DequeBufferTest {
         }
     }
 
-    DequeBufferImpl queueBuffer;
+    private DequeBufferImpl queueBuffer;
+    private final ByteBuffer buffers[] = {
+        ConvertUtil.stringToByteBuffer(""),
+        ConvertUtil.stringToByteBuffer("t"),
+        ConvertUtil.stringToByteBuffer("\n"),
+        ConvertUtil.stringToByteBuffer("te"),
+        ConvertUtil.stringToByteBuffer("\n\n"),
+        ConvertUtil.stringToByteBuffer("test1\n"),
+        ConvertUtil.stringToByteBuffer("test1\n\n"),
+        ConvertUtil.stringToByteBuffer("test1\n\nt"),
+        ConvertUtil.stringToByteBuffer("test1\n\nte"),
+        ConvertUtil.stringToByteBuffer("test1\n\ntest2\n"),
+        ConvertUtil.stringToByteBuffer("test1\n\ntest2\n\n"),
+        ConvertUtil.stringToByteBuffer("test1\n\ntest2\n\nt"),
+        ConvertUtil.stringToByteBuffer("test1\n\ntest2\n\nte"),
+        ConvertUtil.stringToByteBuffer("test1\n\ntest2\n\ntest3")
+    };
+    private int bufferLengths[] = new int[buffers.length];
+    private Deque<StringBuilder> expected = new ArrayDeque<>();
 
     @Before
     public void setUp() throws Exception {
         queueBuffer = new DequeBufferImpl();
+        for (int i = 0; i < buffers.length; ++i) {
+            bufferLengths[i] = ConvertUtil.byteByfferToString(buffers[i]).length();
+            LOG.debug("bufferLengths[{}] = {}", i, bufferLengths[i]);
+        }
+        expected = new ArrayDeque<>();
     }
 
     @After
     public void tearDown() throws Exception {
+        expected = null;
         queueBuffer = null;
     }
 
-    ByteBuffer byteBuffer = ConvertUtil.stringToByteBuffer("test1\n\ntest2\n\ntest3");
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOutOfBoundsException0() {
+        Assert.assertFalse(queueBuffer.isNewLine(buffers[0], 0));
+    }
 
-    @Test
-    public void isNewLine() {
-        Assert.assertFalse(queueBuffer.isNewLine(byteBuffer, 0));
-        Assert.assertTrue(queueBuffer.isNewLine(byteBuffer, 5));
-        Assert.assertTrue(queueBuffer.isNewLine(byteBuffer, 6));
-        Assert.assertFalse(queueBuffer.isNewLine(byteBuffer, 7));
-        Assert.assertTrue(queueBuffer.isNewLine(byteBuffer, 12));
-        Assert.assertTrue(queueBuffer.isNewLine(byteBuffer, 13));
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void indexOutOfBoundsException1() {
+        Assert.assertFalse(queueBuffer.isNewLine(buffers[1], 1));
     }
 
     @Test
-    public void readBuffer() {
-        queueBuffer.addBuffer(
-            byteBuffer,  ConvertUtil.byteByfferToString(byteBuffer).toString().length() - 1
+    public void isNewLineFalse1() {
+        Assert.assertFalse(queueBuffer.isNewLine(buffers[1], 0));
+    }
+
+    @Test
+    public void isNewLineTrue2() {
+        Assert.assertTrue(queueBuffer.isNewLine(buffers[2], 0));
+    }
+
+    @Test
+    public void isNewLineFalse3() {
+        Assert.assertFalse(queueBuffer.isNewLine(buffers[3], 1));
+    }
+
+    @Test
+    public void isNewLineTrue4() {
+        Assert.assertTrue(queueBuffer.isNewLine(buffers[4], 0));
+        Assert.assertTrue(queueBuffer.isNewLine(buffers[4], 1));
+    }
+
+    @Test
+    public void isNewLineTrue5() {
+        int i; for (i = 0; i < 5; ++i)
+            Assert.assertFalse(queueBuffer.isNewLine(buffers[5], i));
+        Assert.assertTrue(queueBuffer.isNewLine(buffers[5], i));
+    }
+
+    @Test
+    public void readBuffer0() {
+        queueBuffer.addBuffer(buffers[0], bufferLengths[0]);
+        Assert.assertArrayEquals(expected.toArray(), queueBuffer.inQueue.toArray());
+
+    }
+
+    private void assertEquals() {
+        Assert.assertEquals(expected.stream()
+                .map(StringBuilder::toString).reduce("", String::concat),
+            queueBuffer.inQueue.stream()
+                .map(StringBuilder::toString).reduce("", String::concat)
         );
-        System.out.println("queueBuffer.inQueue = " + queueBuffer.inQueue);
-        System.out.println("queueBuffer.getStringsFromBuffer() = " + queueBuffer.getStringsFromBuffer());
-        System.out.println("queueBuffer.inQueue = " + queueBuffer.inQueue);
-        queueBuffer.addBuffer(
-                byteBuffer,  ConvertUtil.byteByfferToString(byteBuffer).toString().length() - 1
-        );
-        System.out.println("queueBuffer.inQueue = " + queueBuffer.inQueue);
-        System.out.println("queueBuffer.getStringsFromBuffer() = " + queueBuffer.getStringsFromBuffer());
-        System.out.println("queueBuffer.inQueue = " + queueBuffer.inQueue);
+    }
+
+    private void logDebugQueueBuffer() {
+        if (LOG.isDebugEnabled())
+            LOG.debug("queueBuffer.inQueue = {}", queueBuffer.inQueue.stream()
+                .map(StringBuilder::toString) .reduce("", String::concat)
+            );
+    }
+
+    private void logDebugExpected() {
+        if (LOG.isDebugEnabled())
+            LOG.debug("expected = {}", expected.stream()
+                .map(StringBuilder::toString).reduce("", String::concat)
+            );
+    }
+
+    private void logDebugOutBuffer(int i) {
+        if (LOG.isDebugEnabled())
+            LOG.debug(String.format("length(buffers[%d] = %s) = %d",
+                i, ConvertUtil.byteByfferToString(buffers[i]), bufferLengths[i]
+            ));
+    }
+
+    @Test
+    public void readBuffer() throws Exception {
+        for (int i = 1; i < 14; ++i) {
+            setUp();
+            logDebugOutBuffer(i);
+            queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+            logDebugQueueBuffer();
+            expected.add(new StringBuilder(ConvertUtil.byteByfferToString(buffers[i])));
+            logDebugExpected();
+            assertEquals();
+            tearDown();
+        }
     }
 
     @Test
