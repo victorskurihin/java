@@ -37,8 +37,7 @@ public class MsgServer implements MsgServerMBean {
     private static final int THREADS_NUMBER = 1;
     private static final int PORT = 5050;
     private static final int ECHO_DELAY = 100;
-    private static final int CAPACITY = 100;
-    // private static final int CAPACITY = 1500;
+    private static final int CAPACITY = 1460;
     private static final String MESSAGES_SEPARATOR = "\n\n";
 
     private final ExecutorService executor;

@@ -10,6 +10,9 @@ import java.util.Deque;
 import java.util.List;
 
 public interface DequeBuffer {
+
+    String DOUBLE_NEW_LINES = "\n\n";
+
     default boolean isNewLine(ByteBuffer buffer, int index) {
         return '\n' == buffer.get(index);
     }
@@ -18,22 +21,19 @@ public interface DequeBuffer {
         return new StringBuilder(new String(buffer.array(), offset, index - offset));
     }
 
-    default
-    StringBuilder addToStringBuilder(StringBuilder sb, ByteBuffer buff, int offset, int index)
+    default StringBuilder addToStringBuilder(StringBuilder sb, ByteBuffer bb, int offset, int index)
     {
-        return sb.append(new String(buff.array(), offset, index - offset));
+        return sb.append(new String(bb.array(), offset, index - offset));
     }
 
-    default boolean lastNotString(Deque<StringBuilder> deque) {
-        String last = deque.getLast().toString();
+    default boolean lastIsNotEnd(Deque<StringBuilder> deque) {
+        StringBuilder sb = deque.getLast();
+        int length = sb.length();
 
-        return last.length() < 2
-            || '\n' != last.charAt(last.length() - 2)
-            && '\n' != last.charAt(last.length() - 1);
-
+        return length > 1 && ! DOUBLE_NEW_LINES.equals(sb.substring(length - 2, length));
     }
 
-    default boolean isDoubleNewLine(ByteBuffer buffer, int size, int index) {
+    default boolean isDoubleNewLines(ByteBuffer buffer, int size, int index) {
         return index < (size - 2)
             && isNewLine(buffer, index)
             && isNewLine(buffer,index + 1);
@@ -42,14 +42,14 @@ public interface DequeBuffer {
     default int addBuffer(Deque<StringBuilder> deque, ByteBuffer buffer, int size) {
         int offset = 0, index = 0;
 
-        StringBuilder sb = ! deque.isEmpty() && lastNotString(deque)
+        StringBuilder sb = ! deque.isEmpty() && lastIsNotEnd(deque)
                          ? deque.pollLast()
                          : new StringBuilder();
 
         while (index < size) {
-            if (isDoubleNewLine(buffer, size, index)) {
+            if (isDoubleNewLines(buffer, size, index)) {
                 // System.out.printf("1 index = %d, offset = %d\n", index, offset);
-                deque.add(addToStringBuilder(sb, buffer, offset, index).append("\n\n"));
+                deque.add(addToStringBuilder(sb, buffer, offset, index).append(DOUBLE_NEW_LINES));
                 sb = new StringBuilder();
                 offset = index += 2;
             } else
@@ -64,15 +64,15 @@ public interface DequeBuffer {
         return index;
     }
 
-    default int addBuffer1(Deque<StringBuilder> deque, ByteBuffer buffer, int size) {
+    default int addBufferOld(Deque<StringBuilder> deque, ByteBuffer buffer, int size) {
         int offset = 0, index = 0;
 
-        if ( ! deque.isEmpty() && lastNotString(deque)) {
+        if ( ! deque.isEmpty() && lastIsNotEnd(deque)) {
             boolean isLine = false;
             StringBuilder sb = deque.pollLast();
 
             while (index < size) {
-                if (isLine = isDoubleNewLine(buffer, size, index))
+                if (isLine = isDoubleNewLines(buffer, size, index))
                     break;
                 ++index;
             }
@@ -89,7 +89,7 @@ public interface DequeBuffer {
         }
 
         while (index < size) {
-            if (isDoubleNewLine(buffer, size, index)) {
+            if (isDoubleNewLines(buffer, size, index)) {
                 StringBuilder sb = createStringBuilder(buffer, offset, index);
                 // System.out.printf("3 index = %d, offset = %d\n", index, offset);
                 deque.add(sb.append('\n').append('\n'));

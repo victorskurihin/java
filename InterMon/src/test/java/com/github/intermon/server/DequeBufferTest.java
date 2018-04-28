@@ -179,7 +179,52 @@ public class DequeBufferTest {
     }
 
     @Test
-    public void lineExists() {
+    public void lineExistsFalse() throws Exception {
+        int i = 5;
+        queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+        Assert.assertFalse(queueBuffer.lineExists(queueBuffer.inQueue));
+        for (i = 0; i < 4; ++i) {
+            setUp();
+            queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+            Assert.assertFalse(queueBuffer.lineExists(queueBuffer.inQueue));
+            tearDown();
+        }
+    }
+
+    @Test
+    public void lineExistsTrue() throws Exception {
+        int i = 4;
+        queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+        Assert.assertTrue(queueBuffer.lineExists(queueBuffer.inQueue));
+        for (i = 6; i < buffers.length; ++i) {
+            setUp();
+            queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+            Assert.assertTrue(queueBuffer.lineExists(queueBuffer.inQueue));
+            tearDown();
+        }
+    }
+
+    @Test
+    public void getStringsFromBufferZero() throws Exception {
+        int i = 5;
+        queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+        List<String> list = queueBuffer.getStringsFromBuffer();
+        Assert.assertEquals(0, list.size());
+        for (i = 0; i < 4; ++i) {
+            setUp();
+            queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+            list = queueBuffer.getStringsFromBuffer();
+            Assert.assertEquals(0, list.size());
+            tearDown();
+        }
+    }
+
+    @Test
+    public void getStringsFromBuffer1() throws Exception {
+        int i = 4;
+        queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
+        List<String> list = queueBuffer.getStringsFromBuffer();
+        Assert.assertEquals(1, list.size());
     }
 
     @Test
