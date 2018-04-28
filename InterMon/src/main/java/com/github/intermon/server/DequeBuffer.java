@@ -65,7 +65,7 @@ public interface DequeBuffer {
         }
 
         while (index < size) {
-            System.out.printf("index = %d, offset = %d\n", index, offset);
+            // System.out.printf("index = %d, offset = %d\n", index, offset);
             if (isDoubleNewLine(buffer, size, index)) {
                 StringBuilder sb = createStringBuilder(buffer, offset, index);
                 deque.add(sb.append('\n').append('\n'));
