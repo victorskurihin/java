@@ -20,12 +20,16 @@ import java.util.concurrent.Executors;
 
 public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCloseable {
 
-    private static final int PAUSE_MS = 10000;
+    private static final int WORKERS_COUNT = 2;
+    private static final int PAUSE_MS = 100;
+    private static final int PING_PAUSE_MS = 10000;
     private static final Logger LOG = LogManager.getLogger(DBServerMain.class);
 
     private final Address address = new Address();
     private final Socket socket;
     private DBService dbService;
+    private ExecutorService executor;
+    private double load = 0.0;
 
     public DBServerWorker(String host, int port) throws IOException {
         this(new Socket(host, port));
@@ -42,43 +46,70 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         return null != user;
     }
 
+    private boolean replyLogin(LoginMsg msg) {
+        send(msg.createAnswer(getAddress()));
+        return true;
+    }
+
+    private boolean handleMsg(Msg msg) {
+        if (null == msg) {
+            LOG.error("Can't handle null!");
+            return false;
+        }
+
+        switch (msg.getId()) {
+            case RegisterOfMsg.LOGIN_MSG:
+                return replyLogin((LoginMsg) msg);
+        }
+
+        return false;
+    }
+
     @SuppressWarnings("InfiniteLoopStatement")
-    public void loop() throws Exception {
+    private void workLoop() {
+        try {
+            while (true) {
+                long startNs = System.nanoTime();
+                Msg msg = take();
+                assert msg != null;
 
-        LOG.info("DB Server Address:{}", getAddress());
-
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        /* executorService.submit(() -> {
-            try {
-                while (true) {
-                    Msg msg = take();
-                    LOG.debug("Take the message :{}", msg);
-                    if (AuthenticateMsg.ID.equals(msg.getId())) {
-                        authenticate((AuthenticateMsg) msg);
-                    } else if (SingupMsg.ID.equals(msg.getId())) {
-                        singUp((SingupMsg) msg);
-                    }
+                if ( ! handleMsg(msg)) {
+                    LOG.error("Can't handle Msg: {}", msg.toString());
+                } else if (LOG.isInfoEnabled()) { // TODO debug
+                    LOG.info("Take the message:{}", msg);
                 }
-            } catch (InterruptedException e) {
-                LOG.error(e);
+
+                load += (((double) (System.nanoTime() - startNs)) * 10E-9);
+                long delta = (System.nanoTime() - startNs)/1_000_000;
+                Thread.sleep(PAUSE_MS - (delta < PAUSE_MS ? delta: 0));
             }
-        });*/
+        } catch (InterruptedException e) {
+            LOG.error(e);
+        }
+    }
+
+    @SuppressWarnings("InfiniteLoopStatement")
+    public void loops() throws Exception {
+        executor = Executors.newSingleThreadExecutor();
+        executor.execute(this::workLoop);
 
         Msg registerMsg = new RegisterDBServerMsg(address);
         send(registerMsg);
 
+        LOG.info("DB Server Address:{}", getAddress());
+
         try {
             while (true) {
-                Msg msg = new PingMsg(address, address);
+                Msg msg = new LoadMsg(address, address, load);
                 send(msg);
-                LOG.debug("ping:{}", msg.getTo());
-                Thread.sleep(PAUSE_MS);
+                LOG.debug("load:{}", msg);
+                Thread.sleep(PING_PAUSE_MS);
             }
         } catch (Exception e) {
             LOG.error(e);
         } finally {
             close();
-            executorService.shutdown();
+            executor.shutdown();
         }
     }
 

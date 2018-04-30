@@ -5,11 +5,10 @@ package com.github.intermon.server;
  */
 
 import com.github.intermon.channel.MsgJson;
-import com.github.intermon.messages.Address;
-import com.github.intermon.messages.LoginMsg;
-import com.github.intermon.messages.Msg;
-import com.github.intermon.messages.RegisterOfMsg;
+import com.github.intermon.messages.*;
 
+import com.google.common.util.concurrent.AtomicDouble;
+import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.parser.ParseException;
@@ -19,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -27,6 +25,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * The class implements a non blocking socket message server.
@@ -43,14 +42,14 @@ public class MsgServer implements MsgServerMBean {
     private final ExecutorService executor;
     private final Map<String, ChannelMessages> mapChannelMessages;
     private final Map<Address, SocketChannel> mapAddressRecipients;
-    private final Map<Address, Integer> mapDbServers;
+    private final Map<Address, Double> mapDbServers;
 
     private Selector selector;
 
     // The helper class.
     private class ChannelMessages implements DequeBuffer {
         private final SocketChannel channel;
-        private final List<String> messages = new ArrayList<>();
+        private final List<Msg> messages = new ArrayList<>();
         private final Set<Address> addresses = new ConcurrentSkipListSet<>();
         private final Deque<StringBuilder> buffer = new ConcurrentLinkedDeque<>();
 
@@ -70,8 +69,9 @@ public class MsgServer implements MsgServerMBean {
             return addBuffer(this.buffer, buffer, size);
         }
 
-        public List<String> getStringsFromBffer() {
-            return getStringsFromBuffer(buffer);
+        public List<Msg> getStringsFromBffer() {
+            List<String> list = getStringsFromBuffer(buffer);
+            return list.stream().map(MsgServer.this::getMsgFromJson).collect(Collectors.toList());
         }
     }
 
@@ -82,15 +82,15 @@ public class MsgServer implements MsgServerMBean {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
         mapChannelMessages = new ConcurrentHashMap<>();
         mapAddressRecipients = new ConcurrentHashMap<>();
-        mapDbServers = new ConcurrentHashMap<>();
+        mapDbServers = new ConcurrentHashMap<Address, Double>();
     }
 
     private void sendMessagesToChannel(ChannelMessages channelMessages) {
         if (channelMessages.channel.isConnected()) {
-            channelMessages.messages.forEach(message -> {
+            channelMessages.messages.forEach(msg -> {
                 try {
                     ByteBuffer buffer = ByteBuffer.allocate(CAPACITY);
-                    buffer.put(message.getBytes());
+                    buffer.put((new Gson().toJson(msg)).getBytes());
                     buffer.put(MESSAGES_SEPARATOR.getBytes());
                     buffer.flip();
 
@@ -110,7 +110,7 @@ public class MsgServer implements MsgServerMBean {
     private Object echo() throws InterruptedException {
         while (true) {
             for (Map.Entry<String, ChannelMessages> entry : mapChannelMessages.entrySet()) {
-                List<String> listMessages = entry.getValue().messages;
+                List<Msg> listMessages = entry.getValue().messages;
                 if (listMessages.size() > 0) {
                     if (LOG.isInfoEnabled()) { // TODO debug
                         StringBuilder sb = new StringBuilder();
@@ -152,11 +152,23 @@ public class MsgServer implements MsgServerMBean {
 
     private boolean registerAddressDBServers(Address from) {
         if (LoginMsg.BROADCAST != from) {
-            mapDbServers.put(from, 0);
+            mapDbServers.put(from, 0.0);
             LOG.info("Register the DBService: {}", from);
             return true;
         }
         return false;
+    }
+
+    private boolean updateMapDbServers(LoadMsg msg) {
+        Double oldLoad = mapDbServers.getOrDefault(msg.getFrom(), null);
+
+        if (null == oldLoad) {
+            LOG.error("Can't find DBService: {} !", msg.getFrom());
+            return false;
+        }
+        mapDbServers.put(msg.getFrom(), new AtomicDouble(oldLoad).addAndGet(msg.getLoad()));
+
+        return true;
     }
 
     private boolean handleMsg(SocketChannel channel, Msg msg) {
@@ -164,12 +176,38 @@ public class MsgServer implements MsgServerMBean {
             LOG.error("Can't handle null!");
             return false;
         }
+
         switch (msg.getId()) {
+            case RegisterOfMsg.LOAD_MSG:
+                return updateMapDbServers((LoadMsg) msg);
             case RegisterOfMsg.LOGIN_MSG:
                 return registerAddress(channel, msg.getFrom());
             case RegisterOfMsg.REGISTERDBSERVER_MSG:
                 return registerAddressDBServers(msg.getFrom());
+            default:
+                return forward(msg);
         }
+    }
+
+    private boolean forward(Msg msg) {
+        SocketChannel sc = mapAddressRecipients.getOrDefault(msg.getTo(), null);
+
+        if (null != sc) {
+            try {
+                String remoteAddress = sc.getRemoteAddress().toString();
+                ChannelMessages cm = mapChannelMessages.getOrDefault(remoteAddress, null);
+                if (null == cm) {
+                    LOG.error("Can't get ChannelMessages for :{}", remoteAddress);
+                    return false;
+                }
+                cm.messages.add(msg);
+                return true;
+            } catch (IOException e) {
+                LOG.error(e);
+                return false;
+            }
+        }
+
         return false;
     }
 
@@ -192,21 +230,26 @@ public class MsgServer implements MsgServerMBean {
 
     private void putToBuffer(String remoteAddress, ByteBuffer buffer, int size) {
         mapChannelMessages.get(remoteAddress).addBuffer(buffer, size);
+
         if (LOG.isInfoEnabled()) { // TODO debug
             String result = new String(buffer.array()).trim();
             LOG.info("Message received: {} from: {}", result, remoteAddress);
         }
     }
 
-    private void handleBuffer(String remoteAddress) {
-        List<String> listOfLines = mapChannelMessages.get(remoteAddress).getStringsFromBffer();
+    private void handleBuffer(SocketChannel channel, String remoteAddress) {
+        List<Msg> listOfLines = mapChannelMessages.get(remoteAddress).getStringsFromBffer();
+
         if (LOG.isInfoEnabled()) { // TODO debug
             LOG.info("Handle list of messages received: {}", listOfLines.toString());
         }
-        for (String line : listOfLines) {
-            Msg msg = getMsgFromJson(line);
-            if (LOG.isInfoEnabled()) { // TODO debug
-                assert msg != null;
+
+        for (Msg msg: listOfLines) {
+            assert msg != null;
+
+            if ( ! handleMsg(channel, msg)) {
+                LOG.error("Can't handle Msg: {}", msg.toString());
+            } else if (LOG.isInfoEnabled()) { // TODO debug
                 LOG.info("Decode Msg: {}", msg.toString());
             }
         }
@@ -219,7 +262,7 @@ public class MsgServer implements MsgServerMBean {
         if (read != -1) {
             String remoteAddress = channel.getRemoteAddress().toString();
             putToBuffer(remoteAddress, buffer, read);
-            handleBuffer(remoteAddress);
+            handleBuffer(channel, remoteAddress);
         } else {
             key.cancel();
             removeRemoteAddresses(channel);
@@ -236,9 +279,8 @@ public class MsgServer implements MsgServerMBean {
         channel.register(selector, SelectionKey.OP_READ);
 
         mapChannelMessages.put(remoteAddress, new ChannelMessages(channel));
-        // ChannelMessages channelMessages = mapChannelMessages.get(remoteAddress);
-        // channelMessages.messages.add(MsgJson.createJsonLoginMsg());
-        // sendMessagesToChannel(channelMessages);
+        ChannelMessages channelMessages = mapChannelMessages.get(remoteAddress);
+        channelMessages.messages.add(new LoginMsg());
     }
 
     // The second loop.

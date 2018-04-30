@@ -57,7 +57,6 @@ public class DequeBufferTest {
         queueBuffer = new DequeBufferImpl();
         for (int i = 0; i < buffers.length; ++i) {
             bufferLengths[i] = ConvertUtil.byteByfferToString(buffers[i]).length();
-            LOG.debug("bufferLengths[{}] = {}", i, bufferLengths[i]);
         }
         expected = new ArrayDeque<>();
     }
@@ -157,11 +156,8 @@ public class DequeBufferTest {
     public void readBuffer() throws Exception {
         for (int i = 1; i < buffers.length; ++i) {
             setUp();
-            logDebugOutBuffer(i);
             queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
-            logDebugQueueBuffer();
             expected.add(new StringBuilder(ConvertUtil.byteByfferToString(buffers[i])));
-            logDebugExpected();
             assertEquals();
             tearDown();
         }
