@@ -41,6 +41,19 @@ public class AddressDataSetTest {
         AddressDataSet addressDataSetTest = new AddressDataSet(1, TEST);
         Assert.assertEquals(addressDataSetTest, addressDataSet);
     }
+
+    @Test
+    public void equalsHashCode() {
+        AddressDataSet addressDataSetTest = new AddressDataSet(1, TEST);
+        Assert.assertEquals(addressDataSetTest.hashCode(), addressDataSet.hashCode());
+    }
+
+    @Test
+    public void testConstructor() {
+        AddressDataSet testDataSet = new AddressDataSet();
+        AddressDataSet expectedDataSet = new AddressDataSet(null);
+        Assert.assertEquals(expectedDataSet.toString(), testDataSet.toString());
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

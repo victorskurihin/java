@@ -78,6 +78,22 @@ public class UserDataSetTest {
         userDataSetTest.addPhone(new PhoneDataSet(1, OTHER));
         Assert.assertEquals(userDataSetTest, userDataSet);
     }
+
+
+    @Test
+    public void testHashCode() {
+        userDataSet.setPhones(phones);
+        UserDataSet expectedUserDataSet  = new UserDataSet(1, NAME, PASSWORD, addressDataSet);
+        expectedUserDataSet.setPhones(phones);
+        Assert.assertEquals(expectedUserDataSet.hashCode(), addressDataSet.hashCode());
+    }
+
+    @Test
+    public void testConstructor() {
+        UserDataSet testUserDataSet = new UserDataSet();
+        UserDataSet expectedUserDataSet = new UserDataSet(null, null);
+        Assert.assertEquals(expectedUserDataSet.toString(), testUserDataSet.toString());
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
