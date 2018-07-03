@@ -20,7 +20,6 @@ import java.util.concurrent.Executors;
 
 public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCloseable {
 
-    private static final int WORKERS_COUNT = 2;
     private static final int PAUSE_MS = 100;
     private static final int PING_PAUSE_MS = 10000;
     private static final Logger LOG = LogManager.getLogger(DBServerMain.class);
@@ -68,7 +67,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
     @SuppressWarnings("InfiniteLoopStatement")
     private void workLoop() {
         try {
-            while (true) {
+            while ( ! socket.isClosed()) {
                 long startNs = System.nanoTime();
                 Msg msg = take();
                 assert msg != null;
@@ -99,10 +98,13 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
         LOG.info("DB Server Address:{}", getAddress());
 
         try {
-            while (true) {
+            while ( ! socket.isClosed()) {
                 Msg msg = new LoadMsg(address, address, load);
                 send(msg);
                 LOG.debug("load:{}", msg);
+                LOG.info(
+                    "Check connected:{}, closed:{}", socket.isConnected(), socket.isClosed()
+                );
                 Thread.sleep(PING_PAUSE_MS);
             }
         } catch (Exception e) {

@@ -82,7 +82,7 @@ public class MsgServer implements MsgServerMBean {
         executor = Executors.newFixedThreadPool(THREADS_NUMBER);
         mapChannelMessages = new ConcurrentHashMap<>();
         mapAddressRecipients = new ConcurrentHashMap<>();
-        mapDbServers = new ConcurrentHashMap<Address, Double>();
+        mapDbServers = new ConcurrentHashMap<>();
     }
 
     private void sendMessagesToChannel(ChannelMessages channelMessages) {
@@ -296,7 +296,6 @@ public class MsgServer implements MsgServerMBean {
                     if (key.isAcceptable()) {
                         nonBockingAccept(serverSocketChannel.accept());
                     } else if (key.isReadable()) {
-                        LOG.info("key:{} isReadable", key);
                         readChannel(key, (SocketChannel) key.channel());
                     }
                 } catch (IOException e) {
