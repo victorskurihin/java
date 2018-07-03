@@ -53,16 +53,16 @@ public class DequeBufferTest {
     private Deque<StringBuilder> expected = new ArrayDeque<>();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         queueBuffer = new DequeBufferImpl();
         for (int i = 0; i < buffers.length; ++i) {
-            bufferLengths[i] = ConvertUtil.byteByfferToString(buffers[i]).length();
+            bufferLengths[i] = ConvertUtil.byteBufferToString(buffers[i]).length();
         }
         expected = new ArrayDeque<>();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         expected = null;
         queueBuffer = null;
     }
@@ -137,17 +137,17 @@ public class DequeBufferTest {
     private void logDebugOutBuffer(int i) {
         if (LOG.isDebugEnabled())
             LOG.debug(String.format("length(buffers[%d] = %s) = %d",
-                i, ConvertUtil.byteByfferToString(buffers[i]), bufferLengths[i]
+                i, ConvertUtil.byteBufferToString(buffers[i]), bufferLengths[i]
             ));
     }
 
     @Test
-    public void readBuffer1() throws Exception {
+    public void readBuffer1() {
         int i = 1;
         logDebugOutBuffer(i);
         queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
         logDebugQueueBuffer();
-        expected.add(new StringBuilder(ConvertUtil.byteByfferToString(buffers[i])));
+        expected.add(new StringBuilder(ConvertUtil.byteBufferToString(buffers[i])));
         logDebugExpected();
         assertEquals();
     }
@@ -157,14 +157,14 @@ public class DequeBufferTest {
         for (int i = 1; i < buffers.length; ++i) {
             setUp();
             queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
-            expected.add(new StringBuilder(ConvertUtil.byteByfferToString(buffers[i])));
+            expected.add(new StringBuilder(ConvertUtil.byteBufferToString(buffers[i])));
             assertEquals();
             tearDown();
         }
     }
 
     @Test
-    public void readBuffer2() throws Exception {
+    public void readBuffer2() {
         queueBuffer.addBuffer(buffers[3], bufferLengths[3]);
         queueBuffer.addBuffer(buffers[1], bufferLengths[1]);
         queueBuffer.addBuffer(buffers[3], bufferLengths[3]);
@@ -216,7 +216,7 @@ public class DequeBufferTest {
     }
 
     @Test
-    public void getStringsFromBuffer1() throws Exception {
+    public void getStringsFromBuffer1() {
         int i = 4;
         queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
         List<String> list = queueBuffer.getStringsFromBuffer();

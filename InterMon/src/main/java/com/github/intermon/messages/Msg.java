@@ -1,5 +1,11 @@
 package com.github.intermon.messages;
 
+import com.github.intermon.messages.Msg;
+import com.google.gson.Gson;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 /*
  * Created by VSkurikhin at Sun Apr 15 13:20:45 MSK 2018.
  */
@@ -33,6 +39,14 @@ public abstract class Msg {
 
     public Address getTo() {
         return to;
+    }
+
+    public static Msg get(String json) throws ClassNotFoundException, ParseException {
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(json);
+        String className = (String) jsonObject.get(Msg.CLASS_NAME_VARIABLE);
+        Class<?> msgClass = Class.forName(className);
+        return (Msg) new Gson().fromJson(json, msgClass);
     }
 }
 

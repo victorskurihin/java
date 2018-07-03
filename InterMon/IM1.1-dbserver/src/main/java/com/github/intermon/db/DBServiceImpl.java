@@ -219,7 +219,7 @@ public class DBServiceImpl implements DBService {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         sessionFactory.close();
     }
 

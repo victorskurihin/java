@@ -12,14 +12,14 @@ public class PhoneDataSetTest {
     UserDataSet userDataSet;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         userDataSet = new UserDataSet(TEST, OTHER);
         phoneDataSet = new PhoneDataSet(1, TEST);
         phoneDataSet.setUserDataSet(userDataSet);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         phoneDataSet = null;
         userDataSet = null;
     }

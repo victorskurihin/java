@@ -93,12 +93,10 @@ public class Main {
     }
 
     private String clientCommand(String dir, String jar) {
-        String cmd = String.format(
+        return String.format(
             "%s -jar %s%ctarget%c%s %s %s",
             javaExeJar(), dir, FS, FS, jar, MESSAGE_SERVER_HOST, MESSAGE_SERVER_PORT
         );
-
-        return cmd;
     }
 
     private String frontendCommand(String dir, String jar, String httpPort) {

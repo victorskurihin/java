@@ -88,7 +88,7 @@ public class DBServerWorker extends SocketMsgWorker implements Addressee, AutoCl
     }
 
     @SuppressWarnings("InfiniteLoopStatement")
-    public void loops() throws Exception {
+    public void loops() {
         executor = Executors.newSingleThreadExecutor();
         executor.execute(this::workLoop);
 

@@ -14,7 +14,7 @@ public class ConvertUtil {
         return Charset.forName("UTF-8").encode(msg);
     }
 
-    public static String byteByfferToString(ByteBuffer buffer, Charset charset){
+    public static String byteBufferToString(ByteBuffer buffer, Charset charset){
         byte[] bytes;
         if(buffer.hasArray()) {
             bytes = buffer.array();
@@ -25,7 +25,9 @@ public class ConvertUtil {
         return new String(bytes, charset);
     }
 
-    public static String byteByfferToString(ByteBuffer buffer){
-        return byteByfferToString(buffer, UTF8);
+    public static String byteBufferToString(ByteBuffer buffer){
+        return byteBufferToString(buffer, UTF8);
     }
+
+    private ConvertUtil() { }
 }

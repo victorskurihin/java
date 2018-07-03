@@ -9,12 +9,12 @@ public class AddressTest {
     Address address;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         address = new Address();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         address = null;
     }
 
