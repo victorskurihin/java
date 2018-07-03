@@ -139,7 +139,7 @@ public class SocketMsgWorker implements MsgWorker {
                     stringBuilder = new StringBuilder();
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             LOG.error("ReceiveMessage catch exeption: {}", e);
         } finally {
             close();
@@ -160,13 +160,13 @@ public class SocketMsgWorker implements MsgWorker {
         }
     }
 
-    private static Msg getMsgFromJSON(String json) throws ClassNotFoundException {
+    private Msg getMsgFromJSON(String json) {
         try {
-            return MsgJson.get(json);
-        } catch (ParseException e) {
-            LOG.error("Parsing error: {}", e);
-            return null;
+            return Msg.get(json);
+        } catch (ClassNotFoundException | ParseException e) {
+            LOG.error("getMsgFromJSON catch execption: {}", e);
         }
+        return null;
     }
 
 }

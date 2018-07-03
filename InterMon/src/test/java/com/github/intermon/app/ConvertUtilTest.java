@@ -5,6 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 
 import static org.junit.Assert.*;
@@ -16,19 +18,11 @@ public class ConvertUtilTest {
     String юникодString = "юникод";
     ByteBuffer юникодByteBuffer = ByteBuffer.wrap(new byte[]{84, 101, 115, 116});
 
-    b = -47
-    b = -114
-    b = -48
-    b = -67
-    b = -48
-    b = -72
-    b = -48
-    b = -70
-    b = -48
-    b = -66
-    b = -48
-    b = -76
-    b = 0
+    public ConvertUtilTest() { }
+
+    @Test
+    public void extectedExceptionInDumpConstructor() {
+    }
 
     @Test
     public void stringToByteBuffer() {

@@ -4,7 +4,6 @@ package com.github.intermon.server;
  * Created by VSkurikhin at Wed, Apr 25, 2018 10:06:55 AM
  */
 
-import com.github.intermon.channel.MsgJson;
 import com.github.intermon.messages.*;
 
 import com.google.common.util.concurrent.AtomicDouble;
@@ -132,7 +131,7 @@ public class MsgServer implements MsgServerMBean {
             return null;
         }
         try {
-            return MsgJson.get(result);
+            return Msg.get(result);
         } catch (ParseException e) {
             LOG.error("Unable to parse: {}, exeption: {}", result, e);
         } catch (ClassNotFoundException e) {

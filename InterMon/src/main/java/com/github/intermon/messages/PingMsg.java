@@ -4,6 +4,8 @@ package com.github.intermon.messages;
  * Created by VSkurikhin at Sun Apr 15 17:11:20 MSK 2018.
  */
 
+import java.util.Objects;
+
 public class PingMsg extends Msg {
 
     public static final String ID = PingMsg.class.getSimpleName();
@@ -22,6 +24,20 @@ public class PingMsg extends Msg {
 
     public long getTime() {
         return time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PingMsg)) return false;
+        PingMsg pingMsg = (PingMsg) o;
+        return getTime() == pingMsg.getTime()
+            && getFrom().equals(pingMsg.getFrom());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTime(), getFrom(), getTo());
     }
 
     @Override

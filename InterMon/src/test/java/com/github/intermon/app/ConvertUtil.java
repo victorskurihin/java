@@ -28,4 +28,6 @@ public class ConvertUtil {
     public static String byteBufferToString(ByteBuffer buffer){
         return byteBufferToString(buffer, UTF8);
     }
+
+    private ConvertUtil() { }
 }

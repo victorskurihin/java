@@ -11,12 +11,12 @@ public class AddressDataSetTest {
     AddressDataSet addressDataSet;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         addressDataSet = new AddressDataSet(1, TEST);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         addressDataSet = null;
     }
 

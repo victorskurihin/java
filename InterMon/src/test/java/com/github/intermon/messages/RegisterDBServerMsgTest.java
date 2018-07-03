@@ -10,12 +10,12 @@ public class RegisterDBServerMsgTest {
     private RequestDBServerMsg requestDBServerMsg;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         requestDBServerMsg = new RequestDBServerMsg(new Address());
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         requestDBServerMsg = null;
     }
 

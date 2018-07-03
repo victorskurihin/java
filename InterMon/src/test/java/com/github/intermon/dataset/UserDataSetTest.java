@@ -20,14 +20,14 @@ public class UserDataSetTest {
     private Set<PhoneDataSet> phones;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         phones = new HashSet<>();
         addressDataSet = new AddressDataSet(1, ADDRESS);
         userDataSet = new UserDataSet(1, NAME, PASSWORD, addressDataSet);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         userDataSet = null;
         addressDataSet = null;
         phones = null;
