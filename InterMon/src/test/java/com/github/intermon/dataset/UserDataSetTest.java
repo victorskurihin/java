@@ -98,8 +98,7 @@ public class UserDataSetTest {
         userDataSet.setPhones(phones);
         UserDataSet expectedUserDataSet  = new UserDataSet(1, NAME, PASSWORD, addressDataSet);
         expectedUserDataSet.setPhones(phones);
-        // TODO Assert.assertEquals(expectedUserDataSet.hashCode(), addressDataSet
-        // .hashCode());
+        Assert.assertEquals(expectedUserDataSet.hashCode(), userDataSet.hashCode());
     }
 
     @Test

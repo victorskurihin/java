@@ -40,6 +40,19 @@ public class AddressTest {
         Assert.assertTrue(addressA.compareTo(addressATest) == 0);
         Assert.assertTrue(addressB.compareTo(addressA) > 0);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void mustBeIllegalArgumentException() {
+        address.compareTo(new Object());
+    }
+
+    @Test
+    public void testToString() {
+        Address addressA1 = new Address("A");
+        Address addressA2 = new Address("A");
+        Assert.assertEquals(addressA1.toString(), addressA2.toString());
+        Assert.assertNotEquals(address.toString(), addressA1.toString());
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

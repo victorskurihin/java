@@ -4,6 +4,8 @@ package com.github.intermon.messages;
  * Created by VSkurikhin at Sun Apr 15 17:11:20 MSK 2018.
  */
 
+import com.google.gson.Gson;
+
 public class LoginMsg extends Msg {
 
     public static final String ID = LoginMsg.class.getSimpleName();
@@ -32,6 +34,10 @@ public class LoginMsg extends Msg {
 
     public LoginMsg createAnswer(Address from) {
         return new LoginMsg(from);
+    }
+
+    public static String createJsonLoginMsg() {
+        return new Gson().toJson(new LoginMsg());
     }
 }
 

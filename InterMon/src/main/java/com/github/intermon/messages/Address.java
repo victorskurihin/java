@@ -56,7 +56,7 @@ public final class Address implements Comparable {
         if (o instanceof Address) {
             return id.compareTo(((Address) o).id);
         } else
-            throw new RuntimeException();
+            throw new IllegalArgumentException("Incompatible object: " + o.toString());
     }
 }
 
