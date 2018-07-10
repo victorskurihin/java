@@ -6,9 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -16,9 +13,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class DequeBufferTest {
-
-    private static final Logger LOG = LogManager.getLogger(DequeBufferTest.class);
-
     // The helper class.
     private class DequeBufferImpl implements DequeBuffer {
         private final Deque<StringBuilder> inQueue = new ConcurrentLinkedDeque<>();
@@ -120,35 +114,11 @@ public class DequeBufferTest {
         );
     }
 
-    private void logDebugQueueBuffer() {
-        if (LOG.isDebugEnabled())
-            LOG.debug("queueBuffer.inQueue = {}", queueBuffer.inQueue.stream()
-                .map(StringBuilder::toString) .reduce("", String::concat)
-            );
-    }
-
-    private void logDebugExpected() {
-        if (LOG.isDebugEnabled())
-            LOG.debug("expected = {}", expected.stream()
-                .map(StringBuilder::toString).reduce("", String::concat)
-            );
-    }
-
-    private void logDebugOutBuffer(int i) {
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("length(buffers[%d] = %s) = %d",
-                i, ConvertUtil.byteBufferToString(buffers[i]), bufferLengths[i]
-            ));
-    }
-
     @Test
     public void readBuffer1() {
         int i = 1;
-        logDebugOutBuffer(i);
         queueBuffer.addBuffer(buffers[i], bufferLengths[i]);
-        logDebugQueueBuffer();
         expected.add(new StringBuilder(ConvertUtil.byteBufferToString(buffers[i])));
-        logDebugExpected();
         assertEquals();
     }
 

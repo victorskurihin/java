@@ -7,13 +7,13 @@ import org.junit.Test;
 
 public class RequestDBServerMsgTest {
 
-    private final Address from = new Address();
+    private final Address address = new Address();
 
     private RequestDBServerMsg requestDBServerMsg;
 
     @Before
     public void setUp() {
-        requestDBServerMsg = new RequestDBServerMsg(from);
+        requestDBServerMsg = new RequestDBServerMsg(address);
     }
 
     @After
@@ -32,6 +32,13 @@ public class RequestDBServerMsgTest {
         RequestDBServerMsg answer = requestDBServerMsg.createAnswer(dbServiceTest);
         Assert.assertEquals(answer.getTo(), requestDBServerMsg.getFrom());
         Assert.assertEquals(answer.getFrom(), dbServiceTest);
+    }
+
+    @Test
+    public void toStringCoverageTest() {
+        RequestDBServerMsg requestDBServerMsg1 = new RequestDBServerMsg(address);
+        RequestDBServerMsg requestDBServerMsg2 = new RequestDBServerMsg(address);
+        Assert.assertEquals(requestDBServerMsg1.toString(), requestDBServerMsg2.toString());
     }
 }
 

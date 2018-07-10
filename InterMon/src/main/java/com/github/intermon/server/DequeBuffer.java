@@ -48,7 +48,6 @@ public interface DequeBuffer {
 
         while (index < size) {
             if (isDoubleNewLines(buffer, size, index)) {
-                // System.out.printf("1 index = %d, offset = %d\n", index, offset);
                 deque.add(addToStringBuilder(sb, buffer, offset, index).append(DOUBLE_NEW_LINES));
                 sb = new StringBuilder();
                 offset = index += 2;
@@ -57,51 +56,7 @@ public interface DequeBuffer {
         }
 
         if (index > offset) {
-            // System.out.printf("2 index = %d, offset = %d\n", index, offset);
             deque.add(addToStringBuilder(sb, buffer, offset, index));
-        }
-
-        return index;
-    }
-
-    default int addBufferOld(Deque<StringBuilder> deque, ByteBuffer buffer, int size) {
-        int offset = 0, index = 0;
-
-        if ( ! deque.isEmpty() && lastIsNotEnd(deque)) {
-            boolean isLine = false;
-            StringBuilder sb = deque.pollLast();
-
-            while (index < size) {
-                if (isLine = isDoubleNewLines(buffer, size, index))
-                    break;
-                ++index;
-            }
-
-            if (isLine) {
-                // System.out.printf("1 index = %d, offset = %d\n", index, offset);
-                deque.add(addToStringBuilder(sb, buffer, offset, index).append("\n\n"));
-                index += 2;
-            } else if (index > offset) {
-                // System.out.printf("2 index = %d, offset = %d\n", index, offset);
-                deque.add(addToStringBuilder(sb, buffer, offset, index));
-            }
-            offset = index;
-        }
-
-        while (index < size) {
-            if (isDoubleNewLines(buffer, size, index)) {
-                StringBuilder sb = createStringBuilder(buffer, offset, index);
-                // System.out.printf("3 index = %d, offset = %d\n", index, offset);
-                deque.add(sb.append('\n').append('\n'));
-                index += 2;
-                offset = index;
-            } else {
-                ++index;
-            }
-        }
-        if (index > offset) {
-            // System.out.printf("4 index = %d, offset = %d\n", index, offset);
-            deque.add(createStringBuilder(buffer, offset, index));
         }
 
         return index;

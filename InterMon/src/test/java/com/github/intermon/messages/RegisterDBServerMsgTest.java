@@ -6,32 +6,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class RegisterDBServerMsgTest {
-
-    private RequestDBServerMsg requestDBServerMsg;
+    Address address;
 
     @Before
     public void setUp() {
-        requestDBServerMsg = new RequestDBServerMsg(new Address());
+        address = new Address();
     }
 
     @After
     public void tearDown() {
-        requestDBServerMsg = null;
+        address = null;
     }
 
     @Test
-    public void getId() {
-        Assert.assertEquals(RequestDBServerMsg.ID, requestDBServerMsg.getId());
+    public void getIdCoverageTest() {
+        RegisterDBServerMsg registerDBServerMsg = new RegisterDBServerMsg(address);
+        Assert.assertEquals(registerDBServerMsg.getId(), RegisterDBServerMsg.class.getSimpleName());
     }
 
     @Test
-    public void getFrom(){
-        Assert.assertEquals(new Address(
-                RequestDBServerMsg.class.getSimpleName()
-            ),
-            requestDBServerMsg.getTo()
-        );
-        Assert.assertEquals(RequestDBServerMsg.ID, requestDBServerMsg.getTo().getId());
+    public void toStringCoverageTest() {
+        RegisterDBServerMsg registerDBServerMsg1 = new RegisterDBServerMsg(address);
+        RegisterDBServerMsg registerDBServerMsg2 = new RegisterDBServerMsg(address);
+        Assert.assertEquals(registerDBServerMsg1.toString(), registerDBServerMsg2.toString());
     }
 }
 
