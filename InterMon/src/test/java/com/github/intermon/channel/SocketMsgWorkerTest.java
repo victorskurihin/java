@@ -17,26 +17,30 @@ public class SocketMsgWorkerTest {
     }
 
     @Test
-    public void send() {
+    public void constructorCoverageTest() {
     }
 
     @Test
-    public void pool() {
+    public void sendCoverageTest() {
     }
 
     @Test
-    public void take() {
+    public void poolCoverageTest() {
     }
 
     @Test
-    public void close() {
+    public void takeCoverageTest() {
     }
 
     @Test
-    public void init() {
+    public void closeCoverageTest() {
     }
 
     @Test
-    public void addShutdownRegistration() {
+    public void initCoverageTest() {
+    }
+
+    @Test
+    public void addShutdownRegistrationCoverageTest() {
     }
 }
