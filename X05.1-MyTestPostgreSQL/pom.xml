@@ -5,12 +5,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>su.svn.appslist</groupId>
-    <artifactId>myapps</artifactId>
-    <version>10.1-1</version>
+    <groupId>su.svn.testpostgre</groupId>
+    <artifactId>mytestpostgre</artifactId>
+    <version>1.0-1</version>
     <packaging>war</packaging>
 
-    <name>My Applications Webapp</name>
+    <name>My Test PostgreSQL Maven Webapp</name>
     <!-- FIXME change it to the project's website -->
     <url>http://localhost</url>
 
@@ -27,23 +27,11 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <version>6.0</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.taglibs</groupId>
-            <artifactId>taglibs-standard-spec</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.taglibs</groupId>
-            <artifactId>taglibs-standard-impl</artifactId>
-            <version>1.2.5</version>
         </dependency>
     </dependencies>
 
@@ -59,12 +47,10 @@
                         <target>1.8</target>
                     </configuration>
                 </plugin>
-
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>3.2.0</version>
                 </plugin>
-
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
                     <artifactId>tomcat7-maven-plugin</artifactId>
@@ -75,7 +61,6 @@
                         <path>/${project.build.finalName}</path>
                     </configuration>
                 </plugin>
-
                 <plugin>
                     <groupId>org.glassfish.maven.plugin</groupId>
                     <artifactId>maven-glassfish-plugin</artifactId>

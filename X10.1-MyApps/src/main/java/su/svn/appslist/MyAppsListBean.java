@@ -8,8 +8,10 @@ public class MyAppsListBean {
     private List<App> items = new ArrayList<>();
 
     public MyAppsListBean() {
-        items.add(new App(0, "name0", "location0"));
-        items.add(new App(1, "name1", "location1"));
+        items.add(new App(0, "myhello", "/myhello"));
+        items.add(new App(1, "myreqinfo", "/myreqinfo"));
+        items.add(new App(2, "myrequestheader", "/myrequestheader"));
+        items.add(new App(3, "mytestpostgre", "/mytestpostgre"));
     }
 
     public List<App> getItems() {
