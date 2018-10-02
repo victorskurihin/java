@@ -20,24 +20,36 @@ public class JDBCServletHomeWork2 extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException
     {
-        response.setContentType("text/html");
+        response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<html>");
-        out.println("<body>");
         out.println("<head>");
+        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
         out.println("<title>Home Work 2</title>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h3>Home Work 2</h3>");
 
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT * FROM users");
+             PreparedStatement ps = conn.prepareStatement(
+                 "WITH RECURSIVE recurs (id, pid, title)\n" +
+                     "AS (\n" +
+                     "  SELECT id, pid, title FROM department WHERE pid is null\n" +
+                     "  UNION ALL\n" +
+                     "  SELECT next.id, next.pid, next.title\n" +
+                     "    FROM recurs, department next\n" +
+                     "   WHERE recurs.id = next.pid\n" +
+                     ")\n" +
+                     "SELECT * FROM recurs;"
+             );
              ResultSet resultSet = ps.executeQuery()){
             StringBuilder sb = new StringBuilder();
             while(resultSet.next()){
                 sb.append(
                         Stream.of(
-                                resultSet.getString("id") + " " + resultSet.getString("login")
+                                resultSet.getString("id")
+                                    + " " + resultSet.getString("pid")
+                                    + " " + resultSet.getString("title")
                         ).collect(Collectors.joining("|"))
                 );
             }

@@ -24,11 +24,11 @@ public class JPAServletHomeWork2 extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException
     {
-        response.setContentType("text/html");
+        response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<html>");
-        out.println("<body>");
         out.println("<head>");
+        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
         out.println("<title>Home Work 2</title>");
         out.println("</head>");
         out.println("<body>");
