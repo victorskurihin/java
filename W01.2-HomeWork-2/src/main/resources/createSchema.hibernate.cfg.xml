@@ -9,9 +9,9 @@
 
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/db</property>
 
-        <property name="hibernate.connection.username">mb24681</property>
+        <property name="hibernate.connection.username">dbuser</property>
 
-        <property name="hibernate.connection.password">UnixS@pp0rt</property>
+        <property name="hibernate.connection.password">password</property>
 
         <property name="hibernate.show_sql">false</property>
 
@@ -31,7 +31,5 @@
                   db-schema.jpa.ddl
         </property>
 
-        <!-- mapping files -->
-        <!--<mapping resource="org/hibernate/auction/Item.hbm.xml"/>-->
     </session-factory>
 </hibernate-configuration>
