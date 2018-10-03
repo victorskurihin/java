@@ -1,7 +1,13 @@
 package ru.otus;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 /**
+ *
  * mvn clean compile dependency:copy-dependencies
+ * createSchema.sh or createSchema.bat
  */
 
 import org.hibernate.boot.Metadata;
@@ -53,3 +59,7 @@ public class CreateTables {
         createTables();
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

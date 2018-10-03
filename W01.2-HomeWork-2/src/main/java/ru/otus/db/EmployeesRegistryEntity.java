@@ -15,11 +15,15 @@ public class EmployeesRegistryEntity implements Serializable {
     private long id;
 
     @Basic
-    @Column(name = "firsh_name")
+    @Column(name = "firsh_name", nullable = false)
     private String firstName;
 
     @Basic
-    @Column(name = "sur_name")
+    @Column(name = "second_name", nullable = false)
+    private String secondName;
+
+    @Basic
+    @Column(name = "sur_name", nullable = false)
     private String surName;
 
     @ManyToOne
