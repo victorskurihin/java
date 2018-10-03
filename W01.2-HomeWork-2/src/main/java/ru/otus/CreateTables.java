@@ -17,9 +17,9 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.hibernate.tool.schema.TargetType;
 
-import ru.otus.db.DepartmentsDirectoryEntity;
-import ru.otus.db.EmployeesRegistryEntity;
-import ru.otus.db.UserEntity;
+import ru.otus.dataset.DepartmentsDirectoryEntity;
+import ru.otus.dataset.EmployeesRegistryEntity;
+import ru.otus.dataset.UserEntity;
 
 import java.util.EnumSet;
 

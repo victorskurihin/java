@@ -1,4 +1,4 @@
-package ru.otus.db;
+package ru.otus.dataset;
 
 import lombok.Data;
 

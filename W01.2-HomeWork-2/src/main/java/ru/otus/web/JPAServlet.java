@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import ru.otus.db.UserEntity;
+import ru.otus.dataset.UserEntity;
 
 @WebServlet("/jpa")
 public class JPAServlet extends HttpServlet {
