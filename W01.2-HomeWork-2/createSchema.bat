@@ -1,5 +1,6 @@
 @ECHO OFF
 REM Build:
-REM mvn clean compile dependency:copy-dependencies
+REM       mvn clean compile dependency:copy-dependencies
 SET CP="target\classes;target\dependency\*;target\*"
-java -cp %CP% ru.otus.CreateTables
+CHCP 65001
+java -Dfile.encoding=UTF-8 -cp %CP% ru.otus.CreateTables
