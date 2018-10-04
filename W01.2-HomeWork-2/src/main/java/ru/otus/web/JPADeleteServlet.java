@@ -43,13 +43,7 @@ public class JPADeleteServlet extends HttpServlet
     {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
-        out.println("<title>Home Work 2 Registry</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h3>Home Work 2 Max Salary</h3>");
+        ServletUtil.outHTMLHeader(out, "Home Work 2 удаление данных.");
 
         Id = retrieveUserid(request);
         if (Id == null) return;
@@ -63,7 +57,9 @@ public class JPADeleteServlet extends HttpServlet
             em.remove(empEntity);
             em.flush();
             transaction.commit();
-            response.getWriter().println("Employee '" + empEntity.getSurName() + "' has been successfully deleted");
+            response.getWriter().println(
+                "Employee '" + empEntity.getSurName() + "' has been successfully deleted"
+            );
         }
         catch (Exception e){
             transaction.rollback();

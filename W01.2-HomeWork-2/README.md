@@ -8,7 +8,7 @@
  * Нулевой этап – анализ произведён в домашнем задании 1.
  * Первый этап - проектирование в каталоге `doc` файлы `HomeWork-2.pdf` и `HomeWork-2.png`.
  * Второй этап – подготовка схемы БД. Скрипты `createSchema.bat` и `createSchema.sh`. 
-Предварительно скомпилировать: 
+   Предварительно скомпилировать: 
    *     mvn clean compile dependency:copy-dependencies. 
    Настройки доступа к БД (PostgreSQL):
    *     src/main/resources/META-INF/persistence.xml

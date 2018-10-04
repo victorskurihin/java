@@ -19,7 +19,7 @@ import ru.otus.dataset.EmployeesRegistryEntity;
 @WebServlet("/registry")
 public class JPARegistryServlet extends HttpServlet
 {
-    public static final String PERSISTENCE_UNIT_NAME = "jpa";
+    private static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
 
@@ -28,18 +28,17 @@ public class JPARegistryServlet extends HttpServlet
     {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
-        out.println("<title>Home Work 2 Registry</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h3>Home Work 2 Registry</h3>");
+        ServletUtil.outHTMLHeader(out, "Home Work 2 подготовка Application уровня.");
+
         EntityManager em = emf.createEntityManager(); // for Tomcat
         EntityTransaction transaction = em.getTransaction();
+
         try {
             transaction.begin();
-            Query q = em.createQuery("SELECT empl FROM EmployeesRegistryEntity empl ORDER BY empl.id DESC");
+            Query q = em.createQuery(
+                "SELECT empl FROM EmployeesRegistryEntity empl ORDER BY empl.id DESC"
+            );
+            //noinspection unchecked
             List<EmployeesRegistryEntity> result = q.getResultList();
             out.println("<ul>");
 
@@ -54,7 +53,7 @@ public class JPARegistryServlet extends HttpServlet
             out.println("</ul>");
             transaction.commit();
         }
-        catch (Exception e){
+        catch (Exception e) {
             transaction.rollback();
             throw new ServletException(e);
         }

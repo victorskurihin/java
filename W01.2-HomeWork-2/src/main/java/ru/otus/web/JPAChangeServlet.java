@@ -38,13 +38,7 @@ public class JPAChangeServlet extends HttpServlet
     {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
-        out.println("<title>Home Work 2 Registry</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h3>Home Work 2 Max Salary</h3>");
+        ServletUtil.outHTMLHeader(out, "Home Work 2 модификация данных.");
 
         Id = retrieveUserid(request);
         if (Id == null) return;
@@ -61,7 +55,9 @@ public class JPAChangeServlet extends HttpServlet
             em.merge(empEntity);
             em.flush();
             transaction.commit();
-            response.getWriter().println("Employee '" + empEntity.getSurName() + "' has been successfully updated");
+            response.getWriter().println(
+                "Employee '" + empEntity.getSurName() + "' has been successfully updated"
+            );
         }
         catch (Exception e){
             transaction.rollback();

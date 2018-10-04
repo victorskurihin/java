@@ -30,20 +30,17 @@ public class JDBCMaxSalaryServlet extends HttpServlet
     {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />");
-        out.println("<title>Home Work 2 Registry</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("<h3>Home Work 2 Max Salary</h3>");
+        ServletUtil.outHTMLHeader(out, "Home Work 2 хранимые процедуры.");
 
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM mygetmax();");
              ResultSet resultSet = ps.executeQuery()
         ) {
             while(resultSet.next()) {
-                out.println("Максимальная зарплата у: " + resultSet.getString(1));
+                out.println(
+                    "Максимальная зарплата у сотрудника по фамилии: "
+                    + resultSet.getString(1)
+                );
             }
 
             out.println("</body>");
