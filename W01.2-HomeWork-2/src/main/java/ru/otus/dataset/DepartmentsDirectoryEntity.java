@@ -18,12 +18,9 @@ public class DepartmentsDirectoryEntity implements Serializable {
 
     @Basic
     @Column(name = "pid")
-    private long parent_id; // recursion
+    private long parentId; // recursion
 
     @Basic
     @Column(name = "title")
     private String title;
-
-    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Set<EmployeesRegistryEntity> employees = new HashSet<EmployeesRegistryEntity>();
 }

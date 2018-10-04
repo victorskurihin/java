@@ -26,8 +26,8 @@ public class EmployeesRegistryEntity implements Serializable {
     @Column(name = "sur_name", nullable = false)
     private String surName;
 
-    @ManyToOne
-    @JoinColumn(name = "department", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department", referencedColumnName = "id")
     private DepartmentsDirectoryEntity department;
 
     @Basic

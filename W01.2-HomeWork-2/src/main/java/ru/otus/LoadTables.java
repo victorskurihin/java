@@ -48,7 +48,7 @@ public class LoadTables {
                 sb.append(column).append(" VALUES ( ")
                     .append(String.join(", ", fields))
                     .append(" );");
-                System.out.println("sb = " + sb);
+                System.out.println("Exec: " + sb);
                 exec.execUpdate(sb.toString());
             }
             else {
