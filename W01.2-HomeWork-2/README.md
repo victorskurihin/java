@@ -9,11 +9,11 @@
  * Первый этап - проектирование в каталоге `doc` файлы `HomeWork-2.pdf` и `HomeWork-2.png`.
  * Второй этап – подготовка схемы БД. Скрипты `createSchema.bat` и `createSchema.sh`. 
 Предварительно скомпилировать: 
- *       mvn clean compile dependency:copy-dependencies. 
+   *     mvn clean compile dependency:copy-dependencies. 
    Настройки доступа к БД (PostgreSQL):
- *      src/main/resources/META-INF/persistence.xml
-        src/main/resources/createSchema.hibernate.cfg.xml
-        src/main/java/ru/otus/db/DBConf.java.
+   *     src/main/resources/META-INF/persistence.xml
+         src/main/resources/createSchema.hibernate.cfg.xml
+         src/main/java/ru/otus/db/DBConf.java.
  * Третий этап – подготовка Application уровня. Сервлеты `JPARegistryServlet` и 
 `JDBCDirectoryServlet`.
   Первые два пункта в `index.jsp`.
