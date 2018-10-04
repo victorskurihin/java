@@ -1,19 +1,26 @@
 package ru.otus.db;
 
+/*
+ * Created by VSkurikhin at winter 2018.
+ */
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Executor {
+public class Executor
+{
     private final Connection connection;
 
-    public Executor(Connection connection) {
+    public Executor(Connection connection)
+    {
         this.connection = connection;
     }
 
     public void execQuery(String query, ResultHandler handler)
-        throws SQLException {
+    throws SQLException
+    {
 
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(query);
@@ -22,14 +29,16 @@ public class Executor {
         }
     }
 
-    public int execUpdate(String update) throws SQLException {
+    public int execUpdate(String update) throws SQLException
+    {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(update);
             return stmt.getUpdateCount();
         }
     }
 
-    protected Connection getConnection() {
+    protected Connection getConnection()
+    {
         return connection;
     }
 }

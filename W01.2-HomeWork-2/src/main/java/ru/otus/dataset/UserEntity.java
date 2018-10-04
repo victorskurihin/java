@@ -1,5 +1,9 @@
 package ru.otus.dataset;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import lombok.Data;
 import ru.otus.dataset.EmployeesRegistryEntity;
 
@@ -9,7 +13,8 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "users")
-public class UserEntity implements Serializable {
+public class UserEntity implements Serializable
+{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -23,3 +28,7 @@ public class UserEntity implements Serializable {
     @Column(name = "password")
     private String password;
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

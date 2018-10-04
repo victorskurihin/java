@@ -1,6 +1,8 @@
 @ECHO OFF
 REM Build:
 REM       mvn clean compile dependency:copy-dependencies
-SET CP="target\classes;target\dependency\*;target\*"
+SET CS=UTF-8
+SET CP=-cp "target\classes;target\dependency\*;target\*"
+SET JAVA_OPTS=%CP% -Dfile.encoding=%CS% -Dsun.stdout.encoding=%CS% -Dsun.err.encoding=%CS%
 CHCP 65001
-java -Dfile.encoding=UTF-8 -cp %CP% ru.otus.CreateTables
+java %JAVA_OPTS% ru.otus.CreateTables

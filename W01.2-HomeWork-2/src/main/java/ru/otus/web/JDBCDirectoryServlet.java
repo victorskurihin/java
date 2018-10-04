@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,14 +18,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Stack;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @WebServlet("/directory")
-public class JDBCDirectoryServlet extends HttpServlet {
+public class JDBCDirectoryServlet extends HttpServlet
+{
     @Resource(name = "jdbc/PostgresMyDB") // for Tomcat
     private DataSource ds;
+    private String directorySQL =
+        "WITH RECURSIVE recurs (id, pid, level, title)\n" +
+        "  AS (\n" +
+        "    SELECT id, pid, CAST(0 AS BIGINT), title FROM dep_directory WHERE pid = 0\n" +
+        "    UNION ALL\n" +
+        "    SELECT next_to.id, recurs.level + 1, next_to.pid, next_to.title\n" +
+        "      FROM recurs \n" +
+        "      JOIN dep_directory next_to\n" +
+        "        ON recurs.id = next_to.pid\n" +
+        "  )\n" +
+        "  SELECT * FROM recurs\n;";
 
+    private StringBuilder sbAppendOrganizationUnit(StringBuilder sb, long id, String title)
+    {
+        return sb.append("<organizationUnit id='").append(id)
+            .append("' title='").append(title).append("'>\n");
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     throws IOException, ServletException
@@ -32,53 +51,38 @@ public class JDBCDirectoryServlet extends HttpServlet {
         out.println("<directory>");
 
         try (Connection conn = ds.getConnection();
-             PreparedStatement ps = conn.prepareStatement(
-                     "WITH RECURSIVE recurs (id, pid, level, title)\n" +
-                             "  AS (\n" +
-                             "    SELECT id, pid, CAST(0 AS BIGINT), title FROM dep_directory WHERE pid = 0\n" +
-                             "    UNION ALL\n" +
-                             "    SELECT next_to.id, recurs.level + 1, next_to.pid, next_to.title\n" +
-                             "      FROM recurs \n" +
-                             "      JOIN dep_directory next_to\n" +
-                             "        ON recurs.id = next_to.pid\n" +
-                             "  )\n" +
-                             "  SELECT * FROM recurs\n" +
-                             ";\n"
-             );
+             PreparedStatement ps = conn.prepareStatement(directorySQL);
              ResultSet resultSet = ps.executeQuery()
         ) {
             long prevLevel = -1;
             StringBuilder sb = new StringBuilder();
-
             Stack<Object> stack = new Stack<>();
+
             while(resultSet.next()) {
                 long level = resultSet.getLong("level");
                 if (prevLevel < level) {
-                    sb.append("<organizationUnit title='")
-                            .append(resultSet.getString("title"))
-                            .append("' level='")
-                            .append(resultSet.getLong("level"))
-                            .append("'>\n");
+                    sb = sbAppendOrganizationUnit(
+                        sb, resultSet.getLong("id"),
+                        resultSet.getString("title")
+                    );
                     stack.push(new Object());
                 } else if (prevLevel > level) {
-                    sb.append("</organizationUnit>\n")
-                            .append("</organizationUnit>\n")
-                            .append("<organizationUnit title='")
-                            .append(resultSet.getString("title"))
-                            .append("' level='")
-                            .append(resultSet.getLong("level"))
-                            .append("'>\n");
+                    sb.append("</organizationUnit>\n").append("</organizationUnit>\n");
+                    sb = sbAppendOrganizationUnit(
+                        sb, resultSet.getLong("id"),
+                        resultSet.getString("title")
+                    );
                     stack.pop();
                 } else {
-                    sb.append("</organizationUnit>\n")
-                            .append("<organizationUnit title='")
-                            .append(resultSet.getString("title"))
-                            .append("' level='")
-                            .append(resultSet.getLong("level"))
-                            .append("'>\n");
+                    sb.append("</organizationUnit>\n");
+                    sb = sbAppendOrganizationUnit(
+                        sb, resultSet.getLong("id"),
+                        resultSet.getString("title")
+                    );
                 }
                 prevLevel = level;
             }
+
             while ( ! stack.empty()) {
                 sb.append("</organizationUnit>\n");
                 stack.pop();
@@ -103,3 +107,7 @@ public class JDBCDirectoryServlet extends HttpServlet {
         doGet(request, response);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

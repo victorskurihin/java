@@ -6,8 +6,10 @@ package ru.otus.exeption;
 
 import java.sql.SQLException;
 
-public class RuntimeSQLException extends RuntimeException {
-    public RuntimeSQLException(SQLException e) {
+public class RuntimeSQLException extends RuntimeException
+{
+    public RuntimeSQLException(SQLException e)
+    {
         super(e);
         e.printStackTrace();
     }

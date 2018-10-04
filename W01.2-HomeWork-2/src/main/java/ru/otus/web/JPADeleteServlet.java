@@ -1,4 +1,10 @@
 package ru.otus.web;
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF
 
 import ru.otus.dataset.EmployeesRegistryEntity;
 
@@ -15,13 +21,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @WebServlet("/delete/*")
-public class JPADelete extends HttpServlet {
-    public static final String PERSISTENCE_UNIT_NAME = "jpa";
+public class JPADeleteServlet extends HttpServlet
+{
+    private static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
     private Long Id;
 
-    private static long retrieveUserid(HttpServletRequest req) {
+    private static long retrieveUserid(HttpServletRequest req)
+    {
         String pathInfo = req.getPathInfo();
         if (pathInfo.startsWith("/")) {
             pathInfo = pathInfo.substring(1);
@@ -30,30 +38,9 @@ public class JPADelete extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doDelete(request, response);
-    }
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException
     {
-        doDelete(request, response);
-    }
-
-    /**
-     * We are going to perform the same operations for POST requests
-     * as for GET methods, so this method just sends the request to
-     * the doGet method.
-     */
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException
-    {
-        doDelete(request, response);
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<html>");
@@ -90,4 +77,9 @@ public class JPADelete extends HttpServlet {
         out.println("</html>");
     }
 
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException, ServletException
+    {
+        doDelete(request, response);
+    }
 }

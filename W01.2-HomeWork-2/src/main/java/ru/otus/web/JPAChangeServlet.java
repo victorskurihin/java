@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import ru.otus.dataset.EmployeesRegistryEntity;
 
 import javax.persistence.*;
@@ -10,17 +14,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
-import java.util.Random;
 
 @WebServlet("/change/*")
-public class JPAChange extends HttpServlet {
+public class JPAChangeServlet extends HttpServlet
+{
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
     private Long Id;
 
-    private static long retrieveUserid(HttpServletRequest req) {
+    private static long retrieveUserid(HttpServletRequest req)
+    {
         String pathInfo = req.getPathInfo();
         if (pathInfo.startsWith("/")) {
             pathInfo = pathInfo.substring(1);
@@ -29,7 +33,9 @@ public class JPAChange extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException
+    {
         response.setContentType("text/html; charset=UTF-8");
         PrintWriter out = response.getWriter();
         out.println("<html>");
@@ -73,16 +79,8 @@ public class JPAChange extends HttpServlet {
     {
         doPut(request, response);
     }
-
-    /**
-     * We are going to perform the same operations for POST requests
-     * as for GET methods, so this method just sends the request to
-     * the doGet method.
-     */
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException
-    {
-        doPut(request, response);
-    }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

@@ -1,5 +1,9 @@
 package ru.otus.web;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import javax.persistence.*;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,10 +15,10 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import ru.otus.dataset.EmployeesRegistryEntity;
-import ru.otus.dataset.UserEntity;
 
 @WebServlet("/registry")
-public class JPARegistry extends HttpServlet {
+public class JPARegistryServlet extends HttpServlet
+{
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
     private static final EntityManagerFactory emf =
             Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
@@ -74,3 +78,7 @@ public class JPARegistry extends HttpServlet {
         doGet(request, response);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF
