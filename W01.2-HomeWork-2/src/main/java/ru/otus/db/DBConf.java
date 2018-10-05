@@ -8,24 +8,28 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DBConf {
+public class DBConf
+{
     public static final String hostname = "localhost";
     public static final String userName = "dbuser";
     public static final String dbName = "db";
     public static final String password = "password";
     private final Connection connection;
 
-    public DBConf(Connection connection) {
+    public DBConf(Connection connection)
+    {
         this.connection = connection;
     }
 
-    private void execSimpleSQL(String update) throws SQLException {
+    private void execSimpleSQL(String update) throws SQLException
+    {
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(update);
         }
     }
 
-    public void dropTables(String tableName) throws SQLException {
+    public void dropTables(String tableName) throws SQLException
+    {
         String dropTablesSQL = "DROP TABLE IF EXISTS %s CASCADE";
 
         try (Statement stmt = connection.createStatement()) {

@@ -36,10 +36,15 @@ public class JDBCDirectoryServlet extends HttpServlet
         "  )\n" +
         "  SELECT * FROM recurs\n;";
 
-    private StringBuilder sbAppendOrganizationUnit(StringBuilder sb, long id, String title)
+    StringBuilder sbAppendOrganizationUnit(ResultSet resultSet, StringBuilder sb)
+    throws SQLException
     {
-        return sb.append("<organizationUnit id='").append(id)
-            .append("' title='").append(title).append("'>\n");
+        sb.append("<organizationUnit id='")
+          .append(resultSet.getLong("id"))
+          .append("' title='")
+          .append(resultSet.getString("title"))
+          .append("'>\n");
+        return sb;
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -58,27 +63,18 @@ public class JDBCDirectoryServlet extends HttpServlet
             StringBuilder sb = new StringBuilder();
             Stack<Object> stack = new Stack<>();
 
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 long level = resultSet.getLong("level");
                 if (prevLevel < level) {
-                    sb = sbAppendOrganizationUnit(
-                        sb, resultSet.getLong("id"),
-                        resultSet.getString("title")
-                    );
+                    sb = sbAppendOrganizationUnit(resultSet, sb);
                     stack.push(new Object());
                 } else if (prevLevel > level) {
                     sb.append("</organizationUnit>\n").append("</organizationUnit>\n");
-                    sb = sbAppendOrganizationUnit(
-                        sb, resultSet.getLong("id"),
-                        resultSet.getString("title")
-                    );
+                    sb = sbAppendOrganizationUnit(resultSet, sb);
                     stack.pop();
                 } else {
                     sb.append("</organizationUnit>\n");
-                    sb = sbAppendOrganizationUnit(
-                        sb, resultSet.getLong("id"),
-                        resultSet.getString("title")
-                    );
+                    sb = sbAppendOrganizationUnit(resultSet, sb);
                 }
                 prevLevel = level;
             }

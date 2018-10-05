@@ -1,4 +1,4 @@
-package ru.otus.db;
+package ru.otus.web;
 
 import org.junit.*;
 
@@ -10,5 +10,6 @@ import javax.persistence.Persistence;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class JPATest {
+public class JDBCDirectoryServlet
+{
 }

@@ -5,7 +5,6 @@ package ru.otus.dataset;
  */
 
 import lombok.Data;
-import ru.otus.dataset.EmployeesRegistryEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -13,8 +13,6 @@ import ru.otus.db.DBConf;
 import ru.otus.db.Executor;
 
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Scanner;
 
 public class CreateFunction {
     private static final Connection connection = ConnectionHelper.getConnection(

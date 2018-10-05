@@ -47,7 +47,8 @@ public class JPARegistryServlet extends HttpServlet
                 sb.append(entity.getId()).append(" ")
                         .append(entity.getFirstName()).append(' ')
                         .append(entity.getSecondName()).append(' ')
-                        .append(entity.getSurName());
+                        .append(entity.getSurName()).append(',').append(' ')
+                        .append(entity.getJob());
                 out.println(sb);
             }
             out.println("</ul>");

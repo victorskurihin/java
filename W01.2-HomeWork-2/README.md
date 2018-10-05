@@ -19,6 +19,6 @@
   Первые два пункта в `index.jsp`.
  * Четвертый этап – наполнение таблиц. Скрипты `loadTables.bat` и `loadTables.sh`.
  * Пятый шаг – поиск, модификация и удаление данных. Сервлеты `JPAChangeServlet` 
- `JPADeleteServlet`. Пункты 3-7 в index.jsp.
+ `JPADeleteServlet`. Пункты 3-7 в `index.jsp`.
  * Шестой шаг – работа с хранимыми процедурами. Скрипты `createFunction.bat` и 
   `createFunction.sh` а так же сервлет `JDBCMaxSalaryServlet` Пункт 8.

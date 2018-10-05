@@ -31,8 +31,7 @@ public class ConnectionHelper
         ));
     }
 
-    public static Connection getConnection(
-        String host, String db, String user, String password)
+    public static Connection getConnection(String host, String db, String user, String password)
     {
         return getConnection(String.format(
             "jdbc:postgresql://%s:5432/%s?user=%s&password=%s",
@@ -48,7 +47,8 @@ public class ConnectionHelper
         ));
     }
 
-    public static Connection getConnection(String db, String user) {
+    public static Connection getConnection(String db, String user)
+    {
         return getConnection(String.format(
             "jdbc:postgresql://localhost:5432/%s?user=%s", db, user
         ));

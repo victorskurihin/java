@@ -2,9 +2,6 @@ package ru.otus.web;
 /*
  * Created by VSkurikhin at autumn 2018.
  */
-/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
- */
-//EOF
 
 import ru.otus.dataset.EmployeesRegistryEntity;
 
@@ -79,3 +76,7 @@ public class JPADeleteServlet extends HttpServlet
         doDelete(request, response);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

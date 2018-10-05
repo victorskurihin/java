@@ -36,7 +36,7 @@ public class JDBCMaxSalaryServlet extends HttpServlet
              PreparedStatement ps = conn.prepareStatement("SELECT * FROM mygetmax();");
              ResultSet resultSet = ps.executeQuery()
         ) {
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 out.println(
                     "Максимальная зарплата у сотрудника по фамилии: "
                     + resultSet.getString(1)
