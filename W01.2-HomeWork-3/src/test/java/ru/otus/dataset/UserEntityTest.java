@@ -53,7 +53,7 @@ public class UserEntityTest
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         UserEntity user = new UserEntity();
-        user.setLogin("setLogin");
+        user.setName("setName");
         user.setPassword("setPassword");
         entityManager.persist(user);
         transaction.commit();
@@ -62,3 +62,7 @@ public class UserEntityTest
         assertNotNull(userFind);
     }
 }
+
+/* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
+ */
+//EOF

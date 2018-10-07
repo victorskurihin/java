@@ -45,7 +45,7 @@ public class RegistryServlet extends HttpServlet
             for (EmpEntity entity : result) {
                 StringBuilder sb = new StringBuilder("<li>");
                 sb.append(entity.getId()).append(" ")
-                        .append(entity.getFirstName()).append(' ')
+                        .append(entity.getName()).append(' ')
                         .append(entity.getSecondName()).append(' ')
                         .append(entity.getSurName()).append(',').append(' ')
                         .append(entity.getJob());

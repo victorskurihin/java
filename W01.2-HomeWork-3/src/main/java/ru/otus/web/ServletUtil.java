@@ -1,5 +1,6 @@
 package ru.otus.web;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
 
 public class ServletUtil
@@ -13,6 +14,24 @@ public class ServletUtil
             .append("    <h2>").append(title).append("</h2>");
         return sb;
     }
+
+    public static void okXML(PrintWriter out)
+    {
+        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
+        out.println("<ok ok='ok'/>");
+    }
+
+    public static String retrieveCommand(HttpServletRequest request)
+    {
+        try {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo.startsWith("/")) {
+                return pathInfo.substring(1);
+            }
+        } catch (NullPointerException ignored) { }
+        return null;
+    }
+
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

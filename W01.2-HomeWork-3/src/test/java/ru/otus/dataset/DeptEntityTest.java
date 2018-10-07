@@ -1,5 +1,9 @@
 package ru.otus.dataset;
 
+/*
+ * Created by VSkurikhin at autumn 2018.
+ */
+
 import org.junit.*;
 
 import javax.persistence.EntityManager;
@@ -49,7 +53,7 @@ public class DeptEntityTest
     }
 
     @Test
-    public void persistDepartmentsDirectoryEntity()
+    public void persistDeptEntity()
     {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
