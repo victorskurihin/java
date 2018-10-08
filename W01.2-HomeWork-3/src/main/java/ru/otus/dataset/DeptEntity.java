@@ -5,26 +5,34 @@ package ru.otus.dataset;
  */
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 @Data
+@EqualsAndHashCode
 @Entity
 @Table(name = "dep_directory")
+@XmlRootElement(name = "department")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class DeptEntity implements DataSet, Serializable
 {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
+    @XmlAttribute(required = true)
     private long id;
 
     @Basic
     @Column(name = "pid")
+    @XmlAttribute
     private long parentId; // recursion
 
     @Basic
     @Column(name = "title")
+    @XmlElement(required = true)
     private String title;
 
 

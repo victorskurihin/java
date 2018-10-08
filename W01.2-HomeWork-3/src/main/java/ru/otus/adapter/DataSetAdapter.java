@@ -16,19 +16,21 @@ public class DataSetAdapter<T extends DataSet> extends XmlAdapter<String, T>
     {
         Type type = getClass().getGenericSuperclass();
         ParameterizedType paramType = (ParameterizedType) type;
+
         //noinspection unchecked
         return (Class<T>) paramType.getActualTypeArguments()[0];
     }
 
-    public T unmarshal(String name)
-    throws IllegalAccessException, InstantiationException
+    @Override
+    public T unmarshal(String name) throws Exception
     {
         T entity = getTypeParameterClass().newInstance();
         entity.setName(name);
         return entity;
     }
 
-    public String marshal(T v)
+    @Override
+    public String marshal(T v) throws Exception
     {
         return v == null ? null : v.getName();
     }

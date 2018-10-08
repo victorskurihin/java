@@ -8,9 +8,10 @@
 <body>
 <h3>Home Work 3 of JavaEE 2018-09</h3>
 <ol>
-    <li><a href="marshal">XML of Employees</a></li>
-    <li><a href="marshal/save">XML of Employees save to file: data.xml</a></li>
-    <li><a href="marshal/domfilter">XPath filter for XML file: data.xml</a></li>
+    <li><a href="xmlmarshal">XML of Employees</a></li>
+    <li><a href="xmlmarshal/save">XML of Employees save to file: data.xml</a></li>
+    <li><a href="xmlmarshal/domfilter">XPath filter for XML file: data.xml</a></li>
+    <li><a href="jsonmarshal">JSON of Employees</a></li>
 </ol>
 </body>
 </html>

@@ -11,9 +11,12 @@ import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 
-import ru.otus.adapter.DataSetAdapter;
+import lombok.EqualsAndHashCode;
+import ru.otus.adapter.DeptEntityAdapter;
+import ru.otus.adapter.UserEntityAdapter;
 
 @Data
+@EqualsAndHashCode
 @Entity
 @Table(name = "emp_registry")
 @XmlRootElement(name = "employee")
@@ -42,7 +45,8 @@ public class EmpEntity implements DataSet, Serializable
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department", referencedColumnName = "id")
-    @XmlJavaTypeAdapter(DataSetAdapter.class)
+    @XmlElement(required = true)
+    @XmlJavaTypeAdapter(DeptEntityAdapter.class)
     private DeptEntity department;
 
     @Basic
@@ -62,7 +66,7 @@ public class EmpEntity implements DataSet, Serializable
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @XmlJavaTypeAdapter(DataSetAdapter.class)
+    @XmlJavaTypeAdapter(UserEntityAdapter.class)
     private UserEntity user;
 
     @Override

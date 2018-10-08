@@ -4,7 +4,6 @@ package ru.otus.web;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import org.dom4j.dom.DOMDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,7 +37,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-@WebServlet(urlPatterns = {"/marshal", "/marshal/*"})
+@WebServlet(urlPatterns = {"/xmlmarshal", "/xmlmarshal/*"})
 public class MarshalXMLServlet extends HttpServlet
 {
     public static final String EMPTY_EMPLOYEES =

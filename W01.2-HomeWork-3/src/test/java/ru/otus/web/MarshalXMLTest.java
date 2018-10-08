@@ -1,6 +1,5 @@
 package ru.otus.web;
 
-import org.dom4j.dom.DOMDocument;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,33 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static ru.otus.web.TestData.*;
 
-public class DOMXMLServletTest
+public class MarshalXMLTest
 {
-    final String EXAMPLE_STRING = "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
-            "<employees>\n" +
-            "  <employee id='1' salary='10000000'>\n" +
-            "    <firstName>firstName1</firstName>\n" +
-            "    <secondName>secondName</secondName>\n" +
-            "    <surName>surName</surName>\n" +
-            "    <department>department</department>\n" +
-            "    <city>City</city>\n" +
-            "    <job>Job</job>\n" +
-            "  </employee>\n" +
-            "  <employee id='2' salary='10000'>\n" +
-            "    <firstName>firstName2</firstName>\n" +
-            "    <secondName>secondName</secondName>\n" +
-            "    <surName>surName</surName>\n" +
-            "    <department>department</department>\n" +
-            "    <city>City</city>\n" +
-            "    <job>Job</job>\n" +
-            "  </employee>\n" +
-            "</employees>";
-    final String EMPTY_EMPLOYEES =
-            "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
-            "<employees>\n" +
-            "</employees>";
-    final InputStream TEST_STREAM = new ByteArrayInputStream(EXAMPLE_STRING.getBytes(StandardCharsets.UTF_8));
+    final InputStream TEST_STREAM = new ByteArrayInputStream(
+        EXAMPLE_STRING.getBytes(StandardCharsets.UTF_8)
+    );
     final InputStream EMPTY_EMPLOYEES_STREAM = new ByteArrayInputStream(
         MarshalXMLServlet.EMPTY_EMPLOYEES.getBytes(StandardCharsets.UTF_8)
     );
@@ -75,19 +52,17 @@ public class DOMXMLServletTest
     }
 
     @Test
-    public void doGet()
+    public void testXPathExp()
     throws XPathExpressionException, TransformerException, IOException, SAXException, ParserConfigurationException
     {
         // Use a Transformer for output
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = tFactory.newTransformer();
 
-        final String expected = "id=\"1\", salary=\"10000000\", firstName1, secondName, surName, department, City, Job";
         String expression = "/employees/employee[@salary > (sum(/employees/employee/@salary) div count(/employees/employee/@salary))]";
         XPathExpression expr = xpath.compile(expression);
         Object result = expr.evaluate(document, XPathConstants.NODESET);
         NodeList nodes = (NodeList) result;
-//        Document resultXML = new DOMDocument();
         Document resultXML = DOMUtil.getDocument(EMPTY_EMPLOYEES_STREAM);
         Element employees = resultXML.createElement("employees");
 
@@ -113,8 +88,5 @@ public class DOMXMLServletTest
             resultXML.adoptNode(copyNode);
             employees.appendChild(copyNode);
         }
-        DOMSource source = new DOMSource(employees);
-        StreamResult resultOut = new StreamResult(System.out);
-        transformer.transform(source, resultOut);
     }
 }

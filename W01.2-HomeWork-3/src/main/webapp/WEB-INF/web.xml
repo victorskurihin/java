@@ -7,8 +7,8 @@
 
    <context-param>
         <param-name>DataFileLocation</param-name>
-        <!-- param-value>file:///D:/temp/data.xml</param-value -->
-        <param-value>file:////tmp/data.xml</param-value>
+        <param-value>file:///C:/temp/data.xml</param-value>
+        <!-- param-value>file:////tmp/data.xml</param-value -->
     </context-param>
 
     <resource-ref>

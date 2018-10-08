@@ -5,6 +5,7 @@ package ru.otus.dataset;
  */
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -14,6 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 @Data
+@EqualsAndHashCode
 @Entity
 @Table(name = "users")
 @XmlRootElement(name = "user")

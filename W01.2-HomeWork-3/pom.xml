@@ -26,6 +26,8 @@
         <oracle.driver.version>11.2.0.4</oracle.driver.version>
         <postgresql.driver.version>42.2.2</postgresql.driver.version>
         <jaxen.version>1.1.6</jaxen.version>
+        <jackson.version>2.8.2</jackson.version>
+        <org.json.version>20160810</org.json.version>
         <log4j.version>2.10.0</log4j.version>
         <slf4j.version>1.7.21</slf4j.version>
 
@@ -78,6 +80,34 @@
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
             <version>${jaxen.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${org.json.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <dependency>
