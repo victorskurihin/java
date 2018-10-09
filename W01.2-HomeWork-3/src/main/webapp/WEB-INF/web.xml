@@ -3,12 +3,18 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>Archetype Created Web Application</display-name>
+    <display-name>Archetype Created Web Application</display-name>
 
-   <context-param>
-        <param-name>DataFileLocation</param-name>
-        <param-value>file:///C:/temp/data.xml</param-value>
-        <!-- param-value>file:////tmp/data.xml</param-value -->
+    <context-param>
+        <param-name>XMLDataFileLocation</param-name>
+        <!--<param-value>file:///C:/temp/employee.xml</param-value>-->
+        <param-value>file:////tmp/employee.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>JsonDataFileLocation</param-name>
+        <!--<param-value>file:///C:/temp/employee.json</param-value>-->
+        <param-value>file:////tmp/employee.json</param-value>
     </context-param>
 
     <resource-ref>

@@ -1,31 +1,21 @@
 package ru.otus.web;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-import ru.otus.adapter.DataSetAdapter;
-import ru.otus.adapter.DeptEntityAdapter;
-import ru.otus.dataset.DeptEntity;
-import ru.otus.dataset.EmpEntitiesList;
-import ru.otus.dataset.EmpEntity;
-import ru.otus.dataset.UserEntity;
+import ru.otus.dataset.*;
 import ru.otus.xml.DOMUtil;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.xpath.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static ru.otus.web.TestData.*;
@@ -111,5 +101,27 @@ public class MarshalJsonTest
         Unmarshaller u = jc.createUnmarshaller();
         EmpEntitiesList list = (EmpEntitiesList) u.unmarshal(new StringReader(EXAMPLE_STRING));
         assertEquals(expected, list);
+    }
+
+    @Test
+    public void testMarshalToJson() throws JAXBException
+    {
+        JAXBContext jc = JAXBContext.newInstance(
+                EmpEntitiesList.class, DeptEntity.class, EmpEntity.class, UserEntity.class
+        );
+        Unmarshaller u = jc.createUnmarshaller();
+        EmpEntitiesList list = (EmpEntitiesList) u.unmarshal(new StringReader(EXAMPLE_STRING));
+
+        /* default config  JsonbConfig config = new JsonbConfig().withFormatting(true); */
+        Jsonb jsonb = JsonbBuilder.create();
+        String result = jsonb.toJson(list);
+        assertEquals(expectedJson, result);
+    }
+
+    @Test
+    public void testUnmarshalToJson() throws JAXBException
+    {
+        Jsonb jsonb = JsonbBuilder.create();
+        EmpEntitiesList list = jsonb.fromJson(expectedJson, EmpEntitiesList.class);
     }
 }

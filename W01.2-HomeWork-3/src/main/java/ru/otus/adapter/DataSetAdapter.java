@@ -6,33 +6,60 @@ package ru.otus.adapter;
 
 import ru.otus.dataset.DataSet;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public class DataSetAdapter<T extends DataSet> extends XmlAdapter<String, T>
+interface DataSetAdapter<T extends DataSet>
 {
-    private Class<T> getTypeParameterClass()
+    default Class<T> getTypeParameterClass()
     {
         Type type = getClass().getGenericSuperclass();
         ParameterizedType paramType = (ParameterizedType) type;
 
         //noinspection unchecked
-        return (Class<T>) paramType.getActualTypeArguments()[0];
+        return (Class<T>) paramType.getActualTypeArguments()[1];
     }
 
-    @Override
-    public T unmarshal(String name) throws Exception
+    default T unmarshalAdapter(String name) throws Exception
     {
-        T entity = getTypeParameterClass().newInstance();
+        return unmarshalAdapter(name, getTypeParameterClass());
+    }
+
+    default T unmarshalAdapter(String name, Class<T> c)
+    throws IllegalAccessException, InstantiationException
+    {
+        T entity = c.newInstance();
         entity.setName(name);
         return entity;
     }
 
-    @Override
-    public String marshal(T v) throws Exception
+    default String marshalAdapter(T v)
     {
         return v == null ? null : v.getName();
+    }
+
+    default JsonObjectBuilder getJsonWithIdObjectBuilder(T v)
+    {
+        return Json.createObjectBuilder().add("id", v.getId());
+    }
+
+    default JsonObject marshalToJson(T v)
+    {
+        return Json.createObjectBuilder()
+                .add("id", v.getId())
+                .add("name", v.getName()).build();
+    }
+
+    default T unmarshalFromJson(JsonObject obj)
+    throws IllegalAccessException, InstantiationException
+    {
+        T entity = getTypeParameterClass().newInstance();
+        entity.setId(obj.getInt("id"));
+        entity.setName(obj.getString("name"));
+        return entity;
     }
 }
 

@@ -38,7 +38,14 @@ public class TestData
         "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
         "<employees>\n" +
         "</employees>";
-    static final String expected =
+    static final String expectedXML =
         "id=\"1\", salary=\"10000000\", " + FirstName1 + ", " + SecondName1 + ", " +
             SurName1 + ", " + Department1 + ", " + City1 + ", " + Job1;
+    static final String expectedJson =
+        "{\"employees\":[{\"city\":\"City1\",\"department\":\"Department1\",\"first-name\":\"FirstName1\"" +
+        ",\"id\":1,\"job\":\"Job1\",\"name\":\"FirstName1 SecondName1 SurName1\",\"salary\":10000000" +
+        ",\"second-name\":\"SecondName1\",\"sur-name\":\"SurName1\"},{\"city\":\"City2\"" +
+        ",\"department\":\"Department2\",\"first-name\":\"FirstName2\",\"id\":2,\"job\":\"Job2\"" +
+        ",\"name\":\"FirstName2 SecondName2 SurName2\",\"salary\":10000,\"second-name\":\"SecondName2\"" +
+        ",\"sur-name\":\"SurName2\"}]}";
 }

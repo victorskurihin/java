@@ -83,7 +83,7 @@ public class MarshalXMLTest
                     );
                 }
             }
-            assertEquals(String.join(", ", resultList), expected);
+            assertEquals(String.join(", ", resultList), expectedXML);
             Node copyNode = nodes.item(i).cloneNode(true);
             resultXML.adoptNode(copyNode);
             employees.appendChild(copyNode);

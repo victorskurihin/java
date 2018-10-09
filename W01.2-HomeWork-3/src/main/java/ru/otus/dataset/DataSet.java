@@ -10,10 +10,10 @@ import javax.persistence.*;
  * Base Data Set class.
  */
 @MappedSuperclass
-public
-interface DataSet
+public interface DataSet
 {
     long getId();
+    void setId(long id);
     String getName();
     void setName(String name);
 }
