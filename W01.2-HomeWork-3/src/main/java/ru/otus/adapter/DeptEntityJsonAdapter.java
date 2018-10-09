@@ -21,7 +21,6 @@ implements JsonbAdapter<DeptEntity, String>, DataSetAdapter<DeptEntity>
     @Override
     public DeptEntity adaptFromJson(String s) throws Exception
     {
-        System.out.println("s = " + s);
         return unmarshalAdapter(s, DeptEntity.class);
     }
 

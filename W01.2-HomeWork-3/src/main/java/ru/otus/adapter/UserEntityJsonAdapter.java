@@ -20,7 +20,7 @@ implements JsonbAdapter<UserEntity, String>, DataSetAdapter<UserEntity>
     @Override
     public UserEntity adaptFromJson(String s) throws Exception
     {
-        return unmarshalAdapter(s);
+        return unmarshalAdapter(s, UserEntity.class);
     }
 }
 

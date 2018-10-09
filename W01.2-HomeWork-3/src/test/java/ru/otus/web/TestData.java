@@ -1,5 +1,11 @@
 package ru.otus.web;
 
+import ru.otus.dataset.DeptEntity;
+import ru.otus.dataset.EmpEntitiesList;
+import ru.otus.dataset.EmpEntity;
+
+import java.util.ArrayList;
+
 public class TestData
 {
     static final String FirstName1 = "FirstName1";
@@ -48,4 +54,39 @@ public class TestData
         ",\"department\":\"Department2\",\"first-name\":\"FirstName2\",\"id\":2,\"job\":\"Job2\"" +
         ",\"name\":\"FirstName2 SecondName2 SurName2\",\"salary\":10000,\"second-name\":\"SecondName2\"" +
         ",\"sur-name\":\"SurName2\"}]}";
+
+    public static EmpEntitiesList getExpectedEmpEntitiesList()
+    {
+        EmpEntitiesList expected = new EmpEntitiesList();
+
+        EmpEntity emp1 = new EmpEntity();
+        emp1.setId(1L);
+        emp1.setFirstName(FirstName1);
+        emp1.setSecondName(SecondName1);
+        emp1.setSurName(SurName1);
+        DeptEntity dept1 = new DeptEntity();
+        dept1.setTitle(Department1);
+        emp1.setDepartment(dept1);
+        emp1.setJob(Job1);
+        emp1.setSalary(10_000_000L);
+        emp1.setCity(City1);
+        emp1.setUser(null);
+        expected.setEmployees(new ArrayList<>());
+        expected.add(emp1);
+
+        EmpEntity emp2 = new EmpEntity();
+        emp2.setId(2L);
+        emp2.setFirstName(FirstName2);
+        emp2.setSecondName(SecondName2);
+        emp2.setSurName(SurName2);
+        DeptEntity dept2 = new DeptEntity();
+        dept2.setTitle(Department2);
+        emp2.setDepartment(dept2);
+        emp2.setJob(Job2);
+        emp2.setSalary(10_000L);
+        emp2.setCity(City2);
+        emp2.setUser(null);
+        expected.add(emp2);
+        return expected;
+    }
 }

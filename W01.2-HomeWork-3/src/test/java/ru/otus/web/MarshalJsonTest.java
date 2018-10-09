@@ -15,7 +15,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.xpath.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertEquals;
 import static ru.otus.web.TestData.*;
@@ -64,36 +63,7 @@ public class MarshalJsonTest
     @Test
     public void testEmployees() throws JAXBException
     {
-        EmpEntitiesList expected = new EmpEntitiesList();
-
-        EmpEntity emp1 = new EmpEntity();
-        emp1.setId(1L);
-        emp1.setFirstName(FirstName1);
-        emp1.setSecondName(SecondName1);
-        emp1.setSurName(SurName1);
-        DeptEntity dept1 = new DeptEntity();
-        dept1.setTitle(Department1);
-        emp1.setDepartment(dept1);
-        emp1.setJob(Job1);
-        emp1.setSalary(10_000_000L);
-        emp1.setCity(City1);
-        emp1.setUser(null);
-        expected.setRows(new ArrayList<>());
-        expected.add(emp1);
-
-        EmpEntity emp2 = new EmpEntity();
-        emp2.setId(2L);
-        emp2.setFirstName(FirstName2);
-        emp2.setSecondName(SecondName2);
-        emp2.setSurName(SurName2);
-        DeptEntity dept2 = new DeptEntity();
-        dept2.setTitle(Department2);
-        emp2.setDepartment(dept2);
-        emp2.setJob(Job2);
-        emp2.setSalary(10_000L);
-        emp2.setCity(City2);
-        emp2.setUser(null);
-        expected.add(emp2);
+        EmpEntitiesList expected = TestData.getExpectedEmpEntitiesList();
 
         JAXBContext jc = JAXBContext.newInstance(
             EmpEntitiesList.class, DeptEntity.class, EmpEntity.class, UserEntity.class
@@ -118,10 +88,26 @@ public class MarshalJsonTest
         assertEquals(expectedJson, result);
     }
 
+    boolean isOdd(EmpEntity e) {
+        return ! (e.getId() % 2 == 0);
+    }
+
+    String converEmpEntityToJson(EmpEntity entity) {
+        Jsonb jsonb = JsonbBuilder.create();
+        return jsonb.toJson(entity);
+    }
+
     @Test
-    public void testUnmarshalToJson() throws JAXBException
+    public void testUnmarshalFromJson()
     {
+        EmpEntitiesList expected = TestData.getExpectedEmpEntitiesList();
+
         Jsonb jsonb = JsonbBuilder.create();
         EmpEntitiesList list = jsonb.fromJson(expectedJson, EmpEntitiesList.class);
+        assertEquals(expected, list);
+        String result = list.getEmployees().stream()
+                .filter(this::isOdd)
+                .map(this::converEmpEntityToJson).reduce("", String::concat);
+        System.out.println("result = " + result);
     }
 }

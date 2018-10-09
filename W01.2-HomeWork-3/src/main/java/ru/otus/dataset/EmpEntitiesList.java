@@ -23,27 +23,27 @@ public class EmpEntitiesList implements Serializable
 {
     @XmlElement(name = "employee")
     @JsonbProperty("employees")
-    private List<EmpEntity> rows = null;
+    private List<EmpEntity> employees = null;
 
     public EmpEntitiesList() {}
 
-    public EmpEntitiesList(List<EmpEntity> rows)
+    public EmpEntitiesList(List<EmpEntity> employees)
     {
-        this.rows = rows;
+        this.employees = employees;
     }
 
-    public List<EmpEntity> getRows()
+    public List<EmpEntity> getEmployees()
     {
-        return rows;
+        return employees;
     }
 
-    public void setRows(List<EmpEntity> rows)
+    public void setEmployees(List<EmpEntity> employees)
     {
-        this.rows = rows;
+        this.employees = employees;
     }
 
     public void add(EmpEntity emp) {
-        rows.add(emp);
+        employees.add(emp);
     }
 }
 

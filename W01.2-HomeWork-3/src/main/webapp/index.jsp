@@ -12,6 +12,7 @@
     <li><a href="xmlmarshal/save">XML of Employees save to file:  employee.xml</a></li>
     <li><a href="xmlmarshal/domfilter">XPath filter for XML file: employee.xml</a></li>
     <li><a href="jsonmarshal">JSON of Employees</a></li>
+    <li><a href="jsonmarshal/odd">JSON of Employees with odd id</a></li>
 </ol>
 </body>
 </html>
