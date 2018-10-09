@@ -61,6 +61,14 @@ public class UserEntityTest
         UserEntity userFind = entityManager.find(UserEntity.class, 1L);
         assertNotNull(userFind);
     }
+    @Test
+    public void testGetSetLogin()
+    {
+        UserEntity user = new UserEntity();
+        user.setLogin("test");
+        assertEquals(user.getLogin(), "test");
+        assertEquals(user.getName(), "test");
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

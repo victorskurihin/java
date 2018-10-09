@@ -6,7 +6,6 @@ package ru.otus.adapter;
 
 import ru.otus.dataset.DeptEntity;
 
-import javax.json.JsonObject;
 import javax.json.bind.adapter.JsonbAdapter;
 
 public class DeptEntityJsonAdapter
@@ -22,16 +21,6 @@ implements JsonbAdapter<DeptEntity, String>, DataSetAdapter<DeptEntity>
     public DeptEntity adaptFromJson(String s) throws Exception
     {
         return unmarshalAdapter(s, DeptEntity.class);
-    }
-
-    public JsonObject convertToJson(DeptEntity dept) throws Exception
-    {
-        return getJsonWithIdObjectBuilder(dept).add("title", dept.getTitle()).build();
-    }
-
-    public DeptEntity createFromJson(JsonObject obj) throws Exception
-    {
-        return unmarshalFromJson(obj);
     }
 }
 

@@ -31,8 +31,8 @@ public class MarshalJsonServlet extends HttpServlet
 {
     private static final String XML_DATA_FILE_LOCATION = "XMLDataFileLocation";
     private static final String JSON_DATA_FILE_LOCATION = "JsonDataFileLocation";
-    static final String GET = "get";
     static final String OK = "ok";
+    static final String GET = "get";
     static final String ODD = "odd";
 
     private InputStream getXMLDataFileInputStream() throws FileNotFoundException, URISyntaxException
@@ -53,7 +53,7 @@ public class MarshalJsonServlet extends HttpServlet
         return new PrintWriter(Paths.get(new URI(file)).toFile());
     }
 
-    private String getJsonFromEmpEntitiesList(EmpEntitiesList list)
+    String getJsonFromEmpEntitiesList(EmpEntitiesList list)
     {
         JsonbConfig config = new JsonbConfig().withFormatting(true);
         Jsonb jsonb = JsonbBuilder.create(config);
@@ -72,7 +72,7 @@ public class MarshalJsonServlet extends HttpServlet
         return (EmpEntitiesList) u.unmarshal(getXMLDataFileInputStream());
     }
 
-    public String converEmpEntityToJson(EmpEntity entity) {
+    String converEmpEntityToJson(EmpEntity entity) {
         JsonbConfig config = new JsonbConfig().withFormatting(true);
         Jsonb jsonb = JsonbBuilder.create(config);
         return jsonb.toJson(entity);
@@ -80,6 +80,20 @@ public class MarshalJsonServlet extends HttpServlet
 
     boolean isOdd(EmpEntity e) {
         return ! (e.getId() % 2 == 0);
+    }
+
+
+    EmpEntitiesList getEmpEntitiesListFromJsonString(String jsonEmployees)
+    {
+        Jsonb jsonb = JsonbBuilder.create();
+        return jsonb.fromJson(jsonEmployees, EmpEntitiesList.class);
+    }
+
+    private String getJsonEmployeesFromJsonDataFile() throws FileNotFoundException, URISyntaxException
+    {
+        return new BufferedReader(new InputStreamReader(getJsonDataFileInputStream()))
+                .lines()
+                .collect(Collectors.joining("\n"));
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -118,19 +132,6 @@ public class MarshalJsonServlet extends HttpServlet
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-    }
-
-    private EmpEntitiesList getEmpEntitiesListFromJsonString(String jsonEmployees)
-    {
-        Jsonb jsonb = JsonbBuilder.create();
-        return jsonb.fromJson(jsonEmployees, EmpEntitiesList.class);
-    }
-
-    private String getJsonEmployeesFromJsonDataFile() throws FileNotFoundException, URISyntaxException
-    {
-        return new BufferedReader(new InputStreamReader(getJsonDataFileInputStream()))
-                            .lines()
-                            .collect(Collectors.joining("\n"));
     }
 }
 

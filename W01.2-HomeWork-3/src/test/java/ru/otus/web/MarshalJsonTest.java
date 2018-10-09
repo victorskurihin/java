@@ -108,6 +108,5 @@ public class MarshalJsonTest
         String result = list.getEmployees().stream()
                 .filter(this::isOdd)
                 .map(this::converEmpEntityToJson).reduce("", String::concat);
-        System.out.println("result = " + result);
     }
 }

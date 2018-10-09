@@ -16,7 +16,18 @@ interface DataSetAdapter<T extends DataSet>
 {
     default Class<T> getTypeParameterClass()
     {
-        Type type = getClass().getGenericSuperclass();
+        Type[] types = getClass().getGenericInterfaces();
+        for (Type type: types) {
+            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
+                ParameterizedType paramType = (ParameterizedType) type;
+                // some magic with reflection
+                //noinspection unchecked
+                return (Class<T>) paramType.getActualTypeArguments()[0];
+            }
+        }
+
+        // Backup way for XML Adapter. Need more testing.
+        Type type = getClass();
         ParameterizedType paramType = (ParameterizedType) type;
 
         //noinspection unchecked

@@ -62,7 +62,7 @@ public class MarshalXMLServlet extends HttpServlet
         transaction.begin();
         Query q = em.createQuery(SELECT_EMPL_ENTITY);
         //noinspection unchecked
-        ArrayList<EmpEntity> list = new ArrayList<EmpEntity>(q.getResultList());
+        ArrayList<EmpEntity> list = new ArrayList<>(q.getResultList());
         transaction.commit();
 
         return new EmpEntitiesList(list);
@@ -94,12 +94,12 @@ public class MarshalXMLServlet extends HttpServlet
         return DOMUtil.getDocument(new URI(path).toString());
     }
 
-    private Transformer getTransformer() throws TransformerConfigurationException
+    Transformer getTransformer() throws TransformerConfigurationException
     {
         return TransformerFactory.newInstance().newTransformer();
     }
 
-    private XPathExpression getXPathExpression(String expression) throws XPathExpressionException
+    XPathExpression getXPathExpression(String expression) throws XPathExpressionException
     {
         XPathFactory xpathfactory = XPathFactory.newInstance();
         XPath xpath = xpathfactory.newXPath();
@@ -156,12 +156,16 @@ public class MarshalXMLServlet extends HttpServlet
                 ServletUtil.okXML(out);
             } else {
                 EmpEntitiesList result = getEmpEntitiesList(em, transaction);
-                if (command.equals(DOMFILTER)) {
-                    filterByAverageSalary(out);
-                } else if (command.equals(SAVE)) {
-                    marshalEmpEntitiesList(out, result, true);
-                } else {
-                    marshalEmpEntitiesList(out, result, false);
+                switch (command) {
+                    case DOMFILTER:
+                        filterByAverageSalary(out);
+                        break;
+                    case SAVE:
+                        marshalEmpEntitiesList(out, result, true);
+                        break;
+                    default:
+                        marshalEmpEntitiesList(out, result, false);
+                        break;
                 }
             }
         } catch (Exception e) {
