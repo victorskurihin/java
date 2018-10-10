@@ -4,10 +4,7 @@ package ru.otus.web;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import ru.otus.dataset.DeptEntity;
-import ru.otus.dataset.EmpEntitiesList;
-import ru.otus.dataset.EmpEntity;
-import ru.otus.dataset.UserEntity;
+import ru.otus.dataset.*;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
@@ -72,17 +69,6 @@ public class MarshalJsonServlet extends HttpServlet
         return (EmpEntitiesList) u.unmarshal(getXMLDataFileInputStream());
     }
 
-    String converEmpEntityToJson(EmpEntity entity) {
-        JsonbConfig config = new JsonbConfig().withFormatting(true);
-        Jsonb jsonb = JsonbBuilder.create(config);
-        return jsonb.toJson(entity);
-    }
-
-    boolean isOdd(EmpEntity e) {
-        return ! (e.getId() % 2 == 0);
-    }
-
-
     EmpEntitiesList getEmpEntitiesListFromJsonString(String jsonEmployees)
     {
         Jsonb jsonb = JsonbBuilder.create();
@@ -124,8 +110,8 @@ public class MarshalJsonServlet extends HttpServlet
                 EmpEntitiesList list = getEmpEntitiesListFromJsonString(jsonEmployees);
 
                 String oddJsonEmployees = list.getEmployees().stream()
-                        .filter(this::isOdd)
-                        .map(this::converEmpEntityToJson)
+                        .filter(EntityUtil::isOdd)
+                        .map(EntityUtil::convertToJson)
                         .reduce("", String::concat);
                 out.println("[" + oddJsonEmployees + "\n]\n");
             }

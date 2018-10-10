@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -23,7 +24,7 @@ public class EmpEntitiesList implements Serializable
 {
     @XmlElement(name = "employee")
     @JsonbProperty("employees")
-    private List<EmpEntity> employees = null;
+    private List<EmpEntity> employees = new ArrayList<>();
 
     public EmpEntitiesList() {}
 

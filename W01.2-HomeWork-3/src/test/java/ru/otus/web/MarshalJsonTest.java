@@ -88,15 +88,6 @@ public class MarshalJsonTest
         assertEquals(expectedJson, result);
     }
 
-    boolean isOdd(EmpEntity e) {
-        return ! (e.getId() % 2 == 0);
-    }
-
-    String converEmpEntityToJson(EmpEntity entity) {
-        Jsonb jsonb = JsonbBuilder.create();
-        return jsonb.toJson(entity);
-    }
-
     @Test
     public void testUnmarshalFromJson()
     {
@@ -106,7 +97,8 @@ public class MarshalJsonTest
         EmpEntitiesList list = jsonb.fromJson(expectedJson, EmpEntitiesList.class);
         assertEquals(expected, list);
         String result = list.getEmployees().stream()
-                .filter(this::isOdd)
-                .map(this::converEmpEntityToJson).reduce("", String::concat);
+            .filter(EntityUtil::isOdd)
+            .map(EntityUtil::convertToJson)
+            .reduce("", String::concat);
     }
 }

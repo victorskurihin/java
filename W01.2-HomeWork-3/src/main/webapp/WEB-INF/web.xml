@@ -7,14 +7,14 @@
 
     <context-param>
         <param-name>XMLDataFileLocation</param-name>
-        <!--<param-value>file:///C:/temp/employee.xml</param-value>-->
-        <param-value>file:////tmp/employee.xml</param-value>
+        <param-value>file:///C:/temp/employee.xml</param-value>
+        <!--<param-value>file:////tmp/employee.xml</param-value>-->
     </context-param>
 
     <context-param>
         <param-name>JsonDataFileLocation</param-name>
-        <!--<param-value>file:///C:/temp/employee.json</param-value>-->
-        <param-value>file:////tmp/employee.json</param-value>
+        <param-value>file:///C:/temp/employee.json</param-value>
+        <!--<param-value>file:////tmp/employee.json</param-value>-->
     </context-param>
 
     <resource-ref>

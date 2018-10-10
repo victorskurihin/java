@@ -15,16 +15,19 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
 {
     public static final String TEST = "test";
     DataSetAdapterTest selfTest;
+    TestEntity entity;
 
     @Before
     public void setUp() throws Exception
     {
         selfTest = new DataSetAdapterTest();
+        entity = new TestEntity();
     }
 
     @After
     public void tearDown() throws Exception
     {
+        entity = null;
         selfTest = null;
     }
 
@@ -50,7 +53,6 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
     public void testMarshalAdapter()
     {
         String expected = TEST;
-        TestEntity entity = new TestEntity();
         entity.setTest(TEST);
         String test = selfTest.marshalAdapter(entity);
         assertEquals(expected, test);
@@ -59,7 +61,6 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
     @Test
     public void testGetJsonWithIdObjectBuilder()
     {
-        TestEntity entity = new TestEntity();
         JsonObjectBuilder job = selfTest.getJsonWithIdObjectBuilder(entity);
         JsonObject jo = job.build();
         assertEquals(0, jo.getInt("id"));
@@ -68,7 +69,6 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
     @Test
     public void testMarshalToJson()
     {
-        TestEntity entity = new TestEntity();
         entity.setName(TEST);
         JsonObject jo = selfTest.marshalToJson(entity);
         assertEquals(0, jo.getInt("id"));
@@ -78,12 +78,11 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
     @Test
     public void testUnmarshalFromJson() throws InstantiationException, IllegalAccessException
     {
-        TestEntity test = new TestEntity();
-        test.setName(TEST);
+        entity.setName(TEST);
         JsonObject jo = Json.createObjectBuilder()
-                .add("id", test.getId())
-                .add("name", test.getName()).build();
+                .add("id", entity.getId())
+                .add("name", entity.getName()).build();
         TestEntity expected = selfTest.unmarshalFromJson(jo);
-        assertEquals(expected, test);
+        assertEquals(expected, entity);
     }
 }

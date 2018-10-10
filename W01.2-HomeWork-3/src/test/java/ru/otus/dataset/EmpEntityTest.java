@@ -108,14 +108,90 @@ public class EmpEntityTest
     }
 
     @Test
-    public void getName()
+    public void testGetSetId()
     {
-        // TODO
+        EmpEntity entity = new EmpEntity();
+        entity.setId(13L);
+        assertEquals(13L, entity.getId());
     }
 
     @Test
-    public void setName()
+    public void testGetSetFirstNamed()
     {
-        // TODO
+        EmpEntity entity = new EmpEntity();
+        entity.setFirstName("test");
+        assertEquals("test", entity.getFirstName());
+    }
+
+    @Test
+    public void testGetSetSecondName()
+    {
+        EmpEntity entity = new EmpEntity();
+        entity.setSecondName("test");
+        assertEquals("test", entity.getSecondName());
+    }
+
+    @Test
+    public void testGetSetSurName()
+    {
+        EmpEntity entity = new EmpEntity();
+        entity.setSurName("test");
+        assertEquals("test", entity.getSurName());
+    }
+
+    @Test
+    public void testGetSetCity()
+    {
+        EmpEntity entity = new EmpEntity();
+        entity.setCity("test");
+        assertEquals("test", entity.getCity());
+    }
+
+    @Test
+    public void testGetSetJob()
+    {
+        EmpEntity entity = new EmpEntity();
+        entity.setJob("test");
+        assertEquals("test", entity.getJob());
+    }
+
+    @Test
+    public void testGetSetSalary()
+    {
+        EmpEntity entity = new EmpEntity();
+        entity.setSalary(13L);
+        assertEquals(new Long(13), entity.getSalary());
+    }
+
+
+    @Test
+    public void testGetSetDepartment()
+    {
+        EmpEntity entity = new EmpEntity();
+        DeptEntity dept = new DeptEntity();
+        entity.setDepartment(dept);
+        assertEquals(new DeptEntity(), entity.getDepartment());
+    }
+
+    @Test
+    public void testGetSetUser()
+    {
+        EmpEntity entity = new EmpEntity();
+        UserEntity user = new UserEntity();
+        entity.setUser(user);
+        assertEquals(new UserEntity(), entity.getUser());
+    }
+
+    @Test
+    public void testGetSetName()
+    {
+        String expected = "FirstName SecondName SurName";
+        EmpEntity entity = new EmpEntity();
+        entity.setName(expected);
+        assertEquals(expected, entity.getName());
+        String[] expectedArray = expected.split(" ");
+        assertEquals(expectedArray[0], entity.getFirstName());
+        assertEquals(expectedArray[1], entity.getSecondName());
+        assertEquals(expectedArray[2], entity.getSurName());
     }
 }

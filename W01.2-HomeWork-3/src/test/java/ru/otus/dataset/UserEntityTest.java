@@ -12,8 +12,11 @@ import static org.junit.Assert.*;
 public class UserEntityTest
 {
     public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
+    public static final String TEST = "test";
+    public static final String TSET = "tset";
     private static EntityManagerFactory emf;
     private EntityManager entityManager;
+    UserEntity entity;
 
     @BeforeClass
     public static void setUpClass()
@@ -25,11 +28,13 @@ public class UserEntityTest
     public void setUp() throws Exception
     {
         entityManager = emf.createEntityManager();
+        entity = new UserEntity();
     }
 
     @After
     public void tearDown()
     {
+        entity = null;
         entityManager.close();
     }
 
@@ -52,22 +57,38 @@ public class UserEntityTest
     {
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
-        UserEntity user = new UserEntity();
-        user.setName("setName");
-        user.setPassword("setPassword");
-        entityManager.persist(user);
+        entity.setName("setName");
+        entity.setPassword("setPassword");
+        entityManager.persist(entity);
         transaction.commit();
 
         UserEntity userFind = entityManager.find(UserEntity.class, 1L);
         assertNotNull(userFind);
     }
+
+    @Test
+    public void testGetSetId()
+    {
+        entity.setId(13L);
+        assertEquals(13L, entity.getId());
+    }
+
     @Test
     public void testGetSetLogin()
     {
-        UserEntity user = new UserEntity();
-        user.setLogin("test");
-        assertEquals(user.getLogin(), "test");
-        assertEquals(user.getName(), "test");
+        entity.setLogin(TEST);
+        assertEquals(TEST, entity.getLogin());
+        assertEquals(TEST, entity.getName());
+        entity.setName(TSET);
+        assertEquals(TSET, entity.getLogin());
+        assertEquals(TSET, entity.getName());
+    }
+
+    @Test
+    public void testGetSetPassword()
+    {
+        entity.setPassword(TEST);
+        assertEquals(TEST, entity.getPassword());
     }
 }
 
