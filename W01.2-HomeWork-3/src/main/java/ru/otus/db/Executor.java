@@ -21,7 +21,6 @@ public class Executor
     public void execQuery(String query, ResultHandler handler)
     throws SQLException
     {
-
         try (Statement stmt = connection.createStatement()) {
             stmt.execute(query);
             ResultSet result = stmt.getResultSet();

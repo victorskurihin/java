@@ -6,9 +6,6 @@ package ru.otus.web;
 
 import ru.otus.dataset.*;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -50,14 +47,6 @@ public class MarshalJsonServlet extends HttpServlet
         return new PrintWriter(Paths.get(new URI(file)).toFile());
     }
 
-    String getJsonFromEmpEntitiesList(EmpEntitiesList list)
-    {
-        JsonbConfig config = new JsonbConfig().withFormatting(true);
-        Jsonb jsonb = JsonbBuilder.create(config);
-
-        return jsonb.toJson(list);
-    }
-
     private EmpEntitiesList getEmpEntitiesListFromXMLDataFile()
     throws JAXBException, FileNotFoundException, URISyntaxException
     {
@@ -67,12 +56,6 @@ public class MarshalJsonServlet extends HttpServlet
         Unmarshaller u = jc.createUnmarshaller();
 
         return (EmpEntitiesList) u.unmarshal(getXMLDataFileInputStream());
-    }
-
-    EmpEntitiesList getEmpEntitiesListFromJsonString(String jsonEmployees)
-    {
-        Jsonb jsonb = JsonbBuilder.create();
-        return jsonb.fromJson(jsonEmployees, EmpEntitiesList.class);
     }
 
     private String getJsonEmployeesFromJsonDataFile() throws FileNotFoundException, URISyntaxException
@@ -93,13 +76,14 @@ public class MarshalJsonServlet extends HttpServlet
             if (command == null) {
                 command = GET;
             }
+
             if (command.equals(OK)) {
                 ServletUtil.okXML(out);
             } else if (command.equals(GET)) {
                 EmpEntitiesList list = getEmpEntitiesListFromXMLDataFile();
-                String json = getJsonFromEmpEntitiesList(list);
-
+                String json = EntityUtil.convertToJson(list);
                 out.println(json);
+
                 try (PrintWriter fout = getJsonDataFilePrintWriter()) {
                     fout.println(json);
                 } catch (IOException e2) {
@@ -107,7 +91,9 @@ public class MarshalJsonServlet extends HttpServlet
                 }
             } else if (command.equals(ODD)) {
                 String jsonEmployees = getJsonEmployeesFromJsonDataFile();
-                EmpEntitiesList list = getEmpEntitiesListFromJsonString(jsonEmployees);
+                EmpEntitiesList list = EntityUtil.convertFromJson(
+                        jsonEmployees, EmpEntitiesList.class
+                );
 
                 String oddJsonEmployees = list.getEmployees().stream()
                         .filter(EntityUtil::isOdd)

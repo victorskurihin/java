@@ -23,10 +23,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
@@ -94,19 +91,6 @@ public class MarshalXMLServlet extends HttpServlet
         return DOMUtil.getDocument(new URI(path).toString());
     }
 
-    Transformer getTransformer() throws TransformerConfigurationException
-    {
-        return TransformerFactory.newInstance().newTransformer();
-    }
-
-    XPathExpression getXPathExpression(String expression) throws XPathExpressionException
-    {
-        XPathFactory xpathfactory = XPathFactory.newInstance();
-        XPath xpath = xpathfactory.newXPath();
-
-        return xpath.compile(expression);
-    }
-
     private NodeList getNodeList(Document document, XPathExpression expr)
     throws XPathExpressionException
     {
@@ -121,8 +105,7 @@ public class MarshalXMLServlet extends HttpServlet
                "(sum(/employees/employee/@salary) div count(/employees/employee/@salary))]";
         Document document = getDataFileDocument();
         // Use a Transformer for output
-        Transformer transformer = getTransformer();
-        XPathExpression expr = getXPathExpression(expression);
+        XPathExpression expr = ServletUtil.getXPathExpression(expression);
         NodeList nodes = getNodeList(document, expr);
         Document resultXML = DOMUtil.getDocument(EMPTY_EMPLOYEES_STREAM);
         Element employees = resultXML.createElement("employees");
@@ -135,7 +118,8 @@ public class MarshalXMLServlet extends HttpServlet
 
         DOMSource source = new DOMSource(employees);
         StreamResult resultOut = new StreamResult(out);
-        transformer.transform(source, resultOut);
+        ServletUtil.transformDOMToStream(source, resultOut);
+        return;
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)

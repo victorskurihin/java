@@ -1,20 +1,18 @@
 package ru.otus.web;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.io.PrintWriter;
 
 public class ServletUtil
 {
-    public static StringBuilder outHTMLHeader(PrintWriter out, String title)
-    {
-        StringBuilder sb = new StringBuilder("<html>\n<head>\n<html>\n<head>\n")
-            .append("    <title>").append(title).append("</title>\n")
-            .append("    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />\n")
-            .append("</head>\n").append("<body>\n")
-            .append("    <h2>").append(title).append("</h2>");
-        return sb;
-    }
-
     public static void okXML(PrintWriter out)
     {
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>");
@@ -32,6 +30,20 @@ public class ServletUtil
         return null;
     }
 
+    public static XPathExpression getXPathExpression(String expression)
+    throws XPathExpressionException
+    {
+        XPathFactory xpathfactory = XPathFactory.newInstance();
+        XPath xpath = xpathfactory.newXPath();
+
+        return xpath.compile(expression);
+    }
+
+    public static void transformDOMToStream(DOMSource source, StreamResult resultOut)
+    throws TransformerException
+    {
+        TransformerFactory.newInstance().newTransformer().transform(source, resultOut);
+    }
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

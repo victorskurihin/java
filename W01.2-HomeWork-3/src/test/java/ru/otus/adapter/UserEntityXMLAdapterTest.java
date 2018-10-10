@@ -3,21 +3,20 @@ package ru.otus.adapter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.dataset.DeptEntity;
 import ru.otus.dataset.UserEntity;
 
 import static org.junit.Assert.assertEquals;
 
-public class DeptEntityXMLAdapterTest
+public class UserEntityXMLAdapterTest
 {
-    DeptEntity entity;
-    DeptEntityXMLAdapter adapter;
+    UserEntity entity;
+    UserEntityXMLAdapter adapter;
 
     @Before
     public void setUp() throws Exception
     {
-        entity = new DeptEntity();
-        adapter = new DeptEntityXMLAdapter();
+        entity = new UserEntity();
+        adapter = new UserEntityXMLAdapter();
     }
 
     @After
@@ -30,9 +29,9 @@ public class DeptEntityXMLAdapterTest
     @Test
     public void adaptToJsonFromJson() throws Exception
     {
-        DeptEntity expected = new DeptEntity();
+        UserEntity expected = new UserEntity();
         String xml = adapter.marshal(entity);
-        DeptEntity test = adapter.unmarshal(xml);
+        UserEntity test = adapter.unmarshal(xml);
         assertEquals(expected, test);
     }
 }
