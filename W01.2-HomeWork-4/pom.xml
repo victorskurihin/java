@@ -177,31 +177,61 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${mavencompiler.version}</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>${mavenbuilder.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>${mavendeploy.version}</version>
-                    <configuration>
-                        <url>${tomcat.deploymentPath}</url>
-                        <server>${tomcat.server}</server>
-                        <path>/${project.build.finalName}</path>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${mavencompiler.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${mavenbuilder.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>${mavendeploy.version}</version>
+                <configuration>
+                    <url>${tomcat.deploymentPath}</url>
+                    <server>${tomcat.server}</server>
+                    <path>/${project.build.finalName}</path>
+                </configuration>
+            </plugin>
+
+            <!--Minify Maven Plugin-->
+            <plugin>
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>minify-maven-plugin</artifactId>
+                <version>1.7.6</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <charset>UTF-8</charset>
+                    <!-- CSS minimization -->
+                    <cssSourceDir>css</cssSourceDir>
+                    <cssSourceFiles>
+                        <cssSourceFile>style.css</cssSourceFile>
+                    </cssSourceFiles>
+                    <cssFinalFile>style-all.css</cssFinalFile>
+                    <!-- JS minimization -->
+                    <jsSourceDir>js</jsSourceDir>
+                    <jsSourceFiles>
+                        <jsSourceFile>xhr.js</jsSourceFile>
+                    </jsSourceFiles>
+                    <jsFinalFile>script-all.js</jsFinalFile>
+                    <jsEngine>CLOSURE</jsEngine>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 </project>
