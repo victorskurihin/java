@@ -7,14 +7,14 @@
 
     <context-param>
         <param-name>XMLDataFileLocation</param-name>
-        <param-value>file:///C:/temp/employee.xml</param-value>
-        <!--<param-value>file:////tmp/employee.xml</param-value>-->
+        <!--<param-value>file:///C:/temp/employee.xml</param-value>-->
+        <param-value>file:////tmp/employee.xml</param-value>
     </context-param>
 
     <context-param>
         <param-name>JsonDataFileLocation</param-name>
-        <param-value>file:///C:/temp/employee.json</param-value>
-        <!--<param-value>file:////tmp/employee.json</param-value>-->
+        <!--<param-value>file:///C:/temp/employee.json</param-value>-->
+        <param-value>file:////tmp/employee.json</param-value>
     </context-param>
 
     <resource-ref>
@@ -23,4 +23,12 @@
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
+
+   <login-config>
+     <auth-method>FORM</auth-method>
+     <form-login-config>
+       <form-login-page>/WEB-INF/login.jsp</form-login-page>
+       <form-error-page>/WEB-INF/loginError.html</form-error-page>
+     </form-login-config>
+  </login-config>
 </web-app>

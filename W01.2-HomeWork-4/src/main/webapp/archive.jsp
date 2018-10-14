@@ -44,9 +44,6 @@
                         </a>
                     </h1>
                 </header>
-                <p class="p-text-justify text-margin">
-                    Жил на свете частник бедный. Это был довольно богатый человек, владелец галантерейного магазина, расположенного наискось от кино «Капи-талий». Он безмятежно торговал бельем, кружевными прошвами, галстуками, подвязками и другим мелким, но прибыльным товаром.
-                </p>
             </article>
 
             <hr class="separator">
@@ -61,9 +58,6 @@
                         </a>
                     </h1>
                 </header>
-                <p class="p-text-justify text-margin">
-                    Праздный черноморец, заглянув в магазин, мог бы заметить, что прилавки и полки исчезли, пол был чисто вымыт, стояли яичные конторские столы, а на стенах висели обыкновенные учрежденские плакаты насчет часов приема и вредности рукопожатий. Новоявленное учреждение уже пересекал барьер, выставленный против посетителей, которых, однако, еще не было.
-                </p>
             </article>
 
             <hr class="separator">
@@ -78,9 +72,6 @@
                         </a>
                     </h1>
                 </header>
-                <p class="p-text-justify text-margin">
-                    Но даже машинка с удивительным прононсом не могла омрачить светлой радости великого комбинатора. Ему очень нравилось новое поприще. Ежечасно он прибегал в контору с покупками. Он приносил такие сложные канцелярские машины и приборы, что курьер и уполномоченный только ахали. Тут были дыропробиватели, копировальные прессы, винтовой табурет и дорогая бронзовая чернильница в виде нескольких избушек для разного цвета чернил.
-                </p>
             </article>
 
             <hr class="separator">
@@ -95,9 +86,76 @@
                         </a>
                     </h1>
                 </header>
-                <p class="p-text-justify text-margin">
-                    Ничто не мешает людям воспользоваться рогами зайцелопа. Однако копыт у него нет.
-                </p>
+            </article>
+
+            <hr class="separator">
+            <article class="article" id="article5">
+                <header class="w3-row article">
+                    <time class="w3-col m1" datetime="2018-10-09" pubdate>
+                        <span>Окт</span> 8
+                    </time>
+                    <h1 class="w3-col m9 w3-margin-0 article">
+                        <a class="article" href="#" title="Ссылка на новость" rel="bookmark">
+                            Васисуалий Лоханкин и его роль в русской революции
+                        </a>
+                    </h1>
+                </header>
+            </article>
+
+            <hr class="separator">
+            <article class="article" id="article6">
+                <header class="w3-row article">
+                    <time class="w3-col m1" datetime="2018-10-09" pubdate>
+                        <span>Окт</span> 7
+                    </time>
+                    <h1 class="w3-col m9 w3-margin-0 article">
+                        <a class="article" href="#" title="Ссылка на новость" rel="bookmark">
+                            Теплая компания: Гомер, Мильтон и Паниковский
+                        </a>
+                    </h1>
+                </header>
+            </article>
+
+            <hr class="separator">
+            <article class="article" id="article7">
+                <header class="w3-row article">
+                    <time class="w3-col m1" datetime="2018-10-09" pubdate>
+                        <span>Окт</span> 6
+                    </time>
+                    <h1 class="w3-col m9 w3-margin-0 article">
+                        <a class="article" href="#" title="Ссылка на новость" rel="bookmark">
+                            Геркулесовцы. 
+                        </a>
+                    </h1>
+                </header>
+            </article>
+
+            <hr class="separator">
+            <article class="article" id="article8">
+                <header class="w3-row article">
+                    <time class="w3-col m1" datetime="2018-10-09" pubdate>
+                        <span>Окт</span> 5
+                    </time>
+                    <h1 class="w3-col m9 w3-margin-0 article">
+                        <a class="article" href="#" title="Ссылка на новость" rel="bookmark">
+                            Телеграмма от братьев Карамазовых
+                        </a>
+                    </h1>
+                </header>
+            </article>
+
+            <hr class="separator">
+            <article class="article" id="article9">
+                <header class="w3-row article">
+                    <time class="w3-col m1" datetime="2018-10-09" pubdate>
+                        <span>Окт</span> 5
+                    </time>
+                    <h1 class="w3-col m9 w3-margin-0 article">
+                        <a class="article" href="#" title="Ссылка на новость" rel="bookmark">
+                            Снова кризис жанра
+                        </a>
+                    </h1>
+                </header>
             </article>
 
             <hr class="separator">
