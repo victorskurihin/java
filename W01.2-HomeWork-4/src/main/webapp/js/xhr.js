@@ -1,4 +1,4 @@
-function makeRequest (method, url, done) {
+function makeRequest(method, url, done) {
     var xhr = new XMLHttpRequest();
     xhr.open(method, url);
     xhr.onload = function () {
@@ -9,6 +9,7 @@ function makeRequest (method, url, done) {
     };
     xhr.send();
 }
+
 function makeRequestWithPromise(method, url) {
     return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();

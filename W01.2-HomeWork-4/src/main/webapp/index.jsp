@@ -11,20 +11,23 @@
 
 <body class="body">
     <header class="w3-container main-header w3-center">
-        <div class="div-header">
+        <div class="div-header" style="width: 79%; min-width: 800px">
             <h1>Рога и копыта</h1>
             <h2>Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»</h2>
         </div>
-        <label class="search-label" for="search">
-            Поиск: <input type="search" id="search" name="search">
-        </label>
+        <div class="w3-cell w3-margin-0" style="width: 21%; min-width: 212px">
+            <form class="find">
+                <input class="find" name="search" id="search" placeholder="Искать здесь..." type="search">
+                <button class="find" onclick="goSearch()"></button>
+            </form>
+        </div>
     </header>
 
     <nav>
         <ul>
             <li><a href="index.jsp">Главная</a></li>
             <li><a href="login.jsp">Вход в систему</a></li>
-            <li><a href="contacs.jsp">Контакты</a></li>
+            <li><a href="contacts.jsp">Контакты</a></li>
             <li><a href="backform.jsp">Обратная связь</a></li>
             <li><a href="archive.jsp">Архивы новостей</a></li>
         </ul>
@@ -107,14 +110,20 @@
             <ul>
                 <li><a href="index.jsp">«ГЕРКУЛЕС»</a></li>
                 <li><a href="login.jsp">«Лицом к деревне»</a></li>
-                <li><a href="contacs.jsp">«Адлер»</a></li>
+                <li><a href="contacts.jsp">«Адлер»</a></li>
                 <li><a href="archive.jsp">«Перерыв на обед»</a></li>
             </ul>
+            <ul class="w3-margin">
+                <li id="AMD"></li>
+                <li id="GBP"></li>
+                <li id="USD"></li>
+            </ul>
+            <script>getCBRJSON(fillUl);</script>
         </aside>
     </main>
 
     <footer class="w3-container w3-light-gray">
-        <p>&copy; 2018 ООО Рога и копыта. Свои права мы держим в надёжном месте.</p>
+        <p class="w3-margin">&copy; 2018 ООО Рога и копыта. Свои права мы держим в надёжном месте.</p>
     </footer>
 </body>
 </html>

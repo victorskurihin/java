@@ -234,13 +234,18 @@
                     <!-- CSS minimization -->
                     <cssSourceDir>css</cssSourceDir>
                     <cssSourceFiles>
-                        <cssSourceFile>style.css</cssSourceFile>
+                        <cssSourceFile>fontawesome.min.css</cssSourceFile>
+                        <cssSourceFile>brands.min.css</cssSourceFile>
+                        <cssSourceFile>mystyle.css</cssSourceFile>
                         <cssSourceFile>w3.css</cssSourceFile>
                     </cssSourceFiles>
                     <cssFinalFile>style-all.css</cssFinalFile>
                     <!-- JS minimization -->
                     <jsSourceDir>js</jsSourceDir>
                     <jsSourceFiles>
+                        <jsSourceFile>cbr.js</jsSourceFile>
+                        <jsSourceFile>login.js</jsSourceFile>
+                        <jsSourceFile>search.js</jsSourceFile>
                         <jsSourceFile>xhr.js</jsSourceFile>
                     </jsSourceFiles>
                     <jsFinalFile>script-all.js</jsFinalFile>
