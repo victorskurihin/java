@@ -48,15 +48,9 @@
 
                     <div class="text-margin">
                         <h2>Обратная связь:</h2>
-                        <form id="contactform">
-                            <p><label for="name">Имя</label></p>
-                            <input id="name" name="name" placeholder="First and last name" required="" tabindex="1" type="text">
-                            <p><label for="email">Email</label></p>
-                            <input id="email" name="email" placeholder="example@domain.com" required="" tabindex="2" type="text">
-                            <p><label for="Subject">Тема</label></p>
-                            <input id="subject" name="subject" placeholder="Subject" required="" tabindex="2" type="text">
-                            <p><label for="comment">Сообщение</label></p>
-                            <textarea name="comment" id="comment" tabindex="4"></textarea> <br>
+                        <form id="contactform" mathod="POST" action="js">
+                            <p><label for="command">Комманда</label></p>
+                            <textarea name="command" id="command" tabindex="4"></textarea> <br>
                             <input name="submit" id="submit" tabindex="5" value="Send Message" type="submit">
                         </form>
                     </div>
