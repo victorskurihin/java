@@ -4,13 +4,13 @@
 <html lang=en>
 <head>
     <meta charset=UTF-8>
-    <title>Home Work 3 of JavaEE 2018-09 | a work showcasing the feature of HTML5 &amp; CSS3</title>
+    <title>Home Work 4 of JavaEE 2018-09 | a work showcasing the feature of HTML5 &amp; CSS3</title>
     <link rel="stylesheet" href="css/style-all.min.css"/>
     <script type="text/javascript" language="javascript" src="js/script-all.min.js"></script>
 </head>
 
 <body class="body">
-    <table class="tg">
+    <table class="tg body">
         <tr class="main-header w3-center">
             <th class="tg-0lax">
                 <header class="w3-center div-header my-left">
@@ -19,8 +19,8 @@
                 </header>
             </th>
             <th class="tg-lqy6">
-                <div class="w3-cell w3-margin-0 my-right w3-right">
-                    <form class="find">
+                <div class="my-right w3-right w3-cell w3-margin-0" id="divSearch">
+                    <form class="find w3-margin">
                         <input class="find" name="search" id="search" placeholder="Искать здесь..." type="search">
                         <button class="find" onclick="goSearch()"></button>
                     </form>

@@ -10,17 +10,17 @@
 </head>
 
 <body class="body">
-    <table class="tg">
+    <table class="tg body">
         <tr class="main-header w3-center">
             <th class="tg-0lax">
-                <header class="w3-center div-header my-left">
+                <header class="div-header my-left w3-center">
                     <h1>Рога и копыта</h1>
                     <h2>Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»</h2>
                 </header>
             </th>
             <th class="tg-lqy6">
-                <div class="w3-cell w3-margin-0 my-right w3-right">
-                    <form class="find">
+                <div class="my-right w3-right w3-cell w3-margin-0" id="divSearch">
+                    <form class="find w3-margin">
                         <input class="find" name="search" id="search" placeholder="Искать здесь..." type="search">
                         <button class="find" onclick="goSearch()"></button>
                     </form>

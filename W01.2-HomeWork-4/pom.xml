@@ -35,7 +35,7 @@
         <postgresql.driver.version>42.2.2</postgresql.driver.version>
         <slf4j.version>1.7.21</slf4j.version>
 
-        <tomcat.deploymentPath>http://localhost:8080/manager/text</tomcat.deploymentPath>
+        <tomcat.deploymentPath>http://localhost:8008/manager/text</tomcat.deploymentPath>
         <tomcat.server>tomcat-localhost</tomcat.server>
 
         <mavencompiler.version>3.7.0</mavencompiler.version>

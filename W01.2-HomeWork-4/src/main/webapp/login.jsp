@@ -4,23 +4,23 @@
 <html lang=en>
 <head>
     <meta charset=UTF-8>
-    <title>Home Work 3 of JavaEE 2018-09 | a work showcasing the feature of HTML5 &amp; CSS3</title>
+    <title>Home Work 4 of JavaEE 2018-09 | a work showcasing the feature of HTML5 &amp; CSS3</title>
     <link rel="stylesheet" href="css/style-all.min.css"/>
     <script type="text/javascript" language="javascript" src="js/script-all.min.js"></script>
 </head>
 
 <body class="body">
-    <table class="tg">
+    <table class="tg body">
         <tr class="main-header w3-center">
             <th class="tg-0lax">
-                <header class="w3-center div-header my-left">
+                <header class="div-header my-left w3-center">
                     <h1>Рога и копыта</h1>
                     <h2>Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»</h2>
                 </header>
             </th>
             <th class="tg-lqy6">
-                <div class="w3-cell w3-margin-0 my-right w3-right">
-                    <form class="find">
+                <div class="my-right w3-right w3-cell w3-margin-0" id="divSearch">
+                    <form class="find w3-margin">
                         <input class="find" name="search" id="search" placeholder="Искать здесь..." type="search">
                         <button class="find" onclick="goSearch()"></button>
                     </form>
@@ -43,46 +43,8 @@
         </tr>
         <tr>
             <td class="tg-0lax my-left">
-                <main class = "w3-col m12 w3-margin-0 my-left">
-                    <hr class="separator w3-margin">
-                    <form method="post" action="j_security_check" class="loginForm" onsubmit="return checkPassword(this);">
-                        <div class="w3-row login-margin">
-                            <div class="w3-col m1 text-margin">
-                                <label for="login">Login: </label>
-                            </div>
-                            <div class="w3-col m2">
-                                <input type="text" id="login" name="j_username" autocomplete="off" placeholder="Type your login"/>
-                            </div>
-                        </div>
-                        <div class="w3-row login-margin">
-                            <div class="w3-col m1 text-margin">
-                                <label for="password">Password: </label>
-                            </div>
-                            <div class="w3-col m2">
-                                <input type="password" id="password" name="j_password" autocomplete="off" placeholder="Type your password"/>
-                            </div>
-                        </div>
-                        <div class="w3-row login-margin">
-                            <div class="w3-col m1 submitArea text-margin">
-                                <input type="submit" id="submit" value="Logon"/>
-                            </div>
-                        </div>
-                    </form>
-
-                    <script>
-                        checkLoginForm();
-
-                        var inputElement = document.getElementById('login');
-                        inputElement.addEventListener("focus", focusListener, true);
-                        inputElement.addEventListener("blur", blurListener, true);
-
-                        inputElement = document.getElementById('password');
-                        inputElement.addEventListener("focus", focusListener, true);
-                        inputElement.addEventListener("blur", blurListener, true);
-                    </script>
-
-                    <hr class="separator w3-margin">
-                    <p class="w3-margin"> &nbsp; </p>
+                <main class = "w3-col m12">
+                    <p class="w3-margin"> Ok &nbsp; </p>
                 </main>
             </td>
             <td class="tg-0lax my-right" style="border-left: 2px dotted black;" colspan="2">
