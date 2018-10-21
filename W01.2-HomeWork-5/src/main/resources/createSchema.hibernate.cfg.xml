@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</property>
+
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/db</property>
+
+        <property name="hibernate.connection.username">dbuser</property>
+
+        <property name="hibernate.connection.password">password</property>
+
+        <property name="hibernate.show_sql">false</property>
+
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <property name="hibernate.enable_lazy_load_no_trans">true</property>
+
+        <property name="javax.persistence.schema-generation.scripts.action">
+                  update
+        </property>
+
+        <property name="javax.persistence.schema-generation.scripts.create-target">
+                  db-schema.jpa.ddl
+        </property>
+
+        <property name="javax.persistence.schema-generation.scripts.drop-target">
+                  db-schema.jpa.ddl
+        </property>
+
+    </session-factory>
+</hibernate-configuration>
