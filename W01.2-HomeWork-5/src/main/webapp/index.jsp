@@ -36,6 +36,7 @@
                         <li><a href="contacts.jsp">Контакты</a></li>
                         <li><a href="backform.jsp">Обратная связь</a></li>
                         <li><a href="archive.jsp">Архивы новостей</a></li>
+                        <li><a href="Application.html">Application</a></li>
                     </ul>
                 </nav>
             </td>
