@@ -6,7 +6,7 @@
     <meta charset=UTF-8>
     <title>Home Work 4 of JavaEE 2018-09 | a work showcasing the feature of HTML5 &amp; CSS3</title>
     <link rel="stylesheet" href="css/style-all.min.css"/>
-    <script type="text/javascript" language="javascript" src="js/script-all.min.js"></script>
+    <script type="text/javascript" language="javascript" src="Application/Application.nocache.js"></script>
 </head>
 
 <body class="body">
@@ -134,10 +134,6 @@
                         <li class="news" id="news3"></li>
                         <li class="news" id="news4"></li>
                     </ul>
-                    <script>
-                        getJSON(fillUlForex, 'cbrforex');
-                        getJSON(fillUlNews, 'jsouprbc');
-                    </script>
                 </aside>
             </td>
         </tr>

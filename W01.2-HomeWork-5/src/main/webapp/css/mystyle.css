@@ -209,7 +209,7 @@ hr.separator {
     margin: 20px 0;
 }
 
-p.p-text-justify {
+.p-text-justify {
     text-align: justify;
     text-justify: inter-word;
 }
