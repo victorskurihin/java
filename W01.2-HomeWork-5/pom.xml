@@ -413,7 +413,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <module>ru.otus.gwt.Application</module>
+                    <!--<module>ru.otus.gwt.client.HelloWorld</module>-->
                     <extraJvmArgs>
                         -Xss1024K -Xmx1024M -Duser.language=ru -Duser.country=RU
                         -Djavax.xml.parsers.DocumentBuilderFactory=com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl
@@ -423,7 +423,7 @@
                     <logLevel>INFO</logLevel>
                     <copyWebapp>true</copyWebapp>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
-                    <runTarget>Application.html</runTarget>
+                    <runTarget>HelloWorld.html</runTarget>
                     <extraParam>true</extraParam>
                     <extra>extras</extra>
                     <optimizationLevel>9</optimizationLevel>
