@@ -1,12 +1,11 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-
 <!DOCTYPE html>
-<html lang=en>
+<html lang=ru>
 <head>
     <meta charset=UTF-8>
-    <title>Home Work 4 of JavaEE 2018-09 | a work showcasing the feature of HTML5 &amp; CSS3</title>
+    <title id="title">Home Work 5 of JavaEE 2018-09 | a work showcasing the feature of GWT</title>
     <link rel="stylesheet" href="css/style-all.min.css"/>
     <script type="text/javascript" language="javascript" src="js/script-all.min.js"></script>
+    <script type="text/javascript" language="javascript" src="login/login.nocache.js"></script>
 </head>
 
 <body class="body">
@@ -14,8 +13,8 @@
         <tr class="main-header w3-center">
             <th class="tg-0lax">
                 <header class="div-header my-left w3-center">
-                    <h1>Рога и копыта</h1>
-                    <h2>Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»</h2>
+                    <h1 id="header-1">Рога и копыта</h1>
+                    <h2 id="header-2">Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»</h2>
                 </header>
             </th>
             <th class="tg-lqy6">
@@ -25,36 +24,34 @@
                         <button class="find" onclick="goSearch()"></button>
                     </form>
                 </div>
-
             </th>
         </tr>
         <tr>
             <td class="tg-0lax" colspan="2">
-                <nav>
+                <nav class="menu">
                     <ul>
-                        <li><a href="index.jsp">Главная</a></li>
-                        <li><a href="login.jsp">Вход в систему</a></li>
-                        <li><a href="contacts.jsp">Контакты</a></li>
-                        <li><a href="backform.jsp">Обратная связь</a></li>
-                        <li><a href="archive.jsp">Архивы новостей</a></li>
-                        <li><a href="Application.html">Application</a></li>
+                        <li><a id="navigation-menu-0" href="#" onClick="return false;">Главная</a></li>
+                        <li><a id="navigation-menu-1" href="#" onClick="return false;">Контакты</a></li>
+                        <li><a id="navigation-menu-2" href="#" onClick="return false;">Обратная связь</a></li>
+                        <li><a id="navigation-menu-3" href="#" onClick="return false;">Архивы новостей</a></li>
+                        <li><a id="navigation-menu-4" href="inside.html">Application</a></li>
                     </ul>
                 </nav>
             </td>
         </tr>
         <tr>
             <td class="tg-0lax my-left">
-                <main class = "w3-col m12">
-                    <p class="w3-margin"> Ok &nbsp; </p>
+                <main class = "w3-col m12 w3-margin-0 my-left">
+                    <div id="inside-container"></div>
                 </main>
             </td>
             <td class="tg-0lax my-right" style="border-left: 2px dotted black;" colspan="2">
                 <aside class = "w3-col w3-margin-0 my-right">
                     <ul>
-                        <li><a href="index.jsp">«ГЕРКУЛЕС»</a></li>
-                        <li><a href="login.jsp">«Лицом к деревне»</a></li>
-                        <li><a href="contacts.jsp">«Адлер»</a></li>
-                        <li><a href="archive.jsp">«Перерыв на обед»</a></li>
+                        <li><a id="aside-menu-0" href="#" onClick="return false;">«ГЕРКУЛЕС»</a></li>
+                        <li><a id="aside-menu-1" href="#" onClick="return false;">«Лицом к деревне»</a></li>
+                        <li><a id="aside-menu-2" href="#" onClick="return false;">«Адлер»</a></li>
+                        <li><a id="aside-menu-3" href="#" onClick="return false;">«Перерыв на обед»</a></li>
                     </ul>
                     <ul class="w3-margin">
                         <li id="AMD"></li>
@@ -67,10 +64,6 @@
                         <li class="news" id="news3"></li>
                         <li class="news" id="news4"></li>
                     </ul>
-                    <script>
-                        getJSON(fillUlForex, 'cbrforex');
-                        getJSON(fillUlNews, 'jsouprbc');
-                    </script>
                 </aside>
             </td>
         </tr>
@@ -82,6 +75,5 @@
             </td>
         </tr>
     </table>
-
 </body>
 </html>

@@ -150,6 +150,11 @@ aside ul {
     text-decoration: none;
 }
 
+.deckpanel {
+    border: 0;
+    width: 100%;
+}
+
 aside ul li {
     display: list-item;
 }
@@ -158,6 +163,12 @@ aside ul li a {
     color: black;
     font-size: 14px;
     font-weight: bold;
+    text-decoration: none;
+}
+
+
+aside > ul li a:hover {
+    border-bottom: 1px solid currentColor; /* Or whatever color you want */
     text-decoration: none;
 }
 
@@ -190,6 +201,12 @@ article > header h1 {
 
 article > header h1 a {
     color: darkblue;
+    text-decoration: none;
+}
+
+article > header h1 a:hover {
+    color: darkblue;
+    border-bottom: 1px solid currentColor; /* Or whatever color you want */
     text-decoration: none;
 }
 
@@ -245,22 +262,22 @@ input.find {
 }
 
 input#name {
-    weight: 200px;
+    width: 250px;
     background: lightgray;
 }
 
 input#email {
-    weight: 220px;
+    width: 275px;
     background: lightgray;
 }
 
 input#subject {
-    weight: 240px;
+    width: 300px;
     background: lightgray;
 }
 
 textarea#comment {
-    weight: 240px;
+    width: 300px;
     background: lightgray;
 }
 

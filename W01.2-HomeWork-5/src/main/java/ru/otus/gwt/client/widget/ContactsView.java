@@ -1,22 +1,23 @@
 package ru.otus.gwt.client.widget;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
-public class ContactsView implements View
+public class ContactsView extends Composite implements IsWidget
 {
-    interface MyUiBinder extends UiBinder<TableElement, ContactsView> { /* None */ }
+    interface MyUiBinder extends UiBinder<Widget, ContactsView> { /* None */ }
     private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-    private TableElement root;
-
     public ContactsView() {
-        root = uiBinder.createAndBindUi(this);
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public Element getElement() {
-        return root;
+    @Override
+    public Widget asWidget()
+    {
+        return getWidget();
     }
 }

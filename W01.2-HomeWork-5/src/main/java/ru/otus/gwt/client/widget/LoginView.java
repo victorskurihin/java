@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
-public class LoginView extends Composite implements View
+public class LoginView extends Composite implements IsWidget
 {
     @UiTemplate("LoginView.ui.xml")
     public interface LoginViewUiBinder extends UiBinder<VerticalPanel, LoginView> {
@@ -42,8 +42,15 @@ public class LoginView extends Composite implements View
     private ApplicationServiceAsync service;
     private Image loginInvalidFieldImage, passwordInvalidFieldImage;
 
+    @Override
+    public Widget asWidget()
+    {
+        return getWidget();
+    }
+
     @UiHandler("submit")
-    void clickHandler(ClickEvent evt){
+    void clickHandler(ClickEvent evt)
+    {
         User user = new User(loginTextField.getValue(), passwordTextField.getValue());
         Set<ConstraintViolation<User>> errors = ValidationRule.getErrors(user);
         clearErrors();
@@ -76,8 +83,6 @@ public class LoginView extends Composite implements View
             });
         }
     }
-
-    /* public Element getElement() { return root;  } */
 
     private static LoginViewUiBinder ourUiBinder = INSTANCE.getUiBinder();
 

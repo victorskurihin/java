@@ -18,8 +18,6 @@
     <!-- Specify the app entry point class.                         -->
     <entry-point class='ru.otus.gwt.client.Login'/>
 
-    <resource path="header.html"/>
-
     <!-- Specify the paths for translatable code                    -->
     <source path='client'/>
     <source path='shared'/>

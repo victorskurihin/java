@@ -27,7 +27,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>ApplicationService</servlet-name>
-        <url-pattern>/Application/ApplicationService</url-pattern>
+        <url-pattern>/index/ApplicationService</url-pattern>
     </servlet-mapping>
 
     <resource-ref>
@@ -45,7 +45,7 @@
         <display-name>Restricted GET To Employees</display-name>
         <web-resource-collection>
             <web-resource-name>Restricted Access - Get Only</web-resource-name>
-            <url-pattern>/inside/*</url-pattern>
+            <url-pattern>/inside.html</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
         <auth-constraint>
