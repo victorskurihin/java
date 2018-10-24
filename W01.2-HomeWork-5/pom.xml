@@ -368,7 +368,6 @@
                     <!-- CSS minimization -->
                     <cssSourceDir>css</cssSourceDir>
                     <cssSourceFiles>
-                        <cssSourceFile>Application.css</cssSourceFile>
                         <cssSourceFile>fontawesome.min.css</cssSourceFile>
                         <cssSourceFile>brands.min.css</cssSourceFile>
                         <cssSourceFile>mystyle.css</cssSourceFile>

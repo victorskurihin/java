@@ -185,6 +185,7 @@ article > header h1 {
     margin-left: 14px;
     margin-top: 10px;
     text-shadow: 1px 1px 1px #FFFFFF, 1px 1px 1px #AAAAAA;
+    text-align: left;
 }
 
 article > header h1 a {
@@ -202,6 +203,8 @@ article p {
 
 * a:hover {
     color: darkcyan;
+    border-bottom: 1px solid currentColor; /* Or whatever color you want */
+    text-decoration: none;
 }
 
 hr.separator {
@@ -239,6 +242,26 @@ input.find {
     height: 42px;
     background: lightgray;
     padding-left: 7px;
+}
+
+input#name {
+    weight: 200px;
+    background: lightgray;
+}
+
+input#email {
+    weight: 220px;
+    background: lightgray;
+}
+
+input#subject {
+    weight: 240px;
+    background: lightgray;
+}
+
+textarea#comment {
+    weight: 240px;
+    background: lightgray;
 }
 
 button.find {

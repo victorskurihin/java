@@ -8,16 +8,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Index extends AppEntryPoint
+public class Inside extends AppEntryPoint
 {
     static final Map<String, View> MAIN_CONTAINERS;
     static
     {
         Map<String, View> tempMap = new HashMap<>();
-        tempMap.put("indexContainer", new IndexView());
-        tempMap.put("archiveContainer", new ArchiveView());
-        tempMap.put("backformContainer", new BackformView());
-        tempMap.put("contactsContainer", new ContactsView());
+        // tempMap.put("indexContainer", new IndexView());
+
         MAIN_CONTAINERS = Collections.unmodifiableMap(tempMap);
     }
 

@@ -1,14 +1,11 @@
-package ru.otus.gwt.widget;
+package ru.otus.gwt.client.widget;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 
-public class IndexView
+public class IndexView implements View
 {
     interface MyUiBinder extends UiBinder<TableElement, IndexView> { /* None */ }
     private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);

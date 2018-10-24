@@ -9,20 +9,22 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+
 import ru.otus.gwt.client.service.ApplicationServiceAsync;
 import ru.otus.gwt.shared.User;
 import ru.otus.gwt.shared.exception.WrongCredentialException;
 import ru.otus.gwt.shared.validation.ValidationRule;
 
-import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import java.util.Set;
+import javax.inject.Inject;
 
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
-public class MainView extends Composite {
-    @UiTemplate("MainPart.ui.xml")
-    public interface MainViewUiBinder extends UiBinder<VerticalPanel, MainView> {
+public class LoginView extends Composite implements View
+{
+    @UiTemplate("LoginView.ui.xml")
+    public interface LoginViewUiBinder extends UiBinder<VerticalPanel, LoginView> {
     }
 
     @UiField
@@ -37,11 +39,15 @@ public class MainView extends Composite {
     @UiField
     HorizontalPanel passwordPanel;
 
+    private ApplicationServiceAsync service;
+    private Image loginInvalidFieldImage, passwordInvalidFieldImage;
+
     @UiHandler("submit")
     void clickHandler(ClickEvent evt){
         User user = new User(loginTextField.getValue(), passwordTextField.getValue());
         Set<ConstraintViolation<User>> errors = ValidationRule.getErrors(user);
         clearErrors();
+
         if (errors.isEmpty()) {
             service.authorize(user, new AsyncCallback<Void>() {
                 @Override
@@ -50,6 +56,7 @@ public class MainView extends Composite {
                         Window.alert(caught.getLocalizedMessage());
                     }
                 }
+
                 @Override
                 public void onSuccess(Void result) {
                     Window.alert("Вход успешен!");
@@ -59,24 +66,23 @@ public class MainView extends Composite {
         else {
             errors.stream().forEach(e -> {
                 String propertyName = e.getPropertyPath().toString();
+
                 if (propertyName.equals(User.LOGIN)) {
                     loginInvalidFieldImage = showError(loginTextField, loginPanel, e.getMessage());
                 }
-                else if (propertyName.equals(User.PASSWORD)){
+                else if (propertyName.equals(User.PASSWORD)) {
                     passwordInvalidFieldImage = showError(passwordTextField, passwordPanel, e.getMessage());
                 }
             });
         }
     }
 
-    private static MainViewUiBinder ourUiBinder = INSTANCE.getUiBinder();
+    /* public Element getElement() { return root;  } */
 
-    private Image loginInvalidFieldImage, passwordInvalidFieldImage;
-
-    private ApplicationServiceAsync service;
+    private static LoginViewUiBinder ourUiBinder = INSTANCE.getUiBinder();
 
     @Inject
-    public MainView(ApplicationServiceAsync service) {
+    public LoginView(ApplicationServiceAsync service) {
         initWidget(ourUiBinder.createAndBindUi(this));
         this.service = service;
     }
@@ -94,10 +100,12 @@ public class MainView extends Composite {
 
     public void clearErrors(){
         loginTextField.getElement().getStyle().clearBorderColor();
+
         if (loginInvalidFieldImage != null){
             loginInvalidFieldImage.removeFromParent();
         }
         passwordTextField.getElement().getStyle().clearBorderColor();
+
         if (passwordInvalidFieldImage != null){
             passwordInvalidFieldImage.removeFromParent();
         }
