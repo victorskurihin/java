@@ -21,6 +21,15 @@
         <param-value>file:////tmp/employee.json</param-value>
     </context-param>
 
+    <servlet>
+        <servlet-name>ApplicationService</servlet-name>
+        <servlet-class>ru.otus.gwt.server.ApplicationServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ApplicationService</servlet-name>
+        <url-pattern>/Application/ApplicationService</url-pattern>
+    </servlet-mapping>
+
     <resource-ref>
         <description>My PostgreSQL Datasource</description>
         <res-ref-name>jdbc/PostgresMyDB</res-ref-name>
@@ -50,7 +59,7 @@
    <login-config>
      <auth-method>FORM</auth-method>
      <form-login-config>
-       <form-login-page>/WEB-INF/singin.html</form-login-page>
+       <form-login-page>/WEB-INF/signin.html</form-login-page>
        <form-error-page>/WEB-INF/loginError.html</form-error-page>
      </form-login-config>
   </login-config>
