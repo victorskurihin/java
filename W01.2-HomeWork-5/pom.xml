@@ -9,7 +9,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework5</artifactId>
-    <version>5.0-1</version>
+    <version>5.1-1</version>
     <packaging>war</packaging>
 
     <name>JavaEE-09-2018 HomeWork-5 Maven Webapp</name>
@@ -292,6 +292,14 @@
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/java</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -412,7 +420,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <!--<module>ru.otus.gwt.client.HelloWorld</module>-->
+                    <modules>
+                        <module>ru.otus.gwt.index</module>
+                        <module>ru.otus.gwt.login</module>
+                    </modules>
                     <extraJvmArgs>
                         -Xss1024K -Xmx1024M -Duser.language=ru -Duser.country=RU
                         -Djavax.xml.parsers.DocumentBuilderFactory=com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl

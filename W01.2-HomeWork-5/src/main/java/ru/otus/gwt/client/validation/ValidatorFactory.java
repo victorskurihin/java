@@ -9,7 +9,8 @@ import javax.validation.Validator;
 
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
-public class ValidatorFactory extends AbstractGwtValidatorFactory {
+public class ValidatorFactory extends AbstractGwtValidatorFactory
+{
 
     /**
      * Validator marker for the Validation Sample project. Only the classes and groups listed
@@ -19,7 +20,7 @@ public class ValidatorFactory extends AbstractGwtValidatorFactory {
     public interface GwtValidator extends Validator {
     }
 
-    @Override
+    // @Override
     public AbstractGwtValidator createValidator() {
         return (AbstractGwtValidator) INSTANCE.getValidator();
     }

@@ -41,14 +41,21 @@ public class MarshalXMLServlet extends HttpServlet
             "<?xml version='1.0' encoding='UTF-8' standalone='yes'?>\n" +
             "<employees>\n" +
             "</employees>";
+    public static final String PERSISTENCE_UNIT_NAME = "jpa";
+
+    // private static final EntityManagerFactory emf =
+    //        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
+    // private static final EntityManagerFactory emf =
+    //        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
+    @PersistenceUnit(unitName = PERSISTENCE_UNIT_NAME)
+    private EntityManagerFactory emf; // for Glassfish
+
     private static InputStream EMPTY_EMPLOYEES_STREAM = new ByteArrayInputStream(
             EMPTY_EMPLOYEES.getBytes(StandardCharsets.UTF_8)
     );
-    private static final String PERSISTENCE_UNIT_NAME = "jpa";
-    private static final EntityManagerFactory emf =
-            Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
     private static final String DATA_FILE_LOCATION = "XMLDataFileLocation";
     private static final String SELECT_EMPL_ENTITY = "SELECT empl FROM EmpEntity empl";
+
     static final String GET = "get";
     static final String OK = "ok";
     static final String SAVE = "save";

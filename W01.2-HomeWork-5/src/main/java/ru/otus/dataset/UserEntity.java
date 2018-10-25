@@ -18,6 +18,10 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @Entity
 @Table(name = "users")
+@NamedQueries({
+    @NamedQuery(name = "findUserById", query = "SELECT u FROM UserEntity u WHERE u.id = :id"),
+    @NamedQuery(name = "findUserByName", query = "SELECT u FROM UserEntity u WHERE u.login= :name")
+})
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class UserEntity implements DataSet, Serializable

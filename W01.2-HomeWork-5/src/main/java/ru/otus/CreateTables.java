@@ -19,6 +19,7 @@ import org.hibernate.tool.schema.TargetType;
 
 import ru.otus.dataset.DeptEntity;
 import ru.otus.dataset.EmpEntity;
+import ru.otus.dataset.GroupEntity;
 import ru.otus.dataset.UserEntity;
 
 import java.util.EnumSet;
@@ -33,6 +34,7 @@ public class CreateTables {
         sources.addAnnotatedClass(DeptEntity.class);
         sources.addAnnotatedClass(EmpEntity.class);
         sources.addAnnotatedClass(UserEntity.class);
+        sources.addAnnotatedClass(GroupEntity.class);
 
         return sources.buildMetadata();
     }
