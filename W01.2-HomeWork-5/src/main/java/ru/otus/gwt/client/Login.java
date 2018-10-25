@@ -1,12 +1,8 @@
 package ru.otus.gwt.client;
 
-//import com.google.gwt.dom.client.Document;
-//import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.*;
-import ru.otus.gwt.client.widget.LoginView;
 import ru.otus.gwt.client.service.ApplicationServiceAsync;
-//import ru.otus.gwt.client.widget.*;
-//
+
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
 public class Login extends Index
@@ -28,7 +24,6 @@ public class Login extends Index
         final DeckPanel deckPanel = new DeckPanel();
 
         RootPanel rootPanel = fillDeckPanel(deckPanel);
-        Label stubLabel = new Label("ok");
 
         VerticalPanel vPanel = new VerticalPanel();
         vPanel.add(deckPanel);
