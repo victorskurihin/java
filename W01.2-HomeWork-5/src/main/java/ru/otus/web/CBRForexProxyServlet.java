@@ -8,10 +8,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.json.JSONObject;
-import org.json.XML;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,19 +17,17 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/cbrforex")
-public class CBRForexServlet extends HttpServlet
+public class CBRForexProxyServlet extends HttpServlet
 {
-    String getJsonCBRdaily() {
+    String getXMLCBRdaily() {
         try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet httpGet = new HttpGet("http://www.cbr.ru/scripts/XML_daily.asp");
 
             try (CloseableHttpResponse response = client.execute(httpGet)) {
-                final String content = new BufferedReader(
-                        new InputStreamReader(response.getEntity().getContent(), "windows-1251")
-                ).lines().collect(Collectors.joining());
-                JSONObject jsonObject = XML.toJSONObject(content);
-
-                return jsonObject.toString();
+                return new BufferedReader(
+                       new InputStreamReader(
+                           response.getEntity().getContent(), "windows-1251"
+                )).lines().collect(Collectors.joining());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,12 +35,13 @@ public class CBRForexServlet extends HttpServlet
         return null;
     }
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws IOException, ServletException
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        response.setContentType("text/json; charset=UTF-8");
+        final String encoding1 = "encoding=\"windows-1251\"";
+        final String encoding2 = "encoding=\"UTF-8\"";
+        response.setContentType("text/xml; charset=UTF-8");
         PrintWriter out = response.getWriter();
-        out.println(getJsonCBRdaily());
+        out.println(getXMLCBRdaily().replaceFirst(encoding1, encoding2));
     }
 }
 

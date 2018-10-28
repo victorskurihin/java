@@ -10,7 +10,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 
-import ru.otus.gwt.client.service.ApplicationServiceAsync;
+import ru.otus.gwt.client.service.LoginServiceAsync;
 import ru.otus.gwt.shared.User;
 import ru.otus.gwt.shared.exception.WrongCredentialException;
 import ru.otus.gwt.shared.validation.ValidationRule;
@@ -39,7 +39,7 @@ public class LoginView extends Composite implements IsWidget
     @UiField
     HorizontalPanel passwordPanel;
 
-    private ApplicationServiceAsync service;
+    private LoginServiceAsync service;
     private Image loginInvalidFieldImage, passwordInvalidFieldImage;
 
     @Override
@@ -66,7 +66,9 @@ public class LoginView extends Composite implements IsWidget
 
                 @Override
                 public void onSuccess(Void result) {
-                    Window.alert("Вход успешен!");
+                    // UrlBuilder builder = Window.Location.createUrlBuilder().setParameter(queryParam, value);
+                    Window.Location.replace("inside.jsp");
+                    // Window.alert("Вход успешен!");
                 }
             });
         }
@@ -87,7 +89,7 @@ public class LoginView extends Composite implements IsWidget
     private static LoginViewUiBinder ourUiBinder = INSTANCE.getUiBinder();
 
     @Inject
-    public LoginView(ApplicationServiceAsync service) {
+    public LoginView(LoginServiceAsync service) {
         initWidget(ourUiBinder.createAndBindUi(this));
         this.service = service;
     }

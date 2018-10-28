@@ -1,16 +1,19 @@
 package ru.otus.gwt.client;
 
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.*;
-import ru.otus.gwt.client.service.ApplicationServiceAsync;
+import ru.otus.gwt.client.news.News;
+import ru.otus.gwt.client.service.LoginServiceAsync;
+import ru.otus.gwt.client.valutes.CBRValutes;
 import ru.otus.gwt.client.widget.*;
 
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
 public class Index implements EntryPoint
 {
-    private static ApplicationServiceAsync service = INSTANCE.getService();
+    private static LoginServiceAsync service = INSTANCE.getService();
 
     protected void initHeaderAndTitle()
     {
@@ -25,9 +28,9 @@ public class Index implements EntryPoint
                 .setInnerText("Home Work 5 of JavaEE 2018-09 | a work showcasing the feature of GWT");
     }
 
-    public void menuAddClickHandler(DeckPanel deckPanel, String id, int i2)
+    public void menuAddClickHandler(DeckPanel deckPanel, String id, int n)
     {
-        for (int i = 0; i < i2; ++i) {
+        for (int i = 0; i < n; ++i) {
             Anchor anchor = Anchor.wrap(
                     Document.get().getElementById(id + i).cast()
             );
@@ -40,6 +43,7 @@ public class Index implements EntryPoint
         }
     }
 
+    @SuppressWarnings("GwtToHtmlReferences")
     protected RootPanel fillDeckPanel(DeckPanel deckPanel)
     {
         //noinspection GWTStyleCheck
@@ -59,12 +63,13 @@ public class Index implements EntryPoint
             deckPanel.showWidget(0);
         } else {
             rootPanel = RootPanel.get("login-container");
-            deckPanel.add(new LoginView(service));
-            deckPanel.showWidget(5);
+            if (null != rootPanel) {
+                deckPanel.add(new LoginView(service));
+                deckPanel.showWidget(5);
+            } else {
+                rootPanel = RootPanel.get("inside-container");
+            }
         }
-
-        menuAddClickHandler(deckPanel, "navigation-menu-", 4);
-        menuAddClickHandler(deckPanel, "aside-menu-", 4);
 
         return rootPanel;
     }
@@ -79,6 +84,9 @@ public class Index implements EntryPoint
         VerticalPanel vPanel = new VerticalPanel();
         vPanel.add(deckPanel);
 
+        menuAddClickHandler(deckPanel, "navigation-menu-", 4);
+        menuAddClickHandler(deckPanel, "aside-menu-", 4);
+
         rootPanel.add(vPanel);
     }
 
@@ -86,5 +94,7 @@ public class Index implements EntryPoint
     {
         initHeaderAndTitle();
         initMainContainer();
+        new News(GWT.getHostPageBaseURL() + "/rbcnews");
+        new CBRValutes(GWT.getHostPageBaseURL() + "/cbrforex");
     }
 }

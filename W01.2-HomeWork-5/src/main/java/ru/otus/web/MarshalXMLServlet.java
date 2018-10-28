@@ -45,8 +45,6 @@ public class MarshalXMLServlet extends HttpServlet
 
     // private static final EntityManagerFactory emf =
     //        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
-    // private static final EntityManagerFactory emf =
-    //        Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
     @PersistenceUnit(unitName = PERSISTENCE_UNIT_NAME)
     private EntityManagerFactory emf; // for Glassfish
 

@@ -33,6 +33,17 @@
     min-width: 212px
 }
 
+.firstColumnWidth {
+    width: 100px;
+    display: inline-block;
+    text-align: right;
+    margin-top: 5px;
+}
+
+.inputWidth {
+    width: 200px;
+}
+
 .tg {
     border-collapse: collapse;
     border-spacing:0;
@@ -153,6 +164,12 @@ aside ul {
 .deckpanel {
     border: 0;
     width: 100%;
+}
+.valute {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 aside ul li {
@@ -291,7 +308,7 @@ button.find {
     cursor: pointer;
 }
 
-button:before {
+button.find:before {
     content: "\f1a0";
     font-family: "Font Awesome 5 Brands";
     color: darkblue;

@@ -3,19 +3,18 @@ package ru.otus.gwt.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.gwt.client.service.ApplicationService;
+
+import ru.otus.gwt.client.service.LoginService;
 import ru.otus.gwt.shared.User;
 import ru.otus.gwt.shared.exception.WrongCredentialException;
 import ru.otus.gwt.shared.validation.ValidationRule;
-import ru.otus.web.AuthenticationUtils;
 
 import javax.servlet.ServletException;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
-public class ApplicationServiceImpl extends RemoteServiceServlet implements ApplicationService {
+public class LoginServiceImpl extends RemoteServiceServlet implements LoginService
+{
 
-    private static final Logger LOGGER = LogManager.getLogger(ApplicationServiceImpl.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(LoginServiceImpl.class.getName());
 
     // Implementation of sample interface method
     public String getMessage(String msg) {
