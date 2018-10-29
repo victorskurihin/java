@@ -49,13 +49,10 @@ public class Index implements EntryPoint
         //noinspection GWTStyleCheck
         deckPanel.setStyleName("deckpanel");
 
-        Label stubLabel = new Label("stub");
-
         deckPanel.add(new IndexView());
         deckPanel.add(new ContactsView());
         deckPanel.add(new BackformView());
         deckPanel.add(new ArchiveView());
-        deckPanel.add(stubLabel);
 
         RootPanel rootPanel = RootPanel.get("main-container");
 
@@ -65,7 +62,7 @@ public class Index implements EntryPoint
             rootPanel = RootPanel.get("login-container");
             if (null != rootPanel) {
                 deckPanel.add(new LoginView(service));
-                deckPanel.showWidget(5);
+                deckPanel.showWidget(4);
             } else {
                 rootPanel = RootPanel.get("inside-container");
             }
