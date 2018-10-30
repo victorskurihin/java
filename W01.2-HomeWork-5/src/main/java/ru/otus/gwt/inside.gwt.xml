@@ -1,5 +1,5 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
-<module rename-to='login'>
+<module rename-to='inside'>
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name='com.google.gwt.user.User'/>
     <inherits name="com.google.gwt.user.theme.clean.Clean" />
@@ -15,11 +15,9 @@
     <!-- Inherit the default GWT style sheet.                       -->
     <inherits name='com.google.gwt.user.theme.clean.Clean'/>
     <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
-    <inherits name="com.google.gwt.xml.XML"/>
 
     <!-- Specify the app entry point class.                         -->
-    <entry-point class='ru.otus.gwt.client.Login'/>
+    <entry-point class='ru.otus.gwt.client.Inside'/>
 
     <!-- Specify the paths for translatable code                    -->
     <source path='client'/>

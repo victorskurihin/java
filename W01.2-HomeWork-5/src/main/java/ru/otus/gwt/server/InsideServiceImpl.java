@@ -32,13 +32,10 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     public List<Emp> getEmpsList()
     {
         EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
-        transaction.begin();
         Query q = em.createQuery(SELECT_EMPL_ENTITY);
         //noinspection unchecked
         ArrayList<EmpEntity> list = new ArrayList<>(q.getResultList());
-        transaction.commit();
 
         LOGGER.info("ArrayList<EmpEntity> list: {}", list);
 

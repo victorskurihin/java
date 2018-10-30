@@ -422,7 +422,7 @@
                 <configuration>
                     <modules>
                         <module>ru.otus.gwt.index</module>
-                        <module>ru.otus.gwt.login</module>
+                        <module>ru.otus.gwt.inside</module>
                     </modules>
                     <extraJvmArgs>
                         -Xss1024K -Xmx1024M -Duser.language=ru -Duser.country=RU

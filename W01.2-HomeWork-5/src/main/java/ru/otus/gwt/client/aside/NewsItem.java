@@ -1,4 +1,4 @@
-package ru.otus.gwt.client.news;
+package ru.otus.gwt.client.aside;
 
 import com.google.gwt.core.client.JavaScriptObject;
 

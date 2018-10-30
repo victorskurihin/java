@@ -1,4 +1,4 @@
-package ru.otus.gwt.client.valutes;
+package ru.otus.gwt.client.aside;
 
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Window;

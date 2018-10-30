@@ -17,7 +17,7 @@ public class User implements IsSerializable
 {
 
     @NotNull
-    @Size(min = 4, message = "Login must contain at least 4 characters.")
+    @Size(min = 4, message = "Inside must contain at least 4 characters.")
     private String login;
 
     @NotNull

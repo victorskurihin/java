@@ -8,7 +8,7 @@
     <title id="title">Home Work 5 of JavaEE 2018-09 | a work showcasing the feature of GWT</title>
     <link rel="stylesheet" href="css/style-all.min.css"/>
     <script type="text/javascript" language="javascript" src="js/script-all.min.js"></script>
-    <script type="text/javascript" language="javascript" src="login/login.nocache.js"></script>
+    <script type="text/javascript" language="javascript" src="inside/inside.nocache.js"></script>
 </head>
 
 <body class="body">

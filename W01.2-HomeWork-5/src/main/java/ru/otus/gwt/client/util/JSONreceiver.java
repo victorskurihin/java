@@ -2,7 +2,7 @@ package ru.otus.gwt.client.util;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import ru.otus.gwt.client.news.NewsItem;
+import ru.otus.gwt.client.aside.NewsItem;
 
 public class JSONreceiver extends JavaScriptObject
 {

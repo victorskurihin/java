@@ -34,6 +34,15 @@
         <url-pattern>/index/LoginService</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>InsideService</servlet-name>
+        <servlet-class>ru.otus.gwt.server.InsideServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>InsideService</servlet-name>
+        <!--suppress GwtServiceNotRegistered -->
+        <url-pattern>/inside/InsideService</url-pattern>
+    </servlet-mapping>
     <resource-ref>
         <description>My PostgreSQL Datasource</description>
         <res-ref-name>jdbc/PostgresMyDB</res-ref-name>
@@ -62,7 +71,6 @@
             <web-resource-name>Restricted Access</web-resource-name>
             <url-pattern>/inside.jsp</url-pattern>
             <url-pattern>/inside/*</url-pattern>
-            <url-pattern>/login/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>users</role-name>

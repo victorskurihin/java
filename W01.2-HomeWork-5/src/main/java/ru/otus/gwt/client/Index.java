@@ -4,16 +4,16 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.*;
-import ru.otus.gwt.client.news.News;
+import ru.otus.gwt.client.aside.News;
 import ru.otus.gwt.client.service.LoginServiceAsync;
-import ru.otus.gwt.client.valutes.CBRValutes;
+import ru.otus.gwt.client.aside.CBRValutes;
 import ru.otus.gwt.client.widget.*;
 
 import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 
 public class Index implements EntryPoint
 {
-    private static LoginServiceAsync service = INSTANCE.getService();
+    private static LoginServiceAsync service = INSTANCE.getLoginService();
 
     protected void initHeaderAndTitle()
     {

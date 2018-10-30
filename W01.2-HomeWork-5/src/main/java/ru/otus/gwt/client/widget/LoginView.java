@@ -86,7 +86,7 @@ public class LoginView extends Composite implements IsWidget
         }
     }
 
-    private static LoginViewUiBinder ourUiBinder = INSTANCE.getUiBinder();
+    private static LoginViewUiBinder ourUiBinder = INSTANCE.getLoginViewUiBinder();
 
     @Inject
     public LoginView(LoginServiceAsync service) {

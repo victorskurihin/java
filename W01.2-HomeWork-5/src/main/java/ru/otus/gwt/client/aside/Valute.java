@@ -1,4 +1,4 @@
-package ru.otus.gwt.client.valutes;
+package ru.otus.gwt.client.aside;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
