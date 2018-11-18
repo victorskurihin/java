@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<departments>
+    <department id="1" parentId="0">
+        <title>title1</title>
+    </department>
+    <department id="2" parentId="1">
+        <title>title2</title>
+    </department>
+    <department id="3" parentId="1">
+        <title>title3</title>
+    </department>
+</departments>

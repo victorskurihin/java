@@ -1,0 +1,65 @@
+<!-- ContactsView.ui.xml -->
+
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+<g:HTMLPanel>
+    <main class="w3-col m12 w3-margin-0 my-left">
+        <hr class="separator"/>
+        <article class="article" id="article1">
+            <header class="w3-row article">
+                <h1 class="w3-col m9 w3-margin-0 article">
+                    <a class="article text-margin" href="#" title="Ссылка на новость" rel="bookmark">
+                        Остап Бендер
+                    </a>
+                </h1>
+            </header>
+        </article>
+
+        <hr class="separator"/>
+        <article class="article" id="article2">
+            <header class="w3-row article">
+                <h1 class="w3-col m9 w3-margin-0 article">
+                    <a class="article text-margin" href="#" title="Ссылка на новость" rel="bookmark">
+                        Михаил Самуэлевич Паниковский
+                    </a>
+                </h1>
+            </header>
+        </article>
+
+        <hr class="separator"/>
+        <article class="article" id="article3">
+            <header class="w3-row article">
+                <h1 class="w3-col m9 w3-margin-0 article">
+                    <a class="article text-margin" href="#" title="Ссылка на новость" rel="bookmark">
+                        Шура Балаганов
+                    </a>
+                </h1>
+            </header>
+        </article>
+
+        <hr class="separator"/>
+        <article class="article" id="article4">
+            <header class="w3-row article">
+                <h1 class="w3-col m9 w3-margin-0 article">
+                    <a class="article text-margin" href="#" title="Ссылка на новость" rel="bookmark">
+                        Адам Козлевич
+                    </a>
+                </h1>
+            </header>
+        </article>
+
+        <hr class="separator"/>
+        <article class="article" id="article5">
+            <header class="w3-row article">
+                <h1 class="w3-col m9 w3-margin-0 article">
+                    <a class="article text-margin" href="#" title="Ссылка на новость" rel="bookmark">
+                        Александр Иванович Корейко
+                    </a>
+                </h1>
+            </header>
+        </article>
+
+        <hr class="separator"/>
+    </main>
+</g:HTMLPanel>
+</ui:UiBinder>

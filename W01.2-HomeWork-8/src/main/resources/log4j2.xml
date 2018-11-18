@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+    <Appenders>
+        <!-- File Appenders -->
+        <File name="File_org.hibernate.validator.util.Version"
+              fileName="logs/${env:MYPROJ:-homework}.hibernate.validator.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+        <File name="File_org.hibernate" fileName="logs/${env:MYPROJ:-homework}.hibernate.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+        <File name="File_ru.otus.gwt.server" fileName="logs/${env:MYPROJ:-homework}.ru.otus.gwt.server.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+        <File name="File_ru.otus.services" fileName="logs/${env:MYPROJ:-homework}.ru.otus.services.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+        <File name="File_ru.otus.servlets" fileName="logs/${env:MYPROJ:-homework}.ru.otus.servlets.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.hibernate.validator.util.Version" level="INFO">
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.hibernate" level="INFO" additivity="false">
+            <AppenderRef ref="File_org.hibernate"/>
+        </Logger>
+
+        <!-- Log SQL statements -->
+        <Logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+            <AppenderRef ref="File_org.hibernate"/>
+        </Logger>
+
+        <!-- Log JDBC bind parameters -->
+        <Logger name="org.hibernate.type.descriptor.sql" level="TRACE" additivity="false">
+            <AppenderRef ref="File_org.hibernate"/>
+        </Logger>
+
+        <Logger name="ru.otus.gwt.server" level="DEBUG">
+            <AppenderRef ref="File_ru.otus.gwt.server"/>
+        </Logger>
+
+        <Logger name="ru.otus.services" level="DEBUG">
+            <AppenderRef ref="File_ru.otus.services"/>
+        </Logger>
+
+        <Logger name="ru.otus.servlets" level="DEBUG">
+            <AppenderRef ref="File_ru.otus.servlets"/>
+        </Logger>
+
+        <Root level="WARN">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
