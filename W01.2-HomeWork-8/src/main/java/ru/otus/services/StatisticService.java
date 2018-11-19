@@ -16,7 +16,7 @@ public interface StatisticService
 
     boolean isCollectionEnabled();
 
-    List<StatisticEntity> getAllVisitsStatElements(DbService dbService) throws SQLException;
+    List<StatisticEntity> getAllVisitsStatElements() throws SQLException;
 
     void setCollectionEnabled(boolean collectionEnabled);
 }

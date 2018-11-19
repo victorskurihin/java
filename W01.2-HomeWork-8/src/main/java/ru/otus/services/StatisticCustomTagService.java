@@ -16,12 +16,15 @@ import java.util.Optional;
 
 import static ru.otus.gwt.shared.Constants.*;
 
-public class StatisticCustomTagService implements StatisticService
+public class StatisticCustomTagService implements DataOrigin, StatisticService
 {
+    private DbService dbService;
     private boolean collectionEnabled;
+    private List<StatisticEntity> readyResultList = null;
 
-    public StatisticCustomTagService(boolean collection)
+    public StatisticCustomTagService(DbService dbService, boolean collection)
     {
+        this.dbService = dbService;
         this.collectionEnabled = collection;
     }
 
@@ -56,7 +59,7 @@ public class StatisticCustomTagService implements StatisticService
     }
 
     @Override
-    public List<StatisticEntity> getAllVisitsStatElements(DbService dbService) throws SQLException
+    public List<StatisticEntity> getAllVisitsStatElements() throws SQLException
     {
         return dbService.getAllStatisticElements();
     }
@@ -65,6 +68,35 @@ public class StatisticCustomTagService implements StatisticService
     public void setCollectionEnabled(boolean collectionEnabled)
     {
         this.collectionEnabled = collectionEnabled;
+    }
+
+    @Override
+    public synchronized boolean isReady()
+    {
+        return readyResultList != null;
+    }
+
+    private synchronized void setReadyResultList(List<StatisticEntity> readyResultList)
+    {
+        this.readyResultList = readyResultList;
+    }
+
+    @Override
+    public void fetchData() throws SQLException
+    {
+        setReadyResultList(getAllVisitsStatElements());
+    }
+
+    @Override
+    public String getDataXML()
+    {
+        return null;
+    }
+
+    @Override
+    public String getDataJSON()
+    {
+        return null;
     }
 }
 

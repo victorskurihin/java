@@ -29,7 +29,7 @@ public class StatisticJSPServlet extends HttpServlet
         request.setAttribute(ATTR_STAT_ENABLED, statService.isCollectionEnabled());
         try {
             DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
-            List<StatisticEntity> elems = statService.getAllVisitsStatElements(dbService);
+            List<StatisticEntity> elems = statService.getAllVisitsStatElements();
             request.setAttribute(ATTR_STAT_ELEMEMTS, elems);
 
             request.getRequestDispatcher("/WEB-INF/classes/ftl/visits_stat.ftl").forward(request, response);

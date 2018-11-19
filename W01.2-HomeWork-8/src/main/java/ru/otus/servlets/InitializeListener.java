@@ -40,7 +40,7 @@ public class InitializeListener implements ServletContextListener
 
         DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
         SearchCacheService cacheService = new SearchCacheServiceImpl();
-        StatisticService statisticService = new StatisticCustomTagService(true);
+        StatisticService statisticService = new StatisticCustomTagService(dbService, true);
 
         DataRouter dataRouter = new SequentialDataRouter();
         DataOrigin newsService = new RBCNewsService(ctx);

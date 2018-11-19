@@ -104,7 +104,8 @@
         <init-param>
             <param-name>output_encoding</param-name>
             <!-- The encoding of the template output; Note that you must set
-                 "ResponseCharacterEncodring" to "fromTemplate" for this to work! -->
+                 "ResponseCharacterEncodring" to "fromTemplate" for this to work!
+              -->
             <param-value>UTF-8</param-value>
         </init-param>
     </servlet>

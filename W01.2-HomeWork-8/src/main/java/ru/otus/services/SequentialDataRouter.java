@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.websocket.Session;
 
+import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,7 +75,12 @@ public class SequentialDataRouter implements DataRouter
     private void fetchForDataOrigin(String name, DataOrigin origin)
     {
         LOGGER.info("fetchForDataOrigin for: {}", name);
-        origin.fetchData();
+        try {
+            origin.fetchData();
+        } catch (SQLException e) {
+            LOGGER.error("fetchForDataOrigin: catch exception {} {}", e.getClass(), e);
+            e.printStackTrace();
+        }
     }
 
     private void sendToSession(Session session, DataUpdater updater)

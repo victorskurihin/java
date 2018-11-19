@@ -4,11 +4,13 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
+import java.sql.SQLException;
+
 public interface DataOrigin
 {
     boolean isReady();
 
-    void fetchData();
+    void fetchData() throws SQLException;
 
     String getDataXML();
 

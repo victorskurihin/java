@@ -41,15 +41,15 @@ public class LoadTables
             if ( fields.length > 0 && "id".equals(fields[0])) {
                 StringBuilder sbc = new StringBuilder();
                 column = sbc.append(" ( ")
-                    .append(String.join(", ", fields))
-                    .append(" ) ").toString();
+                            .append(String.join(", ", fields))
+                            .append(" ) ").toString();
                 continue;
             }
 
             if (fields.length >= 2) {
                 sb.append(column).append(" VALUES ( ")
-                    .append(String.join(", ", fields))
-                    .append(" );");
+                  .append(String.join(", ", fields))
+                  .append(" );");
                 System.out.println("Exec: " + sb);
                 exec.execUpdate(sb.toString());
             }
