@@ -14,9 +14,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static ru.otus.services.TestExpectedData.JSON_TEST;
 
-public class SequentialDataRouterTest
+public class SequentialDataBroadcasterTest
 {
-    private SequentialDataRouter router;
+    private SequentialDataBroadcaster router;
     private static String sendedText;
 
     static class Basic extends TestRemoteEndpointBasic
@@ -31,7 +31,7 @@ public class SequentialDataRouterTest
     @Before
     public void setUp() throws Exception
     {
-        router = new SequentialDataRouter();
+        router = new SequentialDataBroadcaster();
     }
 
     @After

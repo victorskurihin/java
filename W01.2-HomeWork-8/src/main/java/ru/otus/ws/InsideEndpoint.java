@@ -14,13 +14,13 @@ import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 
-import static ru.otus.gwt.shared.Constants.ENDPOINT_PUBLIC;
-import static ru.otus.gwt.shared.Constants.BROADCASTER_PUBLIC_SERVICE;
+import static ru.otus.gwt.shared.Constants.BROADCASTER_INSIDE_SERVICE;
+import static ru.otus.gwt.shared.Constants.ENDPOINT_INSIDE;
 
-@ServerEndpoint(value = "/" + ENDPOINT_PUBLIC,  configurator = ServletAwareConfig.class)
-public class PublicEndpoint
+@ServerEndpoint(value = "/" + ENDPOINT_INSIDE,  configurator = ServletAwareConfig.class)
+public class InsideEndpoint
 {
-    private static final Logger LOGGER = LogManager.getLogger(PublicEndpoint.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(InsideEndpoint.class.getName());
     private DataBroadcaster broadcaster;
     private EndpointConfig config;
 
@@ -37,7 +37,7 @@ public class PublicEndpoint
     private DataBroadcaster getBroadcaster()
     {
         HttpSession httpSession = (HttpSession) config.getUserProperties().get("httpSession");
-        return (DataBroadcaster) httpSession.getServletContext().getAttribute(BROADCASTER_PUBLIC_SERVICE);
+        return (DataBroadcaster) httpSession.getServletContext().getAttribute(BROADCASTER_INSIDE_SERVICE);
     }
 
     @OnOpen

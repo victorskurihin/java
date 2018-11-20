@@ -10,7 +10,8 @@ public class Constants
     public static final String DB_SERVICE = "DB_SERVICE";
     public static final String FOREX_SERVICE = "FOREX_SERVICE";
     public static final String NEWS_SERVICE = "NEWS_SERVICE";
-    public static final String ROUTER_SERVICE = "ROUTER_SERVICE";
+    public static final String BROADCASTER_PUBLIC_SERVICE = "BROADCASTER_PUBLIC_SERVICE";
+    public static final String BROADCASTER_INSIDE_SERVICE = "BROADCASTER_INSIDE_SERVICE";
     public static final String STAT_SERVICE = "STAT_SERVICE";
 
     public static final String REQUEST_BROWSERS_JSP = "browsers.jsp";
@@ -22,6 +23,7 @@ public class Constants
     public static final String REQUEST_VISITS_SWITCH_COLLECTION = "inside/switch_collection_enabled";
 
     public static final String ENDPOINT_PUBLIC = "wspublic";
+    public static final String ENDPOINT_INSIDE = "inside/ws";
 
     public static final String DEFAULT_MARKER_NAME = "DEFAULT_MARKER";
     public static final String ENVIRONMENT_MARKER_NAME = "MARKER_NAME";

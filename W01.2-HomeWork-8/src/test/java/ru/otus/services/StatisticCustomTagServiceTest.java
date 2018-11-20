@@ -107,10 +107,12 @@ public class StatisticCustomTagServiceTest
     {
         service.fetchData();
         String test = service.getDataJSON();
+        System.out.println("test = " + test);
         Assert.assertTrue(service.isReady());
 
         Jsonb jsonb = JsonbBuilder.create();
         StatisticEntitiesList list = jsonb.fromJson(test, StatisticEntitiesList.class);
+        System.out.println("list = " + list);
         Assert.assertEquals(service.getAllVisitsStatElements(), list.asList());
     }
 }

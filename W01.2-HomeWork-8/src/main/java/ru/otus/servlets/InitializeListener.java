@@ -40,17 +40,22 @@ public class InitializeListener implements ServletContextListener
 
         DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
         SearchCacheService cacheService = new SearchCacheServiceImpl();
-        StatisticService statisticService = new StatisticCustomTagService(dbService, true);
+        StatisticCustomTagService statisticService = new StatisticCustomTagService(dbService, true);
 
-        DataRouter dataRouter = new SequentialDataRouter();
+        DataBroadcaster dataPublicBroadcaster = new SequentialDataBroadcaster();
         DataOrigin newsService = new RBCNewsService(ctx);
         DataOrigin forexService = new ForexCBRService(ctx);
-        dataRouter.registerDataOrigin(NEWS_SERVICE, newsService);
-        dataRouter.registerDataOrigin(FOREX_SERVICE, forexService);
-        dataRouter.start();
+        dataPublicBroadcaster.registerDataOrigin(NEWS_SERVICE, newsService);
+        dataPublicBroadcaster.registerDataOrigin(FOREX_SERVICE, forexService);
+        dataPublicBroadcaster.start();
+
+        DataBroadcaster dataInsideBroadcaster = new SequentialDataBroadcaster();
+        dataInsideBroadcaster.registerDataOrigin(STAT_SERVICE, statisticService);
+        dataInsideBroadcaster.start();
 
         ctx.setAttribute(DB_SERVICE, dbService);
-        ctx.setAttribute(ROUTER_SERVICE, dataRouter);
+        ctx.setAttribute(BROADCASTER_PUBLIC_SERVICE, dataPublicBroadcaster);
+        ctx.setAttribute(BROADCASTER_INSIDE_SERVICE, dataInsideBroadcaster);
         ctx.setAttribute(NEWS_SERVICE, newsService);
         ctx.setAttribute(FOREX_SERVICE, forexService);
         ctx.setAttribute(CACHE_SERVICE, cacheService);
@@ -64,10 +69,10 @@ public class InitializeListener implements ServletContextListener
     {
         ServletContext ctx = sce.getServletContext();
         DbService dbService = (DbService) ctx.getAttribute(DB_SERVICE);
-        DataRouter dataRouter = (DataRouter) ctx.getAttribute(ROUTER_SERVICE);
+        DataBroadcaster dataBroadcaster = (DataBroadcaster) ctx.getAttribute(BROADCASTER_PUBLIC_SERVICE);
         try {
             dbService.close();
-            dataRouter.close();
+            dataBroadcaster.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

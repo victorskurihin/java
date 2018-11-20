@@ -6,7 +6,7 @@ package ru.otus.services;
 
 import javax.websocket.Session;
 
-public interface DataRouter extends AutoCloseable
+public interface DataBroadcaster extends AutoCloseable
 {
     void registerDataOrigin(String name, DataOrigin origin);
 

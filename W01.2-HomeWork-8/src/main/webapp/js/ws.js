@@ -1,4 +1,4 @@
-let wsocket;
+let wsocketPublic;
 
 function onMessageForexCBR(evt) {
     const page = JSON.parse(evt.data);
@@ -13,8 +13,8 @@ function onMessageForexCBR(evt) {
 }
 
 function connectForexCBR() {
-    wsocket = new WebSocket("ws://localhost:8080/homework8/wspublic");
-    wsocket.onmessage = onMessageForexCBR
+    wsocketPublic = new WebSocket("ws://localhost:8080/homework8/wspublic");
+    wsocketPublic.onmessage = onMessageForexCBR
 }
 
 window.addEventListener("load", connectForexCBR, false);

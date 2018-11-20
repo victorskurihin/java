@@ -6,9 +6,11 @@ package ru.otus.models;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import ru.otus.adapters.json.UserEntityJsonAdapter;
 import ru.otus.adapters.xml.LocalDateTimeXMLAdapter;
 import ru.otus.adapters.xml.UserEntityTypeXMLAdapter;
 
+import javax.json.bind.annotation.JsonbTypeAdapter;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -84,6 +86,7 @@ public class StatisticEntity implements DataSet, Serializable
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @XmlJavaTypeAdapter(UserEntityTypeXMLAdapter.class)
+    @JsonbTypeAdapter(UserEntityJsonAdapter.class)
     private UserEntity user;
 
     @Basic

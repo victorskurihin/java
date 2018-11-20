@@ -37,6 +37,7 @@ public class CachedUpdater extends SimpleQueuedUpdater
             }
         } catch (Throwable e) {
             LOGGER.info("sendDataFromOrigin: catch({}): {}", e.getClass(), e);
+            e.printStackTrace();
         }
     }
 }

@@ -15,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static ru.otus.gwt.shared.Constants.DEFAULT_UPDATE_PERIOD;
 
-public class SequentialDataRouter implements DataRouter
+public class SequentialDataBroadcaster implements DataBroadcaster
 {
-    private static final Logger LOGGER = LogManager.getLogger(SequentialDataRouter.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(SequentialDataBroadcaster.class.getName());
 
     private final ConcurrentHashMap<String, DataOrigin> SOURCES = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Session, DataUpdater> HANDLERS = new ConcurrentHashMap<>();
