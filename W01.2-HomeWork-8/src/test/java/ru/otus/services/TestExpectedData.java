@@ -2,6 +2,8 @@ package ru.otus.services;
 
 import ru.otus.models.*;
 
+import java.time.LocalDateTime;
+
 public class TestExpectedData
 {
     public static final String directory =
@@ -16,85 +18,6 @@ public class TestExpectedData
             "</directory>";
     public static final String XML_TEST = "<?xml version='1.0' encoding='UTF-8'?><Test/>";
     public static final String JSON_TEST = "{Test:''}";
-
-    public static EmpEntity getTestEmpEntity1()
-    {
-        EmpEntity result = new EmpEntity();
-        result.setId(1L);
-        result.setFirstName("Александр");
-        result.setSecondName("Иванович");
-        result.setSurName("Фунт");
-        result.setCity("Одесса");
-        result.setJob("Зицпредседатель");
-        result.setSalary(15L);
-        result.setAge(75L);
-
-        UserEntity user = new UserEntity();
-        user.setId(1L);
-        user.setLogin("funt");
-        user.setPassword("e1X6Nk2/9ydYmDO74y89BK0aNQmQnQjK59X46mMRV9Q=");
-        result.setUser(user);
-
-        DeptEntity dept = new DeptEntity();
-        dept.setId(1L);
-        dept.setTitle("title1");
-        result.setDepartment(dept);
-
-        return result;
-    }
-
-    public static EmpEntity getTestEmpEntity2()
-    {
-        EmpEntity result = new EmpEntity();
-        result.setId(2L);
-        result.setFirstName("Иван");
-        result.setSecondName("Иванович");
-        result.setSurName("Иванов");
-        result.setCity("Самара");
-        result.setJob("Директор");
-        result.setSalary(10L);
-        result.setAge(33L);
-        result.setUser(null);
-
-        DeptEntity dept = new DeptEntity();
-        dept.setId(2L);
-        dept.setParentId(1L);
-        dept.setTitle("title2");
-        result.setDepartment(dept);
-
-        return result;
-    }
-
-    public static EmpEntity getTestEmpEntity3()
-    {
-        EmpEntity result = new EmpEntity();
-        result.setId(3L);
-        result.setFirstName("Светлана");
-        result.setSecondName("Семёновна");
-        result.setSurName("Семёнова");
-        result.setCity("Воронеж");
-        result.setJob("Бухгалтер");
-        result.setSalary(9L);
-        result.setAge(34L);
-        result.setUser(null);
-
-        DeptEntity dept = new DeptEntity();
-        dept.setId(3L);
-        dept.setParentId(1L);
-        dept.setTitle("title3");
-        result.setDepartment(dept);
-
-        return result;
-    }
-
-    public static EmpEntitiesList getTestEmpEntitiesList()
-    {
-        EmpEntitiesList result = new EmpEntitiesList();
-        result.add(getTestEmpEntity1());
-        result.add(getTestEmpEntity2());
-        result.add(getTestEmpEntity3());
-        return result;
-    }
 
     public static DeptEntity getTestDeptEntity1()
     {
@@ -135,6 +58,69 @@ public class TestExpectedData
         return result;
     }
 
+    public static EmpEntity getTestEmpEntity1()
+    {
+        EmpEntity result = new EmpEntity();
+        result.setId(1L);
+        result.setFirstName("Александр");
+        result.setSecondName("Иванович");
+        result.setSurName("Фунт");
+        result.setCity("Одесса");
+        result.setJob("Зицпредседатель");
+        result.setSalary(15L);
+        result.setAge(75L);
+
+        result.setUser(getTestUserEntity1());
+        result.setDepartment(getTestDeptEntity1());
+
+        return result;
+    }
+
+    public static EmpEntity getTestEmpEntity2()
+    {
+        EmpEntity result = new EmpEntity();
+        result.setId(2L);
+        result.setFirstName("Иван");
+        result.setSecondName("Иванович");
+        result.setSurName("Иванов");
+        result.setCity("Самара");
+        result.setJob("Директор");
+        result.setSalary(10L);
+        result.setAge(33L);
+
+        result.setUser(null);
+        result.setDepartment(getTestDeptEntity2());
+
+        return result;
+    }
+
+    public static EmpEntity getTestEmpEntity3()
+    {
+        EmpEntity result = new EmpEntity();
+        result.setId(3L);
+        result.setFirstName("Светлана");
+        result.setSecondName("Семёновна");
+        result.setSurName("Семёнова");
+        result.setCity("Воронеж");
+        result.setJob("Бухгалтер");
+        result.setSalary(9L);
+        result.setAge(34L);
+
+        result.setUser(null);
+        result.setDepartment(getTestDeptEntity3());
+
+        return result;
+    }
+
+    public static EmpEntitiesList getTestEmpEntitiesList()
+    {
+        EmpEntitiesList result = new EmpEntitiesList();
+        result.add(getTestEmpEntity1());
+        result.add(getTestEmpEntity2());
+        result.add(getTestEmpEntity3());
+        return result;
+    }
+
     public static UserEntity getTestUserEntity1()
     {
         UserEntity result = new UserEntity();
@@ -142,6 +128,51 @@ public class TestExpectedData
         result.setName("funt");
         result.setPassword("e1X6Nk2/9ydYmDO74y89BK0aNQmQnQjK59X46mMRV9Q=");
 
+        return result;
+    }
+
+    private static void getTestStatisticEntity(StatisticEntity result)
+    {
+        result.setNameMarker("DEFAULT_MARKER");
+        result.setJspPageName("browsers");
+        result.setIpAddress("127.0.0.1");
+        result.setUserAgent("Wget/1.19.4 (linux-gnu)");
+        result.setSessionId("0000000000000000000000000000");
+    }
+
+    public static StatisticEntity getTestStatisticEntity1()
+    {
+        StatisticEntity result = new StatisticEntity();
+        result.setId(1L);
+        getTestStatisticEntity(result);
+        result.setClientTime(null);
+        result.setServerTime(null);
+        result.setUser(null);
+        result.setPreviousId(0L);
+        return result;
+    }
+
+    public static StatisticEntity getTestStatisticEntity2()
+    {
+        StatisticEntity result = new StatisticEntity();
+        result.setId(2L);
+        getTestStatisticEntity(result);
+        result.setUser(getTestUserEntity1());
+        result.setClientTime(LocalDateTime.MIN);
+        result.setServerTime(LocalDateTime.MAX);
+        result.setPreviousId(1L);
+        return result;
+    }
+
+    public static StatisticEntity getTestStatisticEntity3()
+    {
+        StatisticEntity result = new StatisticEntity();
+        result.setId(3L);
+        getTestStatisticEntity(result);
+        result.setUser(getTestUserEntity1());
+        result.setClientTime(LocalDateTime.MIN);
+        result.setServerTime(LocalDateTime.MAX);
+        result.setPreviousId(1L);
         return result;
     }
 }

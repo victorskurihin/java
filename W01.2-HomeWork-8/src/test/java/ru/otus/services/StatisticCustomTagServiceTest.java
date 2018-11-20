@@ -1,20 +1,28 @@
 package ru.otus.services;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.otus.models.StatisticEntitiesList;
 import ru.otus.models.StatisticEntity;
 import ru.otus.models.UserEntity;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.management.j2ee.statistics.Statistic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
+import static ru.otus.services.TestExpectedData.getTestStatisticEntity1;
+import static ru.otus.services.TestExpectedData.getTestUserEntity1;
 
 public class StatisticCustomTagServiceTest
 {
@@ -31,20 +39,8 @@ public class StatisticCustomTagServiceTest
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         em = emf.createEntityManager();
         dbService = new DbJPAPostgreSQLService(em);
-        StatisticEntity entity = new StatisticEntity();
-        entity.setId(13L);
-        entity.setNameMarker("DEFAULT_MARKER");
-        entity.setJspPageName("browsers");
-        entity.setIpAddress("127.0.0.1");
-        entity.setUserAgent("Wget/1.19.4 (linux-gnu)");
-        entity.setClientTime(LocalDateTime.now());
-        entity.setServerTime(LocalDateTime.MAX);
-        entity.setSessionId("0");
-        UserEntity user = new UserEntity();
-        user.setId(1L);
-        entity.setUser(user);
-        entity.setPreviousId(13L);
-        dbService.insertIntoStatistic(entity);
+        dbService.saveEntity(getTestUserEntity1());
+        dbService.saveEntity(getTestStatisticEntity1());
         service = new StatisticCustomTagService(dbService, true);
     }
 
@@ -58,6 +54,13 @@ public class StatisticCustomTagServiceTest
     }
 
     @Test
+    public void test1()
+    {
+        StatisticEntity entity = dbService.getEntityById(1L, StatisticEntity.class);
+        System.out.println("entity = " + entity);
+    }
+
+    @Test
     public void saveStatisticFromRequestParams()
     {
     }
@@ -68,32 +71,46 @@ public class StatisticCustomTagServiceTest
     }
 
     @Test
-    public void getAllVisitsStatElements()
+    public void getAllVisitsStatElements() throws SQLException
     {
+        List<StatisticEntity> test = service.getAllVisitsStatElements();
+        Assert.assertTrue(test.contains(getTestStatisticEntity1()));
     }
 
     @Test
     public void setCollectionEnabled()
     {
+        service.setCollectionEnabled(false);
+        Assert.assertFalse(service.isCollectionEnabled());
+        service.setCollectionEnabled(true);
+        Assert.assertTrue(service.isCollectionEnabled());
     }
 
     @Test
-    public void isReady()
+    public void fetchDataIsReady() throws SQLException
     {
+        Assert.assertFalse(service.isReady());
+        service.fetchData();
+        Assert.assertTrue(service.isReady());
     }
 
     @Test
-    public void fetchData()
+    public void getDataXML() throws SQLException
     {
+        service.fetchData();
+        String test = service.getDataXML();
+        System.out.println("test = " + test);
     }
 
     @Test
-    public void getDataXML()
+    public void getDataJSON() throws SQLException
     {
-    }
+        service.fetchData();
+        String test = service.getDataJSON();
+        Assert.assertTrue(service.isReady());
 
-    @Test
-    public void getDataJSON()
-    {
+        Jsonb jsonb = JsonbBuilder.create();
+        StatisticEntitiesList list = jsonb.fromJson(test, StatisticEntitiesList.class);
+        Assert.assertEquals(service.getAllVisitsStatElements(), list.asList());
     }
 }

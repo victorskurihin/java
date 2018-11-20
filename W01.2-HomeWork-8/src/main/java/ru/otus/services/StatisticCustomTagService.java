@@ -4,11 +4,22 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import ru.otus.models.StatisticEntitiesList;
 import ru.otus.models.StatisticEntity;
 import ru.otus.utils.NullString;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +29,8 @@ import static ru.otus.gwt.shared.Constants.*;
 
 public class StatisticCustomTagService implements DataOrigin, StatisticService
 {
+    private static final Logger LOGGER = LogManager.getLogger(StatisticCustomTagService.class);
+
     private DbService dbService;
     private boolean collectionEnabled;
     private List<StatisticEntity> readyResultList = null;
@@ -59,9 +72,14 @@ public class StatisticCustomTagService implements DataOrigin, StatisticService
     }
 
     @Override
-    public List<StatisticEntity> getAllVisitsStatElements() throws SQLException
+    public List<StatisticEntity> getAllVisitsStatElements()
     {
-        return dbService.getAllStatisticElements();
+        try {
+            return dbService.getAllStatisticElements();
+        } catch (SQLException e) {
+            LOGGER.error("getAllVisitsStatElements: catch({}): {}", e.getClass(), e);
+        }
+        return null;
     }
 
     @Override
@@ -90,13 +108,30 @@ public class StatisticCustomTagService implements DataOrigin, StatisticService
     @Override
     public String getDataXML()
     {
+        JAXBContext context = null;
+        try {
+            context = JAXBContext.newInstance(StatisticEntitiesList.class);
+            Marshaller m = context.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            OutputStream os = new ByteArrayOutputStream();
+            StatisticEntitiesList list = new StatisticEntitiesList(readyResultList);
+            m.marshal(list, os);
+
+            return os.toString();
+        } catch (JAXBException e) {
+            LOGGER.error("getDataXML: catch({}): {}", e.getClass(), e);
+        }
+
         return null;
     }
 
     @Override
     public String getDataJSON()
     {
-        return null;
+        StatisticEntitiesList list = new StatisticEntitiesList(readyResultList);
+        JsonbConfig config = new JsonbConfig().withFormatting(true);
+        Jsonb jsonb = JsonbBuilder.create(config);
+        return jsonb.toJson(list);
     }
 }
 
