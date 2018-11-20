@@ -1,0 +1,10 @@
+package ru.otus.gwt.client.service;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import ru.otus.gwt.shared.User;
+
+public interface LoginServiceAsync
+{
+    void getMessage(String msg, AsyncCallback<String> async);
+    void authorize(User user, AsyncCallback<Void> async);
+}
