@@ -131,7 +131,7 @@ public class StatisticCustomTagService implements DataOrigin, StatisticService
         StatisticEntitiesList list = new StatisticEntitiesList(readyResultList);
         JsonbConfig config = new JsonbConfig().withFormatting(true);
         Jsonb jsonb = JsonbBuilder.create(config);
-        StatisticEntity entity = list.asList().get(2);
+
         return jsonb.toJson(list);
     }
 }

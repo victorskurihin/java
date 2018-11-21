@@ -7,7 +7,7 @@ function onMessageStatistoc(evt) {
 }
 
 function connectInsideWs() {
-    wsocketInside = new WebSocket("ws://localhost:8080/homework8/inside/ws");
+    wsocketInside = new WebSocket("ws://" +  location.host + "/homework8/inside/ws");
     wsocketInside.onmessage = onMessageStatistoc
 }
 

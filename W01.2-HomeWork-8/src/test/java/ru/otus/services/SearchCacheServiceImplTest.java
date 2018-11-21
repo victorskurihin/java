@@ -61,7 +61,7 @@ public class SearchCacheServiceImplTest
         Search search = new Search();
         searchCacheService.putToCache(search, new ArrayList<>());
         Assert.assertNotNull(searchCacheService.searchInCache(search));
-        Thread.sleep(21);
+        Thread.sleep(50);
         Assert.assertNull(searchCacheService.searchInCache(search));
     }
 }

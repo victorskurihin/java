@@ -13,7 +13,7 @@ function onMessageForexCBR(evt) {
 }
 
 function connectForexCBR() {
-    wsocketPublic = new WebSocket("ws://localhost:8080/homework8/wspublic");
+    wsocketPublic = new WebSocket("ws://" +  location.host + "/homework8/wspublic");
     wsocketPublic.onmessage = onMessageForexCBR
 }
 

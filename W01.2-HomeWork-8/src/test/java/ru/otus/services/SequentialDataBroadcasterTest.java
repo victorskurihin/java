@@ -80,19 +80,19 @@ public class SequentialDataBroadcasterTest
     {
         Session session = mock(Session.class);
         Mockito.doReturn(new Basic())
-                .when(session)
-                .getBasicRemote();
+               .when(session)
+               .getBasicRemote();
         when(session.isOpen()).thenReturn(true);
 
         registerDataUpdater(session);
         router.start();
-        Thread.sleep(50);
+        Thread.sleep(100);
         Assert.assertEquals(JSON_TEST, sendedText);
 
         router.unregisterDataUpdater(session);
         router.start();
         sendedText = null;
-        Thread.sleep(50);
+        Thread.sleep(100);
         Assert.assertNull(sendedText);
         router.shutdown();
     }
