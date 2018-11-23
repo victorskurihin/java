@@ -4,7 +4,7 @@ package ru.otus.db;
  * Created by VSkurikhin at winter 2018.
  */
 
-import ru.otus.exeptions.RuntimeSQLException;
+import ru.otus.exeptions.ExceptionSQL;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,7 +18,7 @@ public class ConnectionHelper
             DriverManager.registerDriver(new org.postgresql.Driver());
             return DriverManager.getConnection(url);
         } catch (SQLException e) {
-            throw new RuntimeSQLException(e);
+            throw new ExceptionSQL(e);
         }
     }
 

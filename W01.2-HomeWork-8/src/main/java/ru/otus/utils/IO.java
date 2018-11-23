@@ -4,6 +4,9 @@ package ru.otus.utils;
  * Created by VSkurikhin at autumn 2018.
  */
 
+import ru.otus.exeptions.ExceptionIO;
+import ru.otus.exeptions.ExceptionURISyntax;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,17 +63,27 @@ public class IO
         }
     }
 
-    public static void saveResultToTruncatedFile(String result, String path)
-    throws URISyntaxException, IOException
+    private static FileChannel getFileChannel(File file) throws FileNotFoundException
     {
-        File file = Paths.get(new URI(path)).toFile();
+        return new FileOutputStream(file, true).getChannel();
+    }
 
-        try (FileChannel fc = new FileOutputStream(file, true).getChannel()) {
-            fc.truncate(0);
+    public static void saveResultToTruncatedFile(String result, String path)
+    throws IOException, URISyntaxException
+    {
+        File file = null;
+        try {
+            file = Paths.get(new URI(path)).toFile();
+        } catch (URISyntaxException e) {
+            throw new ExceptionURISyntax(e);
         }
 
-        try (PrintWriter pw = new PrintWriter(file)) {
+        try (FileChannel fc = getFileChannel(file); PrintWriter pw = new PrintWriter(file)) {
+            fc.truncate(0);
             pw.print(result);
+        }
+        catch (IOException e) {
+            throw new ExceptionIO(e);
         }
     }
 

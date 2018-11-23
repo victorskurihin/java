@@ -53,10 +53,12 @@ public class ForexCBRService extends DataOriginFetching
 
         try {
             String xml = fetchURL(url, TIMEOUT, ENCODING).replaceFirst(encoding1, encoding2);
-            setReady(false);
-            saveResultToTruncatedFile(xml, path);
-            setReady(true);
-            LOGGER.info("getCurrencyExchangeRates: ready.set(true).");
+            if (xml.length() > 1) {
+                setReady(false);
+                saveResultToTruncatedFile(xml, path);
+                setReady(true);
+                LOGGER.info("getCurrencyExchangeRates: ready.set(true).");
+            }
         }
         catch (Exception e) {
             LOGGER.error("getCurrencyExchangeRates: catch({}): {}", e.getClass(), e);

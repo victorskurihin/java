@@ -73,10 +73,12 @@ public class RBCNewsService extends DataOriginFetching
 
         try {
             String json = getJsonFromURL(url, TIMEOUT);
-            setReady(false);
-            saveResultToTruncatedFile(json, path);
-            setReady(true);
-            LOGGER.info("saveJsonToFile: ready.set(true).");
+            if (json.length() > 1) {
+                setReady(false);
+                saveResultToTruncatedFile(json, path);
+                setReady(true);
+                LOGGER.info("saveJsonToFile: ready.set(true).");
+            }
         }
         catch (Exception e) {
             LOGGER.error("saveJsonToFile: catch({}): {}", e.getClass(), e);
