@@ -53,6 +53,7 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
     {
         List<E> result = new ArrayList<>();
         Executor executor = new Executor(getDataSource().getConnection());
+
         executor.execQuery(sql, rs -> {
             while (rs.next()) {
                 result.add(f.apply(rs));

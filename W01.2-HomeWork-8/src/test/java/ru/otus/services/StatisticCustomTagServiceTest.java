@@ -6,21 +6,16 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.otus.models.StatisticEntitiesList;
 import ru.otus.models.StatisticEntity;
-import ru.otus.models.UserEntity;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import javax.management.j2ee.statistics.Statistic;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static ru.otus.services.TestExpectedData.getTestStatisticEntity1;
 import static ru.otus.services.TestExpectedData.getTestUserEntity1;
 
@@ -38,7 +33,7 @@ public class StatisticCustomTagServiceTest
     {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         em = emf.createEntityManager();
-        dbService = new DbJPAPostgreSQLService(em);
+        dbService = new DbSQLService(em);
         dbService.saveEntity(getTestUserEntity1());
         dbService.saveEntity(getTestStatisticEntity1());
         service = new StatisticCustomTagService(dbService, true);

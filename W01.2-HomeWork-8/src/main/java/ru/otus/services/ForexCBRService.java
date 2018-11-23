@@ -60,7 +60,7 @@ public class ForexCBRService extends DataOriginFetching
                 LOGGER.info("getCurrencyExchangeRates: ready.set(true).");
             }
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             LOGGER.error("getCurrencyExchangeRates: catch({}): {}", e.getClass(), e);
         }
     }

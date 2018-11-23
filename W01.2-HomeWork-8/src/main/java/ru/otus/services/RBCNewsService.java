@@ -80,7 +80,7 @@ public class RBCNewsService extends DataOriginFetching
                 LOGGER.info("saveJsonToFile: ready.set(true).");
             }
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             LOGGER.error("saveJsonToFile: catch({}): {}", e.getClass(), e);
         }
     }

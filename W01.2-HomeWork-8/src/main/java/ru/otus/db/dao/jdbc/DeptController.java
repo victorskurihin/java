@@ -9,12 +9,18 @@ import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;
 
 import javax.naming.NamingException;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
 public class DeptController extends AbstractController <DeptEntity, Long>
 {
     public static final String SELECT_ALL = "SELECT * FROM dep_directory";
+
+    DeptController(DataSource dataSource)
+    {
+        super(dataSource);
+    }
 
     @Override
     public List<DeptEntity> getAll() throws ExceptionThrowable

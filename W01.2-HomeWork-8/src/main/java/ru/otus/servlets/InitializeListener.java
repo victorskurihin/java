@@ -38,7 +38,7 @@ public class InitializeListener implements ServletContextListener
         System.out.println("On start web app ...");
         ServletContext ctx = sce.getServletContext();
 
-        DbService dbService = new DbJPAPostgreSQLService(emf.createEntityManager());
+        DbService dbService = new DbSQLService(emf.createEntityManager());
         SearchCacheService cacheService = new SearchCacheServiceImpl();
         StatisticCustomTagService statisticService = new StatisticCustomTagService(dbService, true);
 

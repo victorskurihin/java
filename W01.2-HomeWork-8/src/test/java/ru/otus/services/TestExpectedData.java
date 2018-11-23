@@ -18,6 +18,7 @@ public class TestExpectedData
             "</directory>";
     public static final String XML_TEST = "<?xml version='1.0' encoding='UTF-8'?><Test/>";
     public static final String JSON_TEST = "{Test:''}";
+    public static final int DELAY_TEST = 150;
 
     public static DeptEntity getTestDeptEntity1()
     {

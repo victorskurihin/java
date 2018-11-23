@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 
 import static org.mockito.Mockito.mock;
 import static ru.otus.gwt.shared.Constants.XML_ERROR;
+import static ru.otus.services.TestExpectedData.DELAY_TEST;
 import static ru.otus.utils.IO.readFile;
 
 public class ForexCBRServiceTest
@@ -111,7 +112,7 @@ public class ForexCBRServiceTest
 
         service.fetchData();
 
-        Thread.sleep(1000);
+        Thread.sleep(DELAY_TEST);
 
         Assert.assertTrue(service.isReady());
 

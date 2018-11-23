@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import org.apache.http.testserver.HttpServer;
 
 import static org.mockito.Mockito.mock;
+import static ru.otus.services.TestExpectedData.DELAY_TEST;
 import static ru.otus.utils.IO.readFile;
 
 public class RBCNewsServiceTest
@@ -82,13 +83,15 @@ public class RBCNewsServiceTest
     }
 
     @Test
-    public void getDataTest() throws URISyntaxException, IOException
+    public void getDataTest() throws URISyntaxException, IOException, InterruptedException
     {
         Assert.assertFalse(service.isReady());
 
         Assert.assertNull(service.getDataXML());
 
         service.fetchData();
+
+        Thread.sleep(DELAY_TEST);
 
         Assert.assertTrue(service.isReady());
 

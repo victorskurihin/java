@@ -7,10 +7,16 @@ package ru.otus.db.dao.jpa;
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public class DeptController extends AbstractController <DeptEntity, Long>
 {
+    public DeptController(EntityManager entityManager)
+    {
+        super(entityManager);
+    }
+
     @Override
     public List<DeptEntity> getAll() throws ExceptionThrowable
     {

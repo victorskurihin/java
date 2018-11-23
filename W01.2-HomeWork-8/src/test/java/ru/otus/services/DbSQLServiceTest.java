@@ -5,95 +5,35 @@ package ru.otus.services;
  */
 
 import org.junit.*;
-import org.mockito.Mockito;
 import ru.otus.db.ImporterSmallXML;
+import ru.otus.db.TestDBConf;
 import ru.otus.models.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
 import static ru.otus.services.TestDbJPAUtils.*;
 import static ru.otus.services.TestExpectedData.*;
-import static ru.otus.utils.IO.getAbsolutePath;
 
-public class DbJPAPostgreSQLServiceTest
+public class DbSQLServiceTest implements TestDBConf
 {
-    public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
-
-    private static final String TEST_RESOURCES = "src" + File.separator
-                                               + "test" + File.separator
-                                               + "resources" + File.separator;
-
-    private static final Map<String, String> FILE_LOCATIONS = new HashMap<String , String>() {{
-        put(DbJPAPostgreSQLService.TABLE_DEP_DIRECTORY, TEST_RESOURCES + "DeptEntities.xml");
-        put(DbJPAPostgreSQLService.TABLE_EMP_REGISTRY,  TEST_RESOURCES + "EmpEntities.xml");
-        put(DbJPAPostgreSQLService.TABLE_STATISTIC,     TEST_RESOURCES + "StatisticEntities.xml");
-        put(DbJPAPostgreSQLService.TABLE_USER_GROUPS,   TEST_RESOURCES + "UsersgroupEntities.xml");
-        put(DbJPAPostgreSQLService.TABLE_USERS,         TEST_RESOURCES + "UserEntities.xml");
-    }};
-
-    private static final String FIRST_NAME = "FirstName";
-    private static final String SECOND_NAME = "SecondName";
-    private static final String SUR_NAME = "SurName";
-
-    private static List<ImporterSmallXML<?>> importeres = new ArrayList<>();
-    private static ServletContext ctx;
+    private static List<ImporterSmallXML<?>> importeres;
 
     private EntityManagerFactory emf;
     private EntityManager em;
     private DbService service;
 
-    private static InputStream getInputStream(String relativePath) throws IOException
-    {
-        String path = getAbsolutePath(relativePath);
-        return new FileInputStream(path);
-    }
-
-    private static void mockResourceAsStream(String fileLocationTest, String fileLocationMock)
-    throws IOException
-    {
-        Mockito.doReturn(fileLocationTest)
-               .when(ctx)
-               .getInitParameter(fileLocationMock);
-        Mockito.doReturn(getInputStream(fileLocationTest))
-               .when(ctx)
-               .getResourceAsStream(fileLocationTest);
-    }
-
-    private static <T extends EntitiesList> ImporterSmallXML<T> createImporterXML(String s)
-    throws IOException, JAXBException
-    {
-        String entitiesXMLPath = ctx.getInitParameter(s);
-        return new ImporterSmallXML<>(ctx, entitiesXMLPath, DbJPAPostgreSQLService.CLASSES);
-    }
-
-    private static void createImportersXMLData() throws IOException, JAXBException
-    {
-        for (String table : DbJPAPostgreSQLService.TABLES) {
-            if (FILE_LOCATIONS.get(table) != null)
-                importeres.add(createImporterXML(DbJPAPostgreSQLService.FILE_LOCATIONS.get(table)));
-        }
-    }
-
     @BeforeClass
     public static void setupServletContext() throws IOException, JAXBException
     {
-        ctx = mock(ServletContext.class);
-        for (String table : DbJPAPostgreSQLService.TABLES) {
-            String mock = DbJPAPostgreSQLService.FILE_LOCATIONS.get(table);
-            mockResourceAsStream(FILE_LOCATIONS.get(table), mock);
-        }
-        createImportersXMLData();
+        importeres = TestDBConf.createImporters();
     }
 
     @Before
@@ -101,11 +41,8 @@ public class DbJPAPostgreSQLServiceTest
     {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
         em = emf.createEntityManager();
-        service = new DbJPAPostgreSQLService(em);
-
-        for (ImporterSmallXML<?> importer : importeres) {
-            importer.saveEntities(em);
-        }
+        service = new DbSQLService(em);
+        TestDBConf.importTestDB(importeres, em);
     }
 
     @After

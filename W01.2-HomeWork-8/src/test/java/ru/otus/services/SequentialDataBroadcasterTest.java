@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static ru.otus.services.TestExpectedData.DELAY_TEST;
 import static ru.otus.services.TestExpectedData.JSON_TEST;
 
 public class SequentialDataBroadcasterTest
@@ -57,7 +58,7 @@ public class SequentialDataBroadcasterTest
         TestDataOrigin origin = new TestDataOrigin();
         router.registerDataOrigin("TEST_DATA_ORIGIN", origin);
         router.start();
-        Thread.sleep(50);
+        Thread.sleep(DELAY_TEST);
         Assert.assertTrue(router.isRunning());
         Assert.assertTrue(origin.isReady());
 
@@ -86,13 +87,13 @@ public class SequentialDataBroadcasterTest
 
         registerDataUpdater(session);
         router.start();
-        Thread.sleep(100);
+        Thread.sleep(DELAY_TEST);
         Assert.assertEquals(JSON_TEST, sendedText);
 
         router.unregisterDataUpdater(session);
         router.start();
         sendedText = null;
-        Thread.sleep(100);
+        Thread.sleep(DELAY_TEST);
         Assert.assertNull(sendedText);
         router.shutdown();
     }

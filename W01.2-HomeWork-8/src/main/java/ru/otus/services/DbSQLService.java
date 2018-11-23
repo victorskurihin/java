@@ -4,7 +4,8 @@ package ru.otus.services;
  * Created by VSkurikhin at autumn 2018.
  */
 
-import ru.otus.db.ImporterSmallXML;
+import ru.otus.db.DBConf;
+import ru.otus.db.PostgreSQLService;
 import ru.otus.models.*;
 
 import javax.persistence.*;
@@ -13,59 +14,14 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.servlet.ServletContext;
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class DbJPAPostgreSQLService implements DbService
+public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 {
-    public static final String TABLE_USERS = "users";
-    public static final String TABLE_DEP_DIRECTORY = "dep_directory";
-    public static final String TABLE_EMP_REGISTRY = "emp_registry";
-    public static final String TABLE_USER_GROUPS = "user_groups";
-    public static final String TABLE_STATISTIC = "statistic";
-
-    public static final String[] TABLES = new String[] {
-            TABLE_USERS,
-            TABLE_DEP_DIRECTORY,
-            TABLE_EMP_REGISTRY,
-            TABLE_USER_GROUPS,
-            TABLE_STATISTIC,
-    };
-
-    public static final String[] ORDER_OF_DELETE_TABLES = new String[] {
-            TABLE_EMP_REGISTRY,
-            TABLE_DEP_DIRECTORY,
-            TABLE_STATISTIC,
-            TABLE_USER_GROUPS,
-            TABLE_USERS,
-    };
-
-    public static final Map<String , String> FILE_LOCATIONS = new HashMap<String , String>() {{
-        put(TABLE_DEP_DIRECTORY, "DeptEntitiesXMLDataFileLocation");
-        put(TABLE_EMP_REGISTRY,  "EmpEntitiesXMLDataFileLocation");
-        put(TABLE_STATISTIC,     "StatisticEntitiesXMLDataFileLocation");
-        put(TABLE_USER_GROUPS,   "UsersgroupEntitiesXMLDataFileLocation");
-        put(TABLE_USERS,         "UserEntitiesXMLDataFileLocation");
-    }};
-
-    public static final Class<?>[] CLASSES = new Class<?>[] {
-            DeptEntity.class,
-            DeptEntitiesList.class,
-            EmpEntity.class,
-            EmpEntitiesList.class,
-            GroupEntity.class,
-            GroupEntitiesList.class,
-            StatisticEntity.class,
-            StatisticEntitiesList.class,
-            UserEntity.class,
-            UserEntitiesList.class,
-    };
-
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
     private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
     private static final String SELECT_USER_ENTITY_BY_NAME =  "SELECT e FROM UserEntity e WHERE e.login = :name";;
@@ -77,9 +33,6 @@ public class DbJPAPostgreSQLService implements DbService
     private static final String UPDATE_EMP_SUR_NAME_BY_ID = "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
 
     private static final String DELETE_EMP_ENTITY_BY_ID = "DELETE FROM EmpEntity e WHERE e.id = :id";
-    private static final String ALTER_SEQ_RESTART_WITH_1 = "ALTER SEQUENCE emp_id_seq RESTART WITH 1";
-    private static final String ALTER_SEQ_RESTART_WITH_2 = "ALTER SEQUENCE hibernate_sequence RESTART WITH 1";
-    private static final String ALTER_SEQ_RESTART_WITH_3 = "ALTER SEQUENCE statistic_id_seq RESTART WITH 1";
 
     private static final String FIO_PREDICATE =
             "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
@@ -87,56 +40,32 @@ public class DbJPAPostgreSQLService implements DbService
     private static final String CITY_PREDICATE = "e.city LIKE :city";
     private static final String AGE_PREDICATE = "e.age = :age";
 
-    private EntityManager em;
-
-    public DbJPAPostgreSQLService(EntityManager em)
+    public DbSQLService(EntityManager em)
     {
-        this.em = em;
+        super(em);
     }
 
     @Override
     public void clearDb(ServletContext sc) throws Exception
     {
-        EntityTransaction transaction = em.getTransaction();
-
-        try {
-            transaction.begin();
-            for (String table : ORDER_OF_DELETE_TABLES) {
-                em.createNativeQuery("DELETE FROM " + table + " CASCADE").executeUpdate();
-            }
-            em.createNativeQuery(ALTER_SEQ_RESTART_WITH_1).executeUpdate();
-            em.createNativeQuery(ALTER_SEQ_RESTART_WITH_2).executeUpdate();
-            em.createNativeQuery(ALTER_SEQ_RESTART_WITH_3).executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-        }
-    }
-
-    private static <T extends EntitiesList> ImporterSmallXML<T> createImporterXML(ServletContext sc, String s)
-    throws IOException, JAXBException
-    {
-        String entitiesXMLPath = sc.getInitParameter(s);
-        return new ImporterSmallXML<>(sc, entitiesXMLPath, CLASSES);
+        super.clearDb(sc);
     }
 
     @Override
     public void importDb(ServletContext sc) throws Exception
     {
-        for (String table : TABLES) {
-            createImporterXML(sc, FILE_LOCATIONS.get(table)).saveEntities(em);
-        }
+        super.importDb(sc);
     }
 
     @Override
     public void exportDb(ServletContext sc)
     {
-        // TODO
+        super.exportDb(sc);
     }
 
     private <T extends DataSet> List<T> getEntities(String sql, Consumer<Query> c)
     {
-        EntityTransaction transaction = em.getTransaction();
+        EntityTransaction transaction =  em.getTransaction();
         try {
             transaction.begin();
             Query q = em.createQuery(sql);

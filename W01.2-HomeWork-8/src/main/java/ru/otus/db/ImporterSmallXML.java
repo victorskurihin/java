@@ -5,7 +5,6 @@ package ru.otus.db;
  */
 
 import ru.otus.models.*;
-import ru.otus.services.DbJPAPostgreSQLService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
