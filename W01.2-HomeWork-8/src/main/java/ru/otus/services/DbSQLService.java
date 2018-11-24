@@ -128,6 +128,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         return getEntity(sql, query -> query.setParameter("name", name));
     }
 
+    @SuppressWarnings("Duplicates")
     private <T extends DataSet> T getEntityViaClassById(long id, Class<T> c)
     {
         EntityTransaction transaction = em.getTransaction();
@@ -155,7 +156,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         return getEntitiesViaClass(StatisticEntity.class);
     }
 
-
+    @SuppressWarnings("Duplicates")
     private  <T extends DataSet> void mergeEntity(T entity)
     {
         EntityTransaction transaction = em.getTransaction();
@@ -201,6 +202,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         });
     }
 
+    @SuppressWarnings("Duplicates")
     private <T extends DataSet> void deleteEntityViaClassById(long id, Class<T> c)
     {
         EntityTransaction transaction = em.getTransaction();

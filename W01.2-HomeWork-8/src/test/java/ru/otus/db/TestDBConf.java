@@ -4,6 +4,7 @@ package ru.otus.db;
  * Created by VSkurikhin at winter 2018.
  */
 
+import org.h2.jdbcx.JdbcDataSource;
 import org.mockito.Mockito;
 import ru.otus.models.EntitiesList;
 
@@ -41,6 +42,13 @@ public interface TestDBConf
     String FIRST_NAME = "FirstName";
     String SECOND_NAME = "SecondName";
     String SUR_NAME = "SurName";
+
+    JdbcDataSource dataSource = new JdbcDataSource();
+
+    static void configureDataSource()
+    {
+        dataSource.setURL("jdbc:h2:mem:test");
+    }
 
     static InputStream getInputStream(String relativePath) throws IOException
     {

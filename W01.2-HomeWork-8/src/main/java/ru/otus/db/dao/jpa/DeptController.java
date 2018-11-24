@@ -24,27 +24,32 @@ public class DeptController extends AbstractController <DeptEntity, Long>
     }
 
     @Override
-    public DeptEntity getEntityById(Long id)
+    public DeptEntity getEntityById(Long id) throws ExceptionThrowable
     {
-        return null;
+        return getEntityViaClassById(id, DeptEntity.class);
+    }
+
+    public DeptEntity getEntityByTitle(String title) throws ExceptionThrowable
+    {
+        return getEntityViaClassByName("title", title, DeptEntity.class);
     }
 
     @Override
-    public DeptEntity update(DeptEntity entity)
+    public DeptEntity update(DeptEntity entity) throws ExceptionThrowable
     {
-        return null;
+        return mergeEntity(entity);
     }
 
     @Override
-    public boolean delete(Long id)
+    public boolean delete(Long id) throws ExceptionThrowable
     {
-        return false;
+        return deleteEntityViaClassById(id, DeptEntity.class);
     }
 
     @Override
-    public boolean create(DeptEntity entity)
+    public boolean create(DeptEntity entity) throws ExceptionThrowable
     {
-        return false;
+        return persistEntity(entity);
     }
 }
 

@@ -12,11 +12,15 @@ import java.util.List;
 
 public interface DAOController<E extends DataSet, K>
 {
-    public abstract List<E> getAll() throws ExceptionThrowable;
-    public abstract E getEntityById(K id);
-    public abstract E update(E entity);
-    public abstract boolean delete(K id);
-    public abstract boolean create(E entity);
+    List<E> getAll() throws ExceptionThrowable;
+
+    E getEntityById(K id) throws ExceptionThrowable;
+
+    E update(E entity) throws ExceptionThrowable;
+
+    boolean delete(K id) throws ExceptionThrowable;
+
+    boolean create(E entity) throws ExceptionThrowable;
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

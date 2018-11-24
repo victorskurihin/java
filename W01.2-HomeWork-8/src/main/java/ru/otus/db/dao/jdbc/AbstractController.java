@@ -4,17 +4,19 @@ package ru.otus.db.dao.jdbc;
  * Created by VSkurikhin at winter 2018.
  */
 
-import org.apache.tapestry.pages.Exception;
 import ru.otus.db.Executor;
+import ru.otus.db.ResultHandler;
 import ru.otus.db.dao.DAOController;
+import ru.otus.exeptions.ExceptionSQL;
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DataSet;
 
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -44,6 +46,17 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         this.dataSource = dataSource;
     }
 
+    public Consumer<PreparedStatement> getConsumerLongId(long id)
+    {
+        return preparedStatement -> {
+            try {
+                preparedStatement.setLong(1, id);
+            } catch (SQLException e) {
+                throw new ExceptionSQL(e);
+            }
+        };
+    }
+
     protected DataSource getDataSource()
     {
         return dataSource;
@@ -61,6 +74,17 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         });
 
         return result;
+    }
+
+    protected void execQueryEntityById(String sql, ResultHandler handler, Consumer<PreparedStatement> consumer)
+    throws ExceptionThrowable
+    {
+        try {
+            Executor executor = new Executor(getDataSource().getConnection());
+            executor.execQuery(sql, handler, consumer);
+        } catch (SQLException e) {
+            throw new ExceptionThrowable(e);
+        }
     }
 }
 
