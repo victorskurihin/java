@@ -30,19 +30,19 @@ public interface CorporateTaxProvider {
      * @param arg1
      * @param arg0
      * @return
-     *     returns double
+     *     returns java.lang.Double
      */
     @WebMethod
-    @WebResult(targetNamespace = "")
+    @WebResult(name = "currentTax", targetNamespace = "")
     @RequestWrapper(localName = "getCurrentTax", targetNamespace = "http://corptax.wservice.soap.otus.ru/", className = "ru.otus.soap.wsclient.corptax.GetCurrentTax")
     @ResponseWrapper(localName = "getCurrentTaxResponse", targetNamespace = "http://corptax.wservice.soap.otus.ru/", className = "ru.otus.soap.wsclient.corptax.GetCurrentTaxResponse")
     @Action(input = "http://corptax.wservice.soap.otus.ru/CorporateTaxProvider/getCurrentTaxRequest", output = "http://corptax.wservice.soap.otus.ru/CorporateTaxProvider/getCurrentTaxResponse")
-    public double getCurrentTax(
+    public Double getCurrentTax(
         @WebParam(name = "arg0", targetNamespace = "")
-        double arg0,
+        Double arg0,
         @WebParam(name = "arg1", targetNamespace = "")
-        double arg1,
+        Double arg1,
         @WebParam(name = "arg2", targetNamespace = "")
-        double arg2);
+        Double arg2);
 
 }

@@ -24,6 +24,10 @@
             <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
         </File>
 
+        <File name="File_ru.otus.soap" fileName="log/${env:MYPROJ:-homework}.ru.otus.soap.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
@@ -58,6 +62,10 @@
 
         <Logger name="ru.otus.servlets" level="DEBUG">
             <AppenderRef ref="File_ru.otus.servlets"/>
+        </Logger>
+
+        <Logger name="ru.otus.soap" level="DEBUG">
+            <AppenderRef ref="File_ru.otus.soap"/>
         </Logger>
 
         <Root level="WARN">

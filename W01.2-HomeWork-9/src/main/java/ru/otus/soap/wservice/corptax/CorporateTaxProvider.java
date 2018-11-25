@@ -7,5 +7,5 @@ public interface CorporateTaxProvider
 {
     @WebMethod
     @WebResult(name = "currentTax")
-    double getCurrentTax(double income, double costs, double taxRate);
+    Double getCurrentTax(Double income, Double costs, Double taxRate);
 }

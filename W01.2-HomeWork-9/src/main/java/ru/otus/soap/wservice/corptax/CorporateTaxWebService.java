@@ -7,8 +7,8 @@ import javax.jws.WebService;
 public class CorporateTaxWebService implements CorporateTaxProvider
 {
     @WebMethod
-    public double getCurrentTax(double income, double costs, double taxRate)
+    public Double getCurrentTax(Double income, Double costs, Double taxRate)
     {
-        return (income -costs) * taxRate / 100;
+        return  (income -costs) * taxRate / 100;
     }
 }
