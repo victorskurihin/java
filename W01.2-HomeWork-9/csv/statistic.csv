@@ -1,0 +1,4 @@
+id,name_marker,jsp_page_name,ip_address,user_agent,client_time,server_time,session_id,user_id,prev_id
+0,'DEFAULT_MARKER','browsers','127.0.0.1','Wget/1.19.4 (linux-gnu)',NULL,NULL,'0000000000000000000000000000',NULL,NULL
+1,'DEFAULT_MARKER','browsers','127.0.0.1','Wget/1.19.4 (linux-gnu)','-999999999-01-01T00:00','+999999999-12-31T23:59:59.999999999,','0000000000000000000000000000',1,NULL
+2,'DEFAULT_MARKER','browsers','127.0.0.1','Wget/1.19.4 (linux-gnu)','-999999999-01-01T00:00','+999999999-12-31T23:59:59.999999999,','0000000000000000000000000000',1,NULL

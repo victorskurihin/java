@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app version="3.1"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="
+            http://xmlns.jcp.org/xml/ns/javaee
+            http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+    <display-name>Archetype Created Web Application</display-name>
+
+    <context-param>
+        <param-name>RBCNewsServiceFileLocation</param-name>
+        <!--<param-value>file:///C:/temp/RBCNews.json</param-value>-->
+        <param-value>file:////tmp/RBCNews.json</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>RBCNewsServiceURLLocation</param-name>
+        <param-value>http://www.rbc.ru/</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>CBRForexServiceFileLocation</param-name>
+        <!--<param-value>file:///C:/temp/CBRForex.xml</param-value>-->
+        <param-value>file:////tmp/CBRForex.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>CBRForexServiceURLLocation</param-name>
+        <param-value>http://www.cbr.ru/scripts/XML_daily.asp</param-value>
+    </context-param>
+
+
+    <context-param>
+        <param-name>StatisticEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/StatisticEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>DeptEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/DeptEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>UserEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/UserEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>EmpEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/EmpEntities.xml</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>UsersgroupEntitiesXMLDataFileLocation</param-name>
+        <param-value>/WEB-INF/classes/UsersgroupEntities.xml</param-value>
+    </context-param>
+
+    <welcome-file-list>
+        <welcome-file>redirect.jsp</welcome-file>
+    </welcome-file-list>
+
+    <servlet>
+        <servlet-name>LoginService</servlet-name>
+        <servlet-class>ru.otus.gwt.server.LoginServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginService</servlet-name>
+        <url-pattern>/welcome/LoginService</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>InsideService</servlet-name>
+        <servlet-class>ru.otus.gwt.server.InsideServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>InsideService</servlet-name>
+        <!--suppress GwtServiceNotRegistered -->
+        <url-pattern>/inside/InsideService</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>freemarker</servlet-name>
+        <servlet-class>freemarker.ext.servlet.FreemarkerServlet</servlet-class>
+        <init-param>
+            <param-name>TemplatePath</param-name>
+            <param-value>/</param-value>
+        </init-param>
+        <init-param>
+            <param-name>NoCache</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>ExceptionOnMissingTemplate</param-name>
+            <!-- true => HTTP 500 on missing template, instead of HTTP 404. -->
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>default_encoding</param-name>
+            <!-- The encoding of the template files: -->
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>output_encoding</param-name>
+            <!-- The encoding of the template output; Note that you must set
+                 "ResponseCharacterEncodring" to "fromTemplate" for this to work!
+              -->
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>freemarker</servlet-name>
+        <url-pattern>*.ftl</url-pattern>
+        <url-pattern>*.ftlh</url-pattern>
+        <url-pattern>*.ftlx</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>FreeMarker MVC Views</web-resource-name>
+            <url-pattern>*.ftl</url-pattern>
+            <url-pattern>*.ftlh</url-pattern>
+            <url-pattern>*.ftlx</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+        </auth-constraint>
+    </security-constraint>
+
+    <resource-ref>
+        <description>My PostgreSQL Datasource</description>
+        <res-ref-name>jdbc/PostgresMyDB</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+    </resource-ref>
+
+    <!-- SECURITY -->
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>jdbc-realm</realm-name>
+        <form-login-config>
+            <form-login-page>/WEB-INF/signin.jsp</form-login-page>
+            <form-error-page>/WEB-INF/loginError.jsp</form-error-page>
+        </form-login-config>
+    </login-config>
+
+    <security-role>
+        <description/>
+        <role-name>users</role-name>
+    </security-role>
+
+    <security-constraint>
+        <display-name>Restricted GET To Employees</display-name>
+        <web-resource-collection>
+            <web-resource-name>Restricted Access</web-resource-name>
+            <url-pattern>/inside.jsp</url-pattern>
+            <url-pattern>/inside/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>users</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>NONE</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+</web-app>
