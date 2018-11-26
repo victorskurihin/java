@@ -7,32 +7,29 @@ import org.junit.Test;
 import ru.otus.db.Executor;
 import ru.otus.db.TestDBConf;
 import ru.otus.exeptions.ExceptionThrowable;
-import ru.otus.models.DeptEntity;
+import ru.otus.models.UserEntity;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.otus.services.TestExpectedData.getTestDeptEntity1;
-import static ru.otus.services.TestExpectedData.getTestDeptEntity2;
-import static ru.otus.services.TestExpectedData.getTestDeptEntity3;
+import static ru.otus.services.TestExpectedData.*;
 
-public class DeptControllerTest implements TestDBConf
+public class UserControllerTest implements TestDBConf
 {
-    private DeptController controller;
+    private UserController controller;
 
     @Before
     public void setUp() throws Exception
     {
         TestDBConf.configureDataSource();
-        controller = new DeptController(dataSource);
+        controller = new UserController(dataSource);
 
         new Executor(dataSource.getConnection()).execUpdate(
-            "CREATE TABLE dep_directory (" +
+            "CREATE TABLE users (" +
             " id BIGINT NOT NULL," +
-            " pid BIGINT NOT NULL," +
-            " title VARCHAR(255) NOT NULL," +
-            " PRIMARY KEY (ID))"
+            " login VARCHAR(255) NOT NULL," +
+            " password VARCHAR(255)," +
+            " PRIMARY KEY (id))"
         );
     }
 
@@ -40,14 +37,14 @@ public class DeptControllerTest implements TestDBConf
     public void tearDown() throws Exception
     {
         controller = null;
-        new Executor(dataSource.getConnection()).execUpdate("DROP TABLE dep_directory");
+        new Executor(dataSource.getConnection()).execUpdate("DROP TABLE users");
     }
 
     @Test
     public void testEmptyGetAll() throws ExceptionThrowable
     {
-        List<DeptEntity> expected = new ArrayList<>();
-        List<DeptEntity> test = controller.getAll();
+        List<UserEntity> expected = new ArrayList<>();
+        List<UserEntity> test = controller.getAll();
         Assert.assertEquals(expected, test);
     }
 
@@ -58,21 +55,32 @@ public class DeptControllerTest implements TestDBConf
     }
 
     @Test
+    public void testCreateExceptionSQL0() throws ExceptionThrowable
+    {
+        UserEntity expected = new UserEntity();
+        expected.setId(1L);
+        expected.setLogin("test");
+        expected.setPassword("test");
+
+        Assert.assertTrue(controller.create(expected));
+    }
+
+    @Test
     public void testCreate() throws ExceptionThrowable
     {
-        DeptEntity expected = getTestDeptEntity1();
+        UserEntity expected = getTestUserEntity1();
         Assert.assertTrue(controller.create(expected));
 
-        DeptEntity test = controller.getEntityById(1L);
+        UserEntity test = controller.getEntityById(1L);
         Assert.assertEquals(expected, test);
     }
 
     @Test(expected = ExceptionThrowable.class)
     public void testCreateExceptionSQL() throws ExceptionThrowable
     {
-        DeptEntity notExists = new DeptEntity();
+        UserEntity notExists = new UserEntity();
         notExists.setId(-1L);
-        notExists.setTitle(null);
+        notExists.setName(null);
         controller.create(notExists);
         Assert.fail();
     }
@@ -80,13 +88,13 @@ public class DeptControllerTest implements TestDBConf
     @Test
     public void testUpdate() throws ExceptionThrowable
     {
-        final DeptEntity expected = getTestDeptEntity1();
-        DeptEntity test = getTestDeptEntity1();
+        final UserEntity expected = getTestUserEntity1();
+        UserEntity test = getTestUserEntity1();
 
         controller.create(test);
         Assert.assertEquals(expected, test);
 
-        test.setTitle("TITLE");
+        test.setPassword("PASSWORD");
         Assert.assertNotNull(controller.update(test));
         Assert.assertNotEquals(expected, test);
     }
@@ -94,9 +102,9 @@ public class DeptControllerTest implements TestDBConf
     @Test(expected = ExceptionThrowable.class)
     public void testUpdateNotExists() throws ExceptionThrowable
     {
-        DeptEntity notExists = new DeptEntity();
+        UserEntity notExists = new UserEntity();
         notExists.setId(-1L);
-        notExists.setTitle(null);
+        notExists.setLogin(null);
         controller.update(notExists);
         Assert.fail();
     }
@@ -104,7 +112,7 @@ public class DeptControllerTest implements TestDBConf
     @Test
     public void testDelete() throws ExceptionThrowable
     {
-        DeptEntity expected = getTestDeptEntity1();
+        UserEntity expected = getTestUserEntity1();
         controller.create(expected);
         Assert.assertNotNull(controller.getEntityById(1L));
 
@@ -115,13 +123,9 @@ public class DeptControllerTest implements TestDBConf
     @Test
     public void testGetAll() throws ExceptionThrowable
     {
-        Assert.assertNotNull(controller.create(getTestDeptEntity1()));
-        Assert.assertNotNull(controller.create(getTestDeptEntity2()));
-        Assert.assertNotNull(controller.create(getTestDeptEntity3()));
-        List<DeptEntity> test = controller.getAll();
-        Assert.assertEquals(3, test.size());
-        Assert.assertTrue(test.contains(getTestDeptEntity1()));
-        Assert.assertTrue(test.contains(getTestDeptEntity2()));
-        Assert.assertTrue(test.contains(getTestDeptEntity3()));
+        Assert.assertNotNull(controller.create(getTestUserEntity1()));
+        List<UserEntity> test = controller.getAll();
+        Assert.assertEquals(1, test.size());
+        Assert.assertTrue(test.contains(getTestUserEntity1()));
     }
 }

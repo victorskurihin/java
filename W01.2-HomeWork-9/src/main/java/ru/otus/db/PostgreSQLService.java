@@ -11,7 +11,7 @@ import java.io.Closeable;
 
 public class PostgreSQLService implements DBConf, Closeable
 {
-    protected EntityManager em;
+    private EntityManager em;
 
     private static final String ALTER_SEQ_RESTART_WITH_1 = "ALTER SEQUENCE emp_id_seq RESTART WITH 1";
     private static final String ALTER_SEQ_RESTART_WITH_2 = "ALTER SEQUENCE hibernate_sequence RESTART WITH 1";
@@ -20,6 +20,11 @@ public class PostgreSQLService implements DBConf, Closeable
     public PostgreSQLService(EntityManager em)
     {
         this.em = em;
+    }
+
+    public EntityManager getEM()
+    {
+        return em;
     }
 
     public void clearDb(ServletContext sc) throws Exception
