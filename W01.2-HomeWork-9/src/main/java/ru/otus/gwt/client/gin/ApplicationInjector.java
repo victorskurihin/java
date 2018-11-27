@@ -1,8 +1,12 @@
-package ru.otus.gwt.client.gin;
-
 /*
- * Created at autumn 2018.
+ * Copyright (c) Victor N. Skurikhin 27.11.18 22:46.
+ * ApplicationInjector.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.client.gin;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.GinModules;
@@ -13,6 +17,7 @@ import ru.otus.gwt.client.text.ApplicationConstants;
 import ru.otus.gwt.client.validation.ValidatorFactory.GwtValidator;
 import ru.otus.gwt.client.widget.AddView.AddViewUiBinder;
 import ru.otus.gwt.client.widget.SearchView.SearchViewUiBinder;
+import ru.otus.gwt.client.widget.TaxView.TaxViewUiBinder;
 import ru.otus.gwt.client.widget.LoginView.LoginViewUiBinder;
 import ru.otus.gwt.client.widget.image.ApplicationImages;
 
@@ -21,14 +26,15 @@ public interface ApplicationInjector extends Ginjector {
 
     ApplicationInjector INSTANCE = GWT.create(ApplicationInjector.class);
 
-    LoginServiceAsync getLoginService();
-    InsideServiceAsync getInsideService();
-    ApplicationConstants getConstants();
-    LoginViewUiBinder getLoginViewUiBinder();
     AddViewUiBinder getAddViewUiBinder();
-    SearchViewUiBinder getSearchViewUiBinder();
-    GwtValidator getValidator();
+    ApplicationConstants getConstants();
     ApplicationImages getImages();
+    GwtValidator getValidator();
+    InsideServiceAsync getInsideService();
+    LoginServiceAsync getLoginService();
+    LoginViewUiBinder getLoginViewUiBinder();
+    SearchViewUiBinder getSearchViewUiBinder();
+    TaxViewUiBinder getTaxViewUiBinder();
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

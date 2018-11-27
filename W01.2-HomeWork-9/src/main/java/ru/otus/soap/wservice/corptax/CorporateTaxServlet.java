@@ -1,5 +1,14 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 23:59.
+ * CorporateTaxServlet.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.soap.wservice.corptax;
 
+import org.omg.PortableServer.REQUEST_PROCESSING_POLICY_ID;
 import ru.otus.soap.wsclient.corptax.CorporateTaxProvider;
 import ru.otus.soap.wsclient.corptax.CorporateTaxWebService;
 
@@ -13,7 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.WebServiceRef;
 import java.io.PrintWriter;
 
-@WebServlet("/" + "corporate-tax")
+import static ru.otus.gwt.shared.Constants.REQUEST_CORPORATE_TAX;
+
+@WebServlet("/" + REQUEST_CORPORATE_TAX)
 public class CorporateTaxServlet extends HttpServlet
 {
     @WebServiceRef
@@ -32,7 +43,7 @@ public class CorporateTaxServlet extends HttpServlet
 
         try (PrintWriter pw = resp.getWriter()) {
             CorporateTaxProvider port = service.getCorporateTaxProviderPort();
-            Double taxRateReportingPeriod = port.getCurrentTax(new Double(1000000.0),  new Double(200000.0), new Double(20.0));
+            Double taxRateReportingPeriod = port.getCurrentTax(1000000.0, 200000.0, 20.0);
             pw.write(String.format("{ 'tax-rate-reporting-period' : %.2f }", taxRateReportingPeriod));
             LOGGER.info("{ tax-rate-reporting-period: {} }", taxRateReportingPeriod);
         } catch (Exception e) {

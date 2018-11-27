@@ -28,6 +28,9 @@ public class DeptControllerTest implements TestDBConf
         controller = new DeptController(dataSource);
 
         new Executor(dataSource.getConnection()).execUpdate(
+            "DROP TABLE IF EXISTS dep_directory CASCADE"
+        );
+        new Executor(dataSource.getConnection()).execUpdate(
             "CREATE TABLE dep_directory (" +
             " id BIGINT NOT NULL," +
             " pid BIGINT NOT NULL," +
@@ -40,7 +43,7 @@ public class DeptControllerTest implements TestDBConf
     public void tearDown() throws Exception
     {
         controller = null;
-        new Executor(dataSource.getConnection()).execUpdate("DROP TABLE dep_directory");
+        new Executor(dataSource.getConnection()).execUpdate("DROP TABLE dep_directory CASCADE");
     }
 
     @Test

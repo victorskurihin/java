@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 22:25.
+ * CreateGroupEntity.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.adapters.function;
 
 import ru.otus.models.GroupEntity;
@@ -6,6 +14,12 @@ import java.util.function.Function;
 
 public class CreateGroupEntity implements Function<String[], GroupEntity>
 {
+    /**
+     * The Factory method for build GroupEntity from array of String's.
+     *
+     * @param fields array of String's.
+     * @return new object.
+     */
     @Override
     public GroupEntity apply(String[] fields)
     {

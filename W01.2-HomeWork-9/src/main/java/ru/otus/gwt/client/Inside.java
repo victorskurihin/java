@@ -1,8 +1,12 @@
-package ru.otus.gwt.client;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * Copyright (c) Victor N. Skurikhin 27.11.18 23:22.
+ * Inside.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.client;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.EditTextCell;
@@ -18,6 +22,7 @@ import ru.otus.gwt.client.aside.CBRValutes;
 import ru.otus.gwt.client.service.InsideServiceAsync;
 import ru.otus.gwt.client.widget.AddView;
 import ru.otus.gwt.client.widget.SearchView;
+import ru.otus.gwt.client.widget.TaxView;
 import ru.otus.gwt.shared.Emp;
 
 import java.util.ArrayList;
@@ -37,6 +42,7 @@ public class Inside extends Welcome
     private int deckIndexListView;
     private int deckIndexAddView;
     private int deckIndexSearchView;
+    private int deckIndexTaxView;
     final DeckPanel deckPanel = new DeckPanel();
     ListDataProvider<Emp> model = new ListDataProvider<>(new ArrayList<>());
 
@@ -300,6 +306,9 @@ public class Inside extends Welcome
         deckIndexListView = deckPanel.getWidgetCount() - 1;
         deckPanel.showWidget(getDeckIndexListView());
 
+        deckPanel.add(new TaxView(service, this));
+        deckIndexTaxView = deckPanel.getWidgetCount() - 1;
+
         deckPanel.add(new AddView(service, this));
         deckIndexAddView = deckPanel.getWidgetCount() - 1;
 
@@ -310,7 +319,7 @@ public class Inside extends Welcome
         vPanel.setHorizontalAlignment(TextColumn.ALIGN_CENTER);
         vPanel.add(deckPanel);
 
-        menuAddClickHandler(deckPanel, "navigation-menu-", 5);
+        menuAddClickHandler(deckPanel, "navigation-menu-", 6);
         menuAddClickHandler(deckPanel, "aside-menu-", 4);
 
         rootPanel.add(vPanel);

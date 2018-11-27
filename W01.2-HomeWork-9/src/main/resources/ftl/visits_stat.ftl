@@ -9,7 +9,7 @@
     <script type="text/javascript" language="javascript" src="${base_url}js/script-all.min.js"></script>
 <@tags.sender_stat pageName = "visits_stat" />
     <script type="text/javascript" language="javascript" src="${base_url}inside/ws.js"></script>
-    <script type="text/javascript" language="javascript" src="${base_url}inside/inside.nocache.js"></script>
+    <!-- script type="text/javascript" language="javascript" src="${base_url}inside/inside.nocache.js"></script -->
 </head>
 
 <body class="body">

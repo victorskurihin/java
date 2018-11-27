@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 22:26.
+ * LoadTables.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus;
 
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 /**
  * mvn clean compile dependency:copy-dependencies
  * loadTables.sh or loadTables.bat

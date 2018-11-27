@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 22:24.
+ * CreateDeptEntity.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.adapters.function;
 
 import ru.otus.models.DeptEntity;
@@ -6,6 +14,12 @@ import java.util.function.Function;
 
 public class CreateDeptEntity implements Function<String[], DeptEntity>
 {
+    /**
+     * The factory method is for build object of DeptEntity type from array of String's.
+     *
+     * @param fields array of String's.
+     * @return new object of DeptEntity.
+     */
     @Override
     public DeptEntity apply(String[] fields)
     {

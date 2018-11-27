@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 22:25.
+ * CreateStatisticEntity.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.adapters.function;
 
 import ru.otus.models.StatisticEntity;
@@ -7,6 +15,12 @@ import java.util.function.Function;
 
 public class CreateStatisticEntity implements Function<String[], StatisticEntity>
 {
+    /**
+     * The factory method is for build StatisticEntity from array of String's.
+     *
+     * @param fields array of String's.
+     * @return new object.
+     */
     @Override
     public StatisticEntity apply(String[] fields)
     {

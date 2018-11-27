@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 23:03.
+ * InsideServiceImpl.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.gwt.server;
 
-/*
- * Created by VSkurikhin at autumn 2018.
- */
+import ru.otus.soap.wsclient.corptax.CorporateTaxProvider;
+import ru.otus.soap.wsclient.corptax.CorporateTaxWebService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.logging.log4j.LogManager;
@@ -15,6 +22,7 @@ import ru.otus.services.DbService;
 import ru.otus.services.SearchCacheService;
 
 import javax.servlet.ServletContext;
+import javax.xml.ws.WebServiceRef;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +33,9 @@ import static ru.otus.gwt.shared.Constants.DB_SERVICE;
 
 public class InsideServiceImpl extends RemoteServiceServlet implements InsideService
 {
+    @WebServiceRef
+    private CorporateTaxWebService service;
+
     private static final Logger LOGGER = LogManager.getLogger(InsideServiceImpl.class.getName());
 
     private Emp convertEmpEntityToEmp(EmpEntity entity) {
@@ -143,6 +154,14 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         cacheService.putToCache(search, result);
 
         return result;
+    }
+
+    @Override
+    public double getTax(double income, double costs, double taxRate)
+    {
+        CorporateTaxProvider port = service.getCorporateTaxProviderPort();
+
+        return port.getCurrentTax(income, costs, taxRate);
     }
 }
 

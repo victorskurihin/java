@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 23:58.
+ * Constants.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.gwt.shared;
 
 /*
@@ -20,6 +28,7 @@ public class Constants
     public static final String REQUEST_FOREX_RATES = "forex";
     public static final String REQUEST_NEWS = "news";
     public static final String REQUEST_VISITS_STAT_JSP = "inside/stat.do";
+    public static final String REQUEST_CORPORATE_TAX = "corporate-tax";
     public static final String REQUEST_VISITS_SWITCH_COLLECTION = "inside/switch_collection_enabled";
 
     public static final String ENDPOINT_PUBLIC = "wspublic";

@@ -25,6 +25,9 @@ public class UserControllerTest implements TestDBConf
         controller = new UserController(dataSource);
 
         new Executor(dataSource.getConnection()).execUpdate(
+            "DROP TABLE IF EXISTS users CASCADE"
+        );
+        new Executor(dataSource.getConnection()).execUpdate(
             "CREATE TABLE users (" +
             " id BIGINT NOT NULL," +
             " login VARCHAR(255) NOT NULL," +
@@ -37,7 +40,7 @@ public class UserControllerTest implements TestDBConf
     public void tearDown() throws Exception
     {
         controller = null;
-        new Executor(dataSource.getConnection()).execUpdate("DROP TABLE users");
+        new Executor(dataSource.getConnection()).execUpdate("DROP TABLE users CASCADE");
     }
 
     @Test

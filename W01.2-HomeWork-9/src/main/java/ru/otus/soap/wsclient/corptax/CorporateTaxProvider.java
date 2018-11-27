@@ -1,4 +1,14 @@
 
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 21:01.
+ * CorporateTaxProvider.java
+ * $Id$
+ *
+ *  This is free and unencumbered software released into the public domain.
+ *  For more information, please refer to <http://unlicense.org>
+ *
+ */
+
 package ru.otus.soap.wsclient.corptax;
 
 import javax.jws.WebMethod;
@@ -33,7 +43,7 @@ public interface CorporateTaxProvider {
      *     returns java.lang.Double
      */
     @WebMethod
-    @WebResult(name = "currentTax", targetNamespace = "")
+    @WebResult(targetNamespace = "")
     @RequestWrapper(localName = "getCurrentTax", targetNamespace = "http://corptax.wservice.soap.otus.ru/", className = "ru.otus.soap.wsclient.corptax.GetCurrentTax")
     @ResponseWrapper(localName = "getCurrentTaxResponse", targetNamespace = "http://corptax.wservice.soap.otus.ru/", className = "ru.otus.soap.wsclient.corptax.GetCurrentTaxResponse")
     @Action(input = "http://corptax.wservice.soap.otus.ru/CorporateTaxProvider/getCurrentTaxRequest", output = "http://corptax.wservice.soap.otus.ru/CorporateTaxProvider/getCurrentTaxResponse")

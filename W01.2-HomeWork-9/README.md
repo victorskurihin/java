@@ -27,4 +27,7 @@
            Charset:
  * Имя пользователя: `funt` 
  * Пароль: `funt`
+ * Создан SOAP сервис ru.otus.soap.wservice.corptax.* и servlet.
+ * Создан web интерфейс ru.otus.gwt.client.widget.TaxView.  
+ * Консольный клиент ru.otus.CurrentTax.
            

@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) Victor N. Skurikhin 27.11.18 22:25.
+ * CreateEmpEntity.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.adapters.function;
 
 import ru.otus.models.DeptEntity;
@@ -9,6 +17,12 @@ import java.util.function.Function;
 
 public class CreateEmpEntity implements Function<String[], EmpEntity>
 {
+    /**
+     * The factory method is for build object of EmpEntity from array of String's.
+     *
+     * @param fields array of String's.
+     * @return new object.
+     */
     @Override
     public EmpEntity apply(String[] fields)
     {

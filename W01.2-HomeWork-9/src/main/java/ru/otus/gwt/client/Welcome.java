@@ -1,8 +1,12 @@
-package ru.otus.gwt.client;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * Copyright (c) Victor N. Skurikhin 27.11.18 23:06.
+ * Welcome.java
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ Copyright (c) Victor N. Skurikhin 28.11.18 0:02.
+  ~ pom.xml
+  ~ $Id$
+  ~ This is free and unencumbered software released into the public domain.
+  ~ For more information, please refer to <http://unlicense.org>
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="
@@ -9,10 +17,10 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework9</artifactId>
-    <version>9.0-2</version>
+    <version>9.0-5</version>
     <packaging>war</packaging>
 
-    <name>JavaEE-09-2018 HomeWork-8 Maven Webapp</name>
+    <name>JavaEE-09-2018 HomeWork-9 Maven Webapp</name>
     <url>https://otus.ru</url>
 
     <properties>
