@@ -17,7 +17,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework9</artifactId>
-    <version>9.0-5</version>
+    <version>9.0-6</version>
     <packaging>war</packaging>
 
     <name>JavaEE-09-2018 HomeWork-9 Maven Webapp</name>
