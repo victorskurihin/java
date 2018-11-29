@@ -94,11 +94,7 @@ public class EmpEntityTest
         q.setParameter("name", "%" + "first" + "%");
         //noinspection unchecked
         ArrayList<EmpEntity> list = new ArrayList<>(q.getResultList());
-        System.out.println("list = " + list);
     }
-
-
-
 
     @Test
     public void marshallEmpEntity() throws JAXBException

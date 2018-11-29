@@ -1,6 +1,16 @@
 ALTER TABLE emp_registry DROP CONSTRAINT IF EXISTS FKrx0lkq97klv1hub5v3xen9hlh;
 ALTER TABLE emp_registry DROP CONSTRAINT IF EXISTS FKbyijndlfb1a6vi97y5spvou5l;
 ALTER TABLE statistic DROP CONSTRAINT IF EXISTS    FKoifiete5h1dmj02jk2fwe6d65;
+DROP SEQUENCE IF EXISTS dept_id_seq;
+DROP SEQUENCE IF EXISTS emp_id_seq;
+DROP SEQUENCE IF EXISTS group_id_seq;
+DROP SEQUENCE IF EXISTS statistic_id_seq;
+DROP SEQUENCE IF EXISTS user_id_seq;
+CREATE SEQUENCE dept_id_seq START 1 INCREMENT 1;
+CREATE SEQUENCE emp_id_seq START 1 INCREMENT 1;
+CREATE SEQUENCE group_id_seq START 1 INCREMENT 1;
+CREATE SEQUENCE statistic_id_seq START 1 INCREMENT 1;
+CREATE SEQUENCE user_id_seq START 1 INCREMENT 1;
 DROP TABLE IF EXISTS dep_directory CASCADE;
 DROP TABLE IF EXISTS emp_registry CASCADE;
 DROP TABLE IF EXISTS statistic CASCADE;
@@ -18,15 +28,15 @@ CREATE TABLE dep_directory (
 );
 CREATE TABLE emp_registry (
   id BIGINT NOT NULL,
-  age BIGINT,
-  city VARCHAR(255),
-  firsh_name VARCHAR(255) NOT NULL,
-  job VARCHAR(255),
-  salary BIGINT,
+  first_name VARCHAR(255) NOT NULL,
   second_name VARCHAR(255) NOT NULL,
   sur_name VARCHAR(255) NOT NULL,
   department BIGINT,
+  city VARCHAR(255),
+  job VARCHAR(255),
+  salary BIGINT,
   user_id BIGINT,
+  age BIGINT,
   PRIMARY KEY (id)
 );
 CREATE TABLE statistic (

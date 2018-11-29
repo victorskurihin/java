@@ -52,7 +52,6 @@ public class StatisticCustomTagServiceTest
     public void test1()
     {
         StatisticEntity entity = dbService.getEntityById(1L, StatisticEntity.class);
-        System.out.println("entity = " + entity);
     }
 
     @Test
@@ -94,7 +93,6 @@ public class StatisticCustomTagServiceTest
     {
         service.fetchData();
         String test = service.getDataXML();
-        System.out.println("test = " + test);
     }
 
     @Test

@@ -1,6 +1,14 @@
 /*
  * EmpController.java
- * This file was last modified at 29.11.18 10:43 by Victor N. Skurikhin.
+ * This file was last modified at 30.11.18 0:23 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
+ * EmpController.java
+ * This file was last modified at 30.11.18 0:22 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -31,11 +39,6 @@ public class EmpController extends AbstractController <EmpEntity, Long>
     public EmpEntity getEntityById(Long id) throws ExceptionThrowable
     {
         return getEntityViaClassById(id, EmpEntity.class);
-    }
-
-    public EmpEntity getEntityByTitle(String title) throws ExceptionThrowable
-    {
-        return getEntityViaClassByName("title", title, EmpEntity.class);
     }
 
     @Override

@@ -1,5 +1,13 @@
 /*
  * EmpEntity.java
+ * This file was last modified at 29.11.18 23:26 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
+ * EmpEntity.java
  * This file was last modified at 29.11.18 11:04 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -34,13 +42,13 @@ public class EmpEntity implements DataSet, Serializable
     @Id
     @SequenceGenerator(name="emp_identifier", sequenceName="emp_id_seq", allocationSize=1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "emp_identifier")
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)
     @JsonbProperty
     private long id;
 
     @Basic
-    @Column(name = "firsh_name", nullable = false)
+    @Column(name = "first_name", nullable = false)
     @XmlElement(required = true)
     @JsonbProperty("first-name")
     private String firstName;

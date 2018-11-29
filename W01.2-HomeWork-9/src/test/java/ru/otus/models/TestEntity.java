@@ -14,14 +14,13 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode
 @Entity
-@Table(name = "users")
-@XmlRootElement(name = "user")
+@Table(name = "test")
+@XmlRootElement(name = "test")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TestEntity implements DataSet, Serializable
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)
     private long id;
 

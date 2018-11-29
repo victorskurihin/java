@@ -60,7 +60,7 @@ public class UserEntityTest
         entity.setId(1L);
         entity.setName("setName");
         entity.setPassword("setPassword");
-        entityManager.persist(entity);
+        entityManager.merge(entity);
         transaction.commit();
 
         UserEntity userFind = entityManager.find(UserEntity.class, 1L);

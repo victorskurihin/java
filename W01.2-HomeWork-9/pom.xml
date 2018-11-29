@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ pom.xml
+  ~ This file was last modified at 30.11.18 0:22 by Victor N. Skurikhin.
+  ~ $Id$
+  ~ This is free and unencumbered software released into the public domain.
+  ~ For more information, please refer to <http://unlicense.org>
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="
@@ -9,7 +17,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework9</artifactId>
-    <version>9.0-9</version>
+    <version>9.1-9</version>
     <packaging>war</packaging>
 
     <name>JavaEE-09-2018 HomeWork-9 Maven Webapp</name>
@@ -351,7 +359,6 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>

@@ -66,7 +66,7 @@ public class DeptEntityTest
         entity.setId(1L);
         entity.setParentId(0L);
         entity.setTitle("title");
-        entityManager.persist(entity);
+        entityManager.merge(entity);
         transaction.commit();
 
         DeptEntity depFind = entityManager.find(DeptEntity.class, 1L);

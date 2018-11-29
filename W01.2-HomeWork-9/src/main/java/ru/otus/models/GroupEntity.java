@@ -1,5 +1,13 @@
 /*
  * GroupEntity.java
+ * This file was last modified at 29.11.18 21:37 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
+ * GroupEntity.java
  * This file was last modified at 29.11.18 11:07 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
@@ -27,6 +35,8 @@ import java.io.Serializable;
 public class GroupEntity  implements DataSet, Serializable
 {
     @Id
+    @SequenceGenerator(name="group_identifier", sequenceName="group_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "group_identifier")
     @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)
     private long id;
