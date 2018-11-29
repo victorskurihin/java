@@ -1,3 +1,19 @@
+/*
+ * NewsServlet.java
+ * This file was last modified at 29.11.18 11:15 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
+ * NewsServlet.java
+ * This file was last modified at 29.11.18 11:15 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.servlets;
 
 import org.apache.logging.log4j.LogManager;

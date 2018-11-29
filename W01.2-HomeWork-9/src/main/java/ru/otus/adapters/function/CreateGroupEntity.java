@@ -1,6 +1,6 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 22:25.
  * CreateGroupEntity.java
+ * This file was last modified at 29.11.18 10:32 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>

@@ -1,8 +1,12 @@
-package ru.otus.utils;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * Servlet.java
+ * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.utils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;

@@ -1,8 +1,12 @@
-package ru.otus.db.dao.jdbc;
-
 /*
- * Created by VSkurikhin at winter 2018.
+ * GroupController.java
+ * This file was last modified at 29.11.18 10:42 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.db.dao.jdbc;
 
 import ru.otus.db.Executor;
 import ru.otus.db.ResultHandler;
@@ -124,14 +128,7 @@ public class GroupController extends AbstractController <GroupEntity, Long>
     @Override
     public boolean delete(Long id) throws ExceptionThrowable
     {
-        try {
-            Executor executor = new Executor(getDataSource().getConnection());
-            int count = executor.execUpdate(DELETE, getConsumerLongId(id));
-
-            return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
-            throw new ExceptionThrowable(e);
-        }
+        return delete(DELETE, id);
     }
 
     @Override

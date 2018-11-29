@@ -1,8 +1,20 @@
-package ru.otus.adapters.xml;
+/*
+ * DeptEntityTypeXMLAdapter.java
+ * This file was last modified at 29.11.18 10:37 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
 
 /*
- * Created by VSkurikhin at autumn 2018.
+ * DeptEntityTypeXMLAdapter.java
+ * This file was last modified at 29.11.18 10:37 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.adapters.xml;
 
 import ru.otus.adapters.DataSetAdapter;
 import ru.otus.adapters.DeptEntryType;
@@ -13,6 +25,13 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 public class DeptEntityTypeXMLAdapter
 extends XmlAdapter<DeptEntryType, DeptEntity> implements DataSetAdapter<DeptEntity>
 {
+    /**
+     * The marshall method is convert the DeptEntity object to XML.
+     *
+     * @param v the DeptEntity object.
+     * @return JSON String.
+     * @throws Exception
+     */
     @Override
     public DeptEntity unmarshal(DeptEntryType v) throws Exception
     {
@@ -25,6 +44,13 @@ extends XmlAdapter<DeptEntryType, DeptEntity> implements DataSetAdapter<DeptEnti
         return entity;
     }
 
+    /**
+     * The unmarshall method is convert the XML String to DeptEntity object.
+     *
+     * @param v the JSON String.
+     * @return DeptEntity object.
+     * @throws Exception
+     */
     @Override
     public DeptEntryType marshal(DeptEntity v) throws Exception
     {

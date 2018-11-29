@@ -1,22 +1,21 @@
 /*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * DbSQLService.java
+ * This file was last modified at 29.11.18 11:10 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.services;
-
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 
 import ru.otus.db.DBConf;
 import ru.otus.db.PostgreSQLService;
 import ru.otus.db.dao.ControllersOfClass;
 import ru.otus.db.dao.DAOController;
 import ru.otus.db.dao.jpa.DeptController;
+import ru.otus.db.dao.jpa.EmpController;
+import ru.otus.db.dao.jpa.GroupController;
+import ru.otus.db.dao.jpa.UserController;
 import ru.otus.models.*;
 
 import javax.persistence.*;
@@ -52,6 +51,11 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     private static final String AGE_PREDICATE = "e.age = :age";
 
     private final DeptController DEPT_CONTROLLER = new DeptController(super.getEM());
+    private final UserController USER_CONTROLLER = new UserController(super.getEM());
+    private final GroupController GROUP_CONTROLLER = new GroupController(super.getEM());
+    private final EmpController EMP_CONTROLLER = new EmpController(super.getEM());
+
+    public DbSQLService() { super(); }
 
     public DbSQLService(EntityManager em)
     {
@@ -83,7 +87,10 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         ControllersOfClass controller = ControllersOfClass.valueOf(c.getSimpleName());
 
         switch (controller) {
-            case DeptEntity: return (DAOController<E, Long>) DEPT_CONTROLLER;
+            case DeptEntity:   return (DAOController<E, Long>) DEPT_CONTROLLER;
+            case UserEntity:   return (DAOController<E, Long>) USER_CONTROLLER;
+            case GroupEntity:  return (DAOController<E, Long>) GROUP_CONTROLLER;
+            case EmpEntity:    return (DAOController<E, Long>) EMP_CONTROLLER;
         }
 
         return null;
@@ -117,6 +124,11 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         }
 
         return getEntities(sql, q -> attrs.forEach(q::setParameter));
+    }
+
+    public EmpController getEmpController()
+    {
+        return EMP_CONTROLLER;
     }
 
     //// LEGACY ///

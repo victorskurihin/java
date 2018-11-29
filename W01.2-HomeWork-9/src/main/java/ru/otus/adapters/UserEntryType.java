@@ -1,8 +1,12 @@
-package ru.otus.adapters;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * UserEntryType.java
+ * This file was last modified at 29.11.18 10:40 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.adapters;
 
 import ru.otus.models.DataSet;
 

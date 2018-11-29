@@ -1,8 +1,12 @@
-package ru.otus.db.dao.jpa;
-
 /*
- * Created by VSkurikhin at winter 2018.
+ * DeptController.java
+ * This file was last modified at 29.11.18 10:43 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.db.dao.jpa;
 
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;

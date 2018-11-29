@@ -1,29 +1,38 @@
 /*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * PostgreSQLService.java
+ * This file was last modified at 29.11.18 10:45 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.db;
 
-/*
- * Created by VSkurikhin at autumn 2018.
- */
-
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletContext;
 import java.io.Closeable;
 
 public class PostgreSQLService implements DBConf, Closeable
 {
+    public static final String PERSISTENCE_UNIT_NAME = "jpa";
+    // private static final EntityManagerFactory emf =
+    // Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME); // for Tomcat
+    @PersistenceUnit(unitName = PERSISTENCE_UNIT_NAME)
+    private EntityManagerFactory emf; // for Glassfish
+
     private EntityManager em;
 
     private static final String ALTER_SEQ_RESTART_WITH_1 = "ALTER SEQUENCE emp_id_seq RESTART WITH 1";
     private static final String ALTER_SEQ_RESTART_WITH_2 = "ALTER SEQUENCE hibernate_sequence RESTART WITH 1";
     private static final String ALTER_SEQ_RESTART_WITH_3 = "ALTER SEQUENCE statistic_id_seq RESTART WITH 1";
+
+    public PostgreSQLService()
+    {
+        emf.createEntityManager();
+    }
 
     public PostgreSQLService(EntityManager em)
     {

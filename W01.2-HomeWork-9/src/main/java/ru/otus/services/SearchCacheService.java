@@ -1,8 +1,12 @@
-package ru.otus.services;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * SearchCacheService.java
+ * This file was last modified at 29.11.18 11:11 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.services;
 
 import ru.otus.gwt.shared.Emp;
 import ru.otus.gwt.shared.Search;

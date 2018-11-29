@@ -1,6 +1,6 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 23:53.
  * CurrentTax.java
+ * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>

@@ -1,8 +1,12 @@
-package ru.otus.utils;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * IO.java
+ * This file was last modified at 29.11.18 11:18 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.utils;
 
 import ru.otus.exeptions.ExceptionIO;
 import ru.otus.exeptions.ExceptionURISyntax;

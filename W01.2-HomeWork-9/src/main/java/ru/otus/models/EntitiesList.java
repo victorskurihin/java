@@ -1,8 +1,12 @@
-package ru.otus.models;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * EntitiesList.java
+ * This file was last modified at 29.11.18 11:04 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.models;
 
 import java.util.List;
 

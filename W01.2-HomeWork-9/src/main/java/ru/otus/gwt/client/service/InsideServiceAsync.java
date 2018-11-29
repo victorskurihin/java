@@ -1,16 +1,12 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 22:58.
  * InsideServiceAsync.java
+ * This file was last modified at 29.11.18 10:48 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.gwt.client.service;
-
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import ru.otus.gwt.shared.Emp;
@@ -29,6 +25,8 @@ public interface InsideServiceAsync
     void searchEmp(Search search, AsyncCallback<List<Emp>> async);
 
     void getTax(double income, double costs, double taxRate, AsyncCallback<Double> async);
+    void getMaxSalary(AsyncCallback<Long> async);
+    void getAvgSalary(AsyncCallback<Double> async);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

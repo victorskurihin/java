@@ -1,8 +1,12 @@
-package ru.otus.cache;
-
 /*
- * Created by VSkurikhin at winter 2018.
+ * MyElement.java
+ * This file was last modified at 29.11.18 10:41 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.cache;
 
 import java.lang.ref.SoftReference;
 

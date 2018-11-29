@@ -1,8 +1,12 @@
-package ru.otus.db.dao.jpa;
-
 /*
- * Created by VSkurikhin at winter 2018.
+ * AbstractController.java
+ * This file was last modified at 29.11.18 10:43 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.db.dao.jpa;
 
 import ru.otus.db.dao.DAOController;
 import ru.otus.exeptions.ExceptionThrowable;
@@ -31,6 +35,11 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
     public void setEntityManager(EntityManager entityManager)
     {
         this.em = entityManager;
+    }
+
+    protected EntityManager getEntityManager()
+    {
+        return em;
     }
 
     protected List<E> getAll(Class<E> clazz) throws ExceptionThrowable
@@ -147,6 +156,70 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             return true;
         }
         catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new ExceptionThrowable(e);
+        }
+    }
+
+    protected long getMaxLong(String fieldName, Class<E> clazz)
+    throws ExceptionThrowable
+    {
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+            Root<E> criteria = query.from(clazz);
+
+            query.select(criteriaBuilder.max(criteria.get(fieldName)));
+            transaction.commit();
+
+            long maxValue = 0L;
+
+            try {
+                maxValue = em.createQuery(query).getSingleResult();
+            }
+            catch (NoResultException nre) {
+                maxValue = -1L;
+            }
+
+            return maxValue;
+
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+            throw new ExceptionThrowable(e);
+        }
+    }
+
+    protected double getAvgDouble(String fieldName, Class<E> clazz)
+    throws ExceptionThrowable
+    {
+        EntityTransaction transaction = em.getTransaction();
+
+        try {
+            transaction.begin();
+
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+            Root<E> criteria = query.from(clazz);
+
+            query.select(criteriaBuilder.avg(criteria.get(fieldName)));
+            transaction.commit();
+
+            double avgValue = 0;
+
+            try {
+                avgValue = em.createQuery(query).getSingleResult();
+            }
+            catch (NoResultException nre) {
+                avgValue = -1;
+            }
+
+            return avgValue;
+
+        } catch (Exception e) {
             em.getTransaction().rollback();
             throw new ExceptionThrowable(e);
         }

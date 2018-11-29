@@ -1,8 +1,12 @@
-package ru.otus.gwt.client.widget;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * LoginView.java
+ * This file was last modified at 29.11.18 10:59 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.client.widget;
 
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;

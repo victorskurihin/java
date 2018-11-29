@@ -1,8 +1,12 @@
-package ru.otus.gwt.client.aside;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * CBRValutes.java
+ * This file was last modified at 29.11.18 10:47 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.client.aside;
 
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.Window;

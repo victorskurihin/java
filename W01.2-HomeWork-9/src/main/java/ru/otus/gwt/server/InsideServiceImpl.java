@@ -1,6 +1,6 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 23:03.
  * InsideServiceImpl.java
+ * This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -10,6 +10,8 @@ package ru.otus.gwt.server;
 
 import ru.otus.soap.wsclient.corptax.CorporateTaxProvider;
 import ru.otus.soap.wsclient.corptax.CorporateTaxWebService;
+import ru.otus.soap.wsclient.salary.SalaryProvider;
+import ru.otus.soap.wsclient.salary.SalaryWebService;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +36,10 @@ import static ru.otus.gwt.shared.Constants.DB_SERVICE;
 public class InsideServiceImpl extends RemoteServiceServlet implements InsideService
 {
     @WebServiceRef
-    private CorporateTaxWebService service;
+    private CorporateTaxWebService corpTaxservice;
+
+    @WebServiceRef
+    private SalaryWebService salaryService;
 
     private static final Logger LOGGER = LogManager.getLogger(InsideServiceImpl.class.getName());
 
@@ -159,9 +164,25 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     @Override
     public double getTax(double income, double costs, double taxRate)
     {
-        CorporateTaxProvider port = service.getCorporateTaxProviderPort();
+        CorporateTaxProvider port = corpTaxservice.getCorporateTaxProviderPort();
 
         return port.getCurrentTax(income, costs, taxRate);
+    }
+
+    @Override
+    public long getMaxSalary()
+    {
+        SalaryProvider port = salaryService.getSalaryProviderPort();
+
+        return port.getMaxSalary();
+    }
+
+    @Override
+    public double getAvgSalary()
+    {
+        SalaryProvider port = salaryService.getSalaryProviderPort();
+
+        return port.getAvgSalary();
     }
 }
 

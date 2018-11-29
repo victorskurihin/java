@@ -1,12 +1,10 @@
 <!--
-  ~ Copyright (c) Victor N. Skurikhin 27.11.18 22:55.
   ~ TaxView.ui.xml
+  ~ This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
   ~ $Id$
   ~ This is free and unencumbered software released into the public domain.
   ~ For more information, please refer to <http://unlicense.org>
   -->
-
-<!-- TaxView.ui.xml -->
 
 <!--suppress GWTStyleCheck -->
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
@@ -38,7 +36,11 @@
         </g:HorizontalPanel>
 
         <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
-            <g:Button text="search" ui:field="submit" addStyleNames="{style.redButton} submitArea"/>
+            <g:Button text="Размер налога на прибыль" ui:field="submit" addStyleNames="{style.redButton} submitArea"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
+            <g:Button text="Максимальная зарплата сотрудника" ui:field="maxSalary" addStyleNames="{style.redButton} submitArea"/>
         </g:HorizontalPanel>
     </g:VerticalPanel>
 </ui:UiBinder>

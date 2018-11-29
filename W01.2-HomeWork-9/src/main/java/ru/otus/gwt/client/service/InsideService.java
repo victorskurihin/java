@@ -1,16 +1,12 @@
 /*
- * Copyright (c) Victor N. Skurikhin 27.11.18 22:58.
  * InsideService.java
+ * This file was last modified at 29.11.18 10:48 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.gwt.client.service;
-
-/*
- * Created by VSkurikhin at autumn 2018.
- */
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -31,6 +27,8 @@ public interface InsideService extends RemoteService
     List<Emp> searchEmp(Search search);
 
     double getTax(double income, double costs, double taxRate);
+    long getMaxSalary();
+    double getAvgSalary();
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

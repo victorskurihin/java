@@ -1,16 +1,12 @@
 /*
- * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
- * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
- * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
- * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
- * Vestibulum commodo. Ut rhoncus gravida arcu.
+ * UserController.java
+ * This file was last modified at 29.11.18 10:43 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
 
 package ru.otus.db.dao.jdbc;
-
-/*
- * Created by VSkurikhin at winter 2018.
- */
 
 import ru.otus.db.Executor;
 import ru.otus.db.ResultHandler;
@@ -29,7 +25,7 @@ import java.util.function.Consumer;
 public class UserController extends AbstractController <UserEntity, Long>
 {
     public static final String SELECT_ALL = "SELECT id, login, password FROM users";
-    public static final String SELECT_BY_ID = "SELECT id, login, password FROM users WHERE id = ?";
+    public static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
     public static final String INSERT = "INSERT INTO users (id, login, password) VALUES (?, ?, ?)";
     public static final String UPDATE = "UPDATE users SET login = ?, password = ? WHERE id = ?";
     public static final String DELETE = "DELETE FROM users WHERE id = ?";
@@ -132,14 +128,7 @@ public class UserController extends AbstractController <UserEntity, Long>
     @Override
     public boolean delete(Long id) throws ExceptionThrowable
     {
-        try {
-            Executor executor = new Executor(getDataSource().getConnection());
-            int count = executor.execUpdate(DELETE, getConsumerLongId(id));
-
-            return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
-            throw new ExceptionThrowable(e);
-        }
+        return delete(DELETE, id);
     }
 
     @Override

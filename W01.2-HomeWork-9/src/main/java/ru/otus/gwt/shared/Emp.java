@@ -1,8 +1,12 @@
-package ru.otus.gwt.shared;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * Emp.java
+ * This file was last modified at 29.11.18 11:01 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.gwt.shared;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import lombok.AllArgsConstructor;

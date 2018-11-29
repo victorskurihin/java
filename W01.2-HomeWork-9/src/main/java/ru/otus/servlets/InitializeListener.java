@@ -1,14 +1,19 @@
-package ru.otus.servlets;
-
 /*
- * Created by VSkurikhin at autumn 2018.
+ * InitializeListener.java
+ * This file was last modified at 29.11.18 11:14 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
  */
+
+package ru.otus.servlets;
 
 import ru.otus.services.*;
 import ru.otus.services.SearchCacheService;
 import ru.otus.services.SearchCacheServiceImpl;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletContext;
