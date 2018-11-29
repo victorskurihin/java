@@ -67,7 +67,7 @@ fabric.properties
 **/log/
 **/target/
 **/target
-**/test/
+test/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
