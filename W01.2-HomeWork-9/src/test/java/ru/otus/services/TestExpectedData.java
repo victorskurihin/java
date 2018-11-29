@@ -18,7 +18,7 @@ public class TestExpectedData
             "</directory>";
     public static final String XML_TEST = "<?xml version='1.0' encoding='UTF-8'?><Test/>";
     public static final String JSON_TEST = "{Test:''}";
-    public static final int DELAY_TEST = 150;
+    public static final int DELAY_TEST = 200;
 
     public static DeptEntity getTestDeptEntity1()
     {
@@ -119,6 +119,16 @@ public class TestExpectedData
         result.add(getTestEmpEntity1());
         result.add(getTestEmpEntity2());
         result.add(getTestEmpEntity3());
+        return result;
+    }
+
+    public static GroupEntity getTestGroupEntity1()
+    {
+        GroupEntity result = new GroupEntity();
+        result.setId(1L);
+        result.setGroupname("users");
+        result.setLogin("funt");
+
         return result;
     }
 

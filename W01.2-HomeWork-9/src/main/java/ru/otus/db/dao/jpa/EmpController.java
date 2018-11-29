@@ -53,7 +53,7 @@ public class EmpController extends AbstractController <EmpEntity, Long>
     @Override
     public boolean create(EmpEntity entity) throws ExceptionThrowable
     {
-        return persistEntity(entity);
+        return mergeEntity(entity) != null;
     }
 
     public long getMaxSalary() throws ExceptionThrowable
