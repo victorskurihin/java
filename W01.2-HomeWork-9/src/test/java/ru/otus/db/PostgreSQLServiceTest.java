@@ -1,6 +1,7 @@
 package ru.otus.db;
 
 import org.junit.*;
+import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.*;
 
 import javax.persistence.EntityManager;
@@ -18,7 +19,6 @@ public class PostgreSQLServiceTest
     private static ServletContext ctx;
 
     private EntityManagerFactory emf;
-    private EntityManager em;
     private PostgreSQLService service;
 
     @BeforeClass
@@ -31,8 +31,7 @@ public class PostgreSQLServiceTest
     public void setUp() throws Exception
     {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        em = emf.createEntityManager();
-        service = new PostgreSQLService(em);
+        service = new PostgreSQLService(emf);
     }
 
     @After
@@ -40,19 +39,18 @@ public class PostgreSQLServiceTest
     {
         // em.close(); Will close in testImportDb()
         emf.close();
-        em = null;
     }
 
     @Test
-    public void testImportDb() throws Exception
+    public void testImportDb() throws ExceptionThrowable
     {
         service.importDb(ctx);
+        EntityManager em = emf.createEntityManager();
         Assert.assertEquals(3L, countRowsEntities(em, DeptEntity.class));
         Assert.assertEquals(1L, countRowsEntities(em, UserEntity.class));
         Assert.assertEquals(3L, countRowsEntities(em, EmpEntity.class));
         Assert.assertEquals(1L, countRowsEntities(em, GroupEntity.class));
         // Assert.assertEquals(3L, countRowsEntities(em, StatisticEntity.class));
-        service.close();
     }
 }
 

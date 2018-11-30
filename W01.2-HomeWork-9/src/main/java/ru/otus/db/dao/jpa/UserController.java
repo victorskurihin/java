@@ -9,14 +9,14 @@ package ru.otus.db.dao.jpa;
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.UserEntity;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class UserController extends AbstractController <UserEntity, Long>
 {
-    public UserController(EntityManager entityManager)
+    public UserController(EntityManagerFactory entityManagerFactory)
     {
-        super(entityManager);
+        super(entityManagerFactory);
     }
 
     @Override

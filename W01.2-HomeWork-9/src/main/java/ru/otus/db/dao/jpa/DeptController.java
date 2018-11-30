@@ -6,27 +6,19 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-/*
- * DeptController.java
- * This file was last modified at 30.11.18 0:22 by Victor N. Skurikhin.
- * $Id$
- * This is free and unencumbered software released into the public domain.
- * For more information, please refer to <http://unlicense.org>
- */
-
 package ru.otus.db.dao.jpa;
 
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class DeptController extends AbstractController <DeptEntity, Long>
 {
-    public DeptController(EntityManager entityManager)
+    public DeptController(EntityManagerFactory entityManagerFactory)
     {
-        super(entityManager);
+        super(entityManagerFactory);
     }
 
     @Override

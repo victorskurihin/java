@@ -16,6 +16,7 @@ import ru.otus.db.dao.jpa.DeptController;
 import ru.otus.db.dao.jpa.EmpController;
 import ru.otus.db.dao.jpa.GroupController;
 import ru.otus.db.dao.jpa.UserController;
+import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.*;
 
 import javax.persistence.*;
@@ -34,7 +35,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 {
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
     private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
-    private static final String SELECT_USER_ENTITY_BY_NAME =  "SELECT e FROM UserEntity e WHERE e.login = :name";;
+    private static final String SELECT_USER_ENTITY_BY_NAME =  "SELECT e FROM UserEntity e WHERE e.login = :name";
 
     private static final String UPDATE_EMP_FIRST_NAME_BY_ID =
             "UPDATE EmpEntity e SET e.firstName = :name WHERE e.id = :id";
@@ -50,26 +51,21 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     private static final String CITY_PREDICATE = "e.city LIKE :city";
     private static final String AGE_PREDICATE = "e.age = :age";
 
-    private final DeptController DEPT_CONTROLLER = new DeptController(super.getEM());
-    private final UserController USER_CONTROLLER = new UserController(super.getEM());
-    private final GroupController GROUP_CONTROLLER = new GroupController(super.getEM());
-    private final EmpController EMP_CONTROLLER = new EmpController(super.getEM());
-
     public DbSQLService() { super(); }
 
-    public DbSQLService(EntityManager em)
+    public DbSQLService(EntityManagerFactory entityManagerFactory)
     {
-        super(em);
+        super(entityManagerFactory);
     }
 
     @Override
-    public void clearDb(ServletContext sc) throws Exception
+    public void clearDb(ServletContext sc) throws ExceptionThrowable
     {
         super.clearDb(sc);
     }
 
     @Override
-    public void importDb(ServletContext sc) throws Exception
+    public void importDb(ServletContext sc) throws ExceptionThrowable
     {
         super.importDb(sc);
     }
@@ -80,6 +76,26 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         super.exportDb(sc);
     }
 
+    public DeptController getDeptController()
+    {
+        return new DeptController(super.getEntityManagerFactory());
+    }
+
+    public UserController getUserController()
+    {
+        return new UserController(super.getEntityManagerFactory());
+    }
+
+    public GroupController getGroupController()
+    {
+        return new GroupController(super.getEntityManagerFactory());
+    }
+
+    public EmpController getEmpController()
+    {
+        return new EmpController(super.getEntityManagerFactory());
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <E extends DataSet> DAOController<E, Long> getController(Class<E> c)
@@ -87,10 +103,10 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         ControllersOfClass controller = ControllersOfClass.valueOf(c.getSimpleName());
 
         switch (controller) {
-            case DeptEntity:   return (DAOController<E, Long>) DEPT_CONTROLLER;
-            case UserEntity:   return (DAOController<E, Long>) USER_CONTROLLER;
-            case GroupEntity:  return (DAOController<E, Long>) GROUP_CONTROLLER;
-            case EmpEntity:    return (DAOController<E, Long>) EMP_CONTROLLER;
+            case DeptEntity:   return (DAOController<E, Long>) getDeptController();
+            case UserEntity:   return (DAOController<E, Long>) getUserController();
+            case GroupEntity:  return (DAOController<E, Long>) getGroupController();
+            case EmpEntity:    return (DAOController<E, Long>) getEmpController();
         }
 
         return null;
@@ -126,19 +142,15 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         return getEntities(sql, q -> attrs.forEach(q::setParameter));
     }
 
-    public EmpController getEmpController()
-    {
-        return EMP_CONTROLLER;
-    }
 
     //// LEGACY ///
 
     private <T extends DataSet> List<T> getEntities(String sql, Consumer<Query> c)
     {
-        EntityTransaction transaction =  getEM().getTransaction();
+        EntityTransaction transaction =  getEntityManager().getTransaction();
         try {
             transaction.begin();
-            Query q = getEM().createQuery(sql);
+            Query q = getEntityManager().createQuery(sql);
             if (null != c) c.accept(q);
             //noinspection unchecked
             List<T> result = new ArrayList<>(q.getResultList());
@@ -152,15 +164,15 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 
     private <T extends DataSet> List<T> getEntitiesViaClass(Class<T> c)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
-            CriteriaBuilder criteriaBuilder = getEM().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(c);
             Root<T> criteria = criteriaQuery.from(c);
             criteriaQuery.select(criteria);
-            List<T> result = getEM().createQuery(criteriaQuery).getResultList();
+            List<T> result = getEntityManager().createQuery(criteriaQuery).getResultList();
             transaction.commit();
 
             return result;
@@ -172,11 +184,11 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 
     private  <T extends DataSet> T getEntity(String query, Consumer<Query> c)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
-            Query q = getEM().createQuery(query);
+            Query q = getEntityManager().createQuery(query);
             if (null != c) c.accept(q);
             //noinspection unchecked
             T result = (T) q.getSingleResult();
@@ -202,16 +214,16 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     @SuppressWarnings("Duplicates")
     private <T extends DataSet> T getEntityViaClassById(long id, Class<T> c)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
-            CriteriaBuilder criteriaBuilder = getEM().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaQuery<T> query = criteriaBuilder.createQuery(c);
             Root<T> criteria = query.from(c);
             query = query.select(criteria)
                     .where(criteriaBuilder.equal(criteria.get("id"), id));
-            T result = getEM().createQuery(query).getSingleResult();
+            T result = getEntityManager().createQuery(query).getSingleResult();
             transaction.commit();
 
             return result;
@@ -230,11 +242,11 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     @SuppressWarnings("Duplicates")
     private  <T extends DataSet> void mergeEntity(T entity)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
-            getEM().merge(entity);
+            getEntityManager().merge(entity);
             transaction.commit();
         }
         catch (Exception e) {
@@ -245,11 +257,11 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 
     private void queryUpdate(String query, Consumer<Query> c)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
-            Query q = getEM().createQuery(query);
+            Query q = getEntityManager().createQuery(query);
             if (null != c) c.accept(q);
             q.executeUpdate();
             transaction.commit();
@@ -276,15 +288,15 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     @SuppressWarnings("Duplicates")
     private <T extends DataSet> void deleteEntityViaClassById(long id, Class<T> c)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
-            CriteriaBuilder criteriaBuilder = getEM().getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
             CriteriaDelete<T> delete = criteriaBuilder.createCriteriaDelete(c);
             Root<T> criteria = delete.from(c);
             delete.where(criteriaBuilder.equal(criteria.get("id"), id));
-            getEM().createQuery(delete).executeUpdate();
+            getEntityManager().createQuery(delete).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -361,7 +373,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     @Override
     public long insertIntoStatistic(StatisticEntity entity)
     {
-        EntityTransaction transaction = getEM().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
 
         try {
             transaction.begin();
@@ -371,7 +383,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
                 user.setId(-1L);
             }
 
-            StoredProcedureQuery proc = getEM().createNamedStoredProcedureQuery("insert_statistic");
+            StoredProcedureQuery proc = getEntityManager().createNamedStoredProcedureQuery("insert_statistic");
             proc.setParameter("name_marker",   entity.getNameMarker());
             proc.setParameter("jsp_page_name", entity.getJspPageName());
             proc.setParameter("ip_address",    entity.getIpAddress());

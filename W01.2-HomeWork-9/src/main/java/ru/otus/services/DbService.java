@@ -9,6 +9,7 @@
 package ru.otus.services;
 
 import ru.otus.db.dao.DAOController;
+import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.*;
 
 import javax.servlet.ServletContext;
@@ -17,7 +18,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-public interface DbService extends Closeable
+public interface DbService
 {
     List<StatisticEntity> getAllStatisticElements() throws SQLException;
 
@@ -39,9 +40,9 @@ public interface DbService extends Closeable
 
     //// REFACTORING ////
 
-    void clearDb(ServletContext sc) throws Exception;
+    void clearDb(ServletContext sc) throws ExceptionThrowable;
 
-    void importDb(ServletContext sc) throws Exception;
+    void importDb(ServletContext sc) throws ExceptionThrowable;
 
     void exportDb(ServletContext sc) throws Exception;
 

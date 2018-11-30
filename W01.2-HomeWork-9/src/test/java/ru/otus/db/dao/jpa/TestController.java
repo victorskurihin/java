@@ -12,13 +12,14 @@ import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.TestEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class TestController extends AbstractController <TestEntity, Long>
 {
-    public TestController(EntityManager entityManager)
+    public TestController(EntityManagerFactory entityManagerFactory)
     {
-        super(entityManager);
+        super(entityManagerFactory);
     }
 
     @Override

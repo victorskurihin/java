@@ -47,19 +47,10 @@ public class ImporterSmallXML<T extends EntitiesList>
         //noinspection unchecked
         T entities = (T) unmarshaller.unmarshal(new StringReader(xmlObjects));
 
-        EntityTransaction transaction = em.getTransaction();
-        try {
-            transaction.begin();
-            for (Object e : entities.asList()) {
-                //noinspection unchecked
-                E entity = (E) e;
-                em.merge(entity);
-            }
-            transaction.commit();
-        }
-        catch (TransactionRequiredException e) {
-            transaction.rollback();
-            throw e;
+        for (Object e : entities.asList()) {
+            //noinspection unchecked
+            E entity = (E) e;
+            em.merge(entity);
         }
     }
 }

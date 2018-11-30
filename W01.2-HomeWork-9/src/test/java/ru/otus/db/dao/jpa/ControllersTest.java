@@ -29,7 +29,6 @@ public class ControllersTest
 
     private static final String TEST = "__ TEST __";
     protected static EntityManagerFactory emf;
-    protected static EntityManager em;
 
     private DeptController deptController;
     private EmpController empController;
@@ -40,13 +39,12 @@ public class ControllersTest
     public static void initClass() throws FileNotFoundException, SQLException
     {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        em = emf.createEntityManager();
     }
 
     @Before
     public void setUp() throws Exception
     {
-        em.clear();
+        EntityManager em = emf.createEntityManager();
         Session session = em.unwrap(Session.class);
         session.doWork(new Work() {
             @Override
@@ -59,10 +57,10 @@ public class ControllersTest
                 }
             }
         });
-        deptController = new DeptController(em);
-        empController = new EmpController(em);
-        groupController = new GroupController(em);
-        userController = new UserController(em);
+        deptController = new DeptController(emf);
+        empController = new EmpController(emf);
+        groupController = new GroupController(emf);
+        userController = new UserController(emf);
     }
 
     @After
@@ -75,8 +73,6 @@ public class ControllersTest
 
     @AfterClass
     public static void tearDownClass(){
-        em.clear();
-        em.close();
         emf.close();
     }
 
@@ -151,7 +147,7 @@ public class ControllersTest
     {
         testEntity.setId(1L);
         testEntity.setTest(TEST);
-        TestController testController = new TestController(em);
+        TestController testController = new TestController(emf);
         testController.persistEntity(testEntity);
     }
 
@@ -166,7 +162,8 @@ public class ControllersTest
     @Test
     public void testPersistEntity() throws ExceptionThrowable
     {
-        em.createNativeQuery("CREATE TABLE test ( id BIGINT NOT NULL, test VARCHAR(9))");
+        EntityManager em = emf.createEntityManager();
+        em.createNativeQuery("CREATE TABLE test (id BIGINT NOT NULL, test VARCHAR(9))");
         TestEntity testEntity = new TestEntity();
         testPersistEntity(testEntity);
     }

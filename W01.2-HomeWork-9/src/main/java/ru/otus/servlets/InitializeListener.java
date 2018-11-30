@@ -43,7 +43,7 @@ public class InitializeListener implements ServletContextListener
         System.out.println("On start web app ...");
         ServletContext ctx = sce.getServletContext();
 
-        DbService dbService = new DbSQLService(emf.createEntityManager());
+        DbService dbService = new DbSQLService(emf);
         SearchCacheService cacheService = new SearchCacheServiceImpl();
         StatisticCustomTagService statisticService = new StatisticCustomTagService(dbService, true);
 
@@ -76,7 +76,6 @@ public class InitializeListener implements ServletContextListener
         DbService dbService = (DbService) ctx.getAttribute(DB_SERVICE);
         DataBroadcaster dataBroadcaster = (DataBroadcaster) ctx.getAttribute(BROADCASTER_PUBLIC_SERVICE);
         try {
-            dbService.close();
             dataBroadcaster.close();
         } catch (Exception e) {
             e.printStackTrace();

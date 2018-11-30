@@ -29,7 +29,7 @@ public class SalaryWebService implements SalaryProvider
     @WebMethod
     public long getMaxSalary() throws ExceptionThrowable
     {
-        DbSQLService dbService = new DbSQLService(emf.createEntityManager());
+        DbSQLService dbService = new DbSQLService(emf);
 
         return dbService.getEmpController().getMaxSalary();
     }
@@ -38,7 +38,7 @@ public class SalaryWebService implements SalaryProvider
     @WebMethod
     public Double getAvgSalary() throws ExceptionThrowable
     {
-        DbSQLService dbService = new DbSQLService(emf.createEntityManager());
+        DbSQLService dbService = new DbSQLService(emf);
 
         return dbService.getEmpController().getAvgSalary();
     }

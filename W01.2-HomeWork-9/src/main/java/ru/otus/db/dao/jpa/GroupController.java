@@ -10,14 +10,14 @@ package ru.otus.db.dao.jpa;
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.GroupEntity;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class GroupController extends AbstractController <GroupEntity, Long>
 {
-    public GroupController(EntityManager entityManager)
+    public GroupController(EntityManagerFactory entityManagerFactory)
     {
-        super(entityManager);
+        super(entityManagerFactory);
     }
 
     @Override

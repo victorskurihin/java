@@ -6,54 +6,46 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-/*
- * AbstractController.java
- * This file was last modified at 30.11.18 0:22 by Victor N. Skurikhin.
- * $Id$
- * This is free and unencumbered software released into the public domain.
- * For more information, please refer to <http://unlicense.org>
- */
-
 package ru.otus.db.dao.jpa;
 
-import ru.otus.db.dao.DAOController;
+import ru.otus.db.dao.JPAController;
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DataSet;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.NoResultException;
-import javax.persistence.RollbackException;
+import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
-public abstract class AbstractController<E extends DataSet, K> implements DAOController<E, K>
+public abstract class AbstractController<E extends DataSet, K> implements JPAController<E, K>
 {
-    private EntityManager em;
+    private EntityManagerFactory emf;
 
     public AbstractController() { /* None */ }
 
-    public AbstractController(EntityManager entityManager)
+    public AbstractController(EntityManagerFactory entityManagerFactory)
     {
-        this.em = entityManager;
+        this.emf = entityManagerFactory;
     }
 
-    public void setEntityManager(EntityManager entityManager)
+    public void setEntityManager(EntityManagerFactory entityManagerFactory)
     {
-        this.em = entityManager;
+        this.emf = entityManagerFactory;
     }
 
     protected EntityManager getEntityManager()
     {
-        return em;
+        return emf.createEntityManager();
     }
 
     protected List<E> getAll(Class<E> clazz) throws ExceptionThrowable
     {
         List<E> result = null;
+        EntityManager em = getEntityManager();
 
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -67,10 +59,15 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         catch (Throwable e) {
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected E getEntityViaClassById(K id, Class<E> clazz) throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
+
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<E> query = criteriaBuilder.createQuery(clazz);
@@ -87,11 +84,16 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         catch (Exception e) {
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected E getEntityViaClassByName(String fieldName, String valueName, Class<E> clazz)
     throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
+
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<E> query = criteriaBuilder.createQuery(clazz);
@@ -107,10 +109,14 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         catch (Exception e) {
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected E mergeEntity(E entity) throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         if ( ! transaction.isActive()) {
@@ -118,22 +124,25 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         }
         try {
             em.merge(entity);
-            em.flush();
             transaction.commit();
 
             return entity;
         }
-        catch (RollbackException te) {
-            throw new ExceptionThrowable(te);
+        catch (RollbackException e) {
+            throw new ExceptionThrowable(e);
         }
         catch (Exception e) {
             transaction.rollback();
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected boolean deleteEntityViaClassById(K id, Class<E> c) throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         if ( ! transaction.isActive()) {
@@ -156,10 +165,14 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             transaction.rollback();
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected boolean persistEntity(E entity) throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
         if ( ! transaction.isActive()) {
@@ -178,10 +191,15 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             transaction.rollback();
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected long getMaxLong(String fieldName, Class<E> clazz) throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
+
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
@@ -203,10 +221,15 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         catch (Exception e) {
             throw new ExceptionThrowable(e);
         }
+        finally {
+            em.close();
+        }
     }
 
     protected double getAvgDouble(String fieldName, Class<E> clazz) throws ExceptionThrowable
     {
+        EntityManager em = getEntityManager();
+
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
@@ -227,6 +250,57 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         }
         catch (Exception e) {
             throw new ExceptionThrowable(e);
+        }
+        finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public EntityManager mergeToEntityManager(E entity)
+    {
+        EntityManager em = emf.createEntityManager();
+        em.merge(entity);
+        return em;
+    }
+
+
+    private Class<E> getTypeFirstParameterClass()
+    {
+        Type[] types = getClass().getGenericInterfaces();
+        for (Type type: types) {
+            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
+                ParameterizedType paramType = (ParameterizedType) type;
+                // some magic with reflection
+                //noinspection unchecked
+                return (Class<E>) paramType.getActualTypeArguments()[0];
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public E findById(EntityManager entityManager, long key) throws ExceptionThrowable
+    {
+        return entityManager.find(getTypeFirstParameterClass(), key);
+    }
+
+    @Override
+    public E findById(long key) throws ExceptionThrowable
+    {
+        EntityManager em = getEntityManager();
+
+        try {
+            return findById(em, key);
+        }
+        catch (NoResultException e) {
+            return null;
+        }
+        catch (Exception e) {
+            throw new ExceptionThrowable(e);
+        }
+        finally {
+            em.close();
         }
     }
 }

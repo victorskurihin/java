@@ -6,27 +6,19 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-/*
- * EmpController.java
- * This file was last modified at 30.11.18 0:22 by Victor N. Skurikhin.
- * $Id$
- * This is free and unencumbered software released into the public domain.
- * For more information, please refer to <http://unlicense.org>
- */
-
 package ru.otus.db.dao.jpa;
 
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.EmpEntity;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 public class EmpController extends AbstractController <EmpEntity, Long>
 {
-    public EmpController(EntityManager entityManager)
+    public EmpController(EntityManagerFactory entityManagerFactory)
     {
-        super(entityManager);
+        super(entityManagerFactory);
     }
 
     @Override

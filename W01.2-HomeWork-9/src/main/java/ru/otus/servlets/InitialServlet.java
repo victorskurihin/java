@@ -8,6 +8,7 @@
 
 package ru.otus.servlets;
 
+import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.services.DbService;
 
 import javax.servlet.ServletConfig;
@@ -28,7 +29,8 @@ public class InitialServlet extends HttpServlet
         DbService dbService = (DbService) sc.getAttribute(DB_SERVICE);
         try {
             dbService.importDb(sc);
-        } catch (Exception e) {
+        }
+        catch (Exception | ExceptionThrowable e) {
             e.printStackTrace();
         }
         super.init(config);
@@ -41,7 +43,8 @@ public class InitialServlet extends HttpServlet
         DbService dbService = (DbService) sc.getAttribute(DB_SERVICE);
         try {
             dbService.clearDb(sc);
-        } catch (Exception e) {
+        }
+        catch (Exception | ExceptionThrowable e) {
             e.printStackTrace();
         }
         super.destroy();
