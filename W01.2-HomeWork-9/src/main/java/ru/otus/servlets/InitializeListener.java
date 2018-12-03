@@ -1,6 +1,6 @@
 /*
  * InitializeListener.java
- * This file was last modified at 29.11.18 11:14 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:56 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -13,7 +13,6 @@ import ru.otus.services.SearchCacheService;
 import ru.otus.services.SearchCacheServiceImpl;
 
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.servlet.ServletContext;
@@ -77,7 +76,8 @@ public class InitializeListener implements ServletContextListener
         DataBroadcaster dataBroadcaster = (DataBroadcaster) ctx.getAttribute(BROADCASTER_PUBLIC_SERVICE);
         try {
             dataBroadcaster.close();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("On shutdown web app");

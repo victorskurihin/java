@@ -1,6 +1,6 @@
 /*
  * CacheEngineImpl.java
- * This file was last modified at 29.11.18 10:41 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:11 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -50,13 +50,13 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V>
         if (!isEternal) {
             if (lifeTimeMs != 0) {
                 TimerTask lifeTimerTask = getTimerTask(
-                    key, lifeElement -> lifeElement.getCreationTime() + lifeTimeMs
+                        key, lifeElement -> lifeElement.getCreationTime() + lifeTimeMs
                 );
                 timer.schedule(lifeTimerTask, lifeTimeMs);
             }
             if (idleTimeMs != 0) {
                 TimerTask idleTimerTask = getTimerTask(
-                    key, idleElement -> idleElement.getLastAccessTime() + idleTimeMs
+                        key, idleElement -> idleElement.getLastAccessTime() + idleTimeMs
                 );
                 timer.schedule(idleTimerTask, idleTimeMs, idleTimeMs);
             }
@@ -69,7 +69,8 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V>
         if (element != null) {
             hit++;
             element.setAccessed();
-        } else {
+        }
+        else {
             miss++;
         }
         return element;
@@ -93,14 +94,16 @@ public class CacheEngineImpl<K, V> implements CacheEngine<K, V>
 
     private TimerTask getTimerTask(final K key, Function<MyElement<K, V>, Long> timeFunction)
     {
-        return new TimerTask() {
+        return new TimerTask()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 MyElement<K, V> element = elements.get(key);
                 if (element == null
-                    || isT1BeforeT2(
+                        || isT1BeforeT2(
                         timeFunction.apply(element), System.currentTimeMillis())
-                    ) {
+                ) {
                     elements.remove(key);
                     this.cancel();
                 }

@@ -1,6 +1,6 @@
 /*
  * BackformView.java
- * This file was last modified at 29.11.18 10:59 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:28 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -16,10 +16,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class BackformView extends Composite implements IsWidget
 {
-    interface MyUiBinder extends UiBinder<Widget, BackformView> { /* None */ }
+    interface MyUiBinder extends UiBinder<Widget, BackformView>
+    { /* None */ }
+
     private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-    public BackformView() {
+    public BackformView()
+    {
         initWidget(uiBinder.createAndBindUi(this));
     }
 

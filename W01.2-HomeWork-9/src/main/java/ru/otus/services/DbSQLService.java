@@ -1,6 +1,6 @@
 /*
  * DbSQLService.java
- * This file was last modified at 29.11.18 11:10 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:50 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -35,23 +35,26 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 {
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
     private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
-    private static final String SELECT_USER_ENTITY_BY_NAME =  "SELECT e FROM UserEntity e WHERE e.login = :name";
+    private static final String SELECT_USER_ENTITY_BY_NAME = "SELECT e FROM UserEntity e WHERE e.login = :name";
 
     private static final String UPDATE_EMP_FIRST_NAME_BY_ID =
-            "UPDATE EmpEntity e SET e.firstName = :name WHERE e.id = :id";
+        "UPDATE EmpEntity e SET e.firstName = :name WHERE e.id = :id";
     private static final String UPDATE_EMP_SECOND_NAME_BY_ID =
-            "UPDATE EmpEntity e SET e.secondName = :name WHERE e.id = :id";
+        "UPDATE EmpEntity e SET e.secondName = :name WHERE e.id = :id";
     private static final String UPDATE_EMP_SUR_NAME_BY_ID = "UPDATE EmpEntity e SET e.surName = :name WHERE e.id = :id";
 
     private static final String DELETE_EMP_ENTITY_BY_ID = "DELETE FROM EmpEntity e WHERE e.id = :id";
 
     private static final String FIO_PREDICATE =
-            "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
+        "(e.firstName LIKE :name OR e.secondName LIKE :name OR e.surName LIKE :name)";
     private static final String JOB_PREDICATE = "e.job LIKE :job";
     private static final String CITY_PREDICATE = "e.city LIKE :city";
     private static final String AGE_PREDICATE = "e.age = :age";
 
-    public DbSQLService() { super(); }
+    public DbSQLService()
+    {
+        super();
+    }
 
     public DbSQLService(EntityManagerFactory entityManagerFactory)
     {
@@ -103,10 +106,14 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         ControllersOfClass controller = ControllersOfClass.valueOf(c.getSimpleName());
 
         switch (controller) {
-            case DeptEntity:   return (DAOController<E, Long>) getDeptController();
-            case UserEntity:   return (DAOController<E, Long>) getUserController();
-            case GroupEntity:  return (DAOController<E, Long>) getGroupController();
-            case EmpEntity:    return (DAOController<E, Long>) getEmpController();
+            case DeptEntity:
+                return (DAOController<E, Long>) getDeptController();
+            case UserEntity:
+                return (DAOController<E, Long>) getUserController();
+            case GroupEntity:
+                return (DAOController<E, Long>) getGroupController();
+            case EmpEntity:
+                return (DAOController<E, Long>) getEmpController();
         }
 
         return null;
@@ -147,7 +154,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 
     private <T extends DataSet> List<T> getEntities(String sql, Consumer<Query> c)
     {
-        EntityTransaction transaction =  getEntityManager().getTransaction();
+        EntityTransaction transaction = getEntityManager().getTransaction();
         try {
             transaction.begin();
             Query q = getEntityManager().createQuery(sql);
@@ -156,7 +163,8 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             List<T> result = new ArrayList<>(q.getResultList());
             transaction.commit();
             return result;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             transaction.rollback();
             throw e;
         }
@@ -176,13 +184,14 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             transaction.commit();
 
             return result;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             transaction.rollback();
             throw e;
         }
     }
 
-    private  <T extends DataSet> T getEntity(String query, Consumer<Query> c)
+    private <T extends DataSet> T getEntity(String query, Consumer<Query> c)
     {
         EntityTransaction transaction = getEntityManager().getTransaction();
 
@@ -195,18 +204,19 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             transaction.commit();
 
             return result;
-        } catch (Exception e){
+        }
+        catch (Exception e) {
             transaction.rollback();
             throw e;
         }
     }
 
-    private  <T extends DataSet> T getEntityById(String sql, long id)
+    private <T extends DataSet> T getEntityById(String sql, long id)
     {
         return getEntity(sql, query -> query.setParameter("id", id));
     }
 
-    private  <T extends DataSet> T getEntityByName(String sql, String name)
+    private <T extends DataSet> T getEntityByName(String sql, String name)
     {
         return getEntity(sql, query -> query.setParameter("name", name));
     }
@@ -222,12 +232,13 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             CriteriaQuery<T> query = criteriaBuilder.createQuery(c);
             Root<T> criteria = query.from(c);
             query = query.select(criteria)
-                    .where(criteriaBuilder.equal(criteria.get("id"), id));
+                .where(criteriaBuilder.equal(criteria.get("id"), id));
             T result = getEntityManager().createQuery(query).getSingleResult();
             transaction.commit();
 
             return result;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             transaction.rollback();
             throw e;
         }
@@ -240,7 +251,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     }
 
     @SuppressWarnings("Duplicates")
-    private  <T extends DataSet> void mergeEntity(T entity)
+    private <T extends DataSet> void mergeEntity(T entity)
     {
         EntityTransaction transaction = getEntityManager().getTransaction();
 
@@ -298,7 +309,8 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             delete.where(criteriaBuilder.equal(criteria.get("id"), id));
             getEntityManager().createQuery(delete).executeUpdate();
             transaction.commit();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             transaction.rollback();
             throw e;
         }
@@ -360,11 +372,12 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         mergeEntity(entity);
     }
 
-    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
+    public static Date localDateTimeToDate(LocalDateTime localDateTime)
+    {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set(
-            localDateTime.getYear(), localDateTime.getMonthValue()-1, localDateTime.getDayOfMonth(),
+            localDateTime.getYear(), localDateTime.getMonthValue() - 1, localDateTime.getDayOfMonth(),
             localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()
         );
         return calendar.getTime();
@@ -384,20 +397,21 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             }
 
             StoredProcedureQuery proc = getEntityManager().createNamedStoredProcedureQuery("insert_statistic");
-            proc.setParameter("name_marker",   entity.getNameMarker());
+            proc.setParameter("name_marker", entity.getNameMarker());
             proc.setParameter("jsp_page_name", entity.getJspPageName());
-            proc.setParameter("ip_address",    entity.getIpAddress());
-            proc.setParameter("user_agent",    entity.getUserAgent());
-            proc.setParameter("client_time",   localDateTimeToDate(entity.getClientTime()), TemporalType.TIMESTAMP);
-            proc.setParameter("server_time",   localDateTimeToDate(entity.getServerTime()), TemporalType.TIMESTAMP);
-            proc.setParameter("session_id",    entity.getSessionId());
-            proc.setParameter("user_id",       user.getId());
-            proc.setParameter("prev_id",       entity.getPreviousId());
+            proc.setParameter("ip_address", entity.getIpAddress());
+            proc.setParameter("user_agent", entity.getUserAgent());
+            proc.setParameter("client_time", localDateTimeToDate(entity.getClientTime()), TemporalType.TIMESTAMP);
+            proc.setParameter("server_time", localDateTimeToDate(entity.getServerTime()), TemporalType.TIMESTAMP);
+            proc.setParameter("session_id", entity.getSessionId());
+            proc.setParameter("user_id", user.getId());
+            proc.setParameter("prev_id", entity.getPreviousId());
 
             BigInteger result = (BigInteger) proc.getSingleResult();
             transaction.commit();
             return result.longValue();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             transaction.rollback();
             throw e;
         }

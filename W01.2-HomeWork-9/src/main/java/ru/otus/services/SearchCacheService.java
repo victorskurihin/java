@@ -1,6 +1,6 @@
 /*
  * SearchCacheService.java
- * This file was last modified at 29.11.18 11:11 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:52 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -16,6 +16,7 @@ import java.util.List;
 public interface SearchCacheService
 {
     void putToCache(Search search, List<Emp> content);
+
     List<Emp> searchInCache(Search search);
 }
 

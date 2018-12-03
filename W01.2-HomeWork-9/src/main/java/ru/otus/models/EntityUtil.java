@@ -1,6 +1,6 @@
 /*
  * EntityUtil.java
- * This file was last modified at 29.11.18 11:04 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:30 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -13,7 +13,8 @@ import javax.json.bind.JsonbBuilder;
 
 public class EntityUtil
 {
-    public static <T> String convertToJson(T entity) {
+    public static <T> String convertToJson(T entity)
+    {
         Jsonb jsonb = JsonbBuilder.create();
         return jsonb.toJson(entity);
     }
@@ -24,7 +25,8 @@ public class EntityUtil
         return jsonb.fromJson(json, clazz);
     }
 
-    public static boolean isOdd(EmpEntity e) {
+    public static boolean isOdd(EmpEntity e)
+    {
         return ! (e.getId() % 2 == 0);
     }
 }

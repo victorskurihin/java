@@ -1,6 +1,6 @@
 /*
  * News.java
- * This file was last modified at 29.11.18 10:47 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:24 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -20,7 +20,8 @@ public class News
 {
     private AsyncCallback callbackCBR = new AsyncCallback<JSONreceiver>()
     {
-        public void onFailure(Throwable throwable) {
+        public void onFailure(Throwable throwable)
+        {
             Window.alert("Error: " + throwable.getMessage());
         }
 

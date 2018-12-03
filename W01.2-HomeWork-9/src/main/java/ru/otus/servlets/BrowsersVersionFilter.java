@@ -1,6 +1,6 @@
 /*
  * BrowsersVersionFilter.java
- * This file was last modified at 29.11.18 11:12 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:54 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -34,7 +34,7 @@ public class BrowsersVersionFilter extends HttpFilter
         Cookie[] cookies = request.getCookies();
 
         return cookies != null && Arrays.stream(cookies).anyMatch(
-                cookie -> cookie.getName().equals(COOKIE_NAME_BROWSER_SUPPORT_CHECK_PASSED)
+            cookie -> cookie.getName().equals(COOKIE_NAME_BROWSER_SUPPORT_CHECK_PASSED)
         );
     }
 

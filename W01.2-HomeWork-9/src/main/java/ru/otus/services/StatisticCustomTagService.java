@@ -1,6 +1,6 @@
 /*
  * StatisticCustomTagService.java
- * This file was last modified at 29.11.18 11:11 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:54 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -10,7 +10,7 @@ package ru.otus.services;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.otus.models.StatisticEntitiesList;
+import ru.otus.models.StatisticEntities;
 import ru.otus.models.StatisticEntity;
 import ru.otus.utils.NullString;
 
@@ -80,7 +80,8 @@ public class StatisticCustomTagService implements DataOrigin, StatisticService
     {
         try {
             return dbService.getAllStatisticElements();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             LOGGER.error("getAllVisitsStatElements: catch({}): {}", e.getClass(), e);
         }
         return null;
@@ -114,15 +115,16 @@ public class StatisticCustomTagService implements DataOrigin, StatisticService
     {
         JAXBContext context = null;
         try {
-            context = JAXBContext.newInstance(StatisticEntitiesList.class);
+            context = JAXBContext.newInstance(StatisticEntities.class);
             Marshaller m = context.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             OutputStream os = new ByteArrayOutputStream();
-            StatisticEntitiesList list = new StatisticEntitiesList(readyResultList);
+            StatisticEntities list = new StatisticEntities(readyResultList);
             m.marshal(list, os);
 
             return os.toString();
-        } catch (JAXBException e) {
+        }
+        catch (JAXBException e) {
             LOGGER.error("getDataXML: catch({}): {}", e.getClass(), e);
         }
 
@@ -132,7 +134,7 @@ public class StatisticCustomTagService implements DataOrigin, StatisticService
     @Override
     public String getDataJSON()
     {
-        StatisticEntitiesList list = new StatisticEntitiesList(readyResultList);
+        StatisticEntities list = new StatisticEntities(readyResultList);
         JsonbConfig config = new JsonbConfig().withFormatting(true);
         Jsonb jsonb = JsonbBuilder.create(config);
 

@@ -1,6 +1,6 @@
 /*
  * ApplicationGinModule.java
- * This file was last modified at 29.11.18 10:48 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:25 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -18,8 +18,10 @@ import ru.otus.gwt.client.widget.SearchView.SearchViewUiBinder;
 import ru.otus.gwt.client.widget.TaxView.TaxViewUiBinder;
 import ru.otus.gwt.client.widget.image.ApplicationImages;
 
-public class ApplicationGinModule extends AbstractGinModule {
-    protected void configure() {
+public class ApplicationGinModule extends AbstractGinModule
+{
+    protected void configure()
+    {
         bind(AddViewUiBinder.class);
         bind(ApplicationConstants.class);
         bind(ApplicationImages.class);

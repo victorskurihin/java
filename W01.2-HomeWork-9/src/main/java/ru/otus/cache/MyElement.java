@@ -1,6 +1,6 @@
 /*
  * MyElement.java
- * This file was last modified at 29.11.18 10:41 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:11 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -11,41 +11,49 @@ package ru.otus.cache;
 import java.lang.ref.SoftReference;
 
 @SuppressWarnings("WeakerAccess")
-public class MyElement<K, V> {
+public class MyElement<K, V>
+{
     private final K key;
     private final SoftReference<V> softReferenceValue;
     private final long creationTime;
     private long lastAccessTime;
 
 
-    public MyElement(K key, V value) {
+    public MyElement(K key, V value)
+    {
         this.key = key;
         this.softReferenceValue = new SoftReference<>(value);
         this.creationTime = getCurrentTime();
         this.lastAccessTime = getCurrentTime();
     }
 
-    protected long getCurrentTime() {
+    protected long getCurrentTime()
+    {
         return System.currentTimeMillis();
     }
 
-    public K getKey() {
+    public K getKey()
+    {
         return key;
     }
 
-    public V getValue() {
+    public V getValue()
+    {
         return softReferenceValue.get();
     }
 
-    public long getCreationTime() {
+    public long getCreationTime()
+    {
         return creationTime;
     }
 
-    public long getLastAccessTime() {
+    public long getLastAccessTime()
+    {
         return lastAccessTime;
     }
 
-    public void setAccessed() {
+    public void setAccessed()
+    {
         lastAccessTime = getCurrentTime();
     }
 }

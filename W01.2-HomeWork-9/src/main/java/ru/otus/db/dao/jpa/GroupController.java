@@ -1,4 +1,12 @@
 /*
+ * GroupController.java
+ * This file was last modified at 2018.12.01 15:16 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
+/*
  * GroupController.java:
  * This file was last modified at 30.11.18 0:37 by Victor N. Skurikhin.
  * This is free and unencumbered software released into the public domain.
@@ -13,7 +21,7 @@ import ru.otus.models.GroupEntity;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-public class GroupController extends AbstractController <GroupEntity, Long>
+public class GroupController extends AbstractController<GroupEntity, Long>
 {
     public GroupController(EntityManagerFactory entityManagerFactory)
     {

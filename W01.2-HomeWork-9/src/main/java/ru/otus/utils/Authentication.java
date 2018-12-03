@@ -1,6 +1,6 @@
 /*
  * Authentication.java
- * This file was last modified at 29.11.18 11:18 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:16 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -30,9 +30,9 @@ public final class Authentication
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         md.update(password.getBytes("UTF-8"));
         byte[] digest = md.digest();
+
         return DatatypeConverter.printBase64Binary(digest).toString();
     }
-
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

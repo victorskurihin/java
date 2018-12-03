@@ -1,6 +1,6 @@
 /*
  * ImporterSmallXML.java
- * This file was last modified at 29.11.18 10:45 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:34 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -11,8 +11,6 @@ package ru.otus.db;
 import ru.otus.models.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TransactionRequiredException;
 import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,12 +19,12 @@ import java.io.*;
 
 import static ru.otus.utils.IO.readInputStream;
 
-public class ImporterSmallXML<T extends EntitiesList>
+public class ImporterSmallXML<T extends Entities>
 {
     private String xmlObjects;
     private JAXBContext jc;
 
-    public ImporterSmallXML(ServletContext sc, String filename, Class<?> ... classes)
+    public ImporterSmallXML(ServletContext sc, String filename, Class<?>... classes)
     throws IOException, JAXBException
     {
         if (null == classes || classes.length < 1)
@@ -34,9 +32,10 @@ public class ImporterSmallXML<T extends EntitiesList>
         jc = JAXBContext.newInstance(classes
         );
 
-        try(InputStream is = sc.getResourceAsStream(filename)) {
+        try (InputStream is = sc.getResourceAsStream(filename)) {
             xmlObjects = readInputStream(is, "UTF-8");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw e;
         }
     }

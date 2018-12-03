@@ -6,7 +6,7 @@ package ru.otus.db;
 
 import org.h2.jdbcx.JdbcDataSource;
 import org.mockito.Mockito;
-import ru.otus.models.EntitiesList;
+import ru.otus.models.Entities;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
@@ -32,7 +32,7 @@ public interface TestDBConf
                           + "resources" + File.separator;
 
     Map<String, String> FILE_LOCATIONS = new HashMap<String , String>() {{
-        put(DBConf.TABLE_DEP_DIRECTORY, TEST_RESOURCES + "DeptEntities.xml");
+        put(DBConf.TABLE_DEPT_DIRECTORY, TEST_RESOURCES + "DeptEntities.xml");
         put(DBConf.TABLE_EMP_REGISTRY,  TEST_RESOURCES + "EmpEntities.xml");
         put(DBConf.TABLE_STATISTIC,     TEST_RESOURCES + "StatisticEntities.xml");
         put(DBConf.TABLE_USER_GROUPS,   TEST_RESOURCES + "UsersgroupEntities.xml");
@@ -67,7 +67,7 @@ public interface TestDBConf
                 .getResourceAsStream(fileLocationTest);
     }
 
-    static <T extends EntitiesList> ImporterSmallXML<T> createImporterXML(ServletContext ctx, String s)
+    static <T extends Entities> ImporterSmallXML<T> createImporterXML(ServletContext ctx, String s)
     throws IOException, JAXBException
     {
         String entitiesXMLPath = ctx.getInitParameter(s);

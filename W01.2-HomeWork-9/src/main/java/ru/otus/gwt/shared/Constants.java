@@ -1,6 +1,6 @@
 /*
  * Constants.java
- * This file was last modified at 29.11.18 11:01 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 17:58 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -53,14 +53,14 @@ public class Constants
     public static final int MIN_VERSION_IE = 10;
 
     public static final String COOKIE_NAME_BROWSER_SUPPORT_CHECK_PASSED = "BrowserSupportCheckPassed";
-    public static final String BROWSERS_VERSION_FILTER ="BrowsersVersionFilter";
+    public static final String BROWSERS_VERSION_FILTER = "BrowsersVersionFilter";
 
     public static final String XML_ERROR = "<?xml version='1.0' encoding='UTF-8'?><Error/>";
     public static final String EMPTY = "";
 
     public static final int TIMEOUT = 800;
 
-    public static final int DEFAULT_UPDATE_PERIOD = 4000; // 4s
+    public static final int DEFAULT_UPDATE_PERIOD = 10000; // 10s
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

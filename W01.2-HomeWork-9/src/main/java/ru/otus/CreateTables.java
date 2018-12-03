@@ -1,6 +1,6 @@
 /*
  * CreateTables.java
- * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:20 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -9,7 +9,6 @@
 package ru.otus;
 
 /**
- *
  * mvn clean compile dependency:copy-dependencies
  * createSchema.sh or createSchema.bat
  */
@@ -57,7 +56,8 @@ public class CreateTables
 
             metadata.buildSessionFactory().close();
             System.out.println("Ok. You can view  DB Schema in file: " + DB_SCHEMA_DDL);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

@@ -1,6 +1,6 @@
 /*
  * ApplicationInjector.java
- * This file was last modified at 29.11.18 10:48 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:25 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -22,18 +22,27 @@ import ru.otus.gwt.client.widget.LoginView.LoginViewUiBinder;
 import ru.otus.gwt.client.widget.image.ApplicationImages;
 
 @GinModules(ApplicationGinModule.class)
-public interface ApplicationInjector extends Ginjector {
+public interface ApplicationInjector extends Ginjector
+{
 
     ApplicationInjector INSTANCE = GWT.create(ApplicationInjector.class);
 
     AddViewUiBinder getAddViewUiBinder();
+
     ApplicationConstants getConstants();
+
     ApplicationImages getImages();
+
     GwtValidator getValidator();
+
     InsideServiceAsync getInsideService();
+
     LoginServiceAsync getLoginService();
+
     LoginViewUiBinder getLoginViewUiBinder();
+
     SearchViewUiBinder getSearchViewUiBinder();
+
     TaxViewUiBinder getTaxViewUiBinder();
 }
 

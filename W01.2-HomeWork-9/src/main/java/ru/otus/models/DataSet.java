@@ -1,6 +1,6 @@
 /*
  * DataSet.java
- * This file was last modified at 29.11.18 11:03 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:23 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -17,8 +17,11 @@ import javax.persistence.*;
 public interface DataSet
 {
     long getId();
+
     void setId(long id);
+
     String getName();
+
     void setName(String name);
 }
 

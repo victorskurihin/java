@@ -1,6 +1,6 @@
 /*
  * TaxView.java
- * This file was last modified at 29.11.18 10:59 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:30 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -26,8 +26,8 @@ import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 public class TaxView extends Composite implements IsWidget
 {
     @UiTemplate("TaxView.ui.xml")
-    public interface TaxViewUiBinder extends UiBinder<VerticalPanel, TaxView> {
-    }
+    public interface TaxViewUiBinder extends UiBinder<VerticalPanel, TaxView>
+    { /* None */ }
 
     @UiField
     TextBox incomeTextField;
@@ -101,8 +101,10 @@ public class TaxView extends Composite implements IsWidget
     private static TaxViewUiBinder ourUiBinder = INSTANCE.getTaxViewUiBinder();
 
     @Inject
-    public TaxView(InsideServiceAsync service, Inside inside) {
+    public TaxView(InsideServiceAsync service, Inside inside)
+    {
         initWidget(ourUiBinder.createAndBindUi(this));
+
         this.service = service;
         this.inside = inside;
     }

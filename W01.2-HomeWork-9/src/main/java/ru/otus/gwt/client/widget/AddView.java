@@ -1,6 +1,6 @@
 /*
  * AddView.java
- * This file was last modified at 29.11.18 10:58 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:27 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -27,8 +27,8 @@ import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 public class AddView extends Composite implements IsWidget
 {
     @UiTemplate("AddView.ui.xml")
-    public interface AddViewUiBinder extends UiBinder<VerticalPanel, AddView> {
-    }
+    public interface AddViewUiBinder extends UiBinder<VerticalPanel, AddView>
+    { /* None */ }
 
     @UiField
     TextBox firstNameTextField;
@@ -81,16 +81,19 @@ public class AddView extends Composite implements IsWidget
         Emp emp = new Emp(
             0, firstNameTextField.getValue(), secondNameTextField.getValue(), surNameTextField.getValue(),
             jobTextField.getValue(), cityTextField.getValue(), ageTextField.getValue()
-
         );
-        service.addNewEmp(emp, new AsyncCallback<Void>() {
+
+        service.addNewEmp(emp, new AsyncCallback<Void>()
+        {
             @Override
-            public void onFailure(Throwable caught) {
+            public void onFailure(Throwable caught)
+            {
                 Window.alert(caught.getLocalizedMessage());
             }
 
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(Void result)
+            {
                 inside.refresh();
                 inside.showDataGrid();
             }
@@ -100,8 +103,10 @@ public class AddView extends Composite implements IsWidget
     private static AddViewUiBinder ourUiBinder = INSTANCE.getAddViewUiBinder();
 
     @Inject
-    public AddView(InsideServiceAsync service, Inside inside) {
+    public AddView(InsideServiceAsync service, Inside inside)
+    {
         initWidget(ourUiBinder.createAndBindUi(this));
+
         this.service = service;
         this.inside = inside;
     }

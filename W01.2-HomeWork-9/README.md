@@ -30,4 +30,6 @@
  * Создан SOAP сервис ru.otus.soap.wservice.corptax.* и servlet.
  * Создан web интерфейс ru.otus.gwt.client.widget.TaxView.  
  * Консольный клиент ru.otus.CurrentTax.
-           
+ * Импортирован пакет ru.otus.models.cbr из src/main/resources/DailyInfo.wsdl.
+ * Созданы два REST сервиса ru.otus.rest.cbr.CursOnDate и ru.otus.rest.cbr.LastDate.
+ * Для SOAP запроса getCursOnDateXML создан GetCursOnDateXMLAdapter.

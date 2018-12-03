@@ -1,6 +1,6 @@
 /*
  * Inside.java
- * This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:31 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -46,11 +46,13 @@ public class Inside extends Welcome
     final DeckPanel deckPanel = new DeckPanel();
     ListDataProvider<Emp> model = new ListDataProvider<>(new ArrayList<>());
 
-    public String getLogin() {
+    public String getLogin()
+    {
         return loginTextBox.getText();
     }
 
-    public String getPassword() {
+    public String getPassword()
+    {
         return passwordTextBox.getText();
     }
 
@@ -69,7 +71,8 @@ public class Inside extends Welcome
         return deckIndexSearchView;
     }
 
-    public interface GwtCssDataGridResources extends DataGrid.Resources {
+    public interface GwtCssDataGridResources extends DataGrid.Resources
+    {
         @Source({Style.DEFAULT_CSS, "gwtDataGrid.css"})
         Style dataGrid();
     }
@@ -82,13 +85,19 @@ public class Inside extends Welcome
 
     private <T> AsyncCallback<T> getEmptyAsyncCallback(String message, Class<T> c)
     {
-        return new AsyncCallback<T>() {
+        return new AsyncCallback<T>()
+        {
             @Override
-            public void onFailure(Throwable caught) {
+            public void onFailure(Throwable caught)
+            {
                 Window.alert(message);
             }
+
             @Override
-            public void onSuccess(T result) { refresh(); }
+            public void onSuccess(T result)
+            {
+                refresh();
+            }
         };
     }
 
@@ -99,7 +108,8 @@ public class Inside extends Welcome
             int width = RootPanel.get("main").getOffsetWidth() - 41;
             width = width > 760 ? width : 759;
             table.setWidth(width + "px");
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             Window.alert(e.toString());
             table.setWidth(759 + "px");
         }
@@ -108,7 +118,7 @@ public class Inside extends Welcome
     private void delete(int index, Emp emp, String value)
     {
         service.deleteEmp(
-                emp.getId(), getEmptyAsyncCallback(" Error delete id: " + emp.getId(), Void.class)
+            emp.getId(), getEmptyAsyncCallback(" Error delete id: " + emp.getId(), Void.class)
         );
     }
 
@@ -117,68 +127,84 @@ public class Inside extends Welcome
         model.setList(result);
         table.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.ENABLED);
 
-        TextColumn<Emp> idColumn = new TextColumn<Emp>() {
+        TextColumn<Emp> idColumn = new TextColumn<Emp>()
+        {
             @Override
-            public String getValue(Emp object) {
+            public String getValue(Emp object)
+            {
                 return Long.toString(object.getId());
             }
         };
         idColumn.setCellStyleNames("text-align-right padding-right-5px");
 
-        Column<Emp, String> firstNameColumn = new Column<Emp, String>(new EditTextCell()) {
+        Column<Emp, String> firstNameColumn = new Column<Emp, String>(new EditTextCell())
+        {
             @Override
-            public String getValue(Emp emp) {
+            public String getValue(Emp emp)
+            {
                 return emp.getFirstName();
             }
         };
 
         firstNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
-                emp.getId(), value,
-                getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
+            emp.getId(), value,
+            getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
         ));
 
-        Column<Emp, String> secondNameColumn = new Column<Emp, String>(new EditTextCell()) {
+        Column<Emp, String> secondNameColumn = new Column<Emp, String>(new EditTextCell())
+        {
             @Override
-            public String getValue(Emp emp) {
+            public String getValue(Emp emp)
+            {
                 return emp.getSecondName();
             }
         };
         secondNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
-                emp.getId(), value,
-                getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
+            emp.getId(), value,
+            getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
         ));
 
-        TextColumn<Emp> surNameColumn = new TextColumn<Emp>() {
+        TextColumn<Emp> surNameColumn = new TextColumn<Emp>()
+        {
             @Override
-            public String getValue(Emp object) {
+            public String getValue(Emp object)
+            {
                 return object.getSurName();
             }
         };
 
-        TextColumn<Emp> jobColumn = new TextColumn<Emp>() {
+        TextColumn<Emp> jobColumn = new TextColumn<Emp>()
+        {
             @Override
-            public String getValue(Emp object) {
+            public String getValue(Emp object)
+            {
                 return object.getJob();
             }
         };
 
-        TextColumn<Emp> cityColumn = new TextColumn<Emp>() {
+        TextColumn<Emp> cityColumn = new TextColumn<Emp>()
+        {
             @Override
-            public String getValue(Emp object) {
+            public String getValue(Emp object)
+            {
                 return object.getCity();
             }
         };
 
-        TextColumn<Emp> ageColumn = new TextColumn<Emp>() {
+        TextColumn<Emp> ageColumn = new TextColumn<Emp>()
+        {
             @Override
-            public String getValue(Emp object) {
+            public String getValue(Emp object)
+            {
                 return object.getAge();
             }
         };
 
-        Column<Emp, String> deleteBtn = new Column<Emp, String>( new ButtonCell()) {
+        Column<Emp, String> deleteBtn = new Column<Emp, String>(new ButtonCell())
+        {
             @Override
-            public String getValue(Emp c) {
+            public String getValue(Emp c)
+            {
                 return "x";
             }
         };
@@ -198,7 +224,7 @@ public class Inside extends Welcome
         table.setColumnWidth(ageColumn, "32px");
         table.setColumnWidth(deleteBtn, "16px");
         table.setRowCount(result.size());
-        table.setHeight((result.size() * 24 + 28 ) + "px");
+        table.setHeight((result.size() * 24 + 28) + "px");
 
         doResize();
 
@@ -210,9 +236,11 @@ public class Inside extends Welcome
     private DataGrid<Emp> getEmpListTable()
     {
         Inside localInside = this;
-        service.getEmpsList(new AsyncCallback<List<Emp>>() {
+        service.getEmpsList(new AsyncCallback<List<Emp>>()
+        {
             @Override
-            public void onFailure(Throwable caught) {
+            public void onFailure(Throwable caught)
+            {
                 Window.alert(caught.getLocalizedMessage());
             }
 
@@ -227,7 +255,8 @@ public class Inside extends Welcome
         return table;
     }
 
-    private <T> VerticalPanel inboxing(DataGrid<T> data) {
+    private <T> VerticalPanel inboxing(DataGrid<T> data)
+    {
         VerticalPanel vp = new VerticalPanel();
         Button addButtun = new Button();
         Button refreshButtun = new Button();
@@ -256,7 +285,8 @@ public class Inside extends Welcome
         return vp;
     }
 
-    public void refresh() {
+    public void refresh()
+    {
         model.setList(new ArrayList<>());
         model.refresh();
         table.redraw();
@@ -281,12 +311,13 @@ public class Inside extends Welcome
     {
         model.setList(result);
         table.setRowCount(result.size());
-        table.setHeight((result.size() * 24 + 28 ) + "px");
+        table.setHeight((result.size() * 24 + 28) + "px");
         model.refresh();
         table.redraw();
     }
 
-    public void showSearchResult(List<Emp> result) {
+    public void showSearchResult(List<Emp> result)
+    {
         model.setList(new ArrayList<>());
         model.refresh();
         table.redraw();
@@ -294,7 +325,8 @@ public class Inside extends Welcome
         deckPanel.showWidget(getDeckIndexListView());
     }
 
-    public void showDataGrid() {
+    public void showDataGrid()
+    {
         deckPanel.showWidget(getDeckIndexListView());
     }
 

@@ -1,6 +1,6 @@
 /*
  * LoginView.java
- * This file was last modified at 29.11.18 10:59 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:29 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -32,8 +32,8 @@ import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 public class LoginView extends Composite implements IsWidget
 {
     @UiTemplate("LoginView.ui.xml")
-    public interface LoginViewUiBinder extends UiBinder<VerticalPanel, LoginView> {
-    }
+    public interface LoginViewUiBinder extends UiBinder<VerticalPanel, LoginView>
+    { /* None */ }
 
     @UiField
     TextBox loginTextField;
@@ -64,16 +64,19 @@ public class LoginView extends Composite implements IsWidget
         clearErrors();
 
         if (errors.isEmpty()) {
-            service.authorize(user, new AsyncCallback<Void>() {
+            service.authorize(user, new AsyncCallback<Void>()
+            {
                 @Override
-                public void onFailure(Throwable caught) {
+                public void onFailure(Throwable caught)
+                {
                     if (caught instanceof WrongCredentialException) {
                         Window.alert(caught.getLocalizedMessage());
                     }
                 }
 
                 @Override
-                public void onSuccess(Void result) {
+                public void onSuccess(Void result)
+                {
                     // UrlBuilder builder = Window.Location.createUrlBuilder().setParameter(queryParam, value);
                     Window.Location.replace("inside.jsp");
                     // Window.alert("Вход успешен!");
@@ -97,12 +100,14 @@ public class LoginView extends Composite implements IsWidget
     private static LoginViewUiBinder ourUiBinder = INSTANCE.getLoginViewUiBinder();
 
     @Inject
-    public LoginView(LoginServiceAsync service) {
+    public LoginView(LoginServiceAsync service)
+    {
         initWidget(ourUiBinder.createAndBindUi(this));
         this.service = service;
     }
 
-    public Image showError(TextBox textBox, Panel panel, String error) {
+    public Image showError(TextBox textBox, Panel panel, String error)
+    {
         textBox.getElement().getStyle().setBorderColor("red");
         final Image fieldInvalidImage = new Image(INSTANCE.getImages().field_invalid());
         Style style = fieldInvalidImage.getElement().getStyle();
@@ -113,15 +118,16 @@ public class LoginView extends Composite implements IsWidget
         return fieldInvalidImage;
     }
 
-    public void clearErrors(){
+    public void clearErrors()
+    {
         loginTextField.getElement().getStyle().clearBorderColor();
 
-        if (loginInvalidFieldImage != null){
+        if (loginInvalidFieldImage != null) {
             loginInvalidFieldImage.removeFromParent();
         }
         passwordTextField.getElement().getStyle().clearBorderColor();
 
-        if (passwordInvalidFieldImage != null){
+        if (passwordInvalidFieldImage != null) {
             passwordInvalidFieldImage.removeFromParent();
         }
     }

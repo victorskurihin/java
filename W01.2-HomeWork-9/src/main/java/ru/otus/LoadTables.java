@@ -1,6 +1,6 @@
 /*
  * LoadTables.java
- * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:22 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -22,12 +22,13 @@ import java.util.Scanner;
 public class LoadTables
 {
     private final Connection connection = ConnectionHelper.getConnection(
-        DBConf.dbName, DBConf.userName, DBConf.password
+            DBConf.dbName, DBConf.userName, DBConf.password
     );
     private String tableName;
     private String column = "";
 
-    public LoadTables(String tableName) {
+    public LoadTables(String tableName)
+    {
         this.tableName = tableName;
     }
 
@@ -43,18 +44,18 @@ public class LoadTables
             StringBuilder sb = new StringBuilder();
             sb.append("INSERT INTO ").append(tableName);
 
-            if ( fields.length > 0 && "id".equals(fields[0])) {
+            if (fields.length > 0 && "id".equals(fields[0])) {
                 StringBuilder sbc = new StringBuilder();
                 column = sbc.append(" ( ")
-                            .append(String.join(", ", fields))
-                            .append(" ) ").toString();
+                    .append(String.join(", ", fields))
+                    .append(" ) ").toString();
                 continue;
             }
 
             if (fields.length >= 2) {
                 sb.append(column).append(" VALUES ( ")
-                  .append(String.join(", ", fields))
-                  .append(" );");
+                    .append(String.join(", ", fields))
+                    .append(" );");
                 System.out.println("Exec: " + sb);
                 exec.execUpdate(sb.toString());
             }
@@ -71,7 +72,8 @@ public class LoadTables
             readInputStream(new Scanner(System.in));
             connection.commit();
             System.out.println("Ok. The table: " + tableName + " loaded.");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -80,9 +82,11 @@ public class LoadTables
     {
         if (args.length != 1) {
             System.out.println("For work this loader need one argument with table name.");
-        } else if (args[0] == null) {
+        }
+        else if (args[0] == null) {
             System.out.println("The args is null!");
-        } else {
+        }
+        else {
             (new LoadTables(args[0])).loadTables();
         }
     }

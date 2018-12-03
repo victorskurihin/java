@@ -1,6 +1,6 @@
 /*
  * Search.java
- * This file was last modified at 29.11.18 11:01 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:35 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -21,9 +21,11 @@ public class Search implements IsSerializable
     private String city;
     private String age;
 
-    public Search() { /* None */ }
+    public Search()
+    { /* None */ }
 
-    public Search(String fio, String job, String city, String age) {
+    public Search(String fio, String job, String city, String age)
+    {
         String trimmed = fio.trim();
         if (trimmed.length() > 0) {
             this.fio = trimmed;

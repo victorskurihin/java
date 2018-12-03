@@ -1,6 +1,6 @@
 /*
  * SearchView.java
- * This file was last modified at 29.11.18 10:59 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:30 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -30,8 +30,8 @@ import static ru.otus.gwt.client.gin.ApplicationInjector.INSTANCE;
 public class SearchView extends Composite implements IsWidget
 {
     @UiTemplate("SearchView.ui.xml")
-    public interface SearchViewUiBinder extends UiBinder<VerticalPanel, SearchView> {
-    }
+    public interface SearchViewUiBinder extends UiBinder<VerticalPanel, SearchView>
+    { /* None */ }
 
     @UiField
     TextBox fioNameTextField;
@@ -70,7 +70,7 @@ public class SearchView extends Composite implements IsWidget
     void clickHandler(ClickEvent evt)
     {
         Search search = new Search(
-                fioNameTextField.getValue(), jobTextField.getValue(), cityTextField.getValue(), ageTextField.getValue()
+            fioNameTextField.getValue(), jobTextField.getValue(), cityTextField.getValue(), ageTextField.getValue()
         );
         service.searchEmp(search, new AsyncCallback<List<Emp>>()
         {
@@ -91,8 +91,10 @@ public class SearchView extends Composite implements IsWidget
     private static SearchViewUiBinder ourUiBinder = INSTANCE.getSearchViewUiBinder();
 
     @Inject
-    public SearchView(InsideServiceAsync service, Inside inside) {
+    public SearchView(InsideServiceAsync service, Inside inside)
+    {
         initWidget(ourUiBinder.createAndBindUi(this));
+
         this.service = service;
         this.inside = inside;
     }

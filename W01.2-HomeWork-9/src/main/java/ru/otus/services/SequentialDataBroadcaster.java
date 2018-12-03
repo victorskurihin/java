@@ -1,6 +1,6 @@
 /*
  * SequentialDataBroadcaster.java
- * This file was last modified at 29.11.18 11:11 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:52 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -81,7 +81,8 @@ public class SequentialDataBroadcaster implements DataBroadcaster
         LOGGER.info("fetchForDataOrigin for: {}", name);
         try {
             origin.fetchData();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             LOGGER.error("fetchForDataOrigin: catch exception {} {}", e.getClass(), e);
             e.printStackTrace();
         }
@@ -95,7 +96,7 @@ public class SequentialDataBroadcaster implements DataBroadcaster
 
     private boolean sessionIsClosed(Map.Entry<Session, DataUpdater> entry)
     {
-        return ! entry.getKey().isOpen();
+        return !entry.getKey().isOpen();
     }
 
     private void run()
@@ -112,13 +113,14 @@ public class SequentialDataBroadcaster implements DataBroadcaster
             HANDLERS.forEach(this::sendToSession);
             HANDLERS.entrySet().removeIf(this::sessionIsClosed);
 
-            long delta = (System.nanoTime() - startNs)/1_000_000;
+            long delta = (System.nanoTime() - startNs) / 1_000_000;
             long delay = (updatePeriod - (delta < updatePeriod ? delta : 0)) / 10;
 
             try {
                 for (int i = 0; i < 10 && isRunning(); ++i)
                     Thread.sleep(delay);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 LOGGER.info("run: catch({}): {}", e.getClass(), e);
             }

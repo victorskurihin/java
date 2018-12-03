@@ -2,7 +2,7 @@ package ru.otus.db;
 
 import org.junit.*;
 import org.mockito.Mockito;
-import ru.otus.models.DeptEntitiesList;
+import ru.otus.models.DeptEntities;
 import ru.otus.models.DeptEntity;
 
 import javax.persistence.EntityManager;
@@ -61,8 +61,8 @@ public class ImporterSmallXMLTest
     public void testImportDeptEntities() throws Exception
     {
         ServletContext sc = getServletContext(filenameDeptEntities);
-        ImporterSmallXML<DeptEntitiesList> importEntities = new ImporterSmallXML<>(
-            sc, filenameDeptEntities, DeptEntity.class, DeptEntitiesList.class
+        ImporterSmallXML<DeptEntities> importEntities = new ImporterSmallXML<>(
+            sc, filenameDeptEntities, DeptEntity.class, DeptEntities.class
         );
         importEntities.saveEntities(entityManager);
 

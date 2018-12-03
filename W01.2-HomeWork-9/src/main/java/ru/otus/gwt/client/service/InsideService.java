@@ -1,6 +1,6 @@
 /*
  * InsideService.java
- * This file was last modified at 29.11.18 10:48 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:25 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -19,15 +19,23 @@ import java.util.List;
 public interface InsideService extends RemoteService
 {
     List<Emp> getEmpsList();
+
     void addNewEmp(Emp emp);
+
     void setEmpFirstName(long id, String value);
+
     void setEmpSecondName(long id, String value);
+
     void setEmpSurName(long id, String value);
+
     void deleteEmp(long id);
+
     List<Emp> searchEmp(Search search);
 
     double getTax(double income, double costs, double taxRate);
+
     long getMaxSalary();
+
     double getAvgSalary();
 }
 

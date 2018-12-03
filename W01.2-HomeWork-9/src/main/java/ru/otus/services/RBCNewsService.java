@@ -1,14 +1,6 @@
 /*
  * RBCNewsService.java
- * This file was last modified at 29.11.18 11:12 by Victor N. Skurikhin.
- * $Id$
- * This is free and unencumbered software released into the public domain.
- * For more information, please refer to <http://unlicense.org>
- */
-
-/*
- * RBCNewsService.java
- * This file was last modified at 29.11.18 11:11 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:51 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -61,9 +53,9 @@ public class RBCNewsService extends DataOriginFetching
     void sbAppendElement(StringBuilder sb, Document doc, int i)
     {
         if (i != 1) sb.append(',');
-            sb.append(" {\"Id\": \"news").append(i).append("\", \"Text\": \"")
-              .append(doc.getElementsByClass("news-feed__item__title").get(i).text())
-              .append("\"}\n");
+        sb.append(" {\"Id\": \"news").append(i).append("\", \"Text\": \"")
+            .append(doc.getElementsByClass("news-feed__item__title").get(i).text())
+            .append("\"}\n");
     }
 
     String cutOutJsonFromDocument(Document document)

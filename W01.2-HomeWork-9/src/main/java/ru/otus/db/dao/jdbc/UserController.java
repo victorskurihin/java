@@ -1,6 +1,6 @@
 /*
  * UserController.java
- * This file was last modified at 29.11.18 10:43 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:13 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class UserController extends AbstractController <UserEntity, Long>
+public class UserController extends AbstractController<UserEntity, Long>
 {
     public static final String SELECT_ALL = "SELECT id, login, password FROM users";
     public static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
@@ -41,7 +41,8 @@ public class UserController extends AbstractController <UserEntity, Long>
             entity.setId(resultSet.getLong("id"));
             entity.setLogin(resultSet.getString("login"));
             entity.setPassword(resultSet.getString("password"));
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new ExceptionSQL(e);
         }
 
@@ -61,7 +62,8 @@ public class UserController extends AbstractController <UserEntity, Long>
     {
         try {
             return getArrayListAll(SELECT_ALL, this::getUserEntity);
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -91,7 +93,8 @@ public class UserController extends AbstractController <UserEntity, Long>
                 preparedStatement.setLong(1, entity.getId());
                 preparedStatement.setString(2, entity.getLogin());
                 preparedStatement.setString(3, entity.getPassword());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -104,7 +107,8 @@ public class UserController extends AbstractController <UserEntity, Long>
                 preparedStatement.setString(1, entity.getLogin());
                 preparedStatement.setString(2, entity.getPassword());
                 preparedStatement.setLong(3, entity.getId());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -120,7 +124,8 @@ public class UserController extends AbstractController <UserEntity, Long>
             }
 
             return entity;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -139,7 +144,8 @@ public class UserController extends AbstractController <UserEntity, Long>
             int count = executor.execUpdate(INSERT, getConsumerInsertUserEntity(entity));
 
             return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }

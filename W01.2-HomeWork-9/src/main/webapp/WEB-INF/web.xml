@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!--
+  ~ web.xml
+  ~ This file was last modified at 2018.12.01 17:15 by Victor N. Skurikhin.
+  ~ $Id$
+  ~ This is free and unencumbered software released into the public domain.
+  ~ For more information, please refer to <http://unlicense.org>
+  -->
+
 <web-app version="3.1"
          xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -30,7 +38,6 @@
         <param-name>CBRForexServiceURLLocation</param-name>
         <param-value>http://www.cbr.ru/scripts/XML_daily.asp</param-value>
     </context-param>
-
 
     <context-param>
         <param-name>StatisticEntitiesXMLDataFileLocation</param-name>

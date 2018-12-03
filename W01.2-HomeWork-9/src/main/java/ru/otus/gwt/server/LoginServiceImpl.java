@@ -1,6 +1,6 @@
 /*
  * LoginServiceImpl.java
- * This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:33 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -21,24 +21,26 @@ import javax.servlet.ServletException;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService
 {
-
     private static final Logger LOGGER = LogManager.getLogger(LoginServiceImpl.class.getName());
 
     // Implementation of sample interface method
-    public String getMessage(String msg) {
+    public String getMessage(String msg)
+    {
         return "Client said: \"" + msg + "\"<br>Server answered: \"Hi!\"";
     }
 
     @Override
-    public void authorize(User user) throws WrongCredentialException {
-        if (ValidationRule.isValid(user)){
+    public void authorize(User user) throws WrongCredentialException
+    {
+        if (ValidationRule.isValid(user)) {
             try {
                 LOGGER.info("name: {}, password: {}", user.getLogin(), user.getPassword());
                 getThreadLocalRequest().login(
-                        user.getLogin(), user.getPassword()
+                    user.getLogin(), user.getPassword()
                 );
                 LOGGER.info("Authentication done for user: {}", user.getLogin());
-            } catch (ServletException e) {
+            }
+            catch (ServletException e) {
                 throw new WrongCredentialException("Некорректные логин/пароль");
             }
         }

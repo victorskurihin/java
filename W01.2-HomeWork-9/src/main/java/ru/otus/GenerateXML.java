@@ -1,6 +1,6 @@
 /*
  * GenerateXML.java
- * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:34 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -30,13 +30,13 @@ public class GenerateXML
     private Function<String[], ? extends DataSet> function;
     private Scanner inputStream;
 
-    private <T extends EntitiesList> T readInputStream(T list)
+    private <T extends Entities> T readInputStream(T list)
     {
         while (inputStream.hasNextLine()) {
             String line = inputStream.nextLine();
             String[] fields = removeFirstAndLastApostrophes(line.split(","));
 
-            if ( fields.length > 0 && "id".equals(fields[0])) {
+            if (fields.length > 0 && "id".equals(fields[0])) {
                 continue;
             }
 
@@ -67,7 +67,7 @@ public class GenerateXML
         return array;
     }
 
-    private <T extends EntitiesList> void marshalEntitiesList(T result)
+    private <T extends Entities> void marshalEntitiesList(T result)
     {
         try {
             JAXBContext context = JAXBContext.newInstance(result.getClass());
@@ -77,36 +77,38 @@ public class GenerateXML
             File file = Paths.get(filename).toFile();
             m.marshal(result, file);
 
-        } catch (JAXBException e) {
+        }
+        catch (JAXBException e) {
             e.printStackTrace();
         }
     }
 
-    private GenerateXML(String filename, String entityType) {
+    private GenerateXML(String filename, String entityType)
+    {
         this.inputStream = new Scanner(System.in);
         this.filename = filename;
         switch (entityType.toLowerCase()) {
-            case "statisticentity" :
+            case "statisticentity":
                 this.function = new CreateStatisticEntity();
-                marshalEntitiesList(readInputStream(new StatisticEntitiesList()));
+                marshalEntitiesList(readInputStream(new StatisticEntities()));
                 break;
-            case "deptentity" :
+            case "deptentity":
                 this.function = new CreateDeptEntity();
-                marshalEntitiesList(readInputStream(new DeptEntitiesList()));
+                marshalEntitiesList(readInputStream(new DeptEntities()));
                 break;
-            case "empentity" :
+            case "empentity":
                 this.function = new CreateEmpEntity();
-                marshalEntitiesList(readInputStream(new EmpEntitiesList()));
+                marshalEntitiesList(readInputStream(new EmpEntities()));
                 break;
-            case "usersgroupentity" :
+            case "usersgroupentity":
                 this.function = new CreateGroupEntity();
-                marshalEntitiesList(readInputStream(new GroupEntitiesList()));
+                marshalEntitiesList(readInputStream(new GroupEntities()));
                 break;
-            case "userentity" :
+            case "userentity":
                 this.function = new CreateUserEntity();
-                marshalEntitiesList(readInputStream(new UserEntitiesList()));
+                marshalEntitiesList(readInputStream(new UserEntities()));
                 break;
-            default :
+            default:
                 throw new IllegalArgumentException("Second argument is illegal in the command line!");
         }
     }
@@ -115,9 +117,11 @@ public class GenerateXML
     {
         if (args.length != 2) {
             System.out.println("For work this loader need one argument with table name.");
-        } else if (args[0] == null || args[1] == null) {
+        }
+        else if (args[0] == null || args[1] == null) {
             System.out.println("The args is null!");
-        } else {
+        }
+        else {
             new GenerateXML(args[0], args[1]);
         }
     }

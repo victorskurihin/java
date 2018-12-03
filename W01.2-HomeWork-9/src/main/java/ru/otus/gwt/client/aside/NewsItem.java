@@ -1,6 +1,6 @@
 /*
  * NewsItem.java
- * This file was last modified at 29.11.18 10:47 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:24 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -12,8 +12,8 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 public class NewsItem extends JavaScriptObject
 {
-    protected NewsItem() {
-    }
+    protected NewsItem()
+    { /* None */ }
 
     public final native String getId() /*-{
         return this.Id;

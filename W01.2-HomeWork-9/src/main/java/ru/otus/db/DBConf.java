@@ -1,6 +1,6 @@
 /*
  * DBConf.java
- * This file was last modified at 29.11.18 10:45 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 17:10 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -23,49 +23,50 @@ public interface DBConf
     String password = "password";
 
     String TABLE_USERS = "users";
-    String TABLE_DEP_DIRECTORY = "dep_directory";
+    String TABLE_DEPT_DIRECTORY = "dept_directory";
     String TABLE_EMP_REGISTRY = "emp_registry";
     String TABLE_USER_GROUPS = "user_groups";
     String TABLE_STATISTIC = "statistic";
 
-    String[] TABLES = new String[] {
-            TABLE_USERS,
-            TABLE_DEP_DIRECTORY,
-            TABLE_EMP_REGISTRY,
-            TABLE_USER_GROUPS,
-            TABLE_STATISTIC,
+    String[] TABLES = new String[]{
+             TABLE_USERS,
+             TABLE_DEPT_DIRECTORY,
+             TABLE_EMP_REGISTRY,
+             TABLE_USER_GROUPS,
+             TABLE_STATISTIC,
     };
 
-    String[] ORDER_OF_DELETE_TABLES = new String[] {
-            TABLE_EMP_REGISTRY,
-            TABLE_DEP_DIRECTORY,
-            TABLE_STATISTIC,
-            TABLE_USER_GROUPS,
-            TABLE_USERS,
+    String[] ORDER_OF_DELETE_TABLES = new String[]{
+             TABLE_EMP_REGISTRY,
+             TABLE_DEPT_DIRECTORY,
+             TABLE_STATISTIC,
+             TABLE_USER_GROUPS,
+             TABLE_USERS,
     };
 
-    Map<String, String> FILE_LOCATIONS = new HashMap<String , String>() {{
-        put(TABLE_DEP_DIRECTORY, "DeptEntitiesXMLDataFileLocation");
-        put(TABLE_EMP_REGISTRY,  "EmpEntitiesXMLDataFileLocation");
-        put(TABLE_STATISTIC,     "StatisticEntitiesXMLDataFileLocation");
-        put(TABLE_USER_GROUPS,   "UsersgroupEntitiesXMLDataFileLocation");
-        put(TABLE_USERS,         "UserEntitiesXMLDataFileLocation");
+    Map<String, String> FILE_LOCATIONS = new HashMap<String, String>()
+    {{
+        put(TABLE_DEPT_DIRECTORY, "DeptEntitiesXMLDataFileLocation");
+        put(TABLE_EMP_REGISTRY, "EmpEntitiesXMLDataFileLocation");
+        put(TABLE_STATISTIC, "StatisticEntitiesXMLDataFileLocation");
+        put(TABLE_USER_GROUPS, "UsersgroupEntitiesXMLDataFileLocation");
+        put(TABLE_USERS, "UserEntitiesXMLDataFileLocation");
     }};
 
-    Class<?>[] CLASSES = new Class<?>[] {
-            DeptEntity.class,
-            DeptEntitiesList.class,
-            EmpEntity.class,
-            EmpEntitiesList.class,
-            GroupEntity.class,
-            GroupEntitiesList.class,
-            StatisticEntity.class,
-            StatisticEntitiesList.class,
-            UserEntity.class,
-            UserEntitiesList.class,
+    Class<?>[] CLASSES = new Class<?>[]{
+               DeptEntity.class,
+               DeptEntities.class,
+               EmpEntity.class,
+               EmpEntities.class,
+               GroupEntity.class,
+               GroupEntities.class,
+               StatisticEntity.class,
+               StatisticEntities.class,
+               UserEntity.class,
+               UserEntities.class,
     };
 
-    static <T extends EntitiesList> ImporterSmallXML<T> createImporterXML(ServletContext sc, String s)
+    static <T extends Entities> ImporterSmallXML<T> createImporterXML(ServletContext sc, String s)
     throws IOException, JAXBException
     {
         String entitiesXMLPath = sc.getInitParameter(s);

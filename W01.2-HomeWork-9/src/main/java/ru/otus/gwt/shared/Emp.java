@@ -1,6 +1,6 @@
 /*
  * Emp.java
- * This file was last modified at 29.11.18 11:01 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:34 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldNameConstants;
-import ru.otus.models.EmpEntity;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

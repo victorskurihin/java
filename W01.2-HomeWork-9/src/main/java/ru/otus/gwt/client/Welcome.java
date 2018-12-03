@@ -1,6 +1,6 @@
 /*
  * Welcome.java
- * This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:32 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -58,26 +58,27 @@ public class Welcome implements EntryPoint
     protected void initHeaderAndTitle()
     {
         Document.get()
-                .getElementById("header-1")
-                .setInnerText("Рога и копыта");
+            .getElementById("header-1")
+            .setInnerText("Рога и копыта");
         Document.get()
-                .getElementById("header-2")
-                .setInnerText("Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»");
+            .getElementById("header-2")
+            .setInnerText("Заведение, занимается заготовкой «когтей и хвостов» и «горчицы и щёлока»");
         Document.get()
-                .getElementById("title")
-                .setInnerText("Home Work 9 of JavaEE 2018-09 | a work showcasing the feature Freemarker");
+            .getElementById("title")
+            .setInnerText("Home Work 9 of JavaEE 2018-09 | a work showcasing the feature Freemarker");
     }
 
     public void menuAddClickHandler(DeckPanel deckPanel, String id, int n)
     {
         for (int i = 0; i < n; ++i) {
             Anchor anchor = Anchor.wrap(
-                    Document.get().getElementById(id + i).cast()
+                Document.get().getElementById(id + i).cast()
             );
             if (null != anchor) {
                 int finalI = i;
                 anchor.addClickHandler(event -> deckPanel.showWidget(finalI));
-            } else {
+            }
+            else {
                 throw new NullPointerException(); // TODO custom Exception
             }
         }
@@ -106,13 +107,15 @@ public class Welcome implements EntryPoint
 
         if (null != rootPanel) {
             deckPanel.showWidget(getDeckIndexIndexView());
-        } else {
+        }
+        else {
             rootPanel = RootPanel.get("login-container");
             if (null != rootPanel) {
                 deckPanel.add(new LoginView(service));
                 deckIndexLoginView = deckPanel.getWidgetCount() - 1;
                 deckPanel.showWidget(getDeckIndexLoginView());
-            } else {
+            }
+            else {
                 rootPanel = RootPanel.get("inside-container");
             }
         }
@@ -140,6 +143,7 @@ public class Welcome implements EntryPoint
     {
         initHeaderAndTitle();
         initMainContainer();
+
         new News(GWT.getHostPageBaseURL() + "/" + REQUEST_NEWS);
         new CBRValutes(GWT.getHostPageBaseURL() + "/" + REQUEST_FOREX_RATES);
     }

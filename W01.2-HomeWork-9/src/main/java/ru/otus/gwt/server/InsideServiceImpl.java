@@ -1,6 +1,6 @@
 /*
  * InsideServiceImpl.java
- * This file was last modified at 29.11.18 11:00 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:33 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -43,7 +43,8 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
 
     private static final Logger LOGGER = LogManager.getLogger(InsideServiceImpl.class.getName());
 
-    private Emp convertEmpEntityToEmp(EmpEntity entity) {
+    private Emp convertEmpEntityToEmp(EmpEntity entity)
+    {
         return new Emp(
             entity.getId(), entity.getFirstName(), entity.getSecondName(), entity.getSurName(),
             entity.getJob(), entity.getCity(), entity.getAge().toString()
@@ -135,7 +136,7 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
             attrs.put("age", Long.parseLong(search.getAge()));
         }
 
-        if ( ! attrs.isEmpty()) {
+        if (!attrs.isEmpty()) {
             DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
             List<EmpEntity> empEntities = dbService.searchEmpEntity(attrs);
             return empEntities.stream().map(this::convertEmpEntityToEmp).collect(Collectors.toList());

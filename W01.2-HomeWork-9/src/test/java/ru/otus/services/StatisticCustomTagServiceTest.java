@@ -4,7 +4,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import ru.otus.models.StatisticEntitiesList;
+import ru.otus.models.StatisticEntities;
 import ru.otus.models.StatisticEntity;
 
 import javax.json.bind.Jsonb;
@@ -95,7 +95,7 @@ public class StatisticCustomTagServiceTest
         Assert.assertTrue(service.isReady());
 
         Jsonb jsonb = JsonbBuilder.create();
-        StatisticEntitiesList list = jsonb.fromJson(test, StatisticEntitiesList.class);
+        StatisticEntities list = jsonb.fromJson(test, StatisticEntities.class);
         Assert.assertEquals(service.getAllVisitsStatElements(), list.asList());
     }
 }

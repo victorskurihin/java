@@ -1,6 +1,6 @@
 /*
  * ConnectionHelper.java
- * This file was last modified at 29.11.18 10:44 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:17 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -21,40 +21,41 @@ public class ConnectionHelper
         try {
             DriverManager.registerDriver(new org.postgresql.Driver());
             return DriverManager.getConnection(url);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new ExceptionSQL(e);
         }
     }
 
     public static Connection getConnection(
-        String host, String port, String db, String user, String password)
+            String host, String port, String db, String user, String password)
     {
         return getConnection(String.format(
-            "jdbc:postgresql://%s:%s/%s?user=%s&password=%s",
-            host, port, db, user, password
+                "jdbc:postgresql://%s:%s/%s?user=%s&password=%s",
+                host, port, db, user, password
         ));
     }
 
     public static Connection getConnection(String host, String db, String user, String password)
     {
         return getConnection(String.format(
-            "jdbc:postgresql://%s:5432/%s?user=%s&password=%s",
-            host, db, user, password
+                "jdbc:postgresql://%s:5432/%s?user=%s&password=%s",
+                host, db, user, password
         ));
     }
 
     public static Connection getConnection(String db, String user, String password)
     {
         return getConnection(String.format(
-            "jdbc:postgresql://localhost:5432/%s?user=%s&password=%s",
-            db, user, password
+                "jdbc:postgresql://localhost:5432/%s?user=%s&password=%s",
+                db, user, password
         ));
     }
 
     public static Connection getConnection(String db, String user)
     {
         return getConnection(String.format(
-            "jdbc:postgresql://localhost:5432/%s?user=%s", db, user
+                "jdbc:postgresql://localhost:5432/%s?user=%s", db, user
         ));
     }
 }

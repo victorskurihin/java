@@ -1,6 +1,6 @@
 /*
  * PostgreSQLService.java
- * This file was last modified at 29.11.18 23:13 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:19 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -12,7 +12,6 @@ import ru.otus.exeptions.ExceptionThrowable;
 
 import javax.persistence.*;
 import javax.servlet.ServletContext;
-import java.io.Closeable;
 
 public class PostgreSQLService implements DBConf
 {

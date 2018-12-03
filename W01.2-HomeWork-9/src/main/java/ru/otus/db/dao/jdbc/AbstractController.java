@@ -1,6 +1,6 @@
 /*
  * AbstractController.java
- * This file was last modified at 29.11.18 10:42 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:12 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -35,7 +35,8 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         try {
             InitialContext initContext = new InitialContext();
             dataSource = (DataSource) initContext.lookup("java:comp/env/jdbc/PostgresMyDB");
-        } catch (NamingException e) {
+        }
+        catch (NamingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -55,7 +56,8 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         return preparedStatement -> {
             try {
                 preparedStatement.setLong(1, id);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -86,7 +88,8 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
         try {
             Executor executor = new Executor(getDataSource().getConnection());
             executor.execQuery(sql, handler, consumer);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -98,7 +101,8 @@ public abstract class AbstractController<E extends DataSet, K> implements DAOCon
             int count = executor.execUpdate(sql, getConsumerLongId(id));
 
             return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }

@@ -34,6 +34,7 @@ public class ControllersTest
     private EmpController empController;
     private GroupController groupController;
     private UserController userController;
+    private StatisticController statisticController;
 
     @BeforeClass
     public static void initClass() throws FileNotFoundException, SQLException
@@ -61,6 +62,7 @@ public class ControllersTest
         empController = new EmpController(emf);
         groupController = new GroupController(emf);
         userController = new UserController(emf);
+        statisticController = new StatisticController(emf);
     }
 
     @After
@@ -69,6 +71,7 @@ public class ControllersTest
         empController = null;
         groupController = null;
         userController = null;
+        statisticController = null;
     }
 
     @AfterClass
@@ -90,6 +93,7 @@ public class ControllersTest
         testEmptyGetAll(empController);
         testEmptyGetAll(groupController);
         testEmptyGetAll(userController);
+        testEmptyGetAll(statisticController);
     }
 
     @Test
@@ -99,6 +103,7 @@ public class ControllersTest
         Assert.assertNull(empController.getEntityById(1L));
         Assert.assertNull(groupController.getEntityById(1L));
         Assert.assertNull(userController.getEntityById(1L));
+        Assert.assertNull(statisticController.getEntityById(1L));
     }
 
     @Test
@@ -124,6 +129,7 @@ public class ControllersTest
         getTestCreate(deptController, getTestDeptEntity1());
         getTestCreate(groupController, getTestGroupEntity1());
         getTestCreate(userController, getTestUserEntity1());
+        getTestCreate(statisticController, getTestStatisticEntity1());
     }
 
     void testCreateEmpEntity(EmpEntity entity) throws ExceptionThrowable
@@ -183,6 +189,11 @@ public class ControllersTest
         testUpdate(deptController,  getTestDeptEntity1(),  getTestCreate(deptController,  getTestDeptEntity1()));
         testUpdate(groupController, getTestGroupEntity1(), getTestCreate(groupController, getTestGroupEntity1()));
         testUpdate(userController,  getTestUserEntity1(),  getTestCreate(userController,  getTestUserEntity1()));
+        testUpdate(
+            statisticController,
+            getTestStatisticEntity1(),
+            getTestCreate(statisticController,  getTestStatisticEntity1())
+        );
     }
 
     @Test
@@ -242,6 +253,7 @@ public class ControllersTest
         testDeleteId1(deptController, getTestDeptEntity1());
         testDeleteId1(groupController, getTestGroupEntity1());
         testDeleteId1(userController, getTestUserEntity1());
+        testDeleteId1(statisticController, getTestStatisticEntity1());
     }
 
     @Test

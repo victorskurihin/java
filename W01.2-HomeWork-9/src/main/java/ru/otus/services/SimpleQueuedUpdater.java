@@ -1,6 +1,6 @@
 /*
  * SimpleQueuedUpdater.java
- * This file was last modified at 29.11.18 11:11 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:53 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -42,7 +42,7 @@ public class SimpleQueuedUpdater implements DataUpdater
     {
         try {
             /* Send the new rate to all open WebSocket sessions */
-            if( ! session.isOpen()) {
+            if ( ! session.isOpen()) {
                 LOGGER.error("Closed session: {}", session.getId());
             }
             else {
@@ -50,7 +50,8 @@ public class SimpleQueuedUpdater implements DataUpdater
                 session.getBasicRemote().sendText(msg);
                 LOGGER.info("Sending {} to session: {}", msg, session.getId());
             }
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             LOGGER.info("sendDataFromOrigin: catch({}): {}", e.getClass(), e);
         }
     }

@@ -1,14 +1,6 @@
 /*
  * EmpEntity.java
- * This file was last modified at 29.11.18 23:26 by Victor N. Skurikhin.
- * $Id$
- * This is free and unencumbered software released into the public domain.
- * For more information, please refer to <http://unlicense.org>
- */
-
-/*
- * EmpEntity.java
- * This file was last modified at 29.11.18 11:04 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:25 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -40,7 +32,7 @@ import ru.otus.adapters.xml.UserEntityTypeXMLAdapter;
 public class EmpEntity implements DataSet, Serializable
 {
     @Id
-    @SequenceGenerator(name="emp_identifier", sequenceName="emp_id_seq", allocationSize=1)
+    @SequenceGenerator(name = "emp_identifier", sequenceName = "emp_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "emp_identifier")
     @Column(name = "id", nullable = false, unique = true)
     @XmlAttribute(required = true)

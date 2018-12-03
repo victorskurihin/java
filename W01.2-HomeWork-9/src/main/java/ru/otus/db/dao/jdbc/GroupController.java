@@ -1,6 +1,6 @@
 /*
  * GroupController.java
- * This file was last modified at 29.11.18 10:42 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:13 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class GroupController extends AbstractController <GroupEntity, Long>
+public class GroupController extends AbstractController<GroupEntity, Long>
 {
     public static final String SELECT_ALL = "SELECT id, groupname, login FROM user_groups";
     public static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
@@ -41,7 +41,8 @@ public class GroupController extends AbstractController <GroupEntity, Long>
             entity.setId(resultSet.getLong("id"));
             entity.setGroupname(resultSet.getString("groupname"));
             entity.setLogin(resultSet.getString("login"));
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new ExceptionSQL(e);
         }
 
@@ -61,7 +62,8 @@ public class GroupController extends AbstractController <GroupEntity, Long>
     {
         try {
             return getArrayListAll(SELECT_ALL, this::getGroupEntity);
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -91,7 +93,8 @@ public class GroupController extends AbstractController <GroupEntity, Long>
                 preparedStatement.setLong(1, entity.getId());
                 preparedStatement.setString(2, entity.getGroupname());
                 preparedStatement.setString(3, entity.getLogin());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -104,7 +107,8 @@ public class GroupController extends AbstractController <GroupEntity, Long>
                 preparedStatement.setString(1, entity.getGroupname());
                 preparedStatement.setString(2, entity.getLogin());
                 preparedStatement.setLong(3, entity.getId());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -120,7 +124,8 @@ public class GroupController extends AbstractController <GroupEntity, Long>
             }
 
             return entity;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -139,7 +144,8 @@ public class GroupController extends AbstractController <GroupEntity, Long>
             int count = executor.execUpdate(INSERT, getConsumerInsertGroupEntity(entity));
 
             return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }

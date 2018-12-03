@@ -1,6 +1,6 @@
 /*
  * DataOriginFetching.java
- * This file was last modified at 29.11.18 11:10 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:48 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -52,7 +52,8 @@ public abstract class DataOriginFetching implements DataOrigin
 
             try {
                 return readFile(aPath, Charset.defaultCharset());
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 logger.info("loadFromFile: empty file: {}", uriPath);
                 return XML_ERROR;
             }

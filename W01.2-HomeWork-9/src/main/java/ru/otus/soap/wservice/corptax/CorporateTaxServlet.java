@@ -1,6 +1,6 @@
 /*
  * CorporateTaxServlet.java
- * This file was last modified at 29.11.18 11:17 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:12 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -43,9 +43,11 @@ public class CorporateTaxServlet extends HttpServlet
         try (PrintWriter pw = resp.getWriter()) {
             CorporateTaxProvider port = service.getCorporateTaxProviderPort();
             Double taxRateReportingPeriod = port.getCurrentTax(1000000.0, 200000.0, 20.0);
+
             pw.write(String.format("{ 'tax-rate-reporting-period' : %.2f }", taxRateReportingPeriod));
             LOGGER.info("{ tax-rate-reporting-period: {} }", taxRateReportingPeriod);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             LOGGER.error(e);
         }
     }

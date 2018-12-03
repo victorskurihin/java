@@ -50,12 +50,12 @@ public class MarshalJsonTest
     @Test
     public void testEmptyEmployees() throws JAXBException
     {
-        EmpEntitiesList expected = new EmpEntitiesList();
+        EmpEntities expected = new EmpEntities();
         JAXBContext jc = JAXBContext.newInstance(
-            EmpEntitiesList.class, DeptEntity.class, EmpEntity.class, UserEntity.class
+            EmpEntities.class, DeptEntity.class, EmpEntity.class, UserEntity.class
         );
         Unmarshaller u = jc.createUnmarshaller();
-        EmpEntitiesList list = (EmpEntitiesList) u.unmarshal(EMPTY_EMPLOYEES_STREAM);
+        EmpEntities list = (EmpEntities) u.unmarshal(EMPTY_EMPLOYEES_STREAM);
 
         assertEquals(list, expected);
     }
@@ -63,13 +63,13 @@ public class MarshalJsonTest
     @Test
     public void testEmployees() throws JAXBException
     {
-        EmpEntitiesList expected = TestData.getExpectedEmpEntitiesList();
+        EmpEntities expected = TestData.getExpectedEmpEntitiesList();
 
         JAXBContext jc = JAXBContext.newInstance(
-            EmpEntitiesList.class, DeptEntity.class, EmpEntity.class, UserEntity.class
+            EmpEntities.class, DeptEntity.class, EmpEntity.class, UserEntity.class
         );
         Unmarshaller u = jc.createUnmarshaller();
-        EmpEntitiesList list = (EmpEntitiesList) u.unmarshal(new StringReader(EXAMPLE_STRING));
+        EmpEntities list = (EmpEntities) u.unmarshal(new StringReader(EXAMPLE_STRING));
         assertEquals(expected, list);
     }
 
@@ -77,10 +77,10 @@ public class MarshalJsonTest
     public void testMarshalToJson() throws JAXBException
     {
         JAXBContext jc = JAXBContext.newInstance(
-                EmpEntitiesList.class, DeptEntity.class, EmpEntity.class, UserEntity.class
+                EmpEntities.class, DeptEntity.class, EmpEntity.class, UserEntity.class
         );
         Unmarshaller u = jc.createUnmarshaller();
-        EmpEntitiesList list = (EmpEntitiesList) u.unmarshal(new StringReader(EXAMPLE_STRING));
+        EmpEntities list = (EmpEntities) u.unmarshal(new StringReader(EXAMPLE_STRING));
 
         /* default config  JsonbConfig config = new JsonbConfig().withFormatting(true); */
         Jsonb jsonb = JsonbBuilder.create();
@@ -91,10 +91,10 @@ public class MarshalJsonTest
     @Test
     public void testUnmarshalFromJson()
     {
-        EmpEntitiesList expected = TestData.getExpectedEmpEntitiesList();
+        EmpEntities expected = TestData.getExpectedEmpEntitiesList();
 
         Jsonb jsonb = JsonbBuilder.create();
-        EmpEntitiesList list = jsonb.fromJson(expectedJson, EmpEntitiesList.class);
+        EmpEntities list = jsonb.fromJson(expectedJson, EmpEntities.class);
         assertEquals(expected, list);
         String result = list.getEmployees().stream()
             .filter(EntityUtil::isOdd)

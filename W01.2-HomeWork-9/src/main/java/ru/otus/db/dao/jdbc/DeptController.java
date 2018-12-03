@@ -1,6 +1,6 @@
 /*
  * DeptController.java
- * This file was last modified at 29.11.18 10:42 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 17:05 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
-public class DeptController extends AbstractController <DeptEntity, Long>
+public class DeptController extends AbstractController<DeptEntity, Long>
 {
-    public static final String SELECT_ALL = "SELECT id, pid, title FROM dep_directory";
+    public static final String SELECT_ALL = "SELECT id, pid, title FROM dept_directory";
     public static final String SELECT_BY_ID = SELECT_ALL + " WHERE id = ?";
-    public static final String INSERT = "INSERT INTO dep_directory (id, pid, title) VALUES (?, ?, ?)";
-    public static final String UPDATE = "UPDATE dep_directory SET pid = ?, title = ? WHERE id = ?";
-    public static final String DELETE = "DELETE FROM dep_directory WHERE id = ?";
+    public static final String INSERT = "INSERT INTO dept_directory (id, pid, title) VALUES (?, ?, ?)";
+    public static final String UPDATE = "UPDATE dept_directory SET pid = ?, title = ? WHERE id = ?";
+    public static final String DELETE = "DELETE FROM dept_directory WHERE id = ?";
 
     DeptController(DataSource dataSource)
     {
@@ -41,7 +41,8 @@ public class DeptController extends AbstractController <DeptEntity, Long>
             entity.setId(resultSet.getLong("id"));
             entity.setParentId(resultSet.getLong("pid"));
             entity.setTitle(resultSet.getString("title"));
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new ExceptionSQL(e);
         }
 
@@ -61,7 +62,8 @@ public class DeptController extends AbstractController <DeptEntity, Long>
     {
         try {
             return getArrayListAll(SELECT_ALL, this::getDeptEntity);
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -91,7 +93,8 @@ public class DeptController extends AbstractController <DeptEntity, Long>
                 preparedStatement.setLong(1, entity.getId());
                 preparedStatement.setLong(2, entity.getParentId());
                 preparedStatement.setString(3, entity.getTitle());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -104,7 +107,8 @@ public class DeptController extends AbstractController <DeptEntity, Long>
                 preparedStatement.setLong(1, entity.getParentId());
                 preparedStatement.setString(2, entity.getTitle());
                 preparedStatement.setLong(3, entity.getId());
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new ExceptionSQL(e);
             }
         };
@@ -120,7 +124,8 @@ public class DeptController extends AbstractController <DeptEntity, Long>
             }
 
             return entity;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }
@@ -139,7 +144,8 @@ public class DeptController extends AbstractController <DeptEntity, Long>
             int count = executor.execUpdate(INSERT, getConsumerInsertDeptEntity(entity));
 
             return count > 0;
-        } catch (SQLException | ExceptionSQL e) {
+        }
+        catch (SQLException | ExceptionSQL e) {
             throw new ExceptionThrowable(e);
         }
     }

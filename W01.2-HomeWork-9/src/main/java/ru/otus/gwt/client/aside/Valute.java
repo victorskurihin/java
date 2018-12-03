@@ -1,6 +1,6 @@
 /*
  * Valute.java
- * This file was last modified at 29.11.18 10:47 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:25 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -19,11 +19,13 @@ public class Valute
     private boolean isUSD = false;
     private String value;
 
-    public static boolean checkElementNode(Node node) {
+    public static boolean checkElementNode(Node node)
+    {
         return null != node && node.getNodeType() == Node.ELEMENT_NODE;
     }
 
-    public Valute(Node node) {
+    public Valute(Node node)
+    {
         isElementNode = checkElementNode(node);
         if (isElementNode) {
             NodeList nl = node.getChildNodes();

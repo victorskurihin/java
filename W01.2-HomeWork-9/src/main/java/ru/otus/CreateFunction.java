@@ -1,6 +1,6 @@
 /*
  * CreateFunction.java
- * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:20 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -43,7 +43,9 @@ public class CreateFunction
                 "    uid := NULL;\n" +
                 "  END IF;\n" +
                 "  INSERT INTO\n" +
-                "    statistic(id,name_marker,jsp_page_name,ip_address,user_agent,client_time,server_time,session_id,user_id,prev_id)\n" +
+                "    statistic(" +
+                "id,name_marker,jsp_page_name,ip_address,user_agent,client_time,server_time,session_id,user_id,prev_id" +
+                ")\n" +
                 "    VALUES (id, marker, pagename, ipaddr, uagent, ctime, stime, sid, uid, pid);\n" +
                 "  RETURN id;\n" +
                 "END;\n" +
@@ -52,11 +54,11 @@ public class CreateFunction
             exec.execUpdate(mygetmaxFunction);
             connection.commit();
             System.out.println("Ok. The function insert_db_statistic created.");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-
 
     public static void main(String[] args)
     {

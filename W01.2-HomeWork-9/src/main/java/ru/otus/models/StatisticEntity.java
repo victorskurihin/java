@@ -1,6 +1,6 @@
 /*
  * StatisticEntity.java
- * This file was last modified at 29.11.18 11:08 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:37 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -30,15 +30,15 @@ import java.util.Date;
     name = "insert_statistic",
     procedureName = "insert_db_statistic",
     parameters = {
-        @StoredProcedureParameter(name = "name_marker",   mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "name_marker", mode = ParameterMode.IN, type = String.class),
         @StoredProcedureParameter(name = "jsp_page_name", mode = ParameterMode.IN, type = String.class),
-        @StoredProcedureParameter(name = "ip_address",    mode = ParameterMode.IN, type = String.class),
-        @StoredProcedureParameter(name = "user_agent",    mode = ParameterMode.IN, type = String.class),
-        @StoredProcedureParameter(name = "client_time",   mode = ParameterMode.IN, type = Date.class),
-        @StoredProcedureParameter(name = "server_time",   mode = ParameterMode.IN, type = Date.class),
-        @StoredProcedureParameter(name = "session_id",    mode = ParameterMode.IN, type = String.class),
-        @StoredProcedureParameter(name = "user_id",       mode = ParameterMode.IN, type = Long.class),
-        @StoredProcedureParameter(name = "prev_id",       mode = ParameterMode.IN, type = Long.class),
+        @StoredProcedureParameter(name = "ip_address", mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "user_agent", mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "client_time", mode = ParameterMode.IN, type = Date.class),
+        @StoredProcedureParameter(name = "server_time", mode = ParameterMode.IN, type = Date.class),
+        @StoredProcedureParameter(name = "session_id", mode = ParameterMode.IN, type = String.class),
+        @StoredProcedureParameter(name = "user_id", mode = ParameterMode.IN, type = Long.class),
+        @StoredProcedureParameter(name = "prev_id", mode = ParameterMode.IN, type = Long.class),
     }
 )
 @XmlRootElement(name = "statistic")
@@ -46,7 +46,7 @@ import java.util.Date;
 public class StatisticEntity implements DataSet, Serializable
 {
     @Id
-    @SequenceGenerator(name="stat_identifier", sequenceName="statistic_id_seq", allocationSize=1)
+    @SequenceGenerator(name = "stat_identifier", sequenceName = "statistic_id_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "stat_identifier")
     @Column(name = "id")
     @XmlAttribute(required = true)

@@ -1,6 +1,6 @@
 /*
  * CollectStatisticServlet.java
- * This file was last modified at 29.11.18 11:14 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:55 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -38,6 +38,7 @@ public class CollectStatisticServlet extends HttpServlet
 
         try (PrintWriter pw = resp.getWriter()) {
             StatisticService statService = (StatisticService) getServletContext().getAttribute(STAT_SERVICE);
+
             if (statService.isCollectionEnabled()) {
                 DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
                 long result = statService.saveStatisticFromRequestParams(req, dbService);
@@ -47,7 +48,8 @@ public class CollectStatisticServlet extends HttpServlet
             else {
                 pw.write("{\"visits_stat_id\":\"-1\"}");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             LOGGER.error(e);
         }
     }

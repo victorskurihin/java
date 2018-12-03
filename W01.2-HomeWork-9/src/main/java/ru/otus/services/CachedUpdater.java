@@ -1,6 +1,6 @@
 /*
  * CachedUpdater.java
- * This file was last modified at 29.11.18 11:09 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:48 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -24,7 +24,7 @@ public class CachedUpdater extends SimpleQueuedUpdater
     {
         try {
             /* Send the new rate to all open WebSocket sessions */
-            if( ! getSession().isOpen()) {
+            if ( ! getSession().isOpen()) {
                 LOGGER.error("Closed session: {}", getSession().getId());
             }
             else {
@@ -39,7 +39,8 @@ public class CachedUpdater extends SimpleQueuedUpdater
                     LOGGER.info("Sending {} to session: {}", msg.substring(0, 100), getSession().getId());
                 }
             }
-        } catch (Throwable e) {
+        }
+        catch (Throwable e) {
             LOGGER.info("sendDataFromOrigin: catch({}): {}", e.getClass(), e);
             e.printStackTrace();
         }

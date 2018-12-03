@@ -1,6 +1,6 @@
 /*
  * DOMUtil.java
- * This file was last modified at 29.11.18 11:18 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:15 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -22,12 +22,12 @@ import java.nio.charset.StandardCharsets;
 
 public class DOMUtil
 {
-
     public static Document getDocument(InputStream stream)
     throws ParserConfigurationException, IOException, SAXException
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
+
         return factory.newDocumentBuilder().parse(stream);
     }
 
@@ -36,14 +36,16 @@ public class DOMUtil
     {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
+
         return factory.newDocumentBuilder().parse(fileLocation);
     }
 
     public static final void saveDocument(Document doc, String destination)
-    throws TransformerConfigurationException, TransformerException
+    throws TransformerException
     {
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer xform = factory.newTransformer();
+
         xform.setOutputProperty(OutputKeys.INDENT, "yes");
         xform.setOutputProperty(OutputKeys.ENCODING, StandardCharsets.UTF_8.toString());
         xform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
@@ -51,7 +53,8 @@ public class DOMUtil
 
     }
 
-    public static boolean isEmpty(String str){
+    public static boolean isEmpty(String str)
+    {
         return str != null && str.trim().length() == 0;
     }
 }

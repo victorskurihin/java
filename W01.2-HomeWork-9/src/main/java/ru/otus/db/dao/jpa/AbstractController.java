@@ -1,6 +1,6 @@
 /*
  * AbstractController.java
- * This file was last modified at 30.11.18 0:23 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.03 15:14 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -25,10 +25,30 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
 {
     private EntityManagerFactory emf;
 
-    public AbstractController() { /* None */ }
+    private Class<E> classE;
+
+    private Class<E> getTypeFirstParameterClass()
+    {
+        Type[] types = getClass().getGenericInterfaces();
+        for (Type type : types) {
+            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
+                ParameterizedType paramType = (ParameterizedType) type;
+                // some magic with reflection
+                //noinspection unchecked
+                return (Class<E>) paramType.getActualTypeArguments()[0];
+            }
+        }
+        return null;
+    }
+
+    public AbstractController()
+    {
+        classE = getTypeFirstParameterClass();
+    }
 
     public AbstractController(EntityManagerFactory entityManagerFactory)
     {
+        this();
         this.emf = entityManagerFactory;
     }
 
@@ -119,7 +139,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
-        if ( ! transaction.isActive()) {
+        if (!transaction.isActive()) {
             transaction.begin();
         }
         try {
@@ -145,7 +165,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
-        if ( ! transaction.isActive()) {
+        if (!transaction.isActive()) {
             transaction.begin();
         }
         try {
@@ -159,7 +179,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
             return count > 0;
         }
         catch (RollbackException te) {
-                throw new ExceptionThrowable(te);
+            throw new ExceptionThrowable(te);
         }
         catch (Exception e) {
             transaction.rollback();
@@ -175,7 +195,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         EntityManager em = getEntityManager();
         EntityTransaction transaction = em.getTransaction();
 
-        if ( ! transaction.isActive()) {
+        if (!transaction.isActive()) {
             transaction.begin();
         }
         try {
@@ -257,32 +277,9 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
     }
 
     @Override
-    public EntityManager mergeToEntityManager(E entity)
-    {
-        EntityManager em = emf.createEntityManager();
-        em.merge(entity);
-        return em;
-    }
-
-
-    private Class<E> getTypeFirstParameterClass()
-    {
-        Type[] types = getClass().getGenericInterfaces();
-        for (Type type: types) {
-            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
-                ParameterizedType paramType = (ParameterizedType) type;
-                // some magic with reflection
-                //noinspection unchecked
-                return (Class<E>) paramType.getActualTypeArguments()[0];
-            }
-        }
-        return null;
-    }
-
-    @Override
     public E findById(EntityManager entityManager, long key) throws ExceptionThrowable
     {
-        return entityManager.find(getTypeFirstParameterClass(), key);
+        return entityManager.find(classE, key);
     }
 
     @Override

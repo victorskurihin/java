@@ -1,6 +1,6 @@
 /*
  * Servlet.java
- * This file was last modified at 29.11.18 11:19 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:19 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -31,10 +31,14 @@ public class Servlet
     {
         try {
             String pathInfo = request.getPathInfo();
+
             if (pathInfo.startsWith("/")) {
                 return pathInfo.substring(1);
             }
-        } catch (NullPointerException ignored) { }
+        }
+        catch (NullPointerException ignored) {
+        }
+
         return null;
     }
 
@@ -57,7 +61,7 @@ public class Servlet
     {
         String url = request.getRequestURL().toString();
         return url.substring(0, url.length() - request.getRequestURI().length())
-                + request.getContextPath() + "/";
+             + request.getContextPath() + "/";
     }
 }
 

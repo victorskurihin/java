@@ -1,6 +1,6 @@
 /*
  * IO.java
- * This file was last modified at 29.11.18 11:18 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:17 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -31,7 +31,7 @@ public class IO
      * to apply to files that you know to be small relative to the available
      * memory.
      *
-     * @param path a file path
+     * @param path     a file path
      * @param encoding Character encoding.
      * @return string from the contents of a file
      * @throws IOException
@@ -47,9 +47,9 @@ public class IO
     {
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder();
-        try  {
-            br = new BufferedReader(new InputStreamReader(is, encoding));
 
+        try {
+            br = new BufferedReader(new InputStreamReader(is, encoding));
             String line = br.readLine();
 
             while (line != null) {
@@ -58,12 +58,12 @@ public class IO
             }
 
             return sb.toString();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw e;
         }
         finally {
             if (br != null) br.close();
-            br = null;
         }
     }
 
@@ -76,9 +76,11 @@ public class IO
     throws IOException, URISyntaxException
     {
         File file = null;
+
         try {
             file = Paths.get(new URI(path)).toFile();
-        } catch (URISyntaxException e) {
+        }
+        catch (URISyntaxException e) {
             throw new ExceptionURISyntax(e);
         }
 

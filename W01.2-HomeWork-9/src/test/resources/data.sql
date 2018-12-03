@@ -11,7 +11,7 @@ CREATE SEQUENCE emp_id_seq START 1 INCREMENT 1;
 CREATE SEQUENCE group_id_seq START 1 INCREMENT 1;
 CREATE SEQUENCE statistic_id_seq START 1 INCREMENT 1;
 CREATE SEQUENCE user_id_seq START 1 INCREMENT 1;
-DROP TABLE IF EXISTS dep_directory CASCADE;
+DROP TABLE IF EXISTS dept_directory CASCADE;
 DROP TABLE IF EXISTS emp_registry CASCADE;
 DROP TABLE IF EXISTS statistic CASCADE;
 DROP TABLE IF EXISTS user_groups CASCADE;
@@ -20,7 +20,7 @@ DROP SEQUENCE IF EXISTS emp_id_seq;
 DROP SEQUENCE IF EXISTS statistic_id_seq;
 CREATE SEQUENCE emp_id_seq START 1 INCREMENT 1;
 CREATE SEQUENCE statistic_id_seq START 1 INCREMENT 1;
-CREATE TABLE dep_directory (
+CREATE TABLE dept_directory (
   id BIGINT NOT NULL,
   pid BIGINT NOT NULL,
   title VARCHAR(255) NOT NULL,
@@ -63,6 +63,6 @@ CREATE TABLE users (
   password VARCHAR(255),
   PRIMARY KEY (id)
 );
-ALTER TABLE emp_registry ADD CONSTRAINT FKrx0lkq97klv1hub5v3xen9hlh FOREIGN KEY (department) REFERENCES dep_directory;
+ALTER TABLE emp_registry ADD CONSTRAINT FKrx0lkq97klv1hub5v3xen9hlh FOREIGN KEY (department) REFERENCES dept_directory;
 ALTER TABLE emp_registry ADD CONSTRAINT FKbyijndlfb1a6vi97y5spvou5l FOREIGN KEY (user_id)    REFERENCES users;
 ALTER TABLE statistic    ADD CONSTRAINT FKoifiete5h1dmj02jk2fwe6d65 FOREIGN KEY (user_id)    REFERENCES users;

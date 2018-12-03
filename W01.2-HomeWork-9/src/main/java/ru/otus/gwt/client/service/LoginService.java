@@ -1,6 +1,6 @@
 /*
  * LoginService.java
- * This file was last modified at 29.11.18 10:48 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:26 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -14,8 +14,10 @@ import ru.otus.gwt.shared.User;
 import ru.otus.gwt.shared.exception.WrongCredentialException;
 
 @RemoteServiceRelativePath("LoginService")
-public interface LoginService extends RemoteService {
+public interface LoginService extends RemoteService
+{
     String getMessage(String msg);
+
     void authorize(User user) throws WrongCredentialException;
 }
 

@@ -1,6 +1,6 @@
 /*
  * ArchiveView.java
- * This file was last modified at 29.11.18 10:59 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 16:28 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -16,10 +16,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ArchiveView extends Composite implements IsWidget
 {
-    interface MyUiBinder extends UiBinder<Widget, ArchiveView> { /* None */ }
+    interface MyUiBinder extends UiBinder<Widget, ArchiveView>
+    { /* None */ }
+
     private static final MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-    public ArchiveView() {
+    public ArchiveView()
+    {
         initWidget(uiBinder.createAndBindUi(this));
     }
 

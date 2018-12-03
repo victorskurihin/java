@@ -50,9 +50,9 @@ public class TestExpectedData
         return result;
     }
 
-    public static DeptEntitiesList getTestDeptEntitiesList()
+    public static DeptEntities getTestDeptEntitiesList()
     {
-        DeptEntitiesList result = new DeptEntitiesList();
+        DeptEntities result = new DeptEntities();
         result.add(getTestDeptEntity1());
         result.add(getTestDeptEntity2());
         result.add(getTestDeptEntity3());
@@ -113,9 +113,9 @@ public class TestExpectedData
         return result;
     }
 
-    public static EmpEntitiesList getTestEmpEntitiesList()
+    public static EmpEntities getTestEmpEntitiesList()
     {
-        EmpEntitiesList result = new EmpEntitiesList();
+        EmpEntities result = new EmpEntities();
         result.add(getTestEmpEntity1());
         result.add(getTestEmpEntity2());
         result.add(getTestEmpEntity3());

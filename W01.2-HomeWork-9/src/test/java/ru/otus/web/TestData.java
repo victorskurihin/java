@@ -1,7 +1,7 @@
 package ru.otus.web;
 
 import ru.otus.models.DeptEntity;
-import ru.otus.models.EmpEntitiesList;
+import ru.otus.models.EmpEntities;
 import ru.otus.models.EmpEntity;
 
 import java.util.ArrayList;
@@ -55,9 +55,9 @@ public class TestData
         ",\"name\":\"FirstName2 SecondName2 SurName2\",\"salary\":10000,\"second-name\":\"SecondName2\"" +
         ",\"sur-name\":\"SurName2\"}]}";
 
-    public static EmpEntitiesList getExpectedEmpEntitiesList()
+    public static EmpEntities getExpectedEmpEntitiesList()
     {
-        EmpEntitiesList expected = new EmpEntitiesList();
+        EmpEntities expected = new EmpEntities();
 
         EmpEntity emp1 = new EmpEntity();
         emp1.setId(1L);

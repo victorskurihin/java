@@ -1,3 +1,11 @@
+/*
+ * ValidationRule.java
+ * This file was last modified at 2018.12.01 16:34 by Victor N. Skurikhin.
+ * $Id$
+ * This is free and unencumbered software released into the public domain.
+ * For more information, please refer to <http://unlicense.org>
+ */
+
 package ru.otus.gwt.shared.validation;
 
 import ru.otus.gwt.shared.User;
@@ -9,14 +17,15 @@ import java.util.Set;
 
 public class ValidationRule
 {
-
     public static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-    public static boolean isValid(User user){
+    public static boolean isValid(User user)
+    {
         return getErrors(user).isEmpty();
     }
 
-    public static Set<ConstraintViolation<User>> getErrors(User user){
+    public static Set<ConstraintViolation<User>> getErrors(User user)
+    {
         return validator.validate(user);
     }
 }

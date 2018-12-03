@@ -1,6 +1,6 @@
 /*
  * EmpController.java
- * This file was last modified at 30.11.18 0:23 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:15 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -14,7 +14,7 @@ import ru.otus.models.EmpEntity;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-public class EmpController extends AbstractController <EmpEntity, Long>
+public class EmpController extends AbstractController<EmpEntity, Long>
 {
     public EmpController(EntityManagerFactory entityManagerFactory)
     {

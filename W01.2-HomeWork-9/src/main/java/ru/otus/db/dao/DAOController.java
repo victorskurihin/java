@@ -1,6 +1,6 @@
 /*
  * DAOController.java
- * This file was last modified at 29.11.18 10:43 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:16 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -11,7 +11,6 @@ package ru.otus.db.dao;
 import ru.otus.exeptions.ExceptionThrowable;
 import ru.otus.models.DataSet;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface DAOController<E extends DataSet, K>

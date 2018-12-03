@@ -1,6 +1,6 @@
 /*
  * CurrentTaxConsoleService.java
- * This file was last modified at 29.11.18 11:10 by Victor N. Skurikhin.
+ * This file was last modified at 2018.12.01 15:48 by Victor N. Skurikhin.
  * $Id$
  * This is free and unencumbered software released into the public domain.
  * For more information, please refer to <http://unlicense.org>
@@ -50,7 +50,6 @@ public class CurrentTaxConsoleService
     {
         ps.println("Размер налога на прибыль за отчетный период: " + taxRateReportingPeriod);
     }
-
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
