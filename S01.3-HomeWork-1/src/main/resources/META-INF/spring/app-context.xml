@@ -2,11 +2,10 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                           http://www.springframework.org/schema/util
-                           http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
     <bean id="provider" class="ru.otus.HelloWorldMessageProvider"/>
 
     <bean id="renderer" class="ru.otus.StandardOutMessageRenderer">
@@ -14,4 +13,21 @@
             <ref bean="provider"/>
         </property>
     </bean>
+    <!-- my -->
+    <bean id="answer" class="ru.otus.models.Answer" scope="prototype"/>
+    <bean id="question" class="ru.otus.models.Question" scope="prototype"/>
+    <bean id="setOfQuestions" class="ru.otus.models.SetOfQuestions"/>
+
+    <bean id="reader" class="ru.otus.services.CVSReader">
+        <property name="setOfQuestions">
+            <ref bean="setOfQuestions"/>
+        </property>
+    </bean>
+
+    <bean id="exam" class="ru.otus.services.ConsoleExam">
+        <property name="setOfQuestions">
+            <ref bean="setOfQuestions"/>
+        </property>
+    </bean>
+
 </beans>
