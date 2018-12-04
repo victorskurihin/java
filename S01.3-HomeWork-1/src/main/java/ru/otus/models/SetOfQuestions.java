@@ -1,12 +1,12 @@
 package ru.otus.models;
 
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SetOfQuestions implements ISetOfQuestions, Iterable<Question>
 {
-    private List<Question> questions = new ArrayList<>();
+    private List<Question> questions = new LinkedList<>();
 
     private int activeQuestion = 0;
 

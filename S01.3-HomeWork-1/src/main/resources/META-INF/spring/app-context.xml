@@ -6,19 +6,11 @@
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="provider" class="ru.otus.HelloWorldMessageProvider"/>
-
-    <bean id="renderer" class="ru.otus.StandardOutMessageRenderer">
-        <property name="messageProvider">
-            <ref bean="provider"/>
-        </property>
-    </bean>
-    <!-- my -->
     <bean id="answer" class="ru.otus.models.Answer" scope="prototype"/>
     <bean id="question" class="ru.otus.models.Question" scope="prototype"/>
     <bean id="setOfQuestions" class="ru.otus.models.SetOfQuestions"/>
 
-    <bean id="reader" class="ru.otus.services.CVSReader">
+    <bean id="reader" class="ru.otus.services.CSVReader">
         <property name="setOfQuestions">
             <ref bean="setOfQuestions"/>
         </property>

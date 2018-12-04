@@ -6,15 +6,15 @@ import ru.otus.models.ISetOfQuestions;
 
 import java.util.function.Supplier;
 
-public class CVSReader implements IReader
+public class CSVReader implements IReader
 {
     private String filename = "questions.csv";
 
     private ISetOfQuestions setOfQuestions;
 
-    public CVSReader() { /* NOne */ }
+    public CSVReader() { /* NOne */ }
 
-    public CVSReader(String filename)
+    public CSVReader(String filename)
     {
         this.filename = filename;
     }
