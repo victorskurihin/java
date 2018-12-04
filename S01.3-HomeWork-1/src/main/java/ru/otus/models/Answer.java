@@ -33,7 +33,7 @@ public class Answer implements IAnswer
     @Override
     public int hashCode()
     {
-        return score + 13*answer.hashCode();
+        return score + (null != answer ? 13 * answer.hashCode() : 0);
     }
 
     @Override

@@ -6,11 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class QuestionTest
 {
@@ -60,6 +57,7 @@ public class QuestionTest
     public void testEquals()
     {
         Question expected = new Question();
+        Assert.assertEquals(expected.hashCode(), question.hashCode());
         expected.addAnswer(new Answer());
         question.addAnswer(new Answer());
         expected.setQuestion("test");
@@ -67,7 +65,7 @@ public class QuestionTest
         Assert.assertTrue(question.equals(expected));
         Assert.assertFalse(question.equals(null));
         Assert.assertFalse(question.equals(new Object()));
-        // Assert.assertEquals(expected.hashCode(), question.hashCode());
+        Assert.assertEquals(expected.hashCode(), question.hashCode());
     }
 
     @Test

@@ -40,6 +40,12 @@ public class Question implements IQuestion
     }
 
     @Override
+    public int hashCode()
+    {
+        return answers.hashCode() + (null != question ? 13 * question.hashCode() : 0);
+    }
+
+    @Override
     public boolean equals(Object obj)
     {
         if (obj == null) {
