@@ -8,7 +8,7 @@ public interface IQuestion
 
     void setQuestion(String question);
 
-    List<Answer> getAnswers();
+    List<IAnswer> getAnswers();
 
-    void addAnswer(Answer answer);
+    void addAnswer(IAnswer answer);
 }

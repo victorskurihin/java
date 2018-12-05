@@ -2,6 +2,7 @@ package ru.otus;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.otus.exeptions.ExceptionIO;
 import ru.otus.models.IAnswer;
 import ru.otus.models.IQuestion;
 import ru.otus.services.ConsoleExam;
@@ -17,7 +18,12 @@ public class Main
         Supplier<IAnswer> getAnswerBean = () -> ctx.getBean("answer", IAnswer.class);
         Supplier<IQuestion> getQuestionBean = () -> ctx.getBean("question", IQuestion.class);
         IReader reader = ctx.getBean("reader", IReader.class);
-        reader.read(getQuestionBean, getAnswerBean);
+        try {
+            reader.read(getQuestionBean, getAnswerBean);
+        }
+        catch (ExceptionIO exceptionIO) {
+            exceptionIO.printStackTrace();
+        }
         ConsoleExam exam = ctx.getBean("exam", ConsoleExam.class);
 
         exam.run();

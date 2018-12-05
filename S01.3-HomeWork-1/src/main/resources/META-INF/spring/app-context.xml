@@ -11,15 +11,12 @@
     <bean id="setOfQuestions" class="ru.otus.models.SetOfQuestions"/>
 
     <bean id="reader" class="ru.otus.services.CSVReader">
-        <property name="setOfQuestions">
-            <ref bean="setOfQuestions"/>
-        </property>
+        <constructor-arg value="quests.csv"/>
+        <property name="setOfQuestions" ref="setOfQuestions"/>
     </bean>
 
     <bean id="exam" class="ru.otus.services.ConsoleExam">
-        <property name="setOfQuestions">
-            <ref bean="setOfQuestions"/>
-        </property>
+        <property name="setOfQuestions" ref="setOfQuestions"/>
     </bean>
 
 </beans>
