@@ -1,6 +1,5 @@
 package ru.otus.models;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +7,7 @@ public class Question implements IQuestion
 {
     private String question;
 
-    private List<Answer> answers = new LinkedList<>();
+    private List<IAnswer> answers = new LinkedList<>();
 
     @Override
     public String getQuestion()
@@ -23,18 +22,18 @@ public class Question implements IQuestion
     }
 
     @Override
-    public List<Answer> getAnswers()
+    public List<IAnswer> getAnswers()
     {
         return answers;
     }
 
-    public void setAnswers(List<Answer> answers)
+    public void setAnswers(List<IAnswer> answers)
     {
         this.answers = answers;
     }
 
     @Override
-    public void addAnswer(Answer answer)
+    public void addAnswer(IAnswer answer)
     {
         this.answers.add(answer);
     }
