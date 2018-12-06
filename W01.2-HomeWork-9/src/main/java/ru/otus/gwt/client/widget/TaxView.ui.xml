@@ -1,0 +1,46 @@
+<!--
+  ~ TaxView.ui.xml
+  ~ This file was last modified at 01.12.18 11:39 by Victor N. Skurikhin.
+  ~ $Id$
+  ~ This is free and unencumbered software released into the public domain.
+  ~ For more information, please refer to <http://unlicense.org>
+  -->
+
+<!--suppress GWTStyleCheck -->
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:elem='urn:import:com.google.gwt.dom.client'>
+    <ui:with field='res' type='ru.otus.gwt.client.text.ApplicationConstants'/>
+    <ui:style>
+        .redButton {
+        font-size: 10px;
+        }
+        .marginTop5px {
+        margin-top: 5px;
+        }
+    </ui:style>
+    <g:VerticalPanel addStyleNames="w3-row login-margin">
+        <g:HorizontalPanel ui:field="incomePanel" addStyleNames="w3-col m1 text-margin">
+            <g:Label text="доходы: " addStyleNames="firstColumnWidth"/>
+            <g:TextBox ui:field="incomeTextField" addStyleNames="inputWidth"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel ui:field="costsPanel" addStyleNames="w3-col m1 text-margin">
+            <g:Label text="расходы: " addStyleNames="firstColumnWidth"/>
+            <g:TextBox ui:field="costsTextField" addStyleNames="inputWidth"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel ui:field="taxRatePanel" addStyleNames="w3-col m1 text-margin">
+            <g:Label text="налоговая ставка: " addStyleNames="firstColumnWidth"/>
+            <g:TextBox ui:field="taxRateTextField" addStyleNames="inputWidth"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
+            <g:Button text="Размер налога на прибыль" ui:field="submit" addStyleNames="{style.redButton} submitArea"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
+            <g:Button text="Максимальная зарплата сотрудника" ui:field="maxSalary" addStyleNames="{style.redButton} submitArea"/>
+        </g:HorizontalPanel>
+    </g:VerticalPanel>
+</ui:UiBinder>

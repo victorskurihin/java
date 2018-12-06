@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<registrations>
+    <registration id="0" nameMarker="DEFAULT_MARKER">
+        <jspPageName>browsers</jspPageName>
+        <ipAddress>127.0.0.1</ipAddress>
+        <userAgent>Wget/1.19.4 (linux-gnu)</userAgent>
+        <sessionId>0000000000000000000000000000</sessionId>
+    </registration>
+</registrations>
