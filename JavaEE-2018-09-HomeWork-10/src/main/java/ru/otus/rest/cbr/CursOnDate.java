@@ -10,6 +10,7 @@ package ru.otus.rest.cbr;
 
 import ru.otus.adapters.soap.GetCursOnDateXMLAdapter;
 import ru.otus.models.cbr.Currency;
+import ru.otus.utils.CalDateTime;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
@@ -20,7 +21,6 @@ import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Path("/curs")
@@ -31,7 +31,7 @@ public class CursOnDate
     @Path("/ondate/{value1}")
     public Response onDate(@PathParam("value1") String value1) {
         try {
-            XMLGregorianCalendar date = ru.otus.utils.Calendar.parseStringToXMLGregorian(value1);
+            XMLGregorianCalendar date = CalDateTime.parseStringToXMLGregorian(value1);
 
             List<Currency> list = new GetCursOnDateXMLAdapter(date).getList();
 

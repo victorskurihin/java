@@ -17,19 +17,16 @@ import ru.otus.models.*;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import javax.servlet.ServletContext;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Consumer;
 
 public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 {
     private static final String SELECT_EMP_ENTITY = "SELECT e FROM EmpEntity e";
-    private static final String SELECT_EMP_ENTITY_BY_ID = "SELECT e FROM EmpEntity e WHERE e.id = :id";
     private static final String SELECT_USER_ENTITY_BY_NAME = "SELECT e FROM UserEntity e WHERE e.login = :name";
 
     private static final String FIO_PREDICATE =
@@ -86,6 +83,11 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         return new EmpController(super.getEntityManagerFactory());
     }
 
+    public StatisticController getStatisticController()
+    {
+        return new StatisticController(super.getEntityManagerFactory());
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <E extends DataSet> AbstractController<E, Long> getController(Class<E> c)
@@ -101,10 +103,40 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
                 return (AbstractController<E, Long>) getGroupController();
             case EmpEntity:
                 return (AbstractController<E, Long>) getEmpController();
+            case StatisticEntity:
+                return (AbstractController<E, Long>) getStatisticController();
         }
 
         return null;
     }
+
+    @Override
+    public <T extends DataSet> void saveEntity(T entity)
+    {
+        mergeEntity(entity);
+    }
+
+
+    @Override
+    public <T extends DataSet> T getEntityById(long id, Class<T> c) throws ExceptionThrowable
+    {
+        return getController(c).findById(id);
+    }
+
+    @Override
+    public <T extends DataSet> List<T> getEntities(Class<T> c) throws ExceptionThrowable
+    {
+        return getController(c).getAll();
+    }
+
+    @Override
+    public <T extends DataSet> boolean deleteEntityById(long id, Class<T> c) throws ExceptionThrowable
+    {
+        return getController(c).delete(id);
+    }
+
+
+    //// LEGACY ///
 
     @Override
     public List<EmpEntity> searchEmpEntity(Map<String, Object> attrs)
@@ -135,9 +167,6 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
 
         return getEntities(sql, q -> attrs.forEach(q::setParameter));
     }
-
-
-    //// LEGACY ///
 
     private <T extends DataSet> List<T> getEntities(String sql, Consumer<Query> c)
     {
@@ -198,17 +227,21 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         }
     }
 
+    /*
+    TODO remove
     private <T extends DataSet> T getEntityById(String sql, long id)
     {
         return getEntity(sql, query -> query.setParameter("id", id));
     }
+    */
 
     private <T extends DataSet> T getEntityByName(String sql, String name)
     {
         return getEntity(sql, query -> query.setParameter("name", name));
     }
 
-    @SuppressWarnings("Duplicates")
+    /*
+    TODO remove
     private <T extends DataSet> T getEntityViaClassById(long id, Class<T> c)
     {
         EntityTransaction transaction = getEntityManager().getTransaction();
@@ -230,6 +263,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             throw e;
         }
     }
+    */
 
     @Override
     public List<StatisticEntity> getAllStatisticElements() throws SQLException
@@ -253,6 +287,8 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         }
     }
 
+    /*
+    TODO remove
     private void queryUpdate(String query, Consumer<Query> c)
     {
         EntityTransaction transaction = getEntityManager().getTransaction();
@@ -270,18 +306,6 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         }
     }
 
-    /*
-    TODO remove
-    private void queryUpdateVariableNameById(String query, long id, String value)
-    {
-        queryUpdate(query, q -> {
-            q.setParameter("id", id);
-            q.setParameter("name", value);
-        });
-    }
-    */
-
-    @SuppressWarnings("Duplicates")
     private <T extends DataSet> void deleteEntityViaClassById(long id, Class<T> c)
     {
         EntityTransaction transaction = getEntityManager().getTransaction();
@@ -300,6 +324,7 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
             throw e;
         }
     }
+    */
 
     private boolean isCorrectAttr(String key, Map<String, Object> attrs)
     {
@@ -313,26 +338,6 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
     }
 
     @Override
-    public <T extends DataSet> List<T> getEntities(Class<T> c)
-    {
-        return getEntitiesViaClass(c);
-    }
-
-    /*
-    TODO remove
-    @Override
-    public EmpEntity getEmpEntityById(long id)
-    {
-        try {
-            return getEntityById(SELECT_EMP_ENTITY_BY_ID, id);
-        }
-        catch (NoResultException e) {
-            return null;
-        }
-    }
-    */
-
-    @Override
     public UserEntity getUserEntityByName(String name)
     {
         try {
@@ -341,103 +346,6 @@ public class DbSQLService extends PostgreSQLService implements DBConf, DbService
         catch (NoResultException e) {
             return null;
         }
-    }
-
-    @Override
-    public <T extends DataSet> T getEntityById(long id, Class<T> c)
-    {
-        try {
-            return getEntityViaClassById(id, c);
-        }
-        catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public <T extends DataSet> void saveEntity(T entity)
-    {
-        mergeEntity(entity);
-    }
-
-    public static Date localDateTimeToDate(LocalDateTime localDateTime)
-    {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(
-            localDateTime.getYear(), localDateTime.getMonthValue() - 1, localDateTime.getDayOfMonth(),
-            localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond()
-        );
-        return calendar.getTime();
-    }
-
-    /*
-    TODO remove
-    @Override
-    public long insertIntoStatistic(StatisticEntity entity)
-    {
-        EntityTransaction transaction = getEntityManager().getTransaction();
-
-        try {
-            transaction.begin();
-
-            UserEntity user = entity.getUser();
-            if (null == user) {
-                user = new UserEntity();
-                user.setId(-1L);
-            }
-
-            StoredProcedureQuery proc = getEntityManager().createNamedStoredProcedureQuery("insert_statistic");
-            proc.setParameter("name_marker", entity.getNameMarker());
-            proc.setParameter("jsp_page_name", entity.getJspPageName());
-            proc.setParameter("ip_address", entity.getIpAddress());
-            proc.setParameter("user_agent", entity.getUserAgent());
-            proc.setParameter("client_time", localDateTimeToDate(entity.getClientTime()), TemporalType.TIMESTAMP);
-            proc.setParameter("server_time", localDateTimeToDate(entity.getServerTime()), TemporalType.TIMESTAMP);
-            proc.setParameter("session_id", entity.getSessionId());
-            proc.setParameter("user_id", user.getId());
-            proc.setParameter("prev_id", entity.getPreviousId());
-
-            BigInteger result = (BigInteger) proc.getSingleResult();
-
-            transaction.commit();
-
-            return result.longValue();
-        }
-        catch (Exception e) {
-            transaction.rollback();
-            throw e;
-        }
-    }
-    */
-
-    /*
-    TODO remove
-    @Override
-    public void updateFirstNameInEmpEntityById(long id, String firstName)
-    {
-        queryUpdateVariableNameById(UPDATE_EMP_FIRST_NAME_BY_ID, id, firstName);
-    }
-
-    @Override
-    public void updateSecondNameInEmpEntityById(long id, String secondName)
-    {
-        queryUpdateVariableNameById(UPDATE_EMP_SECOND_NAME_BY_ID, id, secondName);
-    }
-    */
-
-    /*
-    @Override
-    public void deleteEmpEntityById(long id)
-    {
-        queryUpdateById(DELETE_EMP_ENTITY_BY_ID, id);
-    }
-    */
-
-    @Override
-    public <T extends DataSet> void deleteEntityById(long id, Class<T> c)
-    {
-        deleteEntityViaClassById(id, c);
     }
 }
 

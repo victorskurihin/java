@@ -114,6 +114,7 @@ public class DeptControllerTest implements TestDBConf
         Assert.assertNull(controller.getEntityById(1L));
     }
 
+    @SuppressWarnings("Duplicates")
     @Test
     public void testGetAll() throws ExceptionThrowable
     {

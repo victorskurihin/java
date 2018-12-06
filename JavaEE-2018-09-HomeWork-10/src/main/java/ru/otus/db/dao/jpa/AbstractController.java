@@ -28,18 +28,11 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
 
     private Class<E> classE;
 
+    @SuppressWarnings("unchecked")
     private Class<E> getTypeFirstParameterClass()
     {
-        Type[] types = getClass().getGenericInterfaces();
-        for (Type type : types) {
-            if (type.getTypeName().startsWith("ru.otus.adapter.DataSetAdapter")) {
-                ParameterizedType paramType = (ParameterizedType) type;
-                // some magic with reflection
-                //noinspection unchecked
-                return (Class<E>) paramType.getActualTypeArguments()[0];
-            }
-        }
-        return null;
+        final ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
+        return (Class<E>) type.getActualTypeArguments()[0];
     }
 
     public AbstractController()

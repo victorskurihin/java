@@ -37,7 +37,7 @@ public class ControllersTest
     private StatisticController statisticController;
 
     @BeforeClass
-    public static void initClass() throws FileNotFoundException, SQLException
+    public static void initClass()
     {
         emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
     }
@@ -197,11 +197,44 @@ public class ControllersTest
     }
 
     @Test
+    public void testGetTitleDeptEntity() throws ExceptionThrowable
+    {
+        DeptEntity deptEntity = getTestDeptEntity1();
+        getTestCreate(deptController, deptEntity);
+        DeptEntity expectedDeptEntity = deptController.getEntityById(deptEntity.getId());
+        DeptEntity testDeptEntity = deptController.getEntityByTitle(deptEntity.getTitle());
+        Assert.assertEquals(expectedDeptEntity, testDeptEntity);
+    }
+
+    @Test
     public void testUpdateEmpEntity() throws ExceptionThrowable
     {
         EmpEntity testEmpEntity = getTestEmpEntity1();
         testCreateEmpEntity(testEmpEntity);
         testUpdate(empController, getTestEmpEntity1(), testEmpEntity);
+    }
+    @Test
+
+    public void testUpdateEmpEntityFirstName() throws ExceptionThrowable
+    {
+        EmpEntity testEmpEntity = getTestEmpEntity1();
+        testCreateEmpEntity(testEmpEntity);
+
+        empController.updateFirstName(testEmpEntity.getId(), "TestFirstName");
+        testEmpEntity = empController.findById(testEmpEntity.getId());
+        EmpEntity expectedEmpEntity = getTestEmpEntity1();
+        expectedEmpEntity.setFirstName("TestFirstName");
+        Assert.assertEquals(expectedEmpEntity, testEmpEntity);
+
+        empController.updateSecondName(testEmpEntity.getId(), "TestSecondName");
+        testEmpEntity = empController.findById(testEmpEntity.getId());
+        expectedEmpEntity.setSecondName("TestSecondName");
+        Assert.assertEquals(expectedEmpEntity, testEmpEntity);
+
+        empController.updateSurName(testEmpEntity.getId(), "TestSurName");
+        testEmpEntity = empController.findById(testEmpEntity.getId());
+        expectedEmpEntity.setSurName("TestSurName");
+        Assert.assertEquals(expectedEmpEntity, testEmpEntity);
     }
 
     @Test
@@ -213,7 +246,7 @@ public class ControllersTest
         testUpdate(empController, getTestEmpEntity1(), testEmpEntity);
     }
 
-    <E extends DataSet> E getTestEntityNotExists(E testEntity) throws ExceptionThrowable
+    <E extends DataSet> E getTestEntityNotExists(E testEntity)
     {
         testEntity.setId(-1L);
         testEntity.setName(null);
@@ -291,6 +324,7 @@ public class ControllersTest
         Assert.assertTrue(Math.abs(avgSalary - 11.333333333333334) < EPSILON);
     }
 
+    @SuppressWarnings("Duplicates")
     @Test
     public void testGetAll() throws ExceptionThrowable
     {

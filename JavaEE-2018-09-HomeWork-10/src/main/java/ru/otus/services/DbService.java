@@ -48,11 +48,11 @@ public interface DbService
 
     <E extends DataSet> void saveEntity(E entity);
 
-    <E extends DataSet> List<E> getEntities(Class<E> c);
+    <E extends DataSet> E getEntityById(long id, Class<E> c) throws ExceptionThrowable;
 
-    <E extends DataSet> E getEntityById(long id, Class<E> c);
+    <E extends DataSet> List<E> getEntities(Class<E> c) throws ExceptionThrowable;
 
-    <T extends DataSet> void deleteEntityById(long id, Class<T> c);
+    <E extends DataSet> boolean deleteEntityById(long id, Class<E> c) throws ExceptionThrowable;
 
     List<EmpEntity> searchEmpEntity(Map<String, Object> attrs);
 }

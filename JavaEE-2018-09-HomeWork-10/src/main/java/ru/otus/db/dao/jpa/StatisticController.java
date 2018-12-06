@@ -16,7 +16,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TemporalType;
 import java.util.List;
 
-import static ru.otus.services.DbSQLService.localDateTimeToDate;
+import static ru.otus.utils.CalDateTime.localDateTimeToDate;
 
 public class StatisticController extends AbstractController<StatisticEntity, Long>
 {

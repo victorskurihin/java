@@ -159,7 +159,7 @@ public class Inside extends Welcome
                 return emp.getSecondName();
             }
         };
-        secondNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpFirstName(
+        secondNameColumn.setFieldUpdater((index, emp, value) -> service.setEmpSecondName(
             emp.getId(), value,
             getEmptyAsyncCallback("Error update: id: " + emp.getId() + " value: " + value, Void.class)
         ));

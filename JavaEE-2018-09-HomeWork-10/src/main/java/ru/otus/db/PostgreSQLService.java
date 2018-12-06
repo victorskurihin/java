@@ -9,11 +9,12 @@
 package ru.otus.db;
 
 import ru.otus.exeptions.ExceptionThrowable;
+import ru.otus.models.DataSet;
 
 import javax.persistence.*;
 import javax.servlet.ServletContext;
 
-public class PostgreSQLService implements DBConf
+public abstract class PostgreSQLService implements DBConf
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
     // private static final EntityManagerFactory emf =
@@ -104,6 +105,8 @@ public class PostgreSQLService implements DBConf
     {
         // TODO
     }
+
+    public abstract <T extends DataSet> boolean deleteEntityById(long id, Class<T> c) throws ExceptionThrowable;
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

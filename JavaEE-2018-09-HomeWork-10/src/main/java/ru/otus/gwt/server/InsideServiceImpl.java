@@ -131,9 +131,14 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
     @Override
     public void deleteEmp(long id)
     {
-        LOGGER.info("EmpEntity deliting by id: {} ...");
+        LOGGER.info("EmpEntity deliting by id: {} ...", id);
         DbService dbService = (DbService) getServletContext().getAttribute(DB_SERVICE);
-        dbService.deleteEntityById(id, EmpEntity.class);
+        try {
+            dbService.deleteEntityById(id, EmpEntity.class);
+        }
+        catch (ExceptionThrowable exceptionThrowable) {
+            LOGGER.error("ERROR delete: {}", exceptionThrowable);
+        }
         LOGGER.info("EmpEntity by id: {} deleted.");
     }
 
