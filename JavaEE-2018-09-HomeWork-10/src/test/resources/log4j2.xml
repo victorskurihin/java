@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="INFO">
+    <Appenders>
+        <!-- File Appenders -->
+        <File name="File_test" fileName="target/test.log">
+            <PatternLayout pattern="%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org.hibernate.validator.util.Version" level="ERROR">
+            <AppenderRef ref="File_test"/>
+        </Logger>
+
+        <Logger name="org.hibernate" level="FATAL" additivity="false">
+            <AppenderRef ref="File_test"/>
+        </Logger>
+
+        <!-- Log SQL statements -->
+        <Logger name="org.hibernate.SQL" level="FATAL" additivity="false">
+            <AppenderRef ref="File_test"/>
+        </Logger>
+
+        <!-- Log JDBC bind parameters -->
+        <Logger name="org.hibernate.type.descriptor.sql" level="FATAL" additivity="false">
+            <AppenderRef ref="File_test"/>
+        </Logger>
+
+        <Logger name="ru.otus" level="INFO">
+            <AppenderRef ref="File_test"/>
+        </Logger>
+
+        <Root level="ERROR">
+            <AppenderRef ref="File_test"/>
+        </Root>
+    </Loggers>
+</Configuration>
