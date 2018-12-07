@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <!-- Logging Properties -->
+    <Properties>
+        <Property name="PREFIX_WEB">ru.otus.web</Property>
+        <Property name="EXT_PATTERN">%d{yyyy-MM-dd}-%i</Property>
+        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <RollingFile name="fileRoot"
+                     fileName="log/${PREFIX_WEB}-root-debug.log"
+                     filePattern="log/${PREFIX_WEB}-root-debug-${EXT_PATTERN}.log">
+            <LevelRangeFilter minLevel="INFO" maxLevel="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+
+        <RollingFile name="fileDemoWeb"
+                     fileName="log/${PREFIX_WEB}-demo-debug.log"
+                     filePattern="log/${PREFIX_WEB}-demo-debug-${EXT_PATTERN}.log">
+            <LevelRangeFilter minLevel="INFO" maxLevel="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="19500KB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="trace" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="fileRoot"/>
+        </Root>
+
+        <Logger name="ru.otus.web" level="debug" additivity="false">
+            <AppenderRef ref="fileDemoWeb" level="debug"/>
+        </Logger>
+    </Loggers>
+</Configuration>
