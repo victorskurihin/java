@@ -10,7 +10,7 @@
     <groupId>ru.otus</groupId>
     <artifactId>homework10</artifactId>
     <packaging>pom</packaging>
-    <version>10.0-1</version>
+    <version>10HW.1-1</version>
     <modules>
         <module>HomeWork</module>
         <module>HomeWorkPersistent</module>
@@ -18,8 +18,8 @@
     </modules>
 
     <properties>
-        <homework.persistent.version>10.0-1</homework.persistent.version>
-        <homework.rest.version>10.0-1</homework.rest.version>
+        <homework.persistent.version>10HW.1-1</homework.persistent.version>
+        <homework.rest.version>10HW.1-1</homework.rest.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
@@ -53,7 +53,7 @@
         <org.eclipse.version>2.7.1</org.eclipse.version>
         <org.eclipse.persistence.version>2.2.1</org.eclipse.persistence.version>
         <org.hibernate.javax.persistence.version>1.0.1.Final</org.hibernate.javax.persistence.version>
-        <org.hibernate.version>5.3.6.Final</org.hibernate.version>
+        <org.hibernate.version>5.3.7.Final</org.hibernate.version>
         <org.json.version>20180813</org.json.version>
         <org.mockito.version>2.21.0</org.mockito.version>
         <servlet.version>4.0.0</servlet.version>
@@ -78,7 +78,7 @@
             <dependency>
                 <groupId>javax</groupId>
                 <artifactId>javaee-api</artifactId>
-                <version>7.0</version>
+                <version>${javaee.version}</version>
                 <scope>provided</scope>
             </dependency>
 

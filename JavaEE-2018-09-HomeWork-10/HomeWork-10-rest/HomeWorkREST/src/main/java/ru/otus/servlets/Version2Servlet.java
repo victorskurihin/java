@@ -14,6 +14,7 @@ import ru.otus.db.dao.jpa.DeptController;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;
 
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,6 +28,9 @@ public class Version2Servlet extends HttpServlet
 {
     private static final Logger LOGGER = LogManager.getLogger(Version2Servlet.class.getName());
 
+    @EJB
+    DeptController deptController;
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
     {
@@ -37,7 +41,6 @@ public class Version2Servlet extends HttpServlet
             deptEntity.setId(1L);
             deptEntity.setParentId(0L);
             deptEntity.setTitle("test");
-            DeptController deptController = new DeptController();
             deptController.create(deptEntity);
             deptEntity.setParentId(13L);
             deptController.update(deptEntity);

@@ -8,11 +8,11 @@
     <parent>
         <artifactId>homework10</artifactId>
         <groupId>ru.otus</groupId>
-        <version>10.0-1</version>
+        <version>10HW.1-1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>HomeWork</artifactId>
+    <artifactId>HomeWork10</artifactId>
     <packaging>ear</packaging>
 
     <dependencies>
@@ -34,6 +34,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}-${project.parent.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -41,10 +42,13 @@
                 <configuration>
                     <!-- unpackTypes>rar,war,ejb</unpackTypes -->
                     <version>7</version>
-                    <applicationName>${project.artifactId}</applicationName>
+                    <applicationName>${project.artifactId}-${project.parent.version}</applicationName>
+                    <displayName>${project.artifactId}-${project.parent.version}</displayName>
                     <generateApplicationXml>true</generateApplicationXml>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
-                    <applicationName>${project.artifactId}</applicationName>
+
+                    <finalName>${project.build.finalName}</finalName>
+
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -58,9 +62,41 @@
                         <webModule>
                             <groupId>${project.groupId}</groupId>
                             <artifactId>HomeWorkREST</artifactId>
-                            <contextRoot>/</contextRoot>
+                            <contextRoot>/${project.parent.artifactId}-rest</contextRoot>
                         </webModule>
                     </modules>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.glassfish.maven.plugin</groupId>
+                <artifactId>maven-glassfish-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <debug>true</debug>
+                    <echo>true</echo>
+                    <terse>false</terse>
+                    <autoCreate>true</autoCreate>
+
+                    <!-- ~/.m2/settings.xml: <activeProfile>glassfish5-localhost</activeProfile> -->
+                    <glassfishDirectory>${glassfish.glassfishDirectory}</glassfishDirectory>
+                    <user>${glassfish.user}</user>
+                    <passwordFile>${user.home}/.m2/.domain1-password</passwordFile>
+
+                    <domain>
+                        <name>${glassfish.domain.name}</name>
+                        <host>${glassfish.domain.host}</host>
+                        <httpPort>${glassfish.domain.httpPort}</httpPort>
+                        <adminPort>${glassfish.domain.adminPort}</adminPort>
+                    </domain>
+
+                    <components>
+                        <component>
+                            <name>${project.artifactId}</name>
+                            <!--<artifact>target/HomeWork.ear</artifact>-->
+                            <artifact>${project.build.directory}/${project.build.finalName}.ear</artifact>
+                        </component>
+                    </components>
                 </configuration>
             </plugin>
         </plugins>

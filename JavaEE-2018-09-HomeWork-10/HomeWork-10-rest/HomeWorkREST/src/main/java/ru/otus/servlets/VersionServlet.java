@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/")
+@WebServlet
 public class VersionServlet extends HttpServlet
 {
     private static final Logger LOGGER = LogManager.getLogger(VersionServlet.class.getName());

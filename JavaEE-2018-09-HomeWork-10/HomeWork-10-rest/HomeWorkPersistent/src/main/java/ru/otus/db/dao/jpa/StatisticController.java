@@ -12,34 +12,35 @@ import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.StatisticEntity;
 import ru.otus.models.UserEntity;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
+import static javax.ejb.TransactionAttributeType.SUPPORTS;
 import static ru.otus.utils.CalDateTime.localDateTimeToDate;
 
 @Stateless
+@LocalBean
+@TransactionAttribute(SUPPORTS)
 public class StatisticController extends AbstractController<StatisticEntity, Long>
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
-    // @PersistenceUnit(unitName = PERSISTENCE_UNIT_NAME)
-    private EntityManagerFactory emf;
-    // @PersistenceContext(unitName = "jpa")
-    // private EntityManager em;
+
+    @PersistenceContext(unitName = PERSISTENCE_UNIT_NAME)
+    private EntityManager em;
 
     @Override
     protected EntityManager getEntityManager()
     {
-        if (null == emf) {
-            emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        }
-
-        return emf.createEntityManager(SynchronizationType.UNSYNCHRONIZED);
+        return em;
     }
 
-    void setEntityManager(EntityManagerFactory emf)
+    void setEntityManager(EntityManager em)
     {
-        this.emf = emf;
+        this.em = em;
     }
 
     @Override
@@ -49,35 +50,41 @@ public class StatisticController extends AbstractController<StatisticEntity, Lon
     }
 
     @Override
+    @TransactionAttribute(SUPPORTS)
     public List<StatisticEntity> getAll() throws ExceptionThrowable
     {
         return getAll(StatisticEntity.class);
     }
 
     @Override
+    @TransactionAttribute(SUPPORTS)
     public StatisticEntity getEntityById(Long id) throws ExceptionThrowable
     {
         return getEntityViaClassById(id, StatisticEntity.class);
     }
 
     @Override
+    @TransactionAttribute(REQUIRES_NEW)
     public StatisticEntity update(StatisticEntity entity) throws ExceptionThrowable
     {
         return mergeEntity(entity);
     }
 
     @Override
+    @TransactionAttribute(REQUIRES_NEW)
     public boolean delete(Long id) throws ExceptionThrowable
     {
         return deleteEntityViaClassById(id, StatisticEntity.class);
     }
 
     @Override
+    @TransactionAttribute(REQUIRES_NEW)
     public boolean create(StatisticEntity entity) throws ExceptionThrowable
     {
         return mergeEntity(entity) != null;
     }
 
+    @TransactionAttribute(REQUIRES_NEW)
     public long insertProcedure(StatisticEntity entity) throws ExceptionThrowable
     {
         return callStoredProcedureSingleResult("insert_statistic", proc -> {

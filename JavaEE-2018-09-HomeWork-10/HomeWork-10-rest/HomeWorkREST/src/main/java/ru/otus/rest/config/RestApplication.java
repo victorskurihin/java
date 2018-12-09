@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.glassfish.jersey.server.ResourceConfig;
+import ru.otus.rest.DeptResource;
+import ru.otus.rest.Version;
 
 import java.nio.charset.StandardCharsets;
 
@@ -41,7 +43,8 @@ public class RestApplication extends ResourceConfig
     }
 
     private void registerResourceClasses() {
-        // register(Version.class);
+        register(Version.class);
+        register(DeptResource.class);
         // register(LastDate.class);
     }
 }

@@ -17,32 +17,34 @@ package ru.otus.db.dao.jpa;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.UserEntity;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.persistence.*;
 import java.util.List;
 
+import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
+import static javax.ejb.TransactionAttributeType.SUPPORTS;
+
 @Stateless
+@LocalBean
+@TransactionAttribute(SUPPORTS)
 public class UserController extends AbstractController<UserEntity, Long>
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
-    // @PersistenceUnit(unitName = PERSISTENCE_UNIT_NAME)
-    private EntityManagerFactory emf;
-    // @PersistenceContext(unitName = "jpa")
-    // private EntityManager em;
+
+    @PersistenceContext(unitName = PERSISTENCE_UNIT_NAME)
+    private EntityManager em;
 
     @Override
     protected EntityManager getEntityManager()
     {
-        if (null == emf) {
-            emf = Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME);
-        }
-
-        return emf.createEntityManager(SynchronizationType.UNSYNCHRONIZED);
+        return em;
     }
 
-    void setEntityManager(EntityManagerFactory emf)
+    void setEntityManager(EntityManager em)
     {
-        this.emf = emf;
+        this.em = em;
     }
 
     @Override
@@ -52,35 +54,41 @@ public class UserController extends AbstractController<UserEntity, Long>
     }
 
     @Override
+    @TransactionAttribute(SUPPORTS)
     public List<UserEntity> getAll() throws ExceptionThrowable
     {
         return getAll(UserEntity.class);
     }
 
     @Override
+    @TransactionAttribute(SUPPORTS)
     public UserEntity getEntityById(Long id) throws ExceptionThrowable
     {
         return getEntityViaClassById(id, UserEntity.class);
     }
 
+    @TransactionAttribute(SUPPORTS)
     public UserEntity getEntityByTitle(String title) throws ExceptionThrowable
     {
         return getEntityViaClassByName("title", title, UserEntity.class);
     }
 
     @Override
+    @TransactionAttribute(REQUIRES_NEW)
     public UserEntity update(UserEntity entity) throws ExceptionThrowable
     {
         return mergeEntity(entity);
     }
 
     @Override
+    @TransactionAttribute(REQUIRES_NEW)
     public boolean delete(Long id) throws ExceptionThrowable
     {
         return deleteEntityViaClassById(id, UserEntity.class);
     }
 
     @Override
+    @TransactionAttribute(REQUIRES_NEW)
     public boolean create(UserEntity entity) throws ExceptionThrowable
     {
         return mergeEntity(entity) != null;

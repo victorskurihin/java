@@ -45,9 +45,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         catch (Throwable e) {
             throw new ExceptionThrowable(e);
         }
-        finally {
-            em.close();
-        }
     }
 
     protected E getEntityViaClassById(K id, Class<E> clazz) throws ExceptionThrowable
@@ -69,9 +66,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         }
         catch (Exception e) {
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 
@@ -95,22 +89,14 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         catch (Exception e) {
             throw new ExceptionThrowable(e);
         }
-        finally {
-            em.close();
-        }
     }
 
     protected E mergeEntity(E entity) throws ExceptionThrowable
     {
         EntityManager em = getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
         try {
             em.merge(entity);
-            transaction.commit();
 
             return entity;
         }
@@ -118,29 +104,20 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
             throw new ExceptionThrowable(e);
         }
         catch (Exception e) {
-            transaction.rollback();
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 
     protected boolean deleteEntityViaClassById(K id, Class<E> c) throws ExceptionThrowable
     {
         EntityManager em = getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
         try {
             CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaDelete<E> delete = criteriaBuilder.createCriteriaDelete(c);
             Root<E> criteria = delete.from(c);
             delete.where(criteriaBuilder.equal(criteria.get("id"), id));
             int count = em.createQuery(delete).executeUpdate();
-            em.getTransaction().commit();
 
             return count > 0;
         }
@@ -148,11 +125,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
             throw new ExceptionThrowable(te);
         }
         catch (Exception e) {
-            transaction.rollback();
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 
@@ -163,16 +136,11 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         }
 
         EntityManager em = getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
         try {
             E entity = em.find(classE, key);
             consumer.accept(entity);
             em.merge(entity);
-            transaction.commit();
 
             return entity;
         }
@@ -180,11 +148,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
             throw new ExceptionThrowable(e);
         }
         catch (Exception e) {
-            transaction.rollback();
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 
@@ -192,17 +156,12 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
     throws ExceptionThrowable
     {
         EntityManager em = getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
         try {
             StoredProcedureQuery proc = em.createNamedStoredProcedureQuery(name);
             c.accept(proc);
             //noinspection unchecked
             R result = (R) proc.getSingleResult();
-            transaction.commit();
 
             return result;
         }
@@ -210,22 +169,14 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
             throw new ExceptionThrowable(e);
         }
         catch (Exception e) {
-            transaction.rollback();
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 
     protected boolean persistEntity(E entity) throws ExceptionThrowable
     {
         EntityManager em = getEntityManager();
-        EntityTransaction transaction = em.getTransaction();
 
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
         try {
             em.persist(entity);
             em.getTransaction().commit();
@@ -236,11 +187,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
             throw new ExceptionThrowable(te);
         }
         catch (Exception e) {
-            transaction.rollback();
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 
@@ -269,9 +216,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         catch (Exception e) {
             throw new ExceptionThrowable(e);
         }
-        finally {
-            em.close();
-        }
     }
 
     protected double getAvgDouble(String fieldName, Class<E> clazz) throws ExceptionThrowable
@@ -299,9 +243,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         catch (Exception e) {
             throw new ExceptionThrowable(e);
         }
-        finally {
-            em.close();
-        }
     }
 
     @Override
@@ -327,9 +268,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         }
         catch (Exception e) {
             throw new ExceptionThrowable(e);
-        }
-        finally {
-            em.close();
         }
     }
 }
