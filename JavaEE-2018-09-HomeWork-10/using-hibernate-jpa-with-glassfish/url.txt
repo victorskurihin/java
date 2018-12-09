@@ -1,1 +1,0 @@
-https://javafromthetrenches.wordpress.com/2011/01/15/using-hibernate-jpa-with-glassfish/

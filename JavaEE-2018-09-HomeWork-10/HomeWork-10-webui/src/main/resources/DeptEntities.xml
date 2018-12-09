@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<departments>
+    <department id="1" parentId="0">
+        <title>ООО Рога и копыта</title>
+    </department>
+    <department id="2" parentId="1">
+        <title>Администрация</title>
+    </department>
+    <department id="3" parentId="2">
+        <title>Бухгалтерия</title>
+    </department>
+    <department id="4" parentId="2">
+        <title>HR</title>
+    </department>
+    <department id="5" parentId="2">
+        <title>Сотрудники</title>
+    </department>
+</departments>

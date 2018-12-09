@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<employees>
+    <employee id="1" salary="15" age="75">
+        <firstName>Александр</firstName>
+        <secondName>Иванович</secondName>
+        <surName>Фунт</surName>
+        <department id="1"/>
+        <city>Одесса</city>
+        <job>Зицпредседатель</job>
+        <user id="1"/>
+    </employee>
+    <employee id="2" salary="10" age="33">
+        <firstName>Иван</firstName>
+        <secondName>Иванович</secondName>
+        <surName>Иванов</surName>
+        <department id="2"/>
+        <city>Самара</city>
+        <job>Директор</job>
+    </employee>
+    <employee id="3" salary="9" age="34">
+        <firstName>Светлана</firstName>
+        <secondName>Семёновна</secondName>
+        <surName>Семёнова</surName>
+        <department id="3"/>
+        <city>Воронеж</city>
+        <job>Бухгалтер</job>
+    </employee>
+</employees>
