@@ -9,7 +9,7 @@
     <parent>
         <artifactId>homework10</artifactId>
         <groupId>ru.otus</groupId>
-        <version>10HW.1-1</version>
+        <version>10HW.1-2</version>
     </parent>
 
     <artifactId>HomeWorkREST</artifactId>

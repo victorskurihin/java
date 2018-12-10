@@ -7,6 +7,7 @@ package ru.otus.db;
 import org.h2.jdbcx.JdbcDataSource;
 import org.mockito.Mockito;
 import ru.otus.models.Entities;
+import ru.otus.utils.ResourceAsStream;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
@@ -71,7 +72,7 @@ public interface TestDBConf
     throws IOException, JAXBException
     {
         String entitiesXMLPath = ctx.getInitParameter(s);
-        return new ImporterSmallXML<>(ctx, entitiesXMLPath, DBConf.CLASSES);
+        return new ImporterSmallXML<>(new ResourceAsStream(entitiesXMLPath), DBConf.CLASSES);
     }
 
     static ServletContext getMockedServletContext() throws IOException

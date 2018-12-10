@@ -4,6 +4,7 @@ import org.junit.*;
 import org.mockito.Mockito;
 import ru.otus.models.DeptEntities;
 import ru.otus.models.DeptEntity;
+import ru.otus.utils.ResourceAsStream;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -57,12 +58,28 @@ public class ImporterSmallXMLTest
         return ctxEntities;
     }
 
+    private ResourceAsStream getResourceAsStream(String filename) throws IOException
+    {
+
+        ResourceAsStream resourceStream = new ResourceAsStream(filenameDeptEntities);
+
+        File tmp = new File(filename);
+        URI uri = tmp.toURI();
+        URL url = uri.toURL();
+        resourceStream = mock(ResourceAsStream.class);
+        Mockito.doReturn(url.openStream())
+            .when(resourceStream)
+            .get();
+        return resourceStream;
+    }
+
     @Test
     public void testImportDeptEntities() throws Exception
     {
-        ServletContext sc = getServletContext(filenameDeptEntities);
+        // ServletContext sc = getServletContext(filenameDeptEntities);
+        ResourceAsStream resourceStream = getResourceAsStream(filenameDeptEntities);
         ImporterSmallXML<DeptEntities> importEntities = new ImporterSmallXML<>(
-            sc, filenameDeptEntities, DeptEntity.class, DeptEntities.class
+            resourceStream, DeptEntity.class, DeptEntities.class
         );
         importEntities.saveEntities(entityManager);
 

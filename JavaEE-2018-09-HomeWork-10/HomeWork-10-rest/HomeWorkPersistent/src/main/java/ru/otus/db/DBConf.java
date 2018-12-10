@@ -9,8 +9,8 @@
 package ru.otus.db;
 
 import ru.otus.models.*;
+import ru.otus.utils.ResourceAsStream;
 
-import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -66,11 +66,10 @@ public interface DBConf
                UserEntities.class,
     };
 
-    static <T extends Entities> ImporterSmallXML<T> createImporterXML(ServletContext sc, String s)
+    static <T extends Entities> ImporterSmallXML<T> createImporterXML(ResourceAsStream resourceStream)
     throws IOException, JAXBException
     {
-        String entitiesXMLPath = sc.getInitParameter(s);
-        return new ImporterSmallXML<>(sc, entitiesXMLPath, CLASSES);
+        return new ImporterSmallXML<>(resourceStream, CLASSES);
     }
 }
 

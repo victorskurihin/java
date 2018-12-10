@@ -9,9 +9,9 @@
 package ru.otus.db;
 
 import ru.otus.models.*;
+import ru.otus.utils.ResourceAsStream;
 
 import javax.persistence.EntityManager;
-import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -24,16 +24,15 @@ public class ImporterSmallXML<T extends Entities>
     private String xmlObjects;
     private JAXBContext jc;
 
-    public ImporterSmallXML(ServletContext sc, String filename, Class<?>... classes)
+    public ImporterSmallXML(ResourceAsStream resourceStream, Class<?>... classes)
     throws IOException, JAXBException
     {
         if (null == classes || classes.length < 1)
             throw new RuntimeException("classes has'n classes");
-        jc = JAXBContext.newInstance(classes
-        );
+        jc = JAXBContext.newInstance(classes);
 
-        try (InputStream is = sc.getResourceAsStream(filename)) {
-            xmlObjects = readInputStream(is, "UTF-8");
+        try (InputStream inputStream = resourceStream.get()) {
+            xmlObjects = readInputStream(inputStream, "UTF-8");
         }
         catch (IOException e) {
             throw e;
