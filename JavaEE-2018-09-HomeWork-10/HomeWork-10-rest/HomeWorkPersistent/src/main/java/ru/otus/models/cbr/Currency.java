@@ -25,7 +25,7 @@ public class Currency
 {
     // Название валюты
     @XmlAttribute
-    @JsonbProperty("v-name")
+    @JsonbProperty("v-nameGet")
     private String vName;
 
     // Курс

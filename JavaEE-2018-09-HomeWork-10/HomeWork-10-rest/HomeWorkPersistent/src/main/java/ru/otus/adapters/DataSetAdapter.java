@@ -47,13 +47,13 @@ public interface DataSetAdapter<T extends DataSet>
     throws IllegalAccessException, InstantiationException
     {
         T entity = c.newInstance();
-        entity.setName(name);
+        entity.letName(name);
         return entity;
     }
 
     default String marshalAdapter(T v)
     {
-        return v == null ? null : v.getName();
+        return v == null ? null : v.nameGet();
     }
 
     default JsonObjectBuilder getJsonWithIdObjectBuilder(T v)
@@ -65,7 +65,7 @@ public interface DataSetAdapter<T extends DataSet>
     {
         return Json.createObjectBuilder()
                 .add("id", v.getId())
-                .add("name", v.getName()).build();
+                .add("name", v.nameGet()).build();
     }
 
     default T unmarshalFromJson(JsonObject obj)
@@ -73,7 +73,7 @@ public interface DataSetAdapter<T extends DataSet>
     {
         T entity = getTypeParameterClass().newInstance();
         entity.setId(obj.getInt("id"));
-        entity.setName(obj.getString("name"));
+        entity.letName(obj.getString("name"));
         return entity;
     }
 }

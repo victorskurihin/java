@@ -42,19 +42,19 @@ public class EmpEntity implements DataSet, Serializable
     @Basic
     @Column(name = "first_name", nullable = false)
     @XmlElement(required = true)
-    @JsonbProperty("first-name")
+    @JsonbProperty("first-nameGet")
     private String firstName;
 
     @Basic
     @Column(name = "second_name", nullable = false)
     @XmlElement(required = true)
-    @JsonbProperty("second-name")
+    @JsonbProperty("second-nameGet")
     private String secondName;
 
     @Basic
     @Column(name = "sur_name", nullable = false)
     @XmlElement(required = true)
-    @JsonbProperty("sur-name")
+    @JsonbProperty("sur-nameGet")
     private String surName;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -91,17 +91,17 @@ public class EmpEntity implements DataSet, Serializable
     private Long age;
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return getFirstName() + " " + getSecondName() + " " + getSurName();
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         String names[] = name.split(" ");
         if (names.length != 3)
-            throw new IndexOutOfBoundsException(); // TODO Custom exception
+            throw new IndexOutOfBoundsException(); // TODO Custom exceptions
         setFirstName(names[0]);
         setSecondName(names[1]);
         setSurName(names[2]);

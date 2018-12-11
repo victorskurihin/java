@@ -24,7 +24,7 @@ import java.io.Serializable;
 @Table(name = "users")
 @NamedQueries({
     @NamedQuery(name = "findUserById", query = "SELECT u FROM UserEntity u WHERE u.id = :id"),
-    @NamedQuery(name = "findUserByName", query = "SELECT u FROM UserEntity u WHERE u.login= :name")
+    @NamedQuery(name = "findUserByName", query = "SELECT u FROM UserEntity u WHERE u.login= :nameGet")
 })
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -48,13 +48,13 @@ public class UserEntity implements DataSet, Serializable
     private String password;
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return getLogin();
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         setLogin(name);
     }

@@ -92,9 +92,9 @@ public class DeptEntityTest
     {
         entity.setTitle(TEST);
         assertEquals(TEST, entity.getTitle());
-        assertEquals(TEST, entity.getName());
-        entity.setName(TSET);
+        assertEquals(TEST, entity.nameGet());
+        entity.letName(TSET);
         assertEquals(TSET, entity.getTitle());
-        assertEquals(TSET, entity.getName());
+        assertEquals(TSET, entity.nameGet());
     }
 }

@@ -205,8 +205,8 @@ public class EmpEntityTest
     {
         String expected = "FirstName SecondName SurName";
         EmpEntity entity = new EmpEntity();
-        entity.setName(expected);
-        assertEquals(expected, entity.getName());
+        entity.letName(expected);
+        assertEquals(expected, entity.nameGet());
         String[] expectedArray = expected.split(" ");
         assertEquals(expectedArray[0], entity.getFirstName());
         assertEquals(expectedArray[1], entity.getSecondName());
@@ -214,10 +214,10 @@ public class EmpEntityTest
     }
 
     @Test(expected = IndexOutOfBoundsException.class)
-    public void testIndexOutOfBoundsException() // TODO Custom exception
+    public void testIndexOutOfBoundsException() // TODO Custom exceptions
     {
         String expected = "";
         EmpEntity entity = new EmpEntity();
-        entity.setName(expected);
+        entity.letName(expected);
     }
 }

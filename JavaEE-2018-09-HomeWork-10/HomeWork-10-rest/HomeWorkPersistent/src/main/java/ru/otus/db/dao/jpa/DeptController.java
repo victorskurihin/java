@@ -85,7 +85,7 @@ public class DeptController extends AbstractController<DeptEntity, Long>
     @TransactionAttribute(REQUIRES_NEW)
     public boolean create(DeptEntity entity) throws ExceptionThrowable
     {
-        return mergeEntity(entity) != null;
+        return persistEntity(entity);
     }
 }
 

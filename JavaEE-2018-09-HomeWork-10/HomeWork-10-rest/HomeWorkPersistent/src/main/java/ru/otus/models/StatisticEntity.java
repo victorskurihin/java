@@ -99,13 +99,13 @@ public class StatisticEntity implements DataSet, Serializable
     private Long previousId;
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return getNameMarker();
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         setNameMarker(name);
     }

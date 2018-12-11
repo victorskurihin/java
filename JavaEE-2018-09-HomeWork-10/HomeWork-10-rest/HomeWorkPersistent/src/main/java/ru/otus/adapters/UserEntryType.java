@@ -37,13 +37,13 @@ public class UserEntryType implements DataSet
     }
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return login;
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         this.login = name;
     }

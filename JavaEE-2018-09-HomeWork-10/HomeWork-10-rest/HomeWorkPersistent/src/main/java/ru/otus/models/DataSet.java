@@ -20,9 +20,9 @@ public interface DataSet
 
     void setId(long id);
 
-    String getName();
+    String nameGet();
 
-    void setName(String name);
+    void letName(String name);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

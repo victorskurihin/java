@@ -30,13 +30,13 @@ public class TestEntity implements DataSet, Serializable
     private String test;
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return getTest();
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         setTest(name);
     }

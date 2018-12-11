@@ -136,7 +136,7 @@ public class TestExpectedData
     {
         UserEntity result = new UserEntity();
         result.setId(1L);
-        result.setName("funt");
+        result.letName("funt");
         result.setPassword("e1X6Nk2/9ydYmDO74y89BK0aNQmQnQjK59X46mMRV9Q=");
 
         return result;

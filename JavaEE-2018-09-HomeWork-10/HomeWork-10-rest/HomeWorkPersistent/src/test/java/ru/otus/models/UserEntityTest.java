@@ -58,7 +58,7 @@ public class UserEntityTest
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.begin();
         entity.setId(1L);
-        entity.setName("setName");
+        entity.letName("letName");
         entity.setPassword("setPassword");
         entityManager.merge(entity);
         transaction.commit();
@@ -79,10 +79,10 @@ public class UserEntityTest
     {
         entity.setLogin(TEST);
         assertEquals(TEST, entity.getLogin());
-        assertEquals(TEST, entity.getName());
-        entity.setName(TSET);
+        assertEquals(TEST, entity.nameGet());
+        entity.letName(TSET);
         assertEquals(TSET, entity.getLogin());
-        assertEquals(TSET, entity.getName());
+        assertEquals(TSET, entity.nameGet());
     }
 
     @Test

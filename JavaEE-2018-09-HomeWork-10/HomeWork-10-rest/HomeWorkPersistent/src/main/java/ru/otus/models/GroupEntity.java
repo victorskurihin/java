@@ -44,13 +44,13 @@ public class GroupEntity implements DataSet, Serializable
     private String login;
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return getGroupname();
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         setGroupname(name);
     }

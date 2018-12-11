@@ -37,13 +37,13 @@ public class DeptEntryType implements DataSet
     }
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return title;
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         this.title = name;
     }

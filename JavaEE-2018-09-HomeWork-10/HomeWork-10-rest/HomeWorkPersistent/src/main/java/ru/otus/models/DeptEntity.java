@@ -41,13 +41,13 @@ public class DeptEntity implements DataSet, Serializable
     private String title;
 
     @Override
-    public String getName()
+    public String nameGet()
     {
         return getTitle();
     }
 
     @Override
-    public void setName(String name)
+    public void letName(String name)
     {
         setTitle(name);
     }

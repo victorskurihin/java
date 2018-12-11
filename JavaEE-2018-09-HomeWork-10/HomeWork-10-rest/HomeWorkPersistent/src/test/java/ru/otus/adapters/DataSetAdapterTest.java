@@ -69,7 +69,7 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
     @Test
     public void testMarshalToJson()
     {
-        entity.setName(TEST);
+        entity.letName(TEST);
         JsonObject jo = selfTest.marshalToJson(entity);
         assertEquals(0, jo.getInt("id"));
         assertEquals(TEST, jo.getString("name"));
@@ -78,10 +78,10 @@ public class DataSetAdapterTest implements DataSetAdapter<TestEntity>
     @Test
     public void testUnmarshalFromJson() throws InstantiationException, IllegalAccessException
     {
-        entity.setName(TEST);
+        entity.letName(TEST);
         JsonObject jo = Json.createObjectBuilder()
                 .add("id", entity.getId())
-                .add("name", entity.getName()).build();
+                .add("name", entity.nameGet()).build();
         TestEntity expected = selfTest.unmarshalFromJson(jo);
         assertEquals(expected, entity);
     }

@@ -8,9 +8,9 @@
 
 package ru.otus.rest;
 
-import ru.otus.db.dao.jpa.DeptController;
+import ru.otus.db.dao.jpa.UserController;
 import ru.otus.exceptions.ExceptionThrowable;
-import ru.otus.models.DeptEntity;
+import ru.otus.models.UserEntity;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -19,22 +19,21 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.net.URI;
 
 import static ru.otus.exceptions.ExceptionsFabric.getWebApplicationException;
 import static ru.otus.utils.UniformResource.getRequestURL;
 
 @Stateless
-@Path("/directory")
+@Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
-public class DeptResource
+public class UserResource
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    DeptController controller;
+    UserController controller;
 
     @GET
     public Response readAll()
@@ -51,7 +50,7 @@ public class DeptResource
     public Response read(@PathParam("id") Integer id)
     {
         try {
-            DeptEntity entity = controller.getEntityById(id.longValue());
+            UserEntity entity = controller.getEntityById(id.longValue());
 
             if (null != entity) {
                 return Response.ok(entity).build();
@@ -64,7 +63,7 @@ public class DeptResource
     }
 
     @POST
-    public Response create(DeptEntity entity)
+    public Response create(UserEntity entity)
     {
         try {
             if (controller.create(entity)) {
@@ -78,7 +77,7 @@ public class DeptResource
     }
 
     @PUT
-    public Response update(DeptEntity entity)
+    public Response update(UserEntity entity)
     {
         try {
             entity = controller.update(entity);

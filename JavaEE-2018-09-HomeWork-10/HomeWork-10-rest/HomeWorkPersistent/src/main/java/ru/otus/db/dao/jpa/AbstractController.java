@@ -96,9 +96,7 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         EntityManager em = getEntityManager();
 
         try {
-            em.merge(entity);
-
-            return entity;
+            return em.merge(entity);
         }
         catch (RollbackException e) {
             throw new ExceptionThrowable(e);
@@ -140,9 +138,8 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         try {
             E entity = em.find(classE, key);
             consumer.accept(entity);
-            em.merge(entity);
 
-            return entity;
+            return em.merge(entity);
         }
         catch (RollbackException e) {
             throw new ExceptionThrowable(e);
@@ -179,7 +176,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
 
         try {
             em.persist(entity);
-            em.getTransaction().commit();
 
             return true;
         }
