@@ -23,7 +23,7 @@ import javax.ws.rs.core.Response;
 import static ru.otus.exceptions.ExceptionsFabric.getWebApplicationException;
 
 @Stateless
-@Path("/statistic")
+@Path("/v1/statistic")
 @Produces(MediaType.APPLICATION_JSON)
 public class StatisticResource extends CRUDResource<StatisticEntity, StatisticController>
 {

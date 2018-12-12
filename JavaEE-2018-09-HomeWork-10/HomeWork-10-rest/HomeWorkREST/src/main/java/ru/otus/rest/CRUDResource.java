@@ -26,18 +26,16 @@ public abstract class CRUDResource<E extends DataSet, C extends DAOController<E,
 
     public abstract HttpServletRequest getHttpServletRequest();
 
-    private Response getResponse(E entity)
+    private URI getLocation(E entity)
     {
-        return Response.created(
-            URI.create(getRequestURL(getHttpServletRequest()) + '/' + entity.getId())
-        ).build();
+        return URI.create(getRequestURL(getHttpServletRequest()) + '/' + entity.getId());
     }
 
     public Response create(E entity)
     {
         try {
             if (getDAO().create(entity)) {
-                return getResponse(entity);
+                return Response.created(getLocation(entity)).build();
             }
             throw getWebApplicationException(new Throwable("Error create!"));
         }
@@ -76,8 +74,9 @@ public abstract class CRUDResource<E extends DataSet, C extends DAOController<E,
     {
         try {
             entity = getDAO().update(entity);
+
             if (null != entity) {
-                return getResponse(entity);
+                return Response.ok(getLocation(entity)).build();
             }
             throw getWebApplicationException(new Throwable("Error update!"));
         }

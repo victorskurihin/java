@@ -49,6 +49,8 @@ public class RestApplication extends ResourceConfig
         register(UserResource.class);
         register(GroupResource.class);
         register(StatisticResource.class);
+        register(DiffPayResource.class);
+        register(AnnuityPayResource.class);
     }
 }
 

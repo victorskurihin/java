@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Stateless
-@Path("/directory")
+@Path("/v1/directory")
 @Produces(MediaType.APPLICATION_JSON)
 public class DeptResource extends CRUDResource<DeptEntity, DeptController>
 {

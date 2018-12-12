@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Stateless
-@Path("/users")
+@Path("/v1/users")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource extends CRUDResource<UserEntity, UserController>
 {

@@ -16,10 +16,9 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class Version
 {
-    public static final String VERSION = "{version: 10}";
+    public static final String VERSION = "{\"version\": 1}";
 
     @GET
-    @Path("/json")
     public Response onJson() {
         return Response.status(200)
                        .type(MediaType.APPLICATION_JSON_TYPE)

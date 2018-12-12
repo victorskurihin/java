@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Stateless
-@Path("/registry")
+@Path("/v1/registry")
 @Produces(MediaType.APPLICATION_JSON)
 public class EmpResource extends CRUDResource<EmpEntity, EmpController>
 {
