@@ -16,6 +16,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.List;
 
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
@@ -87,7 +88,7 @@ public class StatisticController extends AbstractController<StatisticEntity, Lon
     @TransactionAttribute(REQUIRES_NEW)
     public long insertProcedure(StatisticEntity entity) throws ExceptionThrowable
     {
-        return callStoredProcedureSingleResult("insert_statistic", proc -> {
+        BigInteger result = callStoredProcedureSingleResult("insert_statistic", proc -> {
             UserEntity user = entity.getUser();
 
             if (null == user) {
@@ -105,6 +106,7 @@ public class StatisticController extends AbstractController<StatisticEntity, Lon
             proc.setParameter("user_id", user.getId());
             proc.setParameter("prev_id", entity.getPreviousId());
         });
+        return result.longValue();
     }
 }
 

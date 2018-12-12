@@ -6,10 +6,11 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-package ru.otus.rest;
+package ru.otus;
 
-import ru.otus.db.dao.jpa.EmpController;
-import ru.otus.models.EmpEntity;
+import ru.otus.db.dao.jpa.GroupController;
+import ru.otus.models.GroupEntity;
+import ru.otus.rest.CRUDResource;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -20,18 +21,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Stateless
-@Path("/registry")
+@Path("/groups")
 @Produces(MediaType.APPLICATION_JSON)
-public class EmpResource extends CRUDResource<EmpEntity, EmpController>
+public class GroupResource extends CRUDResource<GroupEntity, GroupController>
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    EmpController controller;
+    GroupController controller;
 
     @Override
-    public EmpController getDAO()
+    public GroupController getDAO()
     {
         return controller;
     }
@@ -56,13 +57,13 @@ public class EmpResource extends CRUDResource<EmpEntity, EmpController>
     }
 
     @POST
-    public Response create(EmpEntity entity)
+    public Response create(GroupEntity entity)
     {
         return super.create(entity);
     }
 
     @PUT
-    public Response update(EmpEntity entity)
+    public Response update(GroupEntity entity)
     {
         return super.update(entity);
     }

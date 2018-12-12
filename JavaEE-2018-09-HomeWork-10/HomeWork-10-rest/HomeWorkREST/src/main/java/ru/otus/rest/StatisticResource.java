@@ -8,8 +8,9 @@
 
 package ru.otus.rest;
 
-import ru.otus.db.dao.jpa.EmpController;
-import ru.otus.models.EmpEntity;
+import ru.otus.db.dao.jpa.StatisticController;
+import ru.otus.exceptions.ExceptionThrowable;
+import ru.otus.models.StatisticEntity;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -19,19 +20,21 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import static ru.otus.exceptions.ExceptionsFabric.getWebApplicationException;
+
 @Stateless
-@Path("/registry")
+@Path("/statistic")
 @Produces(MediaType.APPLICATION_JSON)
-public class EmpResource extends CRUDResource<EmpEntity, EmpController>
+public class StatisticResource extends CRUDResource<StatisticEntity, StatisticController>
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    EmpController controller;
+    StatisticController controller;
 
     @Override
-    public EmpController getDAO()
+    public StatisticController getDAO()
     {
         return controller;
     }
@@ -56,13 +59,23 @@ public class EmpResource extends CRUDResource<EmpEntity, EmpController>
     }
 
     @POST
-    public Response create(EmpEntity entity)
+    public Response create(StatisticEntity entity)
     {
-        return super.create(entity);
+        try {
+            Long id = getDAO().insertProcedure(entity);
+            Response.Status status = id > -1 ? Response.Status.CREATED : Response.Status.NOT_MODIFIED;
+            return Response.status(status)
+                           .entity(id)
+                           .type(MediaType.TEXT_PLAIN)
+                           .build();
+        }
+        catch (ExceptionThrowable exceptionThrowable) {
+            throw getWebApplicationException(exceptionThrowable);
+        }
     }
 
     @PUT
-    public Response update(EmpEntity entity)
+    public Response update(StatisticEntity entity)
     {
         return super.update(entity);
     }

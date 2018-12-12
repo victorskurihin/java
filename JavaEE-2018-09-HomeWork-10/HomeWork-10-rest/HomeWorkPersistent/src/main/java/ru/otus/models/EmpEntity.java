@@ -42,22 +42,22 @@ public class EmpEntity implements DataSet, Serializable
     @Basic
     @Column(name = "first_name", nullable = false)
     @XmlElement(required = true)
-    @JsonbProperty("first-nameGet")
+    @JsonbProperty("first-name")
     private String firstName;
 
     @Basic
     @Column(name = "second_name", nullable = false)
     @XmlElement(required = true)
-    @JsonbProperty("second-nameGet")
+    @JsonbProperty("second-name")
     private String secondName;
 
     @Basic
     @Column(name = "sur_name", nullable = false)
     @XmlElement(required = true)
-    @JsonbProperty("sur-nameGet")
+    @JsonbProperty("sur-name")
     private String surName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department", referencedColumnName = "id")
     @XmlElement(required = true)
     @XmlJavaTypeAdapter(DeptEntityTypeXMLAdapter.class)
@@ -79,7 +79,7 @@ public class EmpEntity implements DataSet, Serializable
     @XmlAttribute
     private Long salary;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @XmlJavaTypeAdapter(UserEntityTypeXMLAdapter.class)
     @JsonbTypeAdapter(UserEntityJsonAdapter.class)

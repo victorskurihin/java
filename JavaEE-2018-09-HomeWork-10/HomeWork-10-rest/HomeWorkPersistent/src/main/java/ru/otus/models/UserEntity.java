@@ -24,7 +24,7 @@ import java.io.Serializable;
 @Table(name = "users")
 @NamedQueries({
     @NamedQuery(name = "findUserById", query = "SELECT u FROM UserEntity u WHERE u.id = :id"),
-    @NamedQuery(name = "findUserByName", query = "SELECT u FROM UserEntity u WHERE u.login= :nameGet")
+    @NamedQuery(name = "findUserByName", query = "SELECT u FROM UserEntity u WHERE u.login= :name")
 })
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.FIELD)
