@@ -1,9 +1,13 @@
 package ru.otus.models;
 
-import java.util.Arrays;
+import org.springframework.context.annotation.Scope;
+
+import javax.inject.Named;
 import java.util.LinkedList;
 import java.util.List;
 
+@Named("answer")
+@Scope("prototype")
 public class Question implements IQuestion
 {
     private String question;

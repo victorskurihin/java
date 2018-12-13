@@ -1,5 +1,10 @@
 package ru.otus.models;
 
+import javax.inject.Named;
+import org.springframework.context.annotation.Scope;
+
+@Named("answer")
+@Scope("prototype")
 public class Answer implements IAnswer
 {
     private String answer;

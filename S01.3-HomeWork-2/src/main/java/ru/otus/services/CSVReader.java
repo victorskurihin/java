@@ -5,6 +5,8 @@ import ru.otus.models.IAnswer;
 import ru.otus.models.IQuestion;
 import ru.otus.models.IQuestions;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -12,6 +14,7 @@ import java.util.function.Supplier;
 import static ru.otus.utils.IO.readFile;
 import static ru.otus.utils.Strings.split;
 
+@Named("reader")
 public class CSVReader implements IReader
 {
     private String filename = "";
@@ -20,6 +23,8 @@ public class CSVReader implements IReader
 
     public CSVReader() { /* NOne */ }
 
+    @Inject
+    @Named("filename")
     public CSVReader(String filename)
     {
         this.filename = filename;

@@ -39,7 +39,7 @@ public class Main
         catch (ExceptionIO exceptionIO) {
             LOGGER.error(exceptionIO);
         }
-        ConsoleTester exam = ctx.getBean("exam", ConsoleTester.class);
+        ConsoleTester exam = ctx.getBean("tester", ConsoleTester.class);
         exam.run();
     }
 }

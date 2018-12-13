@@ -3,15 +3,25 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util
         http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="ru.otus"/>
 
     <util:constant id="in" static-field="java.lang.System.in" />
     <util:constant id="out" static-field="java.lang.System.out" />
 
+    <bean id="filename" class="java.lang.String">
+        <constructor-arg value="quests.csv"/>
+    </bean>
+
+<!--
     <bean id="answer" class="ru.otus.models.Answer" scope="prototype"/>
     <bean id="question" class="ru.otus.models.Question" scope="prototype"/>
     <bean id="setOfQuestions" class="ru.otus.models.Questions"/>
@@ -26,5 +36,6 @@
         <constructor-arg index="1" ref="out"/>
         <property name="setOfQuestions" ref="setOfQuestions"/>
     </bean>
+-->
 
 </beans>

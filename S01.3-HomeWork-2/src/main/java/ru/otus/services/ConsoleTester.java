@@ -2,11 +2,14 @@ package ru.otus.services;
 
 import ru.otus.models.*;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.*;
 
-public class ConsoleTester implements IExam
+@Named("tester")
+public class ConsoleTester implements ITester
 {
     public final static String NL = System.lineSeparator();
 
@@ -18,8 +21,11 @@ public class ConsoleTester implements IExam
 
     private String surName;
 
+    @Inject
+    @Named("questions")
     private IQuestions setOfQuestions;
 
+    @Inject
     public ConsoleTester(InputStream in, PrintStream out)
     {
         this.out = out;
