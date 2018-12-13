@@ -1,14 +1,11 @@
 package ru.otus.models;
 
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@DisplayName("Class Question")
 class QuestionTest
 {
     Question question;
@@ -38,7 +36,7 @@ class QuestionTest
 
         @Test
         @DisplayName("default values in Answer()")
-        void isEmpty() {
+        void defaults() {
             assertThat(question).hasFieldOrPropertyWithValue("question", null);
             assertThat(question).hasFieldOrProperty("answers").isNotNull();
             assertTrue(question.getAnswers().isEmpty());
@@ -55,7 +53,7 @@ class QuestionTest
 
         @Test
         @DisplayName("Setter and getter for answers")
-        void testScore()
+        void testAnswers()
         {
             Answer answer = new Answer();
             List<IAnswer> answers = new ArrayList<>(Collections.singletonList(answer));
@@ -66,6 +64,7 @@ class QuestionTest
         }
 
         @Test
+        @DisplayName("Equals for class Question and hashCode")
         void testEquals()
         {
             Question expected = new Question();
@@ -81,6 +80,7 @@ class QuestionTest
         }
 
         @Test
+        @DisplayName("The length of Question::toString is great than zero")
         void testToString()
         {
             assertTrue(question.toString().length() > 0);

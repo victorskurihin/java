@@ -1,98 +1,112 @@
 package ru.otus.models;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
-public class QuestionsTest
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@DisplayName("Class Questions")
+class QuestionsTest
 {
-    private Questions setOfQuestions;
+    Questions questions;
 
-    @Before
-    public void setUp() throws Exception
-    {
-        setOfQuestions = new Questions();
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
-        setOfQuestions = null;
-    }
 
     @Test
-    public void testQuestions()
-    {
-        setOfQuestions.setQuestions(new LinkedList<>());
-        Assert.assertEquals(new LinkedList<>(), setOfQuestions.getQuestions());
+    @DisplayName("is instantiated with new Questions()")
+    void isInstantiatedWithNew() {
+        new Questions();
     }
 
-    @Test
-    public void testScore()
+    @Nested
+    @DisplayName("when new")
+    class WhenNew
     {
-        setOfQuestions.setScore(13);
-        Assert.assertEquals(13, setOfQuestions.getScore());
-        setOfQuestions.addScore(4);
-        Assert.assertEquals(17, setOfQuestions.getScore());
-    }
-
-    @Test
-    public void testSize()
-    {
-        Assert.assertEquals(0, setOfQuestions.size());
-        setOfQuestions.setQuestions(Collections.singletonList(new Question()));
-        Assert.assertEquals(1, setOfQuestions.size());
-    }
-
-
-    private Question[] getTestDataQuestions(Questions testDataSet)
-    {
-        Question[] questions = new Question[]{ new Question(), new Question(), new Question()};
-        questions[0].setQuestion("question0");
-        questions[1].setQuestion("question1");
-        questions[1].setAnswers(Collections.singletonList(new Answer()));
-        testDataSet.setQuestions(Arrays.asList(questions));
-
-        return questions;
-    }
-
-    @Test
-    public void testIterate()
-    {
-        Question[] questions = getTestDataQuestions(setOfQuestions);
-
-        int i = 0;
-        Iterator<IQuestion> questionIterator = setOfQuestions.iterator();
-        while (questionIterator.hasNext()) {
-            Question question = (Question) questionIterator.next();
-            Assert.assertTrue(question == questions[i++]);
+        @BeforeEach
+        void createNewQuestions() {
+            questions = new Questions();
         }
-        Assert.assertTrue(i > 0);
-    }
-    @Test
-    public void testEquals()
-    {
-        Questions expected = new Questions();
-        Assert.assertEquals(expected.hashCode(), setOfQuestions.hashCode());
 
-        getTestDataQuestions(setOfQuestions);
-        getTestDataQuestions(expected);
-        Assert.assertEquals(expected.hashCode(), setOfQuestions.hashCode());
-        Assert.assertTrue(setOfQuestions.equals(expected));
-        Assert.assertFalse(setOfQuestions.equals(null));
-        Assert.assertFalse(setOfQuestions.equals(new Object()));
-        Assert.assertEquals(expected.hashCode(), setOfQuestions.hashCode());
-    }
+        @Test
+        @DisplayName("default values in Questions()")
+        void defaults() {
+            assertThat(questions).hasFieldOrPropertyWithValue("activeQuestion", 0);
+            assertThat(questions).hasFieldOrPropertyWithValue("score", 0);
+            assertThat(questions).hasFieldOrProperty("questions").isNotNull();
+            assertTrue(questions.getQuestions().isEmpty());
+        }
 
-    @Test
-    public void testToString()
-    {
-        Assert.assertTrue(setOfQuestions.toString().length() > 0);
+        @Test
+        @DisplayName("Setter and getter for score")
+        void testScore()
+        {
+            questions.setScore(13);
+            assertThat(questions).hasFieldOrPropertyWithValue("score", 13);
+            assertEquals(13, questions.getScore());
+        }
+
+        @Test
+        @DisplayName("The method size")
+        public void testSize()
+        {
+            assertEquals(0, questions.size());
+            questions.setQuestions(Collections.singletonList(new Question()));
+            assertEquals(1, questions.size());
+        }
+
+        private Question[] getTestDataQuestions(Questions testDataSet)
+        {
+            Question[] questions = new Question[]{ new Question(), new Question(), new Question()};
+            questions[0].setQuestion("question0");
+            questions[1].setQuestion("question1");
+            questions[1].setAnswers(Collections.singletonList(new Answer()));
+            testDataSet.setQuestions(Arrays.asList(questions));
+
+            return questions;
+        }
+
+        @Test
+        public void testIterate()
+        {
+            Question[] questionsArray = getTestDataQuestions(questions);
+
+            int i = 0;
+            Iterator<IQuestion> questionIterator = questions.iterator();
+            while (questionIterator.hasNext()) {
+                Question question = (Question) questionIterator.next();
+                assertTrue(question == questionsArray[i++]);
+                assertThat(questions).hasFieldOrPropertyWithValue("activeQuestion", i);
+            }
+            assertTrue(i > 0);
+        }
+
+        @Test
+        @DisplayName("Equals for class Questions and hashCode")
+        public void testEquals()
+        {
+            Questions expected = new Questions();
+            assertEquals(expected.hashCode(), questions.hashCode());
+
+            getTestDataQuestions(questions);
+            getTestDataQuestions(expected);
+            assertEquals(expected.hashCode(), questions.hashCode());
+            assertTrue(questions.equals(expected));
+            assertFalse(questions.equals(null));
+            assertFalse(questions.equals(new Object()));
+            assertEquals(expected.hashCode(), questions.hashCode());
+        }
+
+        @Test
+        @DisplayName("The length of Questions::toString is great than zero")
+        public void testToString()
+        {
+            assertTrue(questions.toString().length() > 0);
+        }
     }
 }

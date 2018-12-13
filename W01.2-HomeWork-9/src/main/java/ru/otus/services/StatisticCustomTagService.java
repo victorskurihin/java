@@ -6,7 +6,7 @@
  * For more information, please refer to <http://unlicense.org>
  */
 
-package ru.otus.services;
+package ru.otus.server.services;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,10 +26,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
-import static ru.otus.gwt.shared.Constants.*;
+import static ru.otus.shared.Constants.*;
 
 public class StatisticCustomTagService implements DataOrigin, StatisticService
 {

@@ -29,7 +29,7 @@ class AnswerTest
 
         @Test
         @DisplayName("default values in Answer()")
-        void isEmpty() {
+        void defaults() {
             assertThat(answer).hasFieldOrPropertyWithValue("answer", null);
             assertThat(answer).hasFieldOrPropertyWithValue("score", 0);
         }
@@ -69,6 +69,7 @@ class AnswerTest
         }
 
         @Test
+        @DisplayName("The length of Answer::toString is great than zero")
         void testToString()
         {
             assertTrue(answer.toString().length() > 0);
