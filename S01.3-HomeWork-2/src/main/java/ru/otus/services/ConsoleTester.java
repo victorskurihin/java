@@ -1,14 +1,14 @@
 package ru.otus.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.otus.models.*;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.*;
 
-@Named("tester")
+@Service("tester")
 public class ConsoleTester implements ITester
 {
     public final static String NL = System.lineSeparator();
@@ -21,25 +21,24 @@ public class ConsoleTester implements ITester
 
     private String surName;
 
-    @Inject
-    @Named("questions")
-    private IQuestions setOfQuestions;
+    @Autowired
+    private IQuestions questions;
 
-    @Inject
+    @Autowired
     public ConsoleTester(InputStream in, PrintStream out)
     {
         this.out = out;
         this.scanner = new Scanner(in);
     }
 
-    public IQuestions getSetOfQuestions()
+    public IQuestions getQuestions()
     {
-        return setOfQuestions;
+        return questions;
     }
 
-    public void setSetOfQuestions(IQuestions setOfQuestions)
+    public void setQuestions(IQuestions questions)
     {
-        this.setOfQuestions = setOfQuestions;
+        this.questions = questions;
     }
 
     void showQuestion(String question)
@@ -111,7 +110,7 @@ public class ConsoleTester implements ITester
         out.println("Enter 0 for exit.");
         readPersonalInfo();
 
-        for (IQuestion question : setOfQuestions) {
+        for (IQuestion question : questions) {
 
             out.println();
             int answerIndex = 0;
@@ -128,15 +127,15 @@ public class ConsoleTester implements ITester
 
             if (0 == answerIndex) return;
 
-            setOfQuestions.addScore(question.getAnswers().get(answerIndex - 1).getScore());
+            questions.addScore(question.getAnswers().get(answerIndex - 1).getScore());
         }
 
         out.println(NL + "Dear " + firstName + " " + surName);
-        out.println("your score: " + setOfQuestions.getScore());
+        out.println("your score: " + questions.getScore());
     }
 
     public int getScore()
     {
-        return setOfQuestions.getScore();
+        return questions.getScore();
     }
 }

@@ -1,12 +1,12 @@
 package ru.otus.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.otus.exeptions.ExceptionIO;
 import ru.otus.models.IAnswer;
 import ru.otus.models.IQuestion;
 import ru.otus.models.IQuestions;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -14,30 +14,30 @@ import java.util.function.Supplier;
 import static ru.otus.utils.IO.readFile;
 import static ru.otus.utils.Strings.split;
 
-@Named("reader")
+@Service("reader")
 public class CSVReader implements IReader
 {
     private String filename = "";
 
-    private IQuestions setOfQuestions;
+    @Autowired
+    private IQuestions questions;
 
     public CSVReader() { /* NOne */ }
 
-    @Inject
-    @Named("filename")
+    @Autowired
     public CSVReader(String filename)
     {
         this.filename = filename;
     }
 
-    public IQuestions getSetOfQuestions()
+    public IQuestions getQuestions()
     {
-        return setOfQuestions;
+        return questions;
     }
 
-    public void setSetOfQuestions(IQuestions setOfQuestions)
+    public void setQuestions(IQuestions questions)
     {
-        this.setOfQuestions = setOfQuestions;
+        this.questions = questions;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class CSVReader implements IReader
                     question.addAnswer(answer);
                 }
 
-                setOfQuestions.addQuestion(question);
+                questions.addQuestion(question);
             });
         }
         catch (IOException e) {

@@ -28,8 +28,8 @@ public class CSVReaderTest
     @Test
     public void testSetOfQuestions() {
         Questions expected = new Questions();
-        reader.setSetOfQuestions(new Questions());
-        Assert.assertEquals(expected, reader.getSetOfQuestions());
+        reader.setQuestions(new Questions());
+        Assert.assertEquals(expected, reader.getQuestions());
     }
 
     @Test(expected = NullPointerException.class)

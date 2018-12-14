@@ -80,7 +80,7 @@ class QuestionTest
         }
 
         @Test
-        @DisplayName("The length of Question::toString is great than zero")
+        @DisplayName("The length of string from Question::toString is great than zero")
         void testToString()
         {
             assertTrue(question.toString().length() > 0);
