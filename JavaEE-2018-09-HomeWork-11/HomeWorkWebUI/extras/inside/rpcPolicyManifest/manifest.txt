@@ -1,0 +1,4 @@
+# Module inside
+# RPC service class, partial path of RPC policy file
+ru.otus.client.service.InsideService, 05FC679F49A90763BB36750A71DAF4B3.gwt.rpc
+ru.otus.client.service.LoginService, FFE7195343FC82ABCC223F79238D746E.gwt.rpc

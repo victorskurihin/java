@@ -1,0 +1,46 @@
+<!--
+  ~ PayView.ui.xml
+  ~ This file was last modified at 01.12.18 11:39 by Victor N. Skurikhin.
+  ~ $Id$
+  ~ This is free and unencumbered software released into the public domain.
+  ~ For more information, please refer to <http://unlicense.org>
+  -->
+
+<!--suppress GWTStyleCheck -->
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:elem='urn:import:com.google.gwt.dom.client'>
+    <ui:with field='res' type='ru.otus.client.text.ApplicationConstants'/>
+    <ui:style>
+        .redButton {
+        font-size: 10px;
+        }
+        .marginTop5px {
+        margin-top: 5px;
+        }
+    </ui:style>
+    <g:VerticalPanel addStyleNames="w3-row login-margin">
+        <g:HorizontalPanel ui:field="countOfPeriodPanel" addStyleNames="w3-col m1 text-margin">
+            <g:Label text="количество периодов оплаты: " addStyleNames="firstColumnWidth"/>
+            <g:TextBox ui:field="countOfPeriodTextField" addStyleNames="inputWidth"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel ui:field="sumOfCreditPanel" addStyleNames="w3-col m1 text-margin">
+            <g:Label text="сумма кредита: " addStyleNames="firstColumnWidth"/>
+            <g:TextBox ui:field="sumOfCreditTextField" addStyleNames="inputWidth"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel ui:field="pctPanel" addStyleNames="w3-col m1 text-margin">
+            <g:Label text="процентная ставка: " addStyleNames="firstColumnWidth"/>
+            <g:TextBox ui:field="pctTextField" addStyleNames="inputWidth"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
+            <g:Button text="дифференцированный платеж" ui:field="submit1" addStyleNames="{style.redButton} submitArea"/>
+        </g:HorizontalPanel>
+
+        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
+            <g:Button text="аннуитетный платеж" ui:field="submit2" addStyleNames="{style.redButton} submitArea"/>
+        </g:HorizontalPanel>
+    </g:VerticalPanel>
+</ui:UiBinder>

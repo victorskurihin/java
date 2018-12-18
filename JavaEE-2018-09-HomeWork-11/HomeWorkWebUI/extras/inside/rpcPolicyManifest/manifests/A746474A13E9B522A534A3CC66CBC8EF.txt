@@ -1,0 +1,2 @@
+serviceClass: ru.otus.client.service.LoginService
+path: FFE7195343FC82ABCC223F79238D746E.gwt.rpc

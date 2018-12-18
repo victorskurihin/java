@@ -1,0 +1,414 @@
+* {
+    font-family: Lucida Sans, Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
+}
+
+.bg-color-bbb {
+    background-color: #bbb!important
+}
+
+.div-header {
+    float: left;
+    margin-right: 0
+}
+
+.search-label {
+    float: right;
+    margin: 2px 5px 0 0;
+    width: 17%;
+    min-width: 170px
+}
+
+.my-margin-2{margin:2px}
+
+.my-left {
+    width: 79%;
+    min-width: 800px
+}
+
+.my-right {
+    width: 21%;
+    min-width: 212px
+}
+
+.firstColumnWidth {
+    width: 100px;
+    display: inline-block;
+    text-align: right;
+    margin-top: 5px
+}
+
+.inputWidth {
+    width: 200px
+}
+
+.tg {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+.tg td {
+    border: 0 solid black;
+    overflow: hidden;
+    padding: 0;
+    word-break: normal
+}
+
+.tg th {
+    border: 0 solid black;
+    overflow: hidden;
+    padding: 0;
+    word-break: normal
+}
+
+.tg .tg-lqy6 {
+    horiz-align: right;
+    text-align: right;
+    vertical-align: top
+}
+
+.tg .tg-0lax {
+    horiz-align: left;
+    text-align: left;
+    vertical-align: top
+}
+
+.tg1 {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+.tg1 td {
+    border: 1px solid black;
+    overflow: hidden;
+    padding: 1px;
+    word-break: normal
+}
+
+.tg1 th {
+    border: 0 solid black;
+    overflow: hidden;
+    padding: 1px;
+    word-break: normal
+}
+
+.tg1 .tg-0lax {
+    horiz-align: left;
+    text-align: left;
+    vertical-align: top
+}
+
+html {
+    height: 100%
+}
+
+.body {
+    margin: 0 auto;
+    min-width: 1024px;
+    width: 90%
+}
+
+.main-header {
+    border-radius: 1px;
+    box-shadow: 0 3px 0 0 grey;
+    margin-left: 2px;
+    padding: 3px 0px 3px 3px;
+    text-align: center
+}
+
+header h1 {
+    color: black;
+    font-size: 36px;
+    margin: 0
+}
+
+header h2 {
+    font-size: 18px;
+    margin: 0;
+    color: grey;
+    font-style: italic
+}
+
+nav.menu {
+    padding: 0
+}
+
+nav.menu ul {
+    background-color: dimgray;
+    border-radius: 2px;
+    clear: right;
+    display: block;
+    height: 20px;
+    list-style: none;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    padding: 2px 20px 5px 10px
+}
+
+nav.menu ul li {
+    border-right: 1px solid #808080;
+    display: inline;
+    height: 20px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    padding: 2px 10px 5px 10px
+}
+
+nav.menu ul li a {
+    color: #F0F0F0;
+    font-size: 13px;
+    font-weight: bold;
+    text-decoration: none
+}
+
+nav.menu ul li a:hover {
+    color: white
+}
+
+aside {
+    border-left: 2px
+}
+
+aside ul {
+    display: block;
+    list-style: none;
+    margin: 0 0 0 15px;
+    padding: 0 15px
+}
+
+.news {
+    display: block;
+    font-size: 14px;
+    list-style: lower-greek;
+    margin: 0 0 10px 1px;
+    text-decoration: none
+}
+
+.deckpanel {
+    border: 0;
+    width: 100%
+}
+.valute {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none
+}
+
+aside ul li {
+    display: list-item
+}
+
+aside ul li a {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none
+}
+
+
+aside > ul li a:hover {
+    border-bottom: 1px solid currentColor; /* Or whatever color you want */
+    text-decoration: none
+}
+
+article > header time {
+    border-radius: 4px;
+    color: #123;
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding: 2px;
+    text-align: center;
+    width: 26px
+}
+
+article > header time span {
+    color: #123;
+    font-size: 10px;
+    font-weight: normal;
+    text-transform: uppercase
+}
+
+article > header h1 {
+    font-size: 20px;
+    margin-left: 14px;
+    margin-top: 10px;
+    text-shadow: 1px 1px 1px #FFFFFF, 1px 1px 1px #AAAAAA;
+    text-align: left
+}
+
+article > header h1 a {
+    color: darkblue;
+    text-decoration: none;
+}
+
+article > header h1 a:hover {
+    color: darkblue;
+    border-bottom: 1px solid currentColor; /* Or whatever color you want */
+    text-decoration: none
+}
+
+article > section header h1 {
+    font-size: 16px
+}
+
+article p {
+    clear: both
+}
+
+* a:hover {
+    color: darkcyan;
+    border-bottom: 1px solid currentColor; /* Or whatever color you want */
+    text-decoration: none
+}
+
+hr.separator {
+    border: 0;
+    margin: 20px 0
+}
+
+.p-text-justify {
+    text-align: justify;
+    text-justify: inter-word
+}
+
+.login-margin {
+    margin: 20px 20px 20px 20px;
+}
+
+.text-margin {
+    margin: 2px 15px
+}
+
+form.find {
+    position: relative;
+    width: 200px;
+    margin: 0 auto
+}
+
+input.find, button.find {
+    border: none;
+    outline: none;
+    border-radius: 3px
+}
+
+input.find {
+    width: 100%;
+    height: 42px;
+    background: lightgray;
+    padding-left: 7px
+}
+
+input#name {
+    width: 250px;
+    background: lightgray
+}
+
+input#email {
+    width: 275px;
+    background: lightgray
+}
+
+input#subject {
+    width: 300px;
+    background: lightgray
+}
+
+textarea#comment {
+    width: 300px;
+    background: lightgray
+}
+
+button.find {
+    height: 26px;
+    width: 26px;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: lightgray;
+    cursor: pointer
+}
+
+button.find:before {
+    content: "\f1a0";
+    font-family: "Font Awesome 5 Brands";
+    color: darkblue;
+    font-size: 20px;
+    font-weight: bold
+}
+
+.my-browser-icon {
+    width: 48px;
+    height: 48px
+}
+
+table.my-browser-table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+table.my-browser-table td, table.my-browser-table th {
+    padding: 0;
+    overflow: hidden;
+    word-break: normal;
+    border-width: 0
+}
+table.my-browser-table td:nth-child(odd) {
+    background: #FBFBFB;
+    width: 33px
+}
+table.my-browser-table td:nth-child(even) {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 1px;
+    margin: 1px
+}
+table.my-browser-table thead {
+    background: #FFFFFF;
+    border-bottom: 4px solid #333333
+}
+table.my-browser-table thead th {
+    font-size: 15px;
+    font-weight: bold;
+    color: #333333;
+    text-align: center;
+    border-left: 2px solid #333333
+}
+table.my-browser-table thead th:first-child {
+    border-left: none
+}
+
+table.my-browser-table tfoot td {
+    font-size: 14px
+}
+
+.text-align-left {
+    text-align: left!important
+}
+
+.text-align-right {
+    text-align: right !important
+}
+
+.margin-right-1px {
+    margin-right: 1px !important
+}
+
+.padding-right-1px {
+    padding-right: 1px !important
+}
+
+.padding-right-2px {
+    padding-right: 2px !important
+}
+
+.padding-right-5px {
+    padding-right: 5px !important
+}
+
+.my-main-aside {
+    min-height: 555px;
+}
