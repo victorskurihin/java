@@ -1,11 +1,12 @@
 package ru.otus.models;
 
-import javax.inject.Named;
+import org.springframework.stereotype.Component;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-@Named("questions")
+@Component("questions")
 public class Questions implements IQuestions
 {
     private List<IQuestion> questions = new LinkedList<>();

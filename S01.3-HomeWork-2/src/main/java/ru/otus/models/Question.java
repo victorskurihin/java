@@ -1,12 +1,12 @@
 package ru.otus.models;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-import javax.inject.Named;
 import java.util.LinkedList;
 import java.util.List;
 
-@Named("answer")
+@Component("question")
 @Scope("prototype")
 public class Question implements IQuestion
 {

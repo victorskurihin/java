@@ -1,9 +1,9 @@
 package ru.otus.models;
 
-import javax.inject.Named;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
-@Named("answer")
+@Component("answer")
 @Scope("prototype")
 public class Answer implements IAnswer
 {

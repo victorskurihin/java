@@ -57,8 +57,8 @@ public class ConsoleTesterTest
     public void testSetOfQuestions()
     {
         Questions expected = new Questions();
-        consoleTester.setSetOfQuestions(new Questions());
-        Assert.assertEquals(expected, consoleTester.getSetOfQuestions());
+        consoleTester.setQuestions(new Questions());
+        Assert.assertEquals(expected, consoleTester.getQuestions());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ConsoleTesterTest
     @Test
     public void testGetScore()
     {
-        consoleTester.setSetOfQuestions(new Questions());
+        consoleTester.setQuestions(new Questions());
         Assert.assertEquals(0, consoleTester.getScore());
     }
 
@@ -104,7 +104,7 @@ public class ConsoleTesterTest
         question.setAnswers(Collections.singletonList(answer));
         Questions questions = new Questions();
         questions.addQuestion(question);
-        consoleTester.setSetOfQuestions(questions);
+        consoleTester.setQuestions(questions);
         consoleTester.run();
         Assert.assertEquals(13, consoleTester.getScore());
     }
