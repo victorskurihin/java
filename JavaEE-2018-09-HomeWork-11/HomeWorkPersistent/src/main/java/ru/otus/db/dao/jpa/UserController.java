@@ -14,6 +14,7 @@
 
 package ru.otus.db.dao.jpa;
 
+import ru.otus.db.dao.UserDAO;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.UserEntity;
 
@@ -26,10 +27,9 @@ import java.util.List;
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import static javax.ejb.TransactionAttributeType.SUPPORTS;
 
-@Stateless
-@LocalBean
+@Stateless(name="UserDAO", mappedName = "ejb/UserDAO")
 @TransactionAttribute(SUPPORTS)
-public class UserController extends AbstractController<UserEntity, Long>
+public class UserController extends AbstractController<UserEntity, Long> implements UserDAO
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
 

@@ -33,9 +33,9 @@ public interface InsideService extends RemoteService
 
     List<Emp> searchEmp(Search search);
 
-    ArrayList<Double> diffPay(int t, int kr, int st);
+    ArrayList<String> diffPay(int t, int kr, int st);
 
-    ArrayList<Double> annuPay(int t, int kr, int st);
+    ArrayList<String> annuPay(int t, int kr, int st);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et

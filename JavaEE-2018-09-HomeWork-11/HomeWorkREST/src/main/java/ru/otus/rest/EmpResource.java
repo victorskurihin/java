@@ -8,7 +8,7 @@
 
 package ru.otus.rest;
 
-import ru.otus.db.dao.jpa.EmpController;
+import ru.otus.db.dao.EmpDAO;
 import ru.otus.models.EmpEntity;
 
 import javax.ejb.EJB;
@@ -22,18 +22,18 @@ import javax.ws.rs.core.Response;
 @Stateless
 @Path("/v1/registry")
 @Produces(MediaType.APPLICATION_JSON)
-public class EmpResource extends CRUDResource<EmpEntity, EmpController>
+public class EmpResource extends CRUDResource<EmpEntity, EmpDAO>
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    EmpController controller;
+    EmpDAO dao;
 
     @Override
-    public EmpController getDAO()
+    public EmpDAO getDAO()
     {
-        return controller;
+        return dao;
     }
 
     @Override

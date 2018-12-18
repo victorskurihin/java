@@ -8,6 +8,7 @@
 
 package ru.otus.rest;
 
+import ru.otus.db.dao.UserDAO;
 import ru.otus.db.dao.jpa.UserController;
 import ru.otus.models.UserEntity;
 
@@ -22,18 +23,18 @@ import javax.ws.rs.core.Response;
 @Stateless
 @Path("/v1/users")
 @Produces(MediaType.APPLICATION_JSON)
-public class UserResource extends CRUDResource<UserEntity, UserController>
+public class UserResource extends CRUDResource<UserEntity, UserDAO>
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    UserController controller;
+    UserDAO dao;
 
     @Override
-    public UserController getDAO()
+    public UserDAO getDAO()
     {
-        return controller;
+        return dao;
     }
 
     @Override

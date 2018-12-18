@@ -18,29 +18,47 @@
         .marginTop5px {
         margin-top: 5px;
         }
-    </ui:style>
-    <g:VerticalPanel addStyleNames="w3-row login-margin">
-        <g:HorizontalPanel ui:field="countOfPeriodPanel" addStyleNames="w3-col m1 text-margin">
-            <g:Label text="количество периодов оплаты: " addStyleNames="firstColumnWidth"/>
-            <g:TextBox ui:field="countOfPeriodTextField" addStyleNames="inputWidth"/>
-        </g:HorizontalPanel>
+    <!--</ui:style>-->
+        <!--<table width="400" border="0" cellSpacing="10" borderWidth="1">-->
+            <!--<tr>-->
+                <!--<td>-->
+                    <g:VerticalPanel addStyleNames="w3-row login-margin">
+                        <g:HorizontalPanel ui:field="countOfPeriodPanel" addStyleNames="w3-col m1 text-margin">
+                            <g:Label text="количество периодов оплаты: " addStyleNames="firstColumnWidth"/>
+                            <g:TextBox ui:field="countOfPeriodTextField" addStyleNames="inputWidth"/>
+                        </g:HorizontalPanel>
 
-        <g:HorizontalPanel ui:field="sumOfCreditPanel" addStyleNames="w3-col m1 text-margin">
-            <g:Label text="сумма кредита: " addStyleNames="firstColumnWidth"/>
-            <g:TextBox ui:field="sumOfCreditTextField" addStyleNames="inputWidth"/>
-        </g:HorizontalPanel>
+                        <g:HorizontalPanel ui:field="sumOfCreditPanel" addStyleNames="w3-col m1 text-margin">
+                            <g:Label text="сумма кредита: " addStyleNames="firstColumnWidth"/>
+                            <g:TextBox ui:field="sumOfCreditTextField" addStyleNames="inputWidth"/>
+                        </g:HorizontalPanel>
 
-        <g:HorizontalPanel ui:field="pctPanel" addStyleNames="w3-col m1 text-margin">
-            <g:Label text="процентная ставка: " addStyleNames="firstColumnWidth"/>
-            <g:TextBox ui:field="pctTextField" addStyleNames="inputWidth"/>
-        </g:HorizontalPanel>
+                        <g:HorizontalPanel ui:field="pctPanel" addStyleNames="w3-col m1 text-margin">
+                            <g:Label text="процентная ставка: " addStyleNames="firstColumnWidth"/>
+                            <g:TextBox ui:field="pctTextField" addStyleNames="inputWidth"/>
+                        </g:HorizontalPanel>
 
-        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
-            <g:Button text="дифференцированный платеж" ui:field="submit1" addStyleNames="{style.redButton} submitArea"/>
-        </g:HorizontalPanel>
+                        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin"
+                                           horizontalAlignment="ALIGN_CENTER"
+                                           width="100%">
+                            <g:Button text="дифференцированный платеж" ui:field="submit1"
+                                      addStyleNames="{style.redButton} submitArea"/>
+                        </g:HorizontalPanel>
 
-        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin" horizontalAlignment="ALIGN_CENTER" width="100%">
-            <g:Button text="аннуитетный платеж" ui:field="submit2" addStyleNames="{style.redButton} submitArea"/>
-        </g:HorizontalPanel>
-    </g:VerticalPanel>
+                        <g:HorizontalPanel addStyleNames="w3-col m1 submitArea text-margin"
+                                           horizontalAlignment="ALIGN_CENTER"
+                                           width="100%">
+                            <g:Button text="аннуитетный платеж" ui:field="submit2"
+                                      addStyleNames="{style.redButton} submitArea"/>
+                        </g:HorizontalPanel>
+                    </g:VerticalPanel>
+                <!--</td>-->
+                <!--<td>-->
+                    <!--<g:VerticalPanel>-->
+                        <!--<g:HorizontalPanel ui:field="list" addStyleNames="w3-col m1 text-margin">-->
+                        <!--</g:HorizontalPanel>-->
+                    <!--</g:VerticalPanel>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
 </ui:UiBinder>

@@ -8,7 +8,7 @@
 
 package ru.otus.rest;
 
-import ru.otus.db.dao.jpa.StatisticController;
+import ru.otus.db.dao.StatisticDAO;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.StatisticEntity;
 
@@ -25,18 +25,18 @@ import static ru.otus.exceptions.ExceptionsFabric.getWebApplicationException;
 @Stateless
 @Path("/v1/statistic")
 @Produces(MediaType.APPLICATION_JSON)
-public class StatisticResource extends CRUDResource<StatisticEntity, StatisticController>
+public class StatisticResource extends CRUDResource<StatisticEntity, StatisticDAO>
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    StatisticController controller;
+    StatisticDAO dao;
 
     @Override
-    public StatisticController getDAO()
+    public StatisticDAO getDAO()
     {
-        return controller;
+        return dao;
     }
 
     @Override

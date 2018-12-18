@@ -8,10 +8,10 @@
 
 package ru.otus.db.dao.jpa;
 
+import ru.otus.db.dao.EmpDAO;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.EmpEntity;
 
-import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.persistence.*;
@@ -20,10 +20,9 @@ import java.util.List;
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import static javax.ejb.TransactionAttributeType.SUPPORTS;
 
-@Stateless
-@LocalBean
+@Stateless(name="EmpDAO", mappedName = "ejb/EmpDAO")
 @TransactionAttribute(SUPPORTS)
-public class EmpController extends AbstractController<EmpEntity, Long>
+public class EmpController extends AbstractController<EmpEntity, Long> implements EmpDAO
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
 
@@ -82,30 +81,35 @@ public class EmpController extends AbstractController<EmpEntity, Long>
         return mergeEntity(entity) != null;
     }
 
+    @Override
     @TransactionAttribute(REQUIRES_NEW)
     public void updateFirstName(Long id, String firstName) throws ExceptionThrowable
     {
         updateEntity(id, entity -> entity.setFirstName(firstName));
     }
 
+    @Override
     @TransactionAttribute(REQUIRES_NEW)
     public void updateSecondName(Long id, String secondName) throws ExceptionThrowable
     {
         updateEntity(id, entity -> entity.setSecondName(secondName));
     }
 
+    @Override
     @TransactionAttribute(REQUIRES_NEW)
     public void updateSurName(Long id, String surName) throws ExceptionThrowable
     {
         updateEntity(id, entity -> entity.setSurName(surName));
     }
 
+    @Override
     @TransactionAttribute(SUPPORTS)
     public long getMaxSalary() throws ExceptionThrowable
     {
         return getMaxLong("salary", EmpEntity.class);
     }
 
+    @Override
     @TransactionAttribute(SUPPORTS)
     public double getAvgSalary() throws ExceptionThrowable
     {

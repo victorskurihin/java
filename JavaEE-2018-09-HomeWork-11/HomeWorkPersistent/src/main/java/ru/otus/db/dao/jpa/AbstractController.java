@@ -8,7 +8,7 @@
 
 package ru.otus.db.dao.jpa;
 
-import ru.otus.db.dao.JPAController;
+import ru.otus.db.dao.DAOController;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.DataSet;
 
@@ -20,7 +20,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class AbstractController<E extends DataSet, K> implements JPAController<E, K>
+public abstract class AbstractController<E extends DataSet, K> implements DAOController<E, K>
 {
     private Class<E> classE;
 
@@ -241,7 +241,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         }
     }
 
-    @Override
     public E findById(EntityManager entityManager, long key) throws ExceptionThrowable
     {
         if (null == classE) {
@@ -251,7 +250,6 @@ public abstract class AbstractController<E extends DataSet, K> implements JPACon
         return entityManager.find(classE, key);
     }
 
-    @Override
     public E findById(long key) throws ExceptionThrowable
     {
         EntityManager em = getEntityManager();

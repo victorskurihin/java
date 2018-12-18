@@ -8,10 +8,10 @@
 
 package ru.otus.db.dao.jpa;
 
+import ru.otus.db.dao.DeptDAO;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;
 
-import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.persistence.*;
@@ -20,10 +20,9 @@ import java.util.List;
 import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import static javax.ejb.TransactionAttributeType.SUPPORTS;
 
-@Stateless
-@Remote
+@Stateless(name="DeptDAO", mappedName = "ejb/DeptDAO")
 @TransactionAttribute(SUPPORTS)
-public class DeptController extends AbstractController<DeptEntity, Long>
+public class DeptController extends AbstractController<DeptEntity, Long> implements DeptDAO
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
 
@@ -61,6 +60,7 @@ public class DeptController extends AbstractController<DeptEntity, Long>
         return getEntityViaClassById(id, DeptEntity.class);
     }
 
+    @Override
     @TransactionAttribute(SUPPORTS)
     public DeptEntity getEntityByTitle(String title) throws ExceptionThrowable
     {

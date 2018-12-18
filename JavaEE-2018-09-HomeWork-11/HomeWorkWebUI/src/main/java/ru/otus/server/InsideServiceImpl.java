@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class InsideServiceImpl extends RemoteServiceServlet implements InsideService
 {
@@ -104,10 +105,10 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
 
     private static URI getBaseURI()
     {
-        return UriBuilder.fromUri("http://localhost:8080/homework11-rest").build();
+        return UriBuilder.fromUri("http://localhost:8181/homework11-rest").build();
     }
 
-    public ArrayList<Double> pay(String version, String verb, int t, int kr, int st)
+    public ArrayList<String> pay(String version, String verb, int t, int kr, int st)
     {
         ClientConfig config = new ClientConfig();
         Client client = ClientBuilder.newClient(config);
@@ -122,19 +123,21 @@ public class InsideServiceImpl extends RemoteServiceServlet implements InsideSer
         final Invocation.Builder invocationBuilder = target.request().accept(MediaType.APPLICATION_JSON);
 
         //noinspection unchecked
-        ArrayList<Double> result =  invocationBuilder.get(ArrayList.class);
+        List<Object> answer =  invocationBuilder.get(ArrayList.class);
 
-        return result;
+        return answer.stream()
+                     .map(Object::toString)
+                     .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
-    public ArrayList<Double> diffPay(int t, int kr, int st)
+    public ArrayList<String> diffPay(int t, int kr, int st)
     {
         return pay("v1", "diff", t, kr, st);
     }
 
     @Override
-    public ArrayList<Double> annuPay(int t, int kr, int st)
+    public ArrayList<String> annuPay(int t, int kr, int st)
     {
         return pay("v2", "annu", t, kr, st);
     }

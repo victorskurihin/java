@@ -66,7 +66,7 @@ public class PayView extends Composite implements IsWidget
         int sum = Integer.parseInt(sumOfCreditTextField.getValue());
         int pct = Integer.parseInt(pctTextField.getValue());
 
-        service.diffPay(count, sum, pct, new AsyncCallback<ArrayList<Double>>()
+        service.diffPay(count, sum, pct, new AsyncCallback<ArrayList<String>>()
         {
             @Override
             public void onFailure(Throwable caught)
@@ -75,7 +75,7 @@ public class PayView extends Composite implements IsWidget
             }
 
             @Override
-            public void onSuccess(ArrayList<Double> result)
+            public void onSuccess(ArrayList<String> result)
             {
                 Window.alert("расчёта платежей: " + result);
             }
@@ -89,7 +89,7 @@ public class PayView extends Composite implements IsWidget
         int sum = Integer.parseInt(sumOfCreditTextField.getValue());
         int pct = Integer.parseInt(pctTextField.getValue());
 
-        service.annuPay(count, sum, pct, new AsyncCallback<ArrayList<Double>>()
+        service.annuPay(count, sum, pct, new AsyncCallback<ArrayList<String>>()
         {
             @Override
             public void onFailure(Throwable caught)
@@ -98,7 +98,7 @@ public class PayView extends Composite implements IsWidget
             }
 
             @Override
-            public void onSuccess(ArrayList<Double> result)
+            public void onSuccess(ArrayList<String> result)
             {
                 Window.alert("расчёта платежей: " + result);
             }

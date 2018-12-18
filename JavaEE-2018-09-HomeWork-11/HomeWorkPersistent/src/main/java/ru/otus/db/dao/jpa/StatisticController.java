@@ -8,6 +8,7 @@
 
 package ru.otus.db.dao.jpa;
 
+import ru.otus.db.dao.StatisticDAO;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.StatisticEntity;
 import ru.otus.models.UserEntity;
@@ -23,10 +24,9 @@ import static javax.ejb.TransactionAttributeType.REQUIRES_NEW;
 import static javax.ejb.TransactionAttributeType.SUPPORTS;
 import static ru.otus.utils.CalDateTime.localDateTimeToDate;
 
-@Stateless
-@LocalBean
+@Stateless(name="StatisticDAO", mappedName = "ejb/StatisticDAO")
 @TransactionAttribute(SUPPORTS)
-public class StatisticController extends AbstractController<StatisticEntity, Long>
+public class StatisticController extends AbstractController<StatisticEntity, Long> implements StatisticDAO
 {
     public static final String PERSISTENCE_UNIT_NAME = "jpa";
 
@@ -85,6 +85,7 @@ public class StatisticController extends AbstractController<StatisticEntity, Lon
         return mergeEntity(entity) != null;
     }
 
+    @Override
     @TransactionAttribute(REQUIRES_NEW)
     public long insertProcedure(StatisticEntity entity) throws ExceptionThrowable
     {

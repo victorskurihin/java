@@ -8,7 +8,7 @@
 
 package ru.otus.rest;
 
-import ru.otus.db.dao.jpa.DeptController;
+import ru.otus.db.dao.DeptDAO;
 import ru.otus.models.DeptEntity;
 
 import javax.ejb.EJB;
@@ -22,18 +22,18 @@ import javax.ws.rs.core.Response;
 @Stateless
 @Path("/v1/directory")
 @Produces(MediaType.APPLICATION_JSON)
-public class DeptResource extends CRUDResource<DeptEntity, DeptController>
+public class DeptResource extends CRUDResource<DeptEntity, DeptDAO>
 {
     @Context
     private HttpServletRequest servletRequest;
 
     @EJB
-    DeptController controller;
+    DeptDAO dao;
 
     @Override
-    public DeptController getDAO()
+    public DeptDAO getDAO()
     {
-        return controller;
+        return dao;
     }
 
     @Override
@@ -74,6 +74,7 @@ public class DeptResource extends CRUDResource<DeptEntity, DeptController>
         return super.delete(id);
     }
 }
+
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
  */
 //EOF

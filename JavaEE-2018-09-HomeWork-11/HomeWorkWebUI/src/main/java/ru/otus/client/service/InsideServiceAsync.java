@@ -31,9 +31,9 @@ public interface InsideServiceAsync
 
     void searchEmp(Search search, AsyncCallback<List<Emp>> async);
 
-    void diffPay(int t, int kr, int st, AsyncCallback<ArrayList<Double>> async);
+    void diffPay(int t, int kr, int st, AsyncCallback<ArrayList<String>> async);
 
-    void annuPay(int t, int kr, int st, AsyncCallback<ArrayList<Double>> async);
+    void annuPay(int t, int kr, int st, AsyncCallback<ArrayList<String>> async);
 }
 
 /* vim: syntax=java:fileencoding=utf-8:fileformat=unix:tw=78:ts=4:sw=4:sts=4:et
