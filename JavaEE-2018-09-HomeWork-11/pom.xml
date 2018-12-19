@@ -10,7 +10,7 @@
     <groupId>ru.otus</groupId>
     <artifactId>homework11</artifactId>
     <packaging>pom</packaging>
-    <version>11HW.1-6</version>
+    <version>11.1-8</version>
     <modules>
         <module>HomeWork</module>
         <module>HomeWorkPersistent</module>
@@ -18,8 +18,8 @@
     </modules>
 
     <properties>
-        <homework.persistent.version>11HW.1-6</homework.persistent.version>
-        <homework.rest.version>11HW.1-6</homework.rest.version>
+        <homework.persistent.version>11.1-8</homework.persistent.version>
+        <homework.rest.version>11.1-8</homework.rest.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>

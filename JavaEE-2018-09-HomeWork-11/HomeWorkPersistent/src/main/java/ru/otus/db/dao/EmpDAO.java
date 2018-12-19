@@ -3,9 +3,9 @@ package ru.otus.db.dao;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.EmpEntity;
 
-import javax.ejb.LocalBean;
+import javax.ejb.Remote;
 
-@LocalBean
+@Remote
 public interface EmpDAO extends DAOController<EmpEntity, Long>
 {
     void updateFirstName(Long id, String firstName) throws ExceptionThrowable;

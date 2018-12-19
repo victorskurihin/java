@@ -3,9 +3,9 @@ package ru.otus.db.dao;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.DeptEntity;
 
-import javax.ejb.LocalBean;
+import javax.ejb.Remote;
 
-@LocalBean
+@Remote
 public interface DeptDAO extends DAOController<DeptEntity, Long>
 {
     DeptEntity getEntityByTitle(String title) throws ExceptionThrowable;

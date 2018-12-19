@@ -2,9 +2,9 @@ package ru.otus.db.dao;
 
 import ru.otus.models.UserEntity;
 
-import javax.ejb.LocalBean;
+import javax.ejb.Remote;
 
-@LocalBean
+@Remote
 public interface UserDAO extends DAOController<UserEntity, Long>
 {
 }

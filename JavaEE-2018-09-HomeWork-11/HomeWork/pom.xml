@@ -8,11 +8,11 @@
     <parent>
         <artifactId>homework11</artifactId>
         <groupId>ru.otus</groupId>
-        <version>11HW.1-6</version>
+        <version>11.1-8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>HomeWork11</artifactId>
+    <artifactId>HomeWork11Core</artifactId>
     <packaging>ear</packaging>
 
     <dependencies>

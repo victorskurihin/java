@@ -3,9 +3,9 @@ package ru.otus.db.dao;
 import ru.otus.exceptions.ExceptionThrowable;
 import ru.otus.models.StatisticEntity;
 
-import javax.ejb.LocalBean;
+import javax.ejb.Remote;
 
-@LocalBean
+@Remote
 public interface StatisticDAO extends DAOController<StatisticEntity, Long>
 {
     long insertProcedure(StatisticEntity entity) throws ExceptionThrowable;
