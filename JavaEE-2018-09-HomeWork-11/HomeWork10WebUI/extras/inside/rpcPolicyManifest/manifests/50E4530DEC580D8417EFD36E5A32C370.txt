@@ -1,2 +1,0 @@
-serviceClass: ru.otus.client.service.InsideService
-path: 1EEE70CCDCC783820AA8F48DBA211895.gwt.rpc
