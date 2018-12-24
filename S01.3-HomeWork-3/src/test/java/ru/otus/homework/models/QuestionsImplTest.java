@@ -17,7 +17,6 @@ class QuestionsImplTest
 {
     QuestionsImpl questions;
 
-
     @Test
     @DisplayName("is instantiated with new QuestionsImpl()")
     void isInstantiatedWithNew() {
@@ -52,8 +51,28 @@ class QuestionsImplTest
         }
 
         @Test
+        @DisplayName("The method addQuestion")
+        void testAddQuestion()
+        {
+            assertEquals(0, questions.size());
+            questions.addQuestion(new QuestionImpl());
+            assertEquals(1, questions.size());
+        }
+
+        @Test
+        @DisplayName("The method addScore")
+        void testAddScore()
+        {
+            assertEquals(0, questions.getScore());
+            questions.addScore(13);
+            assertEquals(13, questions.getScore());
+            questions.addScore(29);
+            assertEquals(42, questions.getScore());
+        }
+
+        @Test
         @DisplayName("The method size")
-        public void testSize()
+        void testSize()
         {
             assertEquals(0, questions.size());
             questions.setQuestions(Collections.singletonList(new QuestionImpl()));
@@ -72,7 +91,7 @@ class QuestionsImplTest
         }
 
         @Test
-        public void testIterate()
+        void testIterate()
         {
             QuestionImpl[] questionsArray = getTestDataQuestions(questions);
 
@@ -88,7 +107,7 @@ class QuestionsImplTest
 
         @Test
         @DisplayName("Equals for class QuestionsImpl and hashCode")
-        public void testEquals()
+        void testEquals()
         {
             QuestionsImpl expected = new QuestionsImpl();
             assertEquals(expected.hashCode(), questions.hashCode());
@@ -104,7 +123,7 @@ class QuestionsImplTest
 
         @Test
         @DisplayName("The length of string from QuestionsImpl::toString is great than zero")
-        public void testToString()
+        void testToString()
         {
             assertTrue(questions.toString().length() > 0);
         }
