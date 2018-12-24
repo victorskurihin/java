@@ -5,7 +5,7 @@
 
     <groupId>ru.otus</groupId>
     <artifactId>homework3</artifactId>
-    <version>3.0-12</version>
+    <version>3.0-13</version>
 
     <name>JavaSpring-11-2018 HomeWork-3 Maven Webapp</name>
     <url>https://otus.ru</url>
@@ -39,16 +39,6 @@
 
     <!-- Зависимость для web-приложений -->
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-web</artifactId>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-actuator</artifactId>-->
-        <!--</dependency>-->
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>

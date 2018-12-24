@@ -1,18 +1,9 @@
-#server:
-#  port: 8082
 logging:
   level:
     ROOT: INFO
-#spring:
-#  profiles:
-#    active: prod
-#  application:
-#    admin:
-#      enabled: TRUE
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: info, health, beans
+
+spring:
+  banner:
+    location: classpath:banner.txt
 
 message: "Test Props msg"
