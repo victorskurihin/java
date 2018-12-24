@@ -6,11 +6,13 @@
 
 ### Домашнее задание 3
  * [x] Создан проект Spring Boot.
- * [x] Перенесены и покрыты тестами следующие классы:
+ * [ ] Перенесены и покрыты тестами следующие классы:
  ````
  AnswerImpl, QuestionImpl, QuestionsImpl, AnswerFactoryImpl, QuestionFactoryImpl,
  MessagesServiceImpl, CSVQuestionsReader
  ````
+ * [ ] Не перенесены все свойства в application.yml.
+ * [ ] Отключен баннер для приложения, логи перенаправленны в файл.
 
 ### TODO Домашнее задание 3
  * [x] <s>Создать проект Spring Boot.</s>
