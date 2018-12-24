@@ -1,4 +1,4 @@
-package ru.otus.mainPackage.welcome;
+package ru.otus.homework.welcome;
 
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package ru.otus.mainPackage.configs;
+package ru.otus.homework.configs;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

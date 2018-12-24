@@ -1,4 +1,4 @@
-package ru.otus.mainPackage.welcome;
+package ru.otus.homework.welcome;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import ru.otus.mainPackage.configs.YamlProps;
+import ru.otus.homework.configs.YamlProps;
 
 import java.util.Map;
 
