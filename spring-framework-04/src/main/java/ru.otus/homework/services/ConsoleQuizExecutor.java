@@ -28,7 +28,7 @@ public class ConsoleQuizExecutor implements QuizExecutor
     public ConsoleQuizExecutor(InputStream in, PrintStream out, Questions questions, MessagesService msg)
     {
         this.out = out;
-        this.scanner = new Scanner(in);
+        this.scanner = new Scanner(in, "UTF-8");
         this.questions = questions;
         this.msg = msg;
     }
