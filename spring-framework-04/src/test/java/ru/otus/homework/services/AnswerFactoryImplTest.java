@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Class AnswerFactoryImpl")
 class AnswerFactoryImplTest
 {
-    AnswerFactoryImpl answerFactory;
+    private AnswerFactoryImpl answerFactory;
 
     @Test
     @DisplayName("is instantiated with new AnswerFactoryImpl()")
@@ -25,7 +25,7 @@ class AnswerFactoryImplTest
     class WhenNew
     {
         @BeforeEach
-        void createNewAnswer()
+        void createNewAnswerFactoryImpl()
         {
             answerFactory = new AnswerFactoryImpl();
         }

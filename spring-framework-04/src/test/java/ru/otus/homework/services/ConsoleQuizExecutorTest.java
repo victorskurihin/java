@@ -40,17 +40,13 @@ class ConsoleQuizExecutorTest
 
     private final MessagesService msg = new MessagesServiceImpl(DEFAULT_SLOCALE, MESSAGE_SOURCE);
 
-    private final AnswerFactory answerFactory = new AnswerFactoryImpl();
-
-    private final QuestionFactory questionFactory = new QuestionFactoryImpl();
-
     private ConsoleQuizExecutor executor;
 
     @Test
     @DisplayName("is instantiated with new ConsoleQuizExecutor()")
     void isInstantiatedWithNew() {
         mockUp_IOHelper_getBufferedReader(questEmpty);
-        new ConsoleQuizExecutor(ios, msg,  questions, new CSVQuestionsReader(), answerFactory, questionFactory);
+        new ConsoleQuizExecutor(ios, msg,  questions);
     }
 
     @Nested
@@ -72,9 +68,7 @@ class ConsoleQuizExecutorTest
             catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            executor = new ConsoleQuizExecutor(
-                ioService, msg,  questions, new CSVQuestionsReader(), answerFactory, questionFactory
-            );
+            executor = new ConsoleQuizExecutor(ioService, msg,  questions);
         }
 
         @Test
@@ -143,13 +137,15 @@ class ConsoleQuizExecutorTest
 
         IOService ioService = new IOServiceSystem(System.in, ps);
         Questions questions = new QuestionsImpl();
-        QuestionsReader reader = new CSVQuestionsReader(questions, "quests_en_US.csv");
-        AnswerFactory answerFactory = new AnswerFactoryImpl();
-        QuestionFactory questionFactory = new QuestionFactoryImpl();
+//        QuizFactory quizFactory = new QuizFactoryImpl(new AnswerFactoryImpl(), new QuestionFactoryImpl());
+//        QuestionsReader reader = new CSVQuestionsReader(questions, "quests_en_US.csv", quizFactory);
+//        AnswerFactory answerFactory = new AnswerFactoryImpl();
+//        QuestionFactory questionFactory = new QuestionFactoryImpl();
 
-        return new ConsoleQuizExecutor(ioService, msg,  questions, reader, answerFactory, questionFactory);
+        return new ConsoleQuizExecutor(ioService, msg, questions);
     }
 
+    /* TODO move to QuizCommandsTest
     @Nested
     @DisplayName("Exception under construction")
     class WhenConstructException
@@ -176,6 +172,7 @@ class ConsoleQuizExecutorTest
             assertEquals(lastEvent.getLevel(), Level.ERROR);
         }
     }
+    */
 
     @Nested
     @DisplayName("when readAnswer")

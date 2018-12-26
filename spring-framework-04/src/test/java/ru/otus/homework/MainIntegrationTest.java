@@ -60,7 +60,7 @@ class MainIntegrationTest
     @DisplayName("Questions: questions Bean")
     void testQuestions()
     {
-        assertEquals(1, questions.size());
+        assertEquals(0, questions.size());
     }
 
     @Autowired
@@ -97,9 +97,7 @@ class MainIntegrationTest
     @DisplayName("QuizExecutor: tester Bean")
     void testQuizExecutor()
     {
-        QuizExecutor quizExecutor = new ConsoleQuizExecutor(
-            ios, msg, questions, reader, answerFactory, questionFactory
-        );
+        QuizExecutor quizExecutor = new ConsoleQuizExecutor(ios, msg, questions);
         assertThat(quizExecutor).hasFieldOrPropertyWithValue("out", ios.getOut());
         assertThat(quizExecutor).hasFieldOrPropertyWithValue("msg", msg);
         assertThat(quizExecutor).hasFieldOrPropertyWithValue("questions", questions);

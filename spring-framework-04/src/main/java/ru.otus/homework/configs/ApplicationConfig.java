@@ -41,17 +41,16 @@ public class ApplicationConfig
     }
 
     @Bean("reader")
-    public QuestionsReader reader(Questions questions)
+    public QuestionsReader reader(Questions questions, QuizFactory quizFactory)
     {
         String filename = String.format(yp.getFileNameTempalate(), yp.getLocale());
 
-        return new CSVQuestionsReader(questions, filename);
+        return new CSVQuestionsReader(questions, filename, quizFactory);
     }
 
     @Bean("tester")
-    public QuizExecutor tester(Questions questions, QuestionsReader reader,
-                               AnswerFactory answerFactory, QuestionFactory questionFactory)
+    public QuizExecutor tester(Questions questions)
     {
-        return new ConsoleQuizExecutor(ios(), msg(), questions, reader, answerFactory, questionFactory);
+        return new ConsoleQuizExecutor(ios(), msg(), questions);
     }
 }

@@ -66,7 +66,7 @@ class CSVQuestionsReaderTest
         @DisplayName("read(null, null) throws ExceptionIO")
         void testNullPointerException()
         {
-            assertThrows(NullPointerException.class, () -> reader.read(null, null));
+            assertThrows(NullPointerException.class, () -> reader.read());
         }
     }
 
@@ -85,9 +85,10 @@ class CSVQuestionsReaderTest
         @BeforeEach
         void createNewQuestion()
         {
-            getAnswer = new AnswerFactoryImpl();
-            getQuestion = new QuestionFactoryImpl();
-            reader = new CSVQuestionsReader(new QuestionsImpl(), "test.csv");
+            // getAnswer = new AnswerFactoryImpl();
+            // getQuestion = new QuestionFactoryImpl();
+            QuizFactory quizFactory = new QuizFactoryImpl(new AnswerFactoryImpl(), new QuestionFactoryImpl());
+            reader = new CSVQuestionsReader(new QuestionsImpl(), "test.csv", quizFactory);
         }
 
         @Test
@@ -102,7 +103,7 @@ class CSVQuestionsReaderTest
         {
             mockUp_IOHelper_getBufferedReader(questEmpty);
 
-            reader.read(getAnswer, getQuestion);
+            reader.read();
             assertEquals(0, reader.getQuestions().size());
         }
 
@@ -112,7 +113,7 @@ class CSVQuestionsReaderTest
         {
             mockUp_IOHelper_getBufferedReader(questOne);
 
-            reader.read(getAnswer, getQuestion);
+            reader.read();
             assertEquals(1, reader.getQuestions().size());
         }
 
@@ -122,7 +123,7 @@ class CSVQuestionsReaderTest
         {
             mockUp_IOHelper_getBufferedReader(questBadLine);
 
-            assertThrows(ArrayIndexOutOfBoundsException.class, () -> reader.read(getAnswer, getQuestion));
+            assertThrows(ArrayIndexOutOfBoundsException.class, () -> reader.read());
         }
 
         @Test
@@ -131,7 +132,7 @@ class CSVQuestionsReaderTest
         {
             mockUp_IOHelper_getBufferedReader(questOneLine);
 
-            reader.read(getAnswer, getQuestion);
+            reader.read();
             assertEquals(1, reader.getQuestions().size());
             QuestionsImpl expected = new QuestionsImpl();
             AnswerImpl[] aa = new AnswerImpl[] {
@@ -155,7 +156,7 @@ class CSVQuestionsReaderTest
         {
             mockUp_IOHelper_getBufferedReader_IORuntimeException();
 
-            assertThrows(IORuntimeException.class, () -> reader.read(getAnswer, getQuestion));
+            assertThrows(IORuntimeException.class, () -> reader.read());
         }
     }
 }

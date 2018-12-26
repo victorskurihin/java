@@ -13,12 +13,15 @@ public class CSVQuestionsReader implements QuestionsReader
 
     private Questions questions;
 
+    private QuizFactory quizFactory;
+
     public CSVQuestionsReader() { /* None */ }
 
-    public CSVQuestionsReader(Questions questions, String fileName)
+    public CSVQuestionsReader(Questions questions, String fileName, QuizFactory quizFactory)
     {
         this.questions = questions;
         this.filename = fileName;
+        this.quizFactory = quizFactory;
     }
 
     public Questions getQuestions()
@@ -32,17 +35,17 @@ public class CSVQuestionsReader implements QuestionsReader
     }
 
     @Override
-    public void read(AnswerFactory answerFactory, QuestionFactory questionFactory)
+    public void read()
     {
         readFile(this.getClass(), filename, line -> {
             String[] fields = split(line);
 
-            Question question = questionFactory.getObject();
+            Question question = quizFactory.getQuestionFactory().getObject();
             assert question != null;
             question.setQuestion(fields[0]);
 
             for (int i = 1; i < fields.length; i += 2) {
-                Answer answer = answerFactory.getObject();
+                Answer answer = quizFactory.getAnswerFactory().getObject();
                 assert answer != null;
                 answer.setAnswer(fields[i]);
 

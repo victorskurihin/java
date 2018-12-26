@@ -13,8 +13,14 @@ public class MessagesServiceImpl implements MessagesService
 
     public MessagesServiceImpl(String applicationLocale, MessageSource messageSource)
     {
-        LocaleEnum localeEnum = LocaleEnum.valueOf(applicationLocale);
         ms = messageSource;
+        setLocale(applicationLocale);
+    }
+
+    @Override
+    public String setLocale(String applicationLocale)
+    {
+        LocaleEnum localeEnum = LocaleEnum.valueOf(applicationLocale);
 
         switch (localeEnum) {
             case ru_RU:
@@ -23,6 +29,13 @@ public class MessagesServiceImpl implements MessagesService
             default:
                 locale = Locale.ENGLISH; break;
         }
+        return locale.getDisplayName();
+    }
+
+    @Override
+    public Locale getLocale()
+    {
+        return locale;
     }
 
     @Override

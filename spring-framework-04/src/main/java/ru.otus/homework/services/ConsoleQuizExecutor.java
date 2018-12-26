@@ -15,8 +15,6 @@ import java.util.*;
 
 public class ConsoleQuizExecutor implements QuizExecutor
 {
-    private static final Logger LOGGER = LogManager.getLogger(QuizExecutor.class.getName());
-
     public final static String NL = System.lineSeparator();
 
     private Scanner scanner;
@@ -31,31 +29,10 @@ public class ConsoleQuizExecutor implements QuizExecutor
 
     private MessagesService msg;
 
-    private void exitOnExceptionResource(Throwable exception)
-    {
-        System.err.println(
-            msg.get("exception_resource", new Object[] {exception.toString(), exception.getMessage()})
-        );
-        LOGGER.error(exception);
-        System.exit(-1);
-    }
-
-    public ConsoleQuizExecutor(IOService ios, MessagesService msg, Questions questions,
-                               @Qualifier("reader") QuestionsReader questionsReader,
-                               AnswerFactory answerFactory, QuestionFactory questionFactory)
+    public ConsoleQuizExecutor(IOService ios, MessagesService msg, Questions questions)
     {
         this.out = ios.getOut();
-        out.print(msg.get("hello_world") + " ");
-
-        try {
-            questionsReader.read(answerFactory, questionFactory);
-        }
-        catch (IORuntimeException exceptionIO) {
-            LOGGER.error(exceptionIO);
-        }
-        catch (ArrayIndexOutOfBoundsException exception) {
-            exitOnExceptionResource(exception);
-        }
+        out.println(msg.get("hello_world"));
         this.scanner = new Scanner(ios.getIn());
         this.questions = questions;
         this.msg = msg;
