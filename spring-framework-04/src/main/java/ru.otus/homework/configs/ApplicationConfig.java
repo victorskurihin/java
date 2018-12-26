@@ -1,11 +1,8 @@
 package ru.otus.homework.configs;
 
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import ru.otus.homework.models.Questions;
@@ -27,6 +24,12 @@ public class ApplicationConfig
         return new PropertySourcesPlaceholderConfigurer();
     }
 
+    @Bean("ios")
+    public IOService ios()
+    {
+        return new IOServiceSystem();
+    }
+
     @Bean("msg")
     public MessagesService msg()
     {
@@ -46,9 +49,9 @@ public class ApplicationConfig
     }
 
     @Bean("tester")
-    public QuizExecutor tester(Questions questions, @Qualifier("msg") MessagesService msg)
+    public QuizExecutor tester(Questions questions, QuestionsReader reader,
+                               AnswerFactory answerFactory, QuestionFactory questionFactory)
     {
-        return new ConsoleQuizExecutor(System.in, System.out, questions, msg);
+        return new ConsoleQuizExecutor(ios(), msg(), questions, reader, answerFactory, questionFactory);
     }
 }
-

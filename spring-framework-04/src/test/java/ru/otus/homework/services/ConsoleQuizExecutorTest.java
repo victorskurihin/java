@@ -1,14 +1,19 @@
 package ru.otus.homework.services;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import ru.otus.homework.models.AnswerImpl;
 import ru.otus.homework.models.QuestionImpl;
 import ru.otus.homework.models.Questions;
 import ru.otus.homework.models.QuestionsImpl;
 import ru.otus.outside.exeptions.EmptyResourceRuntimeException;
+import ru.otus.outside.utils.TestAppender;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -16,23 +21,36 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.otus.outside.utils.IOHelperTestHelper.mockUp_Scanner_nextInt;
-import static ru.otus.outside.utils.IOHelperTestHelper.mockUp_Scanner_nextInt_InputMismatchException;
-import static ru.otus.outside.utils.IOHelperTestHelper.mockUp_Scanner_nextInt_NoSuchElementException;
+import static ru.otus.homework.services.MessagesServiceImplTest.DEFAULT_SLOCALE;
+import static ru.otus.homework.services.MessagesServiceImplTest.MESSAGE_SOURCE;
+import static ru.otus.outside.utils.IOHelperTestHelper.*;
 
 @DisplayName("Class ConsoleQuizExecutor")
 class ConsoleQuizExecutorTest
 {
     public static final String TEST = "test";
 
-    private final InputStream in = System.in;
+    public static final String questEmpty = "";
 
-    ConsoleQuizExecutor executor;
+    private final IOService ios = new IOServiceSystem();
+
+    private final InputStream saveSystemIn = System.in;
+
+    private final Questions questions = new QuestionsImpl();
+
+    private final MessagesService msg = new MessagesServiceImpl(DEFAULT_SLOCALE, MESSAGE_SOURCE);
+
+    private final AnswerFactory answerFactory = new AnswerFactoryImpl();
+
+    private final QuestionFactory questionFactory = new QuestionFactoryImpl();
+
+    private ConsoleQuizExecutor executor;
 
     @Test
     @DisplayName("is instantiated with new ConsoleQuizExecutor()")
     void isInstantiatedWithNew() {
-        new ConsoleQuizExecutor(in, null, null, null);
+        mockUp_IOHelper_getBufferedReader(questEmpty);
+        new ConsoleQuizExecutor(ios, msg,  questions, new CSVQuestionsReader(), answerFactory, questionFactory);
     }
 
     @Nested
@@ -41,21 +59,22 @@ class ConsoleQuizExecutorTest
     {
         private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         private PrintStream ps;
-        private Questions questions;
-        private MessagesServiceImpl msg;
+        private IOService ioService;
 
         @BeforeEach
         void createNewQuestion()
         {
+            mockUp_IOHelper_getBufferedReader(questEmpty);
             try {
                 ps = new PrintStream(baos, true, "UTF-8");
+                ioService = new IOServiceSystem(saveSystemIn, ps);
             }
             catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            questions = new QuestionsImpl();
-            msg = new MessagesServiceImpl("en_US", MessagesServiceImplTest.createTestMessageSource());
-            executor = new ConsoleQuizExecutor(in, ps, questions, msg);
+            executor = new ConsoleQuizExecutor(
+                ioService, msg,  questions, new CSVQuestionsReader(), answerFactory, questionFactory
+            );
         }
 
         @Test
@@ -96,7 +115,7 @@ class ConsoleQuizExecutorTest
 
         @Test
         @DisplayName("Show answers")
-        public void testShowAnswers()
+        void testShowAnswers()
         {
             AnswerImpl answerImpl = new AnswerImpl();
             answerImpl.setAnswer(TEST);
@@ -106,30 +125,71 @@ class ConsoleQuizExecutorTest
         }
     }
 
+    private ConsoleQuizExecutor createNewConsoleQuizExecutor()
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = null;
+
+        try {
+            ps = new PrintStream(baos, true, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        MessagesServiceImpl msg = new MessagesServiceImpl(
+            "en_US", MessagesServiceImplTest.createTestMessageSource()
+        );
+
+        IOService ioService = new IOServiceSystem(System.in, ps);
+        Questions questions = new QuestionsImpl();
+        QuestionsReader reader = new CSVQuestionsReader(questions, "quests_en_US.csv");
+        AnswerFactory answerFactory = new AnswerFactoryImpl();
+        QuestionFactory questionFactory = new QuestionFactoryImpl();
+
+        return new ConsoleQuizExecutor(ioService, msg,  questions, reader, answerFactory, questionFactory);
+    }
+
+    @Nested
+    @DisplayName("Exception under construction")
+    class WhenConstructException
+    {
+        protected TestAppender testAppender;
+
+        @BeforeEach
+        public void setupLogsForTesting() {
+            Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            testAppender = (TestAppender)root.getAppender("TEST");
+            if (testAppender != null) {
+                testAppender.clear();
+            }
+        }
+
+        @Test
+        @DisplayName("Construct under IORuntimeException")
+        void testRun1()
+        {
+            mockUp_IOHelper_getBufferedReader_IORuntimeException();
+            createNewConsoleQuizExecutor();
+            ILoggingEvent lastEvent = testAppender.getLastEvent();
+            assertEquals(lastEvent.getMessage(), "ru.otus.outside.exeptions.IORuntimeException: java.io.IOException");
+            assertEquals(lastEvent.getLevel(), Level.ERROR);
+        }
+    }
+
     @Nested
     @DisplayName("when readAnswer")
     class WhenReadAnswer
     {
-        private PrintStream ps;
-        private MessagesServiceImpl msg;
-        private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
         @BeforeEach
-        void createNewQuestion()
+        void createNewExecutor()
         {
-            try {
-                ps = new PrintStream(baos, true, "UTF-8");
-            }
-            catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            msg = new MessagesServiceImpl("en_US", MessagesServiceImplTest.createTestMessageSource());
-            executor = new ConsoleQuizExecutor(in, ps, null, msg);
+            executor = createNewConsoleQuizExecutor();
         }
 
         @Test
         @DisplayName("run1")
-        public void testRun1()
+        void testRun1()
         {
             mockUp_Scanner_nextInt(2);
             AnswerImpl answerImpl = new AnswerImpl();
@@ -139,7 +199,7 @@ class ConsoleQuizExecutorTest
 
         @Test
         @DisplayName("run throw InputMismatchException")
-        public void testRunInputMismatchException()
+        void testRunInputMismatchException()
         {
             mockUp_Scanner_nextInt_InputMismatchException();
             assertEquals(-2, executor.readAnswer(null));
@@ -147,11 +207,42 @@ class ConsoleQuizExecutorTest
 
         @Test
         @DisplayName("run throw NoSuchElementException")
-        public void testRunInputNoSuchElementException()
+        void testRunInputNoSuchElementException()
         {
             mockUp_Scanner_nextInt_NoSuchElementException();
             assertEquals(-3, executor.readAnswer(null));
         }
+
+        @Test
+        @DisplayName("run throw IllegalStateException")
+        void testRunInputIllegalStateException()
+        {
+            mockUp_Scanner_nextInt_IllegalStateException();
+            assertEquals(-4, executor.readAnswer(null));
+        }
+
+        @Test
+        @DisplayName("run throw Exception")
+        void testRunException()
+        {
+            mockUp_Scanner_nextInt_Exception();
+            assertEquals(Integer.MIN_VALUE, executor.readAnswer(null));
+        }
+    }
+
+    private void executorRun()
+    {
+        AnswerImpl answerImpl = new AnswerImpl();
+        answerImpl.setAnswer("test");
+        answerImpl.setScore(13);
+        QuestionImpl questionImpl = new QuestionImpl();
+        questionImpl.setQuestion("test");
+        questionImpl.setAnswers(Collections.singletonList(answerImpl));
+        QuestionsImpl questionsImpl = new QuestionsImpl();
+        questionsImpl.addQuestion(questionImpl);
+        executor.setQuestions(questionsImpl);
+        executor.run();
+        System.setIn(saveSystemIn);
     }
 
     @Nested
@@ -159,58 +250,64 @@ class ConsoleQuizExecutorTest
     class WhenRun
     {
         private final String INPUT = "First" + ConsoleQuizExecutor.NL
-                                             + "SurName" + ConsoleQuizExecutor.NL
-                                             + "1" + ConsoleQuizExecutor.NL;
-        private final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        private PrintStream ps;
-        private Questions questions;
-        private MessagesServiceImpl msg;
+                                   + "SurName" + ConsoleQuizExecutor.NL
+                                   + "1" + ConsoleQuizExecutor.NL;
 
         private void provideInput(String data) {
             System.setIn(new ByteArrayInputStream(data.getBytes()));
         }
 
         @BeforeEach
-        void createNewQuestion()
+        void createNewExecutor()
         {
-            try {
-                ps = new PrintStream(baos, true, "UTF-8");
-            }
-            catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            questions = new QuestionsImpl();
-            msg = new MessagesServiceImpl("en_US", MessagesServiceImplTest.createTestMessageSource());
             provideInput(INPUT);
-            executor = new ConsoleQuizExecutor(System.in, ps, questions, msg);
+            executor = createNewConsoleQuizExecutor();
         }
 
         @Test
         @DisplayName("run throw EmptyResourceRuntimeException")
-        public void testRunEmptyResourceRuntimeException()
+        void testRunEmptyResourceRuntimeException()
         {
             QuestionsImpl questionsImpl = new QuestionsImpl();
             executor.setQuestions(questionsImpl);
             assertThrows(EmptyResourceRuntimeException.class, () -> executor.run());
-            System.setIn(in);
+            System.setIn(saveSystemIn);
         }
 
         @Test
         @DisplayName("run")
-        public void testRun()
+        void testRun()
         {
-            AnswerImpl answerImpl = new AnswerImpl();
-            answerImpl.setAnswer("test");
-            answerImpl.setScore(13);
-            QuestionImpl questionImpl = new QuestionImpl();
-            questionImpl.setQuestion("test");
-            questionImpl.setAnswers(Collections.singletonList(answerImpl));
-            QuestionsImpl questionsImpl = new QuestionsImpl();
-            questionsImpl.addQuestion(questionImpl);
-            executor.setQuestions(questionsImpl);
-            executor.run();
-            System.setIn(in);
+            executorRun();
             assertEquals(13, executor.getScore());
+        }
+    }
+    @Nested
+    @DisplayName("when run mistake")
+    class WhenRunMistake
+    {
+        private final String INPUT = "First" + ConsoleQuizExecutor.NL
+                                   + "SurName" + ConsoleQuizExecutor.NL
+                                   + "-1" + ConsoleQuizExecutor.NL
+                                   + "0" + ConsoleQuizExecutor.NL;
+
+        private void provideInput(String data) {
+            System.setIn(new ByteArrayInputStream(data.getBytes()));
+        }
+
+        @BeforeEach
+        void createNewExecutor()
+        {
+            provideInput(INPUT);
+            executor = createNewConsoleQuizExecutor();
+        }
+
+        @Test
+        @DisplayName("run with mistake in aswer")
+        void testRun()
+        {
+            executorRun();
+            assertEquals(0, executor.getScore());
         }
     }
 }

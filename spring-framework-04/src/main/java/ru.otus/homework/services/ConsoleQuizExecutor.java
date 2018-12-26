@@ -1,16 +1,22 @@
 package ru.otus.homework.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import ru.otus.homework.models.Answer;
 import ru.otus.homework.models.Question;
 import ru.otus.homework.models.Questions;
 import ru.otus.outside.exeptions.EmptyResourceRuntimeException;
+import ru.otus.outside.exeptions.IORuntimeException;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.*;
 
 public class ConsoleQuizExecutor implements QuizExecutor
 {
+    private static final Logger LOGGER = LogManager.getLogger(QuizExecutor.class.getName());
+
     public final static String NL = System.lineSeparator();
 
     private Scanner scanner;
@@ -25,10 +31,32 @@ public class ConsoleQuizExecutor implements QuizExecutor
 
     private MessagesService msg;
 
-    public ConsoleQuizExecutor(InputStream in, PrintStream out, Questions questions, MessagesService msg)
+    private void exitOnExceptionResource(Throwable exception)
     {
-        this.out = out;
-        this.scanner = new Scanner(in, "UTF-8");
+        System.err.println(
+            msg.get("exception_resource", new Object[] {exception.toString(), exception.getMessage()})
+        );
+        LOGGER.error(exception);
+        System.exit(-1);
+    }
+
+    public ConsoleQuizExecutor(IOService ios, MessagesService msg, Questions questions,
+                               @Qualifier("reader") QuestionsReader questionsReader,
+                               AnswerFactory answerFactory, QuestionFactory questionFactory)
+    {
+        this.out = ios.getOut();
+        out.print(msg.get("hello_world") + " ");
+
+        try {
+            questionsReader.read(answerFactory, questionFactory);
+        }
+        catch (IORuntimeException exceptionIO) {
+            LOGGER.error(exceptionIO);
+        }
+        catch (ArrayIndexOutOfBoundsException exception) {
+            exitOnExceptionResource(exception);
+        }
+        this.scanner = new Scanner(ios.getIn());
         this.questions = questions;
         this.msg = msg;
     }
