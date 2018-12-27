@@ -4,19 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import ru.otus.homework.models.AnswerImpl;
-import ru.otus.homework.models.Question;
-import ru.otus.homework.models.QuestionImpl;
-import ru.otus.homework.models.QuestionsImpl;
+import ru.otus.homework.models.*;
 import ru.otus.outside.exeptions.IORuntimeException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.otus.homework.services.TestDataQuestions.QUEST;
+import static ru.otus.homework.services.TestDataQuestions.createTestQuestions;
 import static ru.otus.outside.utils.IOHelperTestHelper.mockUp_IOHelper_getBufferedReader;
 import static ru.otus.outside.utils.IOHelperTestHelper.mockUp_IOHelper_getBufferedReader_IORuntimeException;
 
@@ -77,7 +75,6 @@ class CSVQuestionsReaderTest
         public static final String questEmpty = "";
         public static final String questOne = "\"Q1?\"";
         public static final String questBadLine = "\"Q1?\",\"A1.1\"";
-        public static final String questOneLine = "\"Q1?\",\"A1.1\",1,\"A1.2\",2,\"A1.3\",3,\"A1.4\",4,\"A1.5\",5";
 
         private AnswerFactory getAnswer;
         private QuestionFactory getQuestion;
@@ -85,8 +82,6 @@ class CSVQuestionsReaderTest
         @BeforeEach
         void createNewQuestion()
         {
-            // getAnswer = new AnswerFactoryImpl();
-            // getQuestion = new QuestionFactoryImpl();
             QuizFactory quizFactory = new QuizFactoryImpl(new AnswerFactoryImpl(), new QuestionFactoryImpl());
             reader = new CSVQuestionsReader(new QuestionsImpl(), "test.csv", quizFactory);
         }
@@ -130,23 +125,10 @@ class CSVQuestionsReaderTest
         @DisplayName("QuestionsReader::read one line")
         void readOneLine()
         {
-            mockUp_IOHelper_getBufferedReader(questOneLine);
+            mockUp_IOHelper_getBufferedReader(QUEST);
 
             reader.read();
-            assertEquals(1, reader.getQuestions().size());
-            QuestionsImpl expected = new QuestionsImpl();
-            AnswerImpl[] aa = new AnswerImpl[] {
-                new AnswerImpl(), new AnswerImpl(), new AnswerImpl(), new AnswerImpl(), new AnswerImpl()
-            };
-            aa[0].setAnswer("A1.1"); aa[0].setScore(1);
-            aa[1].setAnswer("A1.2"); aa[1].setScore(2);
-            aa[2].setAnswer("A1.3"); aa[2].setScore(3);
-            aa[3].setAnswer("A1.4"); aa[3].setScore(4);
-            aa[4].setAnswer("A1.5"); aa[4].setScore(5);
-            QuestionImpl q1 = new QuestionImpl();
-            q1.setQuestion("Q1?");
-            q1.setAnswers(Arrays.asList(aa));
-            expected.setQuestions(Collections.singletonList(q1));
+            Questions expected = createTestQuestions();
             assertThat(reader).hasFieldOrPropertyWithValue("questions", expected);
         }
 

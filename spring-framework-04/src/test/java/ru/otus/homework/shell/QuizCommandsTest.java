@@ -8,18 +8,10 @@ import ru.otus.homework.models.Questions;
 import ru.otus.homework.models.QuestionsImpl;
 import ru.otus.homework.services.*;
 
-import java.io.InputStream;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static ru.otus.homework.services.MessagesServiceImplTest.DEFAULT_SLOCALE;
 import static ru.otus.homework.services.MessagesServiceImplTest.MESSAGE_SOURCE;
-
-/*
-    public QuizCommands(IOService ios, MessagesService msg,
-                        @Qualifier("tester") QuizExecutor quizExecutor,
-                        @Qualifier("reader") QuestionsReader questionsReader,
-                        AnswerFactory answerFactory, QuestionFactory questionFactory)
- */
+import static ru.otus.homework.services.TestDataQuestions.QUEST;
 
 @DisplayName("Class QuizCommandsTest")
 class QuizCommandsTest
@@ -40,6 +32,28 @@ class QuizCommandsTest
         new QuizCommands(ios, msg, null, null);
     }
 
+    @Nested
+    @DisplayName("when new")
+    class WhenNew
+    {
+        QuizExecutor executor = new ConsoleQuizExecutor(ios, msg, questions);
+        QuizFactory quizFactory = new QuizFactoryImpl(new AnswerFactoryImpl(), new QuestionFactoryImpl());
+        QuestionsReader reader = new StringQuestionsReader(questions, QUEST, quizFactory);
+        @BeforeEach
+        void createNewQuestion()
+        {
+            quizCommands = new QuizCommands(ios, msg, executor, reader);
+        }
+
+        @Test
+        @DisplayName("default values in CSVQuestionsReader()")
+        void defaults()
+        {
+            assertThat(quizCommands).hasFieldOrPropertyWithValue("msg", msg);
+            assertThat(quizCommands).hasFieldOrPropertyWithValue("quizExecutor", executor);
+            assertThat(quizCommands).hasFieldOrPropertyWithValue("questionsReader", reader);
+        }
+    }
     /*
     @Nested
     @DisplayName("when new")

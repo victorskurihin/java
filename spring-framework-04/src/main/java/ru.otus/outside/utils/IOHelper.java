@@ -49,4 +49,17 @@ public class IOHelper
             throw new IORuntimeException(e);
         }
     }
+
+    public static void readStringAsFile(String stream, Consumer<String> workWithLine)
+    {
+        try (BufferedReader br = getBufferedReaderFromString(stream)) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                workWithLine.accept(line);
+            }
+        }
+        catch (IOException e) {
+            throw new IORuntimeException(e);
+        }
+    }
 }
