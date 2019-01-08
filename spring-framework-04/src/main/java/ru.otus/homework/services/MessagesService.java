@@ -2,6 +2,8 @@ package ru.otus.homework.services;
 
 import org.springframework.context.NoSuchMessageException;
 
+import java.util.Locale;
+
 public interface MessagesService
 {
     /**
@@ -26,4 +28,8 @@ public interface MessagesService
      * @see java.text.MessageFormat
      */
     String get(String code, Object[] args) throws NoSuchMessageException;
+
+    String setLocale(String applicationLocale);
+
+    Locale getLocale();
 }

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 @DisplayName("Class MessagesServiceImpl")
 public class MessagesServiceImplTest
 {
-    static final String DEFAULT_SLOCALE = "en_US";
+    public static final String DEFAULT_SLOCALE = "en_US";
     static final String RU_RU_SLOCALE = "ru_RU";
     static final Locale RU_RU_LOCALE = new Locale("ru", "RU");
 
@@ -49,7 +49,7 @@ public class MessagesServiceImplTest
         return mockMessageSource;
     }
 
-    static final MessageSource MESSAGE_SOURCE = createTestMessageSource();
+    public static final MessageSource MESSAGE_SOURCE = createTestMessageSource();
 
     MessagesServiceImpl messagesService;
 

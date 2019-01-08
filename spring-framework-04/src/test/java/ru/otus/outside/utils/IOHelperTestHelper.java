@@ -2,6 +2,7 @@ package ru.otus.outside.utils;
 
 import mockit.Mock;
 import mockit.MockUp;
+import org.apache.logging.log4j.Logger;
 import ru.otus.outside.exeptions.IORuntimeException;
 
 import java.io.BufferedReader;
@@ -60,6 +61,27 @@ public class IOHelperTestHelper
             @Mock
             public int nextInt() {
                 throw new NoSuchElementException();
+            }
+        };
+    }
+
+    public static void mockUp_Scanner_nextInt_IllegalStateException()
+    {
+        new MockUp<Scanner>() {
+            @Mock
+            public int nextInt() {
+                throw new IllegalStateException();
+            }
+        };
+    }
+
+    public static void mockUp_Scanner_nextInt_Exception()
+    {
+        new MockUp<Scanner>() {
+            @Mock
+            public int nextInt() throws Exception
+            {
+                throw new Exception();
             }
         };
     }

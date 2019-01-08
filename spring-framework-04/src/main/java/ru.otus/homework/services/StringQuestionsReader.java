@@ -5,22 +5,23 @@ import ru.otus.homework.models.Question;
 import ru.otus.homework.models.Questions;
 
 import static ru.otus.outside.utils.IOHelper.readFile;
+import static ru.otus.outside.utils.IOHelper.readStringAsFile;
 import static ru.otus.outside.utils.StringHelper.split;
 
-public class CSVQuestionsReader implements QuestionsReader
+public class StringQuestionsReader implements QuestionsReader
 {
-    private String filename = "";
+    private String data = "";
 
     private Questions questions;
 
     private QuizFactory quizFactory;
 
-    public CSVQuestionsReader() { /* None */ }
+    public StringQuestionsReader() { /* None */ }
 
-    public CSVQuestionsReader(Questions questions, String fileName, QuizFactory quizFactory)
+    public StringQuestionsReader(Questions questions, String stream, QuizFactory quizFactory)
     {
         this.questions = questions;
-        this.filename = fileName;
+        this.data = stream;
         this.quizFactory = quizFactory;
     }
 
@@ -37,7 +38,7 @@ public class CSVQuestionsReader implements QuestionsReader
     @Override
     public void read()
     {
-        readFile(this.getClass(), filename, line -> {
+        readStringAsFile(data, line -> {
             String[] fields = split(line);
 
             Question question = quizFactory.getQuestionFactory().getObject();
