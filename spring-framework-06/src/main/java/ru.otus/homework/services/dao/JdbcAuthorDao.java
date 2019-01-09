@@ -1,5 +1,9 @@
 package ru.otus.homework.services.dao;
 
+import static ru.otus.homework.db.h2.Tables.AUTHORS;
+
+import org.jooq.DSLContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.MappingSqlQuery;
 import org.springframework.jdbc.object.SqlUpdate;
@@ -28,7 +32,7 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
 
     public static String[] FIND_ALL_HEADER = {F_AUTHOR_ID, F_FIRST_NAME, F_LAST_NAME};
 
-    public static final String TBL_AUTHOR = "author";
+    public static final String TBL_AUTHOR = "authors";
 
     public static final String SELECT_ALL = "SELECT " + F_AUTHOR_ID + ", " + F_FIRST_NAME + ", " + F_LAST_NAME
                                           + " FROM " + TBL_AUTHOR;
@@ -99,7 +103,9 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
 
     private Delete deleteAuthor;
 
-    public JdbcAuthorDao(DataSource dataSource)
+    private DSLContext dsl;
+
+    public JdbcAuthorDao(DataSource dataSource, DSLContext dsl)
     {
         super(dataSource);
         this.dataSource = dataSource;
@@ -108,6 +114,8 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
         this.insertAuthor = new Insert(dataSource);
         this.updateAuthor = new Update(dataSource);
         this.deleteAuthor = new Delete(dataSource, TBL_AUTHOR, F_AUTHOR_ID, AUTHOR_ID);
+
+        this.dsl = dsl;
     }
 
     public DataSource getDataSource()
@@ -187,13 +195,17 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
     @Override
     public void insert(Author author)
     {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(F_FIRST_NAME, author.getFirstName());
-        paramMap.put(F_LAST_NAME, author.getLastName());
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        insertAuthor.updateByNamedParam(paramMap, keyHolder);
-        author.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        dsl.insertInto(AUTHORS)
+            .set(AUTHORS.FIRST_NAME, author.getFirstName())
+            .set(AUTHORS.LAST_NAME, author.getLastName())
+            .execute();
+//        Map<String, Object> paramMap = new HashMap<>();
+//        paramMap.put(F_FIRST_NAME, author.getFirstName());
+//        paramMap.put(F_LAST_NAME, author.getLastName());
+//
+//        KeyHolder keyHolder = new GeneratedKeyHolder();
+//        insertAuthor.updateByNamedParam(paramMap, keyHolder);
+//        author.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
     }
 
     @Override

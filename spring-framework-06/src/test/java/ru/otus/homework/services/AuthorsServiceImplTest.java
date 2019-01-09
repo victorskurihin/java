@@ -1,5 +1,6 @@
 package ru.otus.homework.services;
 
+import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +23,9 @@ class AuthorsServiceImplTest
 
     private DataSource dataSource = injectTestDataSource();
 
-    private JdbcAuthorDao dao = new JdbcAuthorDao(dataSource);
+    private DSLContext dsl;
+
+    private JdbcAuthorDao dao = new JdbcAuthorDao(dataSource, dsl);
 
     @Test
     @DisplayName("is instantiated with new AuthorsService()")

@@ -2,8 +2,36 @@ logging:
   level:
     ROOT: INFO
 
+#Database Configuration
+#  spring.datasource.driverClassName=org.h2.Driver
+#  spring.datasource.url=jdbc:h2:~/
+#  spring.datasource.username=sa
+#  spring.datasource.password=
+
+#jOOQ Configuration
+#  spring.jooq.sql-dialect=H2
+
+#  spring.datasource.initialize=false
+#  spring.datasource.continueOnError=true
+
 spring:
   banner:
+    # My Banner
     location: classpath:banner.txt
+
+    #Database Configuration
+    datasource:
+      driverClassName: org.h2.Driver
+      url: jdbc:h2:mem:test
+      username: sa
+      password:
+
+  #jOOQ Configuration
+  jooq:
+    sql-dialect: H2
+
+  datasource:
+    initialize: false
+    continueOnError: true
 
 locale: "ru_RU"

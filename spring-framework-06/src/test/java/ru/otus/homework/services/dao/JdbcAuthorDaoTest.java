@@ -1,5 +1,6 @@
 package ru.otus.homework.services.dao;
 
+import org.jooq.DSLContext;
 import org.junit.jupiter.api.*;
 import org.springframework.dao.EmptyResultDataAccessException;
 import ru.otus.homework.models.Author;
@@ -22,12 +23,14 @@ class JdbcAuthorDaoTest
 
     private JdbcAuthorDao dao;
 
+    private DSLContext dsl;
+
     @Test
     @DisplayName("is instantiated with new JdbcAuthorDao()")
     void isInstantiatedWithNew()
     {
         dataSource = injectTestDataSource();
-        new JdbcAuthorDao(dataSource);
+        new JdbcAuthorDao(dataSource, dsl);
     }
 
     private void printFindAll()
@@ -43,7 +46,7 @@ class JdbcAuthorDaoTest
         void createNewQuestions()
         {
             dataSource = injectTestDataSource();
-            dao = new JdbcAuthorDao(dataSource);
+            dao = new JdbcAuthorDao(dataSource, dsl);
         }
 
         @Test
@@ -73,7 +76,7 @@ class JdbcAuthorDaoTest
             connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
             statement.execute(INSERT_INTO_AUTHOR);
-            dao = new JdbcAuthorDao(dataSource);
+            dao = new JdbcAuthorDao(dataSource, dsl);
         }
 
         @AfterEach
