@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.otus.homework.services.dao.JdbcAuthorDao;
 
 import javax.sql.DataSource;
@@ -23,9 +24,11 @@ class AuthorsServiceImplTest
 
     private DataSource dataSource = injectTestDataSource();
 
+    private NamedParameterJdbcTemplate jdbc = new NamedParameterJdbcTemplate(dataSource);
+
     private DSLContext dsl;
 
-    private JdbcAuthorDao dao = new JdbcAuthorDao(dataSource, dsl);
+    private JdbcAuthorDao dao = new JdbcAuthorDao(dataSource, dsl, jdbc);
 
     @Test
     @DisplayName("is instantiated with new AuthorsService()")

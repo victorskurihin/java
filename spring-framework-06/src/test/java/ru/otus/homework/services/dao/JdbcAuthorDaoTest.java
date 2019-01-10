@@ -1,14 +1,18 @@
 package ru.otus.homework.services.dao;
 
 import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.jooq.tools.jdbc.MockDataProvider;
+import org.jooq.tools.jdbc.MockExecuteContext;
+import org.jooq.tools.jdbc.MockResult;
 import org.junit.jupiter.api.*;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.otus.homework.models.Author;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +27,8 @@ class JdbcAuthorDaoTest
 
     private JdbcAuthorDao dao;
 
+    private NamedParameterJdbcTemplate jdbc;
+
     private DSLContext dsl;
 
     @Test
@@ -30,7 +36,7 @@ class JdbcAuthorDaoTest
     void isInstantiatedWithNew()
     {
         dataSource = injectTestDataSource();
-        new JdbcAuthorDao(dataSource, dsl);
+        new JdbcAuthorDao(dataSource, dsl, jdbc);
     }
 
     private void printFindAll()
@@ -46,7 +52,8 @@ class JdbcAuthorDaoTest
         void createNewQuestions()
         {
             dataSource = injectTestDataSource();
-            dao = new JdbcAuthorDao(dataSource, dsl);
+            jdbc = new NamedParameterJdbcTemplate(dataSource);
+            dao = new JdbcAuthorDao(dataSource, dsl, jdbc);
         }
 
         @Test
@@ -67,23 +74,60 @@ class JdbcAuthorDaoTest
     @DisplayName("when new DAO operation")
     class WhenNewDAOoperation
     {
-        private Connection connection;
+        // TODO
+        MockDataProvider provider = new MockDataProvider()
+        {
+            // Your contract is to return execution results, given a context
+            // object, which contains SQL statement(s), bind values, and some
+            // other context values
+            @Override
+            public MockResult[] execute(MockExecuteContext context) throws SQLException
+            {
+                dataSource = injectTestDataSource();
+
+                // Use ordinary jOOQ API to create an org.jooq.Result object.
+                // You can also use ordinary jOOQ API to load CSV files or
+                // other formats, here!
+                DSLContext ctx = DSL.using(dataSource.getConnection());
+
+                // Result<MyTableRecord> result = create.newResult(MY_TABLE);
+                // result.add(create.newRecord(MY_TABLE));
+                Result<?> result = ctx.fetchFromTXT(
+                    "AUTHOR_ID first_name last_name\n" +
+                    "--------- ---------- ---------\n" +
+                    "        1 FirstTest  LastTest \n"
+                );
+
+                // Now, return 1-many results, depending on whether this is
+                // a batch/multi-result context
+                return new MockResult[] {
+                    new MockResult(1, result)
+                };
+            }
+        };
+        // TODO
+        // @BeforeEach
+        void createNew() throws SQLException
+        {
+            // Put your provider into a MockConnection and use that connection
+            // in your application. In this case, with a jOOQ DSLContext:
+            // TODO dsl = DSL.using(new MockConnection(provider), SQLDialect.H2);
+        }
 
         @BeforeEach
         void createNewDAO() throws SQLException
         {
             dataSource = injectTestDataSource();
-            connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            statement.execute(INSERT_INTO_AUTHOR);
-            dao = new JdbcAuthorDao(dataSource, dsl);
+            inserToTables(dataSource);
+            jdbc = new NamedParameterJdbcTemplate(dataSource);
+            dsl = DSL.using(dataSource.getConnection());
+            dao = new JdbcAuthorDao(dataSource, dsl, jdbc);
         }
 
         @AfterEach
         void deleteFromTable() throws SQLException
         {
-            Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(DELETE_FROM_AUTHOR);
+            clearTables(dataSource);
         }
 
         @Test
@@ -193,3 +237,8 @@ class JdbcAuthorDaoTest
         }
     }
 }
+/*
+AUTHOR_ID first_name last_name\n
+--------- ---------- ---------\n
+        1 FirstTest  LastTest \n
+ */

@@ -1,9 +1,5 @@
-DROP TABLE IF EXISTS author_isbn;
-DROP TABLE IF EXISTS book;
-DROP TABLE IF EXISTS publisher;
-DROP TABLE IF EXISTS author;
 
-CREATE TABLE author (
+CREATE TABLE IF NOT EXISTS authors (
   author_id BIGINT NOT NULL AUTO_INCREMENT
 , first_name VARCHAR(60) NOT NULL
 , last_name VARCHAR(40) NOT NULL
@@ -11,13 +7,13 @@ CREATE TABLE author (
 , PRIMARY KEY (author_id)
 );
 
-CREATE TABLE publisher (
+CREATE TABLE IF NOT EXISTS publisher (
   publisher_id BIGINT NOT NULL AUTO_INCREMENT
 , publisher_name  VARCHAR(90) NOT NULL
 , PRIMARY KEY (publisher_id)
 );
 
-CREATE TABLE book (
+CREATE TABLE IF NOT EXISTS book (
   book_id BIGINT NOT NULL AUTO_INCREMENT
 , isbn VARCHAR(20) NOT NULL
 , title VARCHAR(90) NOT NULL
@@ -28,8 +24,7 @@ CREATE TABLE book (
 , PRIMARY KEY (book_id)
 );
 
-CREATE TABLE author_isbn (
-  author_id BIGINT NOT NULL REFERENCES author(author_id)
+CREATE TABLE IF NOT EXISTS author_isbn (
+  author_id BIGINT NOT NULL REFERENCES authors(author_id)
 , isbn VARCHAR(20) NOT NULL REFERENCES book(isbn)
 );
-

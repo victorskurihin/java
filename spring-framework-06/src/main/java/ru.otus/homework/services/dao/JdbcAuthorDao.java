@@ -1,10 +1,22 @@
 package ru.otus.homework.services.dao;
 
+
+import static org.jooq.impl.DSL.param;
 import static ru.otus.homework.db.h2.Tables.AUTHORS;
+import static ru.otus.outside.utils.JdbcHelper.getLongOrDefault;
+import static ru.otus.outside.utils.JdbcHelper.getStringOrDefault;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.NamedBeanHolder;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.object.MappingSqlQuery;
 import org.springframework.jdbc.object.SqlUpdate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Repository("authorDao")
 public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
@@ -105,7 +119,9 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
 
     private DSLContext dsl;
 
-    public JdbcAuthorDao(DataSource dataSource, DSLContext dsl)
+    NamedParameterJdbcTemplate jdbc;
+
+    public JdbcAuthorDao(DataSource dataSource, DSLContext dsl, NamedParameterJdbcTemplate jdbc)
     {
         super(dataSource);
         this.dataSource = dataSource;
@@ -116,6 +132,7 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
         this.deleteAuthor = new Delete(dataSource, TBL_AUTHOR, F_AUTHOR_ID, AUTHOR_ID);
 
         this.dsl = dsl;
+        this.jdbc = jdbc;
     }
 
     public DataSource getDataSource()
@@ -128,9 +145,21 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
         this.dataSource = dataSource;
     }
 
+    public static Author buildBy(ResultSet resultSet) throws SQLException
+    {
+        Author author = new Author();
+
+        author.setId(getLongOrDefault(resultSet, AUTHORS.AUTHOR_ID.getName()));
+        author.setFirstName(getStringOrDefault(resultSet, AUTHORS.FIRST_NAME.getName()));
+        author.setLastName(getStringOrDefault(resultSet, AUTHORS.LAST_NAME.getName()));
+
+        return author;
+    }
+
     public static Author fetchAuthor(ResultSet resultSet) throws SQLException
     {
         Author author = new Author();
+
         author.setId(resultSet.getLong(F_AUTHOR_ID));
         author.setFirstName(resultSet.getString(F_FIRST_NAME));
         author.setLastName(resultSet.getString(F_LAST_NAME));
@@ -147,13 +176,25 @@ public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
     @Override
     public List<Author> findAll()
     {
-        return super.findAll(SELECT_ALL);
+        String sql = dsl
+            .select(AUTHORS.AUTHOR_ID, AUTHORS.FIRST_NAME, AUTHORS.LAST_NAME)
+            .from(AUTHORS)
+            .getSQL();
+
+        return jdbc.query(sql, (rs, rn) -> buildBy(rs));
     }
 
     @Override
     public Author findById(long id)
     {
-        return super.findById(SELECT_ALL_WHERE_ID, AUTHOR_ID, id);
+        MapSqlParameterSource mapParameter = new MapSqlParameterSource("id", id);
+        String sql = dsl
+            .select(AUTHORS.AUTHOR_ID, AUTHORS.FIRST_NAME, AUTHORS.LAST_NAME)
+            .from(AUTHORS)
+            .where( AUTHORS.AUTHOR_ID + " = :id")
+            .getSQL();
+
+        return jdbc.queryForObject(sql, mapParameter, (rs, rn) -> buildBy(rs));
     }
 
     @Override
