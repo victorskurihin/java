@@ -1,218 +1,112 @@
 package ru.otus.homework.services.dao;
 
-import org.springframework.jdbc.core.SqlParameter;
-import org.springframework.jdbc.object.MappingSqlQuery;
-import org.springframework.jdbc.object.SqlUpdate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.homework.models.Author;
 
-import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Repository("authorDao")
-public class JdbcAuthorDao extends JdbcAbstractDao<Author> implements AuthorDao
+public class JdbcAuthorDao implements AuthorDao
 {
-    public static final String F_AUTHOR_ID = "author_id";
+    public static String[] FIND_ALL_HEADER = {"author_id", "first_name", "last_name"};
 
-    public static final String F_FIRST_NAME = "first_name";
+    private NamedParameterJdbcTemplate jdbc;
 
-    public static final String F_LAST_NAME = "last_name";
-
-    public static String[] FIND_ALL_HEADER = {F_AUTHOR_ID, F_FIRST_NAME, F_LAST_NAME};
-
-    public static final String TBL_AUTHOR = "author";
-
-    public static final String SELECT_ALL = "SELECT " + F_AUTHOR_ID + ", " + F_FIRST_NAME + ", " + F_LAST_NAME
-                                          + " FROM " + TBL_AUTHOR;
-
-    public static final String AUTHOR_ID = "authorId";
-
-    public static final String AUTHOR_FN = "authorFn";
-
-    public static final String AUTHOR_LN = "authorLn";
-
-    public static final String SELECT_ALL_WHERE_ID = SELECT_ALL + " WHERE " + F_AUTHOR_ID + " = :" + AUTHOR_ID;
-
-    private DataSource dataSource;
-
-    public class SelectAuthorByName extends MappingSqlQuery<Author>
+    public JdbcAuthorDao(NamedParameterJdbcTemplate jdbc)
     {
-        SelectAuthorByName(DataSource dataSource, String fieldName, String sid)
-        {
-            super(dataSource, SELECT_ALL + " WHERE " + fieldName + " LIKE :" + sid);
-            super.declareParameter(new SqlParameter(sid, Types.VARCHAR));
+        this.jdbc = jdbc;
+    }
+
+    static Author buildBy(ResultSet resultSet)
+    {
+        Author a = new Author();
+        try {
+            a.setId(resultSet.getLong("author_id"));
+            a.setFirstName(resultSet.getString("first_name"));
+            a.setLastName(resultSet.getString("last_name"));
+
+            return a;
         }
-
-        @Override
-        protected Author mapRow(ResultSet resultSet, int i) throws SQLException
-        {
-            return fetchAuthor(resultSet);
+        catch (SQLException e) {
+            return null;
         }
-    }
-
-    private SelectAuthorByName selectAuthorByFirstName;
-
-    private SelectAuthorByName selectAuthorByLastName;
-
-    public class Insert extends SqlUpdate
-    {
-        public static final String SQL = "INSERT INTO " + TBL_AUTHOR  + " (" + F_FIRST_NAME + ", " + F_LAST_NAME
-                                       + ") values (:" + F_FIRST_NAME + ", :" + F_LAST_NAME + ')';
-
-        Insert(DataSource dataSource)
-        {
-            super(dataSource, SQL);
-            super.declareParameter(new SqlParameter(F_FIRST_NAME, Types.VARCHAR));
-            super.declareParameter(new SqlParameter(F_LAST_NAME, Types.VARCHAR));
-            super.setGeneratedKeysColumnNames(F_AUTHOR_ID);
-            super.setReturnGeneratedKeys(true);
-        }
-    }
-
-    private Insert insertAuthor;
-
-    public class Update extends SqlUpdate
-    {
-        public static final String SQL = "UPDATE " + TBL_AUTHOR
-                                       + " SET " + F_FIRST_NAME + " = :" + F_FIRST_NAME
-                                       + ", " + F_LAST_NAME + "= :" + F_LAST_NAME
-                                       + " WHERE  " + F_AUTHOR_ID + " = :" + F_AUTHOR_ID;
-
-        public Update(DataSource dataSource)
-        {
-            super(dataSource, SQL);
-            super.declareParameter(new SqlParameter(F_FIRST_NAME, Types.VARCHAR));
-            super.declareParameter(new SqlParameter(F_LAST_NAME, Types.VARCHAR));
-            super.declareParameter(new SqlParameter(F_AUTHOR_ID, Types.BIGINT));
-        }
-    }
-
-    private Update updateAuthor;
-
-    private Delete deleteAuthor;
-
-    public JdbcAuthorDao(DataSource dataSource)
-    {
-        super(dataSource);
-        this.dataSource = dataSource;
-        this.selectAuthorByFirstName = new SelectAuthorByName(dataSource, F_FIRST_NAME, AUTHOR_FN);
-        this.selectAuthorByLastName = new SelectAuthorByName(dataSource, F_LAST_NAME, AUTHOR_LN);
-        this.insertAuthor = new Insert(dataSource);
-        this.updateAuthor = new Update(dataSource);
-        this.deleteAuthor = new Delete(dataSource, TBL_AUTHOR, F_AUTHOR_ID, AUTHOR_ID);
-    }
-
-    public DataSource getDataSource()
-    {
-        return dataSource;
-    }
-
-    public void setDataSource(DataSource dataSource)
-    {
-        this.dataSource = dataSource;
-    }
-
-    public static Author fetchAuthor(ResultSet resultSet) throws SQLException
-    {
-        Author author = new Author();
-        author.setId(resultSet.getLong(F_AUTHOR_ID));
-        author.setFirstName(resultSet.getString(F_FIRST_NAME));
-        author.setLastName(resultSet.getString(F_LAST_NAME));
-
-        return author;
-    }
-
-    @Override
-    public Author fetchFrom(ResultSet resultSet) throws SQLException
-    {
-        return fetchAuthor(resultSet);
     }
 
     @Override
     public List<Author> findAll()
     {
-        return super.findAll(SELECT_ALL);
+        return jdbc.query("SELECT author_id, first_name, last_name FROM author", (rs, rowNum) -> buildBy(rs));
     }
 
     @Override
     public Author findById(long id)
     {
-        return super.findById(SELECT_ALL_WHERE_ID, AUTHOR_ID, id);
-    }
-
-    @Override
-    public List<Author> findAllWithDetail()
-    {
-        return findAll(); // TODO
+        return jdbc.queryForObject(
+            "SELECT author_id, first_name, last_name FROM author WHERE author_id = :id",
+            new MapSqlParameterSource("id", id),
+            (rs, numRow) -> buildBy(rs)
+        );
     }
 
     @Override
     public List<Author> findByFirstName(String firstName)
     {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(AUTHOR_FN, firstName);
-
-        return selectAuthorByFirstName.executeByNamedParam(paramMap);
+        return jdbc.query(
+            "SELECT author_id, first_name, last_name FROM author WHERE first_name LIKE :name",
+            new MapSqlParameterSource("name", firstName),
+            (rs, rowNum) -> buildBy(rs)
+        );
     }
 
     @Override
     public List<Author> findByLastName(String lastName)
     {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(AUTHOR_LN, lastName);
-
-        return selectAuthorByLastName.executeByNamedParam(paramMap);
+        return jdbc.query(
+            "SELECT author_id, first_name, last_name FROM author WHERE last_name LIKE :name",
+            new MapSqlParameterSource("name", lastName),
+            (rs, rowNum) -> buildBy(rs)
+        );
     }
 
     @Override
-    public String findFirstNameById(long id)
+    public void insert(Author entity)
     {
-        return findStringFieldNameById(TBL_AUTHOR, F_FIRST_NAME, F_AUTHOR_ID, AUTHOR_ID, id);
-    }
-
-    @Override
-    public String findLastNameById(long id)
-    {
-        return findStringFieldNameById(TBL_AUTHOR, F_LAST_NAME, F_AUTHOR_ID, AUTHOR_ID, id);
-    }
-
-    @Override
-    public void insert(Author author)
-    {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(F_FIRST_NAME, author.getFirstName());
-        paramMap.put(F_LAST_NAME, author.getLastName());
-
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("first_name", entity.getFirstName());
+        namedParameters.addValue("last_name", entity.getLastName());
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        insertAuthor.updateByNamedParam(paramMap, keyHolder);
-        author.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
+        jdbc.update(
+            "INSERT INTO author (first_name, last_name) VALUES (:first_name, :last_name)",
+            namedParameters, keyHolder
+        );
+        entity.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
     }
 
     @Override
-    public void update(Author author)
+    public void update(Author entity)
     {
-        Map<String, Object> paramMap = new HashMap<>();
-
-        paramMap.put(F_FIRST_NAME, author.getFirstName());
-        paramMap.put(F_LAST_NAME, author.getLastName());
-        paramMap.put(F_AUTHOR_ID, author.getId());
-
-        updateAuthor.updateByNamedParam(paramMap);
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("first_name", entity.getFirstName());
+        namedParameters.addValue("last_name", entity.getLastName());
+        namedParameters.addValue("id", entity.getId());
+        jdbc.update(
+            "UPDATE author SET first_name = :first_name, last_name = :last_name WHERE author_id = :id",
+            namedParameters
+        );
     }
 
     @Override
     public void delete(long id)
     {
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put(AUTHOR_ID, id);
-        deleteAuthor.updateByNamedParam(paramMap);
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("id", id);
+        jdbc.update("DELETE FROM author WHERE author_id = :id", namedParameters);
     }
 }

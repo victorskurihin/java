@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,5 +19,5 @@ public class Author implements Serializable, DataSet
 
     private String lastName;
 
-    private List<Book> books;
+    // private List<Book> books;
 }

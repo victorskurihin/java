@@ -56,7 +56,7 @@ class PublisherTest
         @BeforeEach
         void createNew()
         {
-            publisher = new Publisher(TEST_ID, TEST_PUBLISHER_NAME, null);
+            publisher = new Publisher(TEST_ID, TEST_PUBLISHER_NAME);
         }
 
         @Test
@@ -72,7 +72,7 @@ class PublisherTest
         void testEquals()
         {
             assertNotEquals(new Publisher(), publisher);
-            Publisher expected = new Publisher(TEST_ID, TEST_PUBLISHER_NAME, null);
+            Publisher expected = new Publisher(TEST_ID, TEST_PUBLISHER_NAME);
             assertEquals(expected.hashCode(), publisher.hashCode());
             assertEquals(expected, publisher);
         }

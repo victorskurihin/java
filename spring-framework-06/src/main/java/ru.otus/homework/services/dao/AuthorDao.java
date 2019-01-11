@@ -9,8 +9,4 @@ public interface AuthorDao extends Dao<Author>
     List<Author> findByFirstName(String firstName);
 
     List<Author> findByLastName(String lastName);
-
-    String findFirstNameById(long id);
-
-    String findLastNameById(long id);
 }

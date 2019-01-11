@@ -8,7 +8,7 @@ public interface BookDao extends Dao<Book>
 {
     Book findByIsbn(String isbn);
 
-    String findIsbnById(long id);
-
     List<Book> findByTitle(String title);
+
+    List findAllBooksAndTheirAuthors();
 }

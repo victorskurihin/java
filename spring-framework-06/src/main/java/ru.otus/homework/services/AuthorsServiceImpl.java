@@ -1,41 +1,99 @@
 package ru.otus.homework.services;
 
-import org.springframework.shell.table.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.models.Author;
 import ru.otus.homework.services.dao.JdbcAuthorDao;
 
-@Service
-public class AuthorsServiceImpl extends TableBuilderService<Author, JdbcAuthorDao> implements AuthorsService
-{
-    private JdbcAuthorDao authorDao;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    private TableBuilder tableBuilder;
+@Service
+public class AuthorsServiceImpl implements AuthorsService
+{
+    // TODO LOG
+
+    private JdbcAuthorDao authorDao;
 
     public AuthorsServiceImpl(JdbcAuthorDao authorDao)
     {
         this.authorDao = authorDao;
     }
 
-    @Override
-    public TableBuilder getTableBuilder()
+    public static String[] unfoldAuthor(Author a)
     {
-        return tableBuilder;
+        if (null == a) {
+            return new String[]{"NULL", "NULL", "NULL"};
+        }
+
+        return new String[]{Long.toString(a.getId()), a.getFirstName(), a.getLastName()};
     }
 
-    private static String[] unfoldAuthor(Author author)
+    String[] unfold(Author a)
     {
-        return new String[]{Long.toString(author.getId()), author.getFirstName(), author.getLastName()};
+        return unfoldAuthor(a);
     }
 
     @Override
-    public int createTableForFindAll()
+    public List<String[]> findAll()
     {
-        tableBuilder = super.createTableForFindAll(
-            authorDao, JdbcAuthorDao.FIND_ALL_HEADER, AuthorsServiceImpl::unfoldAuthor
-        );
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
 
-        return tableBuilder.getModel().getRowCount() - 1;
+        List<String[]> tail = authorDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
+        head.addAll(tail);
+
+        return head;
+    }
+
+    @Override
+    public List<String[]> findById(long id)
+    {
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
+
+        try {
+            Author author;
+            author = authorDao.findById(id);
+            head.add(unfold(author));
+
+            return head;
+        }
+        catch (EmptyResultDataAccessException e) {
+            return head;
+
+        }
+    }
+
+    @Override
+    public List<String[]> findByFirstName(String firstName)
+    {
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
+
+        List<String[]> tail = authorDao.findByFirstName(firstName)
+            .stream()
+            .map(this::unfold)
+            .collect(Collectors.toList());
+        head.addAll(tail);
+
+        return head;
+    }
+
+    @Override
+    public List<String[]> findByLastName(String lastName)
+    {
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
+
+        List<String[]> tail = authorDao.findByLastName(lastName)
+            .stream()
+            .map(this::unfold)
+            .collect(Collectors.toList());
+        head.addAll(tail);
+
+        return head;
     }
 
     @Override

@@ -37,7 +37,6 @@ class AuthorTest
             assertThat(author).hasFieldOrPropertyWithValue("id", 0L);
             assertThat(author).hasFieldOrPropertyWithValue("firstName", null);
             assertThat(author).hasFieldOrPropertyWithValue("lastName", null);
-            assertThat(author).hasFieldOrPropertyWithValue("books", null);
         }
 
         @Test
@@ -67,7 +66,7 @@ class AuthorTest
         @BeforeEach
         void createNew()
         {
-            author = new Author(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME, null);
+            author = new Author(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME);
         }
 
         @Test
@@ -77,7 +76,6 @@ class AuthorTest
             assertThat(author).hasFieldOrPropertyWithValue("id", TEST_ID);
             assertThat(author).hasFieldOrPropertyWithValue("firstName", TEST_FIRST_NAME);
             assertThat(author).hasFieldOrPropertyWithValue("lastName", TEST_LAST_NAME);
-            assertThat(author).hasFieldOrPropertyWithValue("books", null);
         }
 
         @Test
@@ -85,7 +83,7 @@ class AuthorTest
         void testEquals()
         {
             assertNotEquals(new Author(), author);
-            Author expected = new Author(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME, null);
+            Author expected = new Author(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME);
             assertEquals(expected.hashCode(), author.hashCode());
             assertEquals(expected, author);
         }

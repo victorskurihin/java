@@ -11,11 +11,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Publisher implements Serializable, DataSet
+public class Genre implements Serializable, DataSet
 {
     private long id;
 
-    private String publisherName;
+    private String genre;
 
     // private List<Book> books;
 }

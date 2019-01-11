@@ -14,6 +14,10 @@ class BookTest
 {
     private Book book;
 
+    private Publisher publisher = new Publisher();
+
+    private Genre genre = new Genre();
+
     @Test
     @DisplayName("is instantiated with new Book()")
     void isInstantiatedWithNew() {
@@ -39,8 +43,8 @@ class BookTest
             assertThat(book).hasFieldOrPropertyWithValue("title", null);
             assertThat(book).hasFieldOrPropertyWithValue("editionNumber", 0);
             assertThat(book).hasFieldOrPropertyWithValue("copyright", null);
-            assertThat(book).hasFieldOrPropertyWithValue("publisherId", 0L);
-            assertThat(book).hasFieldOrPropertyWithValue("authors", null);
+            assertThat(book).hasFieldOrPropertyWithValue("publisher", null);
+            assertThat(book).hasFieldOrPropertyWithValue("genre", null);
         }
 
         @Test
@@ -80,14 +84,22 @@ class BookTest
         }
 
         @Test
-        @DisplayName("Setter and getter for editionNumber")
-        void testGetSetPublisherId()
+        @DisplayName("Setter and getter for publisher")
+        void testGetSetPublisher()
         {
-            book.setPublisherId(TEST_ID);
-            assertThat(book).hasFieldOrPropertyWithValue("publisherId", TEST_ID);
-            assertEquals(TEST_ID, book.getPublisherId());
+            book.setPublisher(publisher);
+            assertThat(book).hasFieldOrPropertyWithValue("publisher", publisher);
+            assertEquals(publisher, book.getPublisher());
         }
 
+        @Test
+        @DisplayName("Setter and getter for publisher")
+        void testGetSetGenre()
+        {
+            book.setGenre(genre);
+            assertThat(book).hasFieldOrPropertyWithValue("genre", genre);
+            assertEquals(genre, book.getGenre());
+        }
     }
 
     @Nested
@@ -97,7 +109,7 @@ class BookTest
         @BeforeEach
         void createNew()
         {
-            book = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, TEST_ID, null);
+            book = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, publisher, genre);
         }
 
         @Test
@@ -109,7 +121,8 @@ class BookTest
             assertThat(book).hasFieldOrPropertyWithValue("title", TEST_TITLE);
             assertThat(book).hasFieldOrPropertyWithValue("editionNumber", TEST_NUM);
             assertThat(book).hasFieldOrPropertyWithValue("copyright", TEST_COPYRIGHT);
-            assertThat(book).hasFieldOrPropertyWithValue("publisherId", TEST_ID);
+            assertThat(book).hasFieldOrPropertyWithValue("publisher", publisher);
+            assertThat(book).hasFieldOrPropertyWithValue("genre", genre);
         }
 
         @Test
@@ -117,7 +130,7 @@ class BookTest
         void testEquals()
         {
             assertNotEquals(new Book(), book);
-            Book expected = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, TEST_ID, null);
+            Book expected = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, publisher, genre);
             assertEquals(expected.hashCode(), book.hashCode());
             assertEquals(expected, book);
         }

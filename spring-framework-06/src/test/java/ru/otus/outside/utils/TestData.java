@@ -3,23 +3,13 @@ package ru.otus.outside.utils;
 import org.h2.jdbcx.JdbcDataSource;
 import ru.otus.homework.models.Author;
 import ru.otus.homework.models.Book;
-import ru.otus.homework.models.DataSet;
+import ru.otus.homework.models.Genre;
 import ru.otus.homework.models.Publisher;
-import ru.otus.homework.services.dao.JdbcAuthorDao;
-import ru.otus.homework.services.dao.JdbcPublisherDao;
 
 import javax.sql.DataSource;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import static ru.otus.homework.services.dao.JdbcAuthorDao.*;
-import static ru.otus.homework.services.dao.JdbcBookDao.F_ISBN;
-import static ru.otus.homework.services.dao.JdbcBookDao.LIST_ALL_FIELDS;
-import static ru.otus.homework.services.dao.JdbcBookDao.TBL_BOOK;
-import static ru.otus.homework.services.dao.JdbcPublisherDao.F_PUBLISHER_NAME;
-import static ru.otus.homework.services.dao.JdbcPublisherDao.TBL_PUBLISHER;
 
 public class TestData
 {
@@ -31,29 +21,29 @@ public class TestData
     public static final String TEST_ISBN = "testIsbn";
     public static final String TEST_TITLE = "testTitle";
     public static final String TEST_COPYRIGHT = "testCopyright";
-    public static final String TEST_PUBLISHER_NAME = "testPublisherNamr";
+    public static final String TEST_PUBLISHER_NAME = "testPublisherName";
+    public static final String TEST_GENRE_NAME = "testGenre";
     public static final String JDBC_URL = "jdbc:h2:mem:test;INIT=runscript from 'classpath:createTestDB.sql'";
 
-    public static final String INSERT_INTO_AUTHOR = "INSERT INTO " + TBL_AUTHOR + '('
-        + JdbcAuthorDao.F_AUTHOR_ID + ", " + F_FIRST_NAME + ", " + F_LAST_NAME + ") VALUES (13, '" + TEST_FIRST_NAME + "', '"
-        + TEST_LAST_NAME + "')";
+    public static final String INSERT_INTO_AUTHOR = "INSERT INTO author (author_id, first_name, last_name) VALUES" +
+        " (13, 'testFirstName', 'testLastName')";
+    public static final String DELETE_FROM_AUTHOR = "DELETE FROM author";
 
-    public static final String INSERT_INTO_BOOK = "INSERT INTO " + TBL_BOOK + '(' + LIST_ALL_FIELDS + ") VALUES (13, '"
-        + TEST_ISBN + "', '" + TEST_TITLE + "', " + TEST_NUM + ", '" + TEST_COPYRIGHT + "', " + TEST_ID + ')';
+    public static final String INSERT_INTO_GENRE = "INSERT INTO genre (genre_id, genre)  VALUES ( 0, 'testGenre')";
+    public static final String DELETE_FROM_GENRE = "DELETE FROM genre";
 
-    public static final String INSERT_INTO_PUBLISHER = "INSERT INTO " + TBL_PUBLISHER + "(" + JdbcPublisherDao.F_PUBLISHER_ID
-        + ", " + F_PUBLISHER_NAME + ")" + " VALUES (" + TEST_ID + ", '" + TEST_PUBLISHER_NAME + "')";
+    public static final String INSERT_INTO_PUBLISHER = "INSERT INTO publisher (publisher_id, publisher_name) VALUES" +
+        " (13, 'testPublisherName')";
+    public static final String DELETE_FROM_PUBLISHER = "DELETE FROM publisher";
 
-    public static final String INSERT_INTO_AUTHOR_ISBN = " INSERT INTO author_isbn (" + F_ISBN + ", " + F_AUTHOR_ID
-        + ") VALUES ('" + TEST_ISBN + "', " + TEST_ID + ')';
+    public static final String INSERT_INTO_BOOK =
+        "INSERT INTO book (book_id, isbn, title, edition_number, copyright, publisher_id, genre_id)" +
+        " VALUES (13, 'testIsbn', 'testTitle', 3, 'testCopyright', 13, 0)";
+    public static final String DELETE_FROM_BOOK = "DELETE FROM book";
 
+    public static final String INSERT_INTO_AUTHOR_ISBN = " INSERT INTO author_isbn (author_id, book_id)" +
+        " VALUES (13, 13)";
     public static final String DELETE_FROM_AUTHOR_ISBN = "DELETE FROM author_isbn";
-
-    public static final String DELETE_FROM_AUTHOR = "DELETE FROM " + TBL_AUTHOR;
-
-    public static final String DELETE_FROM_BOOK = "DELETE FROM " + TBL_BOOK;
-
-    public static final String DELETE_FROM_PUBLISHER = "DELETE FROM " + TBL_PUBLISHER;
 
     public static DataSource injectTestDataSource()
     {
@@ -65,7 +55,7 @@ public class TestData
 
     public static Author createTestAuthor13()
     {
-        return new Author(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME, null);
+        return new Author(TEST_ID, TEST_FIRST_NAME, TEST_LAST_NAME);
     }
 
     public static Author createTestAuthorAnother()
@@ -77,25 +67,22 @@ public class TestData
         return author;
     }
 
-    public static Book createTestBook13()
+    public static Genre createTestGenre()
     {
-        return new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, TEST_ID, null);
+        return new Genre(0, TEST_GENRE_NAME);
     }
 
-    public static Book createTestBookAnother()
+    public static Genre createTestGenreAnother()
     {
-        Book book = new Book();
-        book.setIsbn(TEST_ISBN + TEST);
-        book.setTitle(TEST_TITLE + TEST);
-        book.setCopyright(TEST_COPYRIGHT + TEST);
-        book.setPublisherId(TEST_ID);
+        Genre genre = new Genre();
+        genre.setGenre(TEST_GENRE_NAME + TEST);
 
-        return book;
+        return genre;
     }
 
     public static Publisher createTestPublisher13()
     {
-        return new Publisher(TEST_ID, TEST_PUBLISHER_NAME, null);
+        return new Publisher(TEST_ID, TEST_PUBLISHER_NAME);
     }
 
     public static Publisher createTestPublisherAnother()
@@ -106,11 +93,30 @@ public class TestData
         return publisher;
     }
 
+    public static Book createTestBook13()
+    {
+        return new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, createTestPublisher13(), createTestGenre());
+    }
+
+    public static Book createTestBookAnother()
+    {
+        Book book = new Book();
+        book.setIsbn(TEST_ISBN + TEST);
+        book.setTitle(TEST_TITLE + TEST);
+        book.setCopyright(TEST_COPYRIGHT + TEST);
+        book.setPublisher(createTestPublisher13());
+        book.setGenre(createTestGenre());
+
+        return book;
+    }
+
+
     public static void inserToTables(DataSource dataSource)
     {
         //noinspection Duplicates
         try (Statement statement = dataSource.getConnection().createStatement()) {
             statement.execute(INSERT_INTO_PUBLISHER);
+            statement.execute(INSERT_INTO_GENRE);
             statement.execute(INSERT_INTO_BOOK);
             statement.execute(INSERT_INTO_AUTHOR);
             statement.execute(INSERT_INTO_AUTHOR_ISBN);
@@ -127,30 +133,8 @@ public class TestData
             statement.execute(DELETE_FROM_AUTHOR_ISBN);
             statement.execute(DELETE_FROM_AUTHOR);
             statement.execute(DELETE_FROM_BOOK);
+            statement.execute(DELETE_FROM_GENRE);
             statement.execute(DELETE_FROM_PUBLISHER);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void clearTableAuthorISBN(DataSource dataSource)
-    {
-        //noinspection Duplicates
-        try (Statement statement = dataSource.getConnection().createStatement()) {
-            statement.execute(DELETE_FROM_AUTHOR_ISBN);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void clearTableAuthorIsbnBook(DataSource dataSource)
-    {
-        //noinspection Duplicates
-        try (Statement statement = dataSource.getConnection().createStatement()) {
-            statement.execute(DELETE_FROM_AUTHOR_ISBN);
-            statement.execute(DELETE_FROM_BOOK);
         }
         catch (SQLException e) {
             e.printStackTrace();

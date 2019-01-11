@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,7 +23,7 @@ public class Book implements Serializable, DataSet
 
     private String copyright;
 
-    private long publisherId;
+    private Publisher publisher;
 
-    private List<Author> authors;
+    private Genre genre;
 }

@@ -12,8 +12,6 @@ public interface Dao<T extends DataSet>
 
     T findById(long id);
 
-    List<T> findAllWithDetail();
-
     void insert(T entity);
 
     void update(T entity);

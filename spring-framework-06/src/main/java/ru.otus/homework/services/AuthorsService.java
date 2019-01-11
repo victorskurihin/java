@@ -1,12 +1,16 @@
 package ru.otus.homework.services;
 
-import org.springframework.shell.table.TableBuilder;
+import java.util.List;
 
 public interface AuthorsService
 {
-    TableBuilder getTableBuilder();
+    List<String[]> findAll();
 
-    int createTableForFindAll();
+    List<String[]> findById(long id);
+
+    List<String[]> findByFirstName(String firstName);
+
+    List<String[]> findByLastName(String lastName);
 
     long insert(String firstName, String lastName);
 

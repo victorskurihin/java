@@ -3,14 +3,12 @@ package ru.otus.homework.services.dao;
 import org.junit.jupiter.api.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
-import ru.otus.homework.models.Book;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.otus.homework.models.Publisher;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,19 +21,27 @@ class JdbcPublisherDaoTest
 {
     private DataSource dataSource;
 
+    private NamedParameterJdbcTemplate jdbc;
+
     private JdbcPublisherDao dao;
 
     @Test
     @DisplayName("is instantiated with new JdbcPublisherDao()")
     void isInstantiatedWithNew()
     {
-        dataSource = injectTestDataSource();
-        new JdbcPublisherDao(dataSource);
+        new JdbcPublisherDao(jdbc);
     }
 
     private void printFindAll()
     {
         System.out.println("findAll = " + dao.findAll());
+    }
+
+    private JdbcPublisherDao createDao()
+    {
+        dataSource = injectTestDataSource();
+        jdbc = new NamedParameterJdbcTemplate(dataSource);
+        return new JdbcPublisherDao(jdbc);
     }
 
     @Nested
@@ -46,20 +52,14 @@ class JdbcPublisherDaoTest
         @BeforeEach
         void createNewQuestions()
         {
-            dataSource = injectTestDataSource();
-            dao = new JdbcPublisherDao(dataSource);
+            dao = createDao();
         }
 
         @Test
         @DisplayName("injected values in JdbcPublisherDao()")
         void defaults()
         {
-            assertThat(dao).hasFieldOrPropertyWithValue("dataSource", dataSource);
-            assertThat(dao).hasFieldOrProperty("namedParameterJdbcTemplate").isNotNull();
-            assertThat(dao).hasFieldOrProperty("selectPublisherByName").isNotNull();
-            assertThat(dao).hasFieldOrProperty("insertPublisher").isNotNull();
-            assertThat(dao).hasFieldOrProperty("updatePublisher").isNotNull();
-            assertThat(dao).hasFieldOrProperty("deletePublisher").isNotNull();
+            assertThat(dao).hasFieldOrPropertyWithValue("jdbc", jdbc);
         }
     }
 
@@ -67,30 +67,17 @@ class JdbcPublisherDaoTest
     @DisplayName("when new DAO operation")
     class WhenNewDAOoperation
     {
-        private Connection connection;
-
         @BeforeEach
         void createNewDAO() throws SQLException
         {
-            dataSource = injectTestDataSource();
+            dao = createDao();
             inserToTables(dataSource);
-            dao = new JdbcPublisherDao(dataSource);
         }
 
         @AfterEach
         void deleteFromTable() throws SQLException
         {
             clearTables(dataSource);
-        }
-
-        @Test
-        @DisplayName("setter and getter for dataSource")
-        void testSetGetDataSource()
-        {
-            dao.setDataSource(null);
-            assertNull(dao.getDataSource());
-            dao.setDataSource(dataSource);
-            assertEquals(dataSource, dao.getDataSource());
         }
 
         @Test
@@ -102,15 +89,6 @@ class JdbcPublisherDaoTest
         }
 
         @Test
-        @DisplayName("find by name")
-        void testFindByFirstName()
-        {
-            List<Publisher> expected = Collections.singletonList(createTestPublisher13());
-            assertEquals(expected, dao.findByName(TEST_PUBLISHER_NAME));
-            assertTrue(dao.findByName("__NONE__").isEmpty());
-        }
-
-        @Test
         @DisplayName("find by id")
         void testFindById()
         {
@@ -119,21 +97,12 @@ class JdbcPublisherDaoTest
         }
 
         @Test
-        @DisplayName("find ALL with detail")
-        void findAllWithDetail()
+        @DisplayName("find by name")
+        void testFindByFirstName()
         {
-            Book expectedBook = createTestBook13();
-            expectedBook.setAuthors(new ArrayList<>());
-            expectedBook.getAuthors().add(createTestAuthor13());
-
-            Publisher expectedPublisher = createTestPublisher13();
-            expectedPublisher.setBooks(new ArrayList<>());
-            expectedPublisher.getBooks().add(expectedBook);
-
-            List<Publisher> expected = Collections.singletonList(expectedPublisher);
-
-            List<Publisher> publishers = dao.findAllWithDetail();
-            assertEquals(expected, publishers);
+            List<Publisher> expected = Collections.singletonList(createTestPublisher13());
+            assertEquals(expected, dao.findByName(TEST_PUBLISHER_NAME));
+            assertTrue(dao.findByName("__NONE__").isEmpty());
         }
 
         @Test
@@ -173,10 +142,9 @@ class JdbcPublisherDaoTest
         void testDelete() throws SQLException
         {
             assertEquals(1, dao.findAll().size());
-            boolean autoCommit = dataSource.getConnection().getAutoCommit();
-            dataSource.getConnection().setAutoCommit(true);
-            assertThrows(DataIntegrityViolationException.class, () -> dao.delete(TEST_ID));
+            boolean autoCommit = autoCommitOn(dataSource);
 
+            assertThrows(DataIntegrityViolationException.class, () -> dao.delete(TEST_ID));
             Statement statement = dataSource.getConnection().createStatement();
             statement.execute(DELETE_FROM_AUTHOR_ISBN);
             statement.execute(DELETE_FROM_BOOK);
@@ -185,7 +153,7 @@ class JdbcPublisherDaoTest
             // TODO printFindAll();
             // assertEquals(0, dao.findAll().size());
             dao.delete(Long.MAX_VALUE);
-            dataSource.getConnection().setAutoCommit(autoCommit);
+            autoCommitRestore(dataSource, autoCommit);
         }
     }
 }
