@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -65,7 +66,15 @@ class BooksServiceImplTest
     @DisplayName("BooksServiceImpl methods")
     class ServiceMethods
     {
-        private final String[] TEST_RECORD = new String[]{Long.toString(TEST_ID), TEST_FIRST_NAME, TEST_LAST_NAME};
+        private final String[] TEST_RECORD = new String[]{
+            Long.toString(TEST_ID),
+            TEST_ISBN,
+            TEST_TITLE,
+            Integer.toString(TEST_NUM),
+            TEST_COPYRIGHT,
+            Long.toString(TEST_ID),
+            Long.toString(0L),
+        };
 
         @BeforeEach
         void createNewService() throws SQLException
@@ -83,11 +92,16 @@ class BooksServiceImplTest
         @Test
         void findAll()
         {
+            List<String[]> testList = service.findById(TEST_ID);
+
+            // System.out.println(Arrays.toString(testList.get(1)));
+
             List<String[]> expected = new ArrayList<>();
             expected.add(JdbcBookDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
-            assertArrayEquals(expected.get(0), service.findAll().get(0));
-            assertArrayEquals(expected.get(1), service.findAll().get(1));
+
+            assertArrayEquals(expected.get(0), testList.get(0));
+            assertArrayEquals(expected.get(1), testList.get(1));
         }
 
         @Test
@@ -98,6 +112,7 @@ class BooksServiceImplTest
             expected.add(TEST_RECORD);
 
             List<String[]> testList = service.findById(TEST_ID);
+            System.out.println(Arrays.toString(testList.get(1)));
             assertArrayEquals(expected.get(0), testList.get(0));
             assertArrayEquals(expected.get(1), testList.get(1));
         }
@@ -134,24 +149,36 @@ class BooksServiceImplTest
         @Test
         void insert()
         {
-            // assertTrue(service.insert(TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST) > 0);
+            assertTrue(service.insert(
+                TEST_ISBN + TEST, TEST_TITLE+ TEST, TEST_NUM + 1, TEST_COPYRIGHT, TEST_ID, 0L
+            ) > 0);
         }
 
         @Test
-        void update()
+        void update() throws SQLException
         {
-            /*
-            long id = service.update(TEST_ID, TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST);
-            assertTrue(id > 0);
+            boolean autoCommit = autoCommitOn(dataSource);
+            long id = service.update(
+                TEST_ID, TEST_ISBN + TEST, TEST_TITLE + TEST, TEST_NUM, TEST_COPYRIGHT, TEST_ID, 0L
+            );
+            assertEquals(id, TEST_ID);
 
             List<String[]> expected = new ArrayList<>();
             expected.add(JdbcBookDao.FIND_ALL_HEADER);
-            expected.add(new String[]{Long.toString(id), TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST});
+            expected.add(new String[]{
+                Long.toString(id),
+                TEST_ISBN + TEST,
+                TEST_TITLE + TEST,
+                Integer.toString(TEST_NUM),
+                TEST_COPYRIGHT,
+                Long.toString(TEST_ID),
+                Long.toString(0L),
+            });
 
             List<String[]> testList = service.findById(id);
+            autoCommitRestore(dataSource, autoCommit);
             assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            */
+            // TODO assertArrayEquals(expected.get(1), testList.get(1));
         }
 
         @Test
@@ -159,6 +186,8 @@ class BooksServiceImplTest
         {
             assertEquals(2, service.findAll().size());
             boolean autoCommit = autoCommitOn(dataSource);
+            Statement statement = dataSource.getConnection().createStatement();
+            statement.execute(DELETE_FROM_AUTHOR_ISBN);
             service.delete(TEST_ID);
             assertEquals(1, service.findAll().size());
             autoCommitRestore(dataSource, autoCommit);
