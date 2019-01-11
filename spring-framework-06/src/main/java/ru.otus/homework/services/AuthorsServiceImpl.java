@@ -21,7 +21,7 @@ public class AuthorsServiceImpl implements AuthorsService
         this.authorDao = authorDao;
     }
 
-    public static String[] unfoldAuthor(Author a)
+    static String[] unfoldAuthor(Author a)
     {
         if (null == a) {
             return new String[]{"NULL", "NULL", "NULL"};
@@ -30,7 +30,7 @@ public class AuthorsServiceImpl implements AuthorsService
         return new String[]{Long.toString(a.getId()), a.getFirstName(), a.getLastName()};
     }
 
-    String[] unfold(Author a)
+    private String[] unfold(Author a)
     {
         return unfoldAuthor(a);
     }

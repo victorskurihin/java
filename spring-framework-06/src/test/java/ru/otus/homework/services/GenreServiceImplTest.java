@@ -2,10 +2,9 @@ package ru.otus.homework.services;
 
 import org.junit.jupiter.api.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.otus.homework.services.dao.JdbcAuthorDao;
+import ru.otus.homework.services.dao.JdbcGenreDao;
 
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -15,20 +14,20 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.otus.outside.utils.TestData.*;
 
-@DisplayName("Class AuthorsServiceImpl")
-class AuthorsServiceImplTest
+@DisplayName("Class GenreServiceImpl")
+class GenreServiceImplTest
 {
     private DataSource dataSource;
 
-    private JdbcAuthorDao dao;
+    private JdbcGenreDao dao;
 
-    private AuthorsServiceImpl service;
+    private GenreServiceImpl service;
 
     @Test
-    @DisplayName("is instantiated with new AuthorsServiceImpl()")
+    @DisplayName("is instantiated with new GenreServiceImpl()")
     void isInstantiatedWithNew()
     {
-        new AuthorsServiceImpl(null);
+        new GenreServiceImpl(null);
     }
 
     private void printFindAll()
@@ -36,12 +35,12 @@ class AuthorsServiceImplTest
         System.out.println("findAll = " + service.findAll());
     }
 
-    private AuthorsServiceImpl createService()
+    private GenreServiceImpl createService()
     {
         dataSource = injectTestDataSource();
         NamedParameterJdbcTemplate jdbc = new NamedParameterJdbcTemplate(dataSource);
-        dao = new JdbcAuthorDao(jdbc);
-        return new AuthorsServiceImpl(dao);
+        dao = new JdbcGenreDao(jdbc);
+        return new GenreServiceImpl(dao);
     }
 
     @Nested
@@ -55,24 +54,24 @@ class AuthorsServiceImplTest
         }
 
         @Test
-        @DisplayName("injected values in AuthorsServiceImpl()")
+        @DisplayName("injected values in GenreServiceImpl()")
         void defaults()
         {
-            assertThat(service).hasFieldOrPropertyWithValue("authorDao", dao);
+            assertThat(service).hasFieldOrPropertyWithValue("genreDao", dao);
         }
     }
 
     @Nested
-    @DisplayName("AuthorsServiceImpl methods")
+    @DisplayName("GenreServiceImpl methods")
     class ServiceMethods
     {
-        private final String[] TEST_RECORD = new String[]{Long.toString(TEST_ID), TEST_FIRST_NAME, TEST_LAST_NAME};
+        private final String[] TEST_RECORD = new String[]{Long.toString(0L), TEST_GENRE_NAME};
         @BeforeEach
         void createNewService() throws SQLException
         {
             service = createService();
             Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(INSERT_INTO_AUTHOR);
+            statement.execute(INSERT_INTO_GENRE);
         }
 
         @AfterEach
@@ -80,14 +79,14 @@ class AuthorsServiceImplTest
         {
             clearTables(dataSource);
             Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(DELETE_FROM_AUTHOR);
+            statement.execute(DELETE_FROM_GENRE);
         }
 
         @Test
         void findAll()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(JdbcGenreDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
             assertArrayEquals(expected.get(0), service.findAll().get(0));
             assertArrayEquals(expected.get(1), service.findAll().get(1));
@@ -97,34 +96,22 @@ class AuthorsServiceImplTest
         void findById()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(JdbcGenreDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
 
-            List<String[]> testList = service.findById(TEST_ID);
+            List<String[]> testList = service.findById(0L);
             assertArrayEquals(expected.get(0), testList.get(0));
             assertArrayEquals(expected.get(1), testList.get(1));
         }
 
         @Test
-        void findByFirstName()
+        void findByGenre()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(JdbcGenreDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
 
-            List<String[]> testList = service.findByFirstName(TEST_FIRST_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-        }
-
-        @Test
-        void findByLastName()
-        {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findByLastName(TEST_LAST_NAME);
+            List<String[]> testList = service.findByGenre(TEST_GENRE_NAME);
             assertArrayEquals(expected.get(0), testList.get(0));
             assertArrayEquals(expected.get(1), testList.get(1));
         }
@@ -132,18 +119,18 @@ class AuthorsServiceImplTest
         @Test
         void insert()
         {
-            assertTrue(service.insert(TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST) > 0);
+            assertTrue(service.insert(TEST_GENRE_NAME + TEST) > 0L);
         }
 
         @Test
         void update()
         {
-            long id = service.update(TEST_ID, TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST);
-            assertTrue(id > 0);
+            long id = service.update(0L, TEST_GENRE_NAME + TEST);
+            assertEquals(0, id);
 
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(new String[]{Long.toString(id), TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST});
+            expected.add(JdbcGenreDao.FIND_ALL_HEADER);
+            expected.add(new String[]{Long.toString(id), TEST_GENRE_NAME + TEST});
 
             List<String[]> testList = service.findById(id);
             assertArrayEquals(expected.get(0), testList.get(0));
@@ -155,7 +142,7 @@ class AuthorsServiceImplTest
         {
             assertEquals(2, service.findAll().size());
             boolean autoCommit = autoCommitOn(dataSource);
-            service.delete(TEST_ID);
+            service.delete(0L);
             assertEquals(1, service.findAll().size());
             autoCommitRestore(dataSource, autoCommit);
         }

@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+import static ru.otus.outside.utils.JdbcHelper.getStringOrNull;
+
 @Repository("publisherDao")
 public class JdbcPublisherDao implements PublisherDao
 {
@@ -27,7 +29,7 @@ public class JdbcPublisherDao implements PublisherDao
         Publisher g = new Publisher();
         try {
             g.setId(resultSet.getLong("publisher_id"));
-            g.setPublisherName(resultSet.getString("publisher_name"));
+            g.setPublisherName(getStringOrNull(resultSet, "publisher_name"));
 
             return g;
         }

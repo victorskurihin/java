@@ -1,9 +1,15 @@
 package ru.otus.homework.services;
 
-import org.springframework.shell.table.TableBuilder;
+import java.util.List;
 
 public interface GenreService
 {
+    List<String[]> findAll();
+
+    List<String[]> findById(long id);
+
+    List<String[]> findByGenre(String genre);
+
     long insert(String genre);
 
     long update(long id, String genre);

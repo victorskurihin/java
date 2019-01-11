@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
+import static ru.otus.outside.utils.JdbcHelper.getStringOrNull;
+
 @Repository("authorDao")
 public class JdbcAuthorDao implements AuthorDao
 {
@@ -29,8 +31,8 @@ public class JdbcAuthorDao implements AuthorDao
         Author a = new Author();
         try {
             a.setId(resultSet.getLong("author_id"));
-            a.setFirstName(resultSet.getString("first_name"));
-            a.setLastName(resultSet.getString("last_name"));
+            a.setFirstName(getStringOrNull(resultSet, "first_name"));
+            a.setLastName(getStringOrNull(resultSet, "last_name"));
 
             return a;
         }

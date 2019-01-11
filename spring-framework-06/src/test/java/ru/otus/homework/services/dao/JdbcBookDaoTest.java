@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -51,7 +52,6 @@ class JdbcBookDaoTest
     @DisplayName("when new default")
     class WhenNew
     {
-
         @BeforeEach
         void createNewQuestions()
         {
@@ -100,6 +100,33 @@ class JdbcBookDaoTest
         }
 
         @Test
+        void findByIsbn()
+        {
+            Book expected = createTestBook13();
+            assertEquals(expected, dao.findByIsbn(TEST_ISBN));
+            assertThrows(EmptyResultDataAccessException.class, () -> dao.findByIsbn(null));
+            assertThrows(EmptyResultDataAccessException.class, () -> dao.findByIsbn(""));
+        }
+
+        @Test
+        void findByTitle()
+        {
+            List<Book> expected = Collections.singletonList(createTestBook13());
+            assertEquals(expected, dao.findByTitle(TEST_TITLE));
+            List<Book> empty = new LinkedList<>();
+            assertEquals(empty, dao.findByTitle(null));
+            List<Book> emptyArrayList = new ArrayList<>();
+            assertEquals(emptyArrayList, dao.findByTitle(null));
+        }
+
+
+        @Test
+        void findAllBooksAndTheirAuthors() throws SQLException
+        {
+            assertFalse(dao.findAllBooksAndTheirAuthors().isEmpty());
+        }
+
+        @Test
         @DisplayName("insert")
         void testInsert() throws SQLException
         {
@@ -114,7 +141,6 @@ class JdbcBookDaoTest
             assertEquals(2, dao.findAll().size());
             assertEquals(book, dao.findById(book.getId()));
         }
-
 
         @Test
         @DisplayName("update")

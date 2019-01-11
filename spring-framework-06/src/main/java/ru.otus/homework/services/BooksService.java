@@ -1,18 +1,22 @@
 package ru.otus.homework.services;
 
-import org.springframework.shell.table.TableBuilder;
+import java.util.List;
 
 public interface BooksService
 {
-    TableBuilder getTableBuilder();
+    List<String[]> findAll();
 
-    int createTableForFindAll();
+    List<String[]> findById(long id);
 
-    int createTableForFindAllWithDetail();
+    List<String[]> findByIsbn(String isbn);
 
-    long insert(String isbn, String title, int editionNumber, String copyright, long publisherId);
+    List<String[]> findByTitle(String title);
 
-    long update(long id, String isbn, String title, int editionNumber, String copyright, long publisherId);
+    List<String[]> findAllBooksAndTheirAuthors();
+
+    long insert(String isbn, String title, int editionNumber, String copyright, long publisherId, long genreId);
+
+    long update(long id, String isbn, String title, int editionNumber, String copyright, long publisherId, long genreId);
 
     void delete(long id);
 }

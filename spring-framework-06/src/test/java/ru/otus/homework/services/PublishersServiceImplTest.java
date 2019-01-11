@@ -2,10 +2,9 @@ package ru.otus.homework.services;
 
 import org.junit.jupiter.api.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.otus.homework.services.dao.JdbcAuthorDao;
+import ru.otus.homework.services.dao.JdbcPublisherDao;
 
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -15,20 +14,20 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.otus.outside.utils.TestData.*;
 
-@DisplayName("Class AuthorsServiceImpl")
-class AuthorsServiceImplTest
+@DisplayName("Class PublisherServiceImpl")
+class PublishersServiceImplTest
 {
     private DataSource dataSource;
 
-    private JdbcAuthorDao dao;
+    private JdbcPublisherDao dao;
 
-    private AuthorsServiceImpl service;
+    private PublishersServiceImpl service;
 
     @Test
-    @DisplayName("is instantiated with new AuthorsServiceImpl()")
+    @DisplayName("is instantiated with new PublisherServiceImpl()")
     void isInstantiatedWithNew()
     {
-        new AuthorsServiceImpl(null);
+        new PublishersServiceImpl(null);
     }
 
     private void printFindAll()
@@ -36,12 +35,12 @@ class AuthorsServiceImplTest
         System.out.println("findAll = " + service.findAll());
     }
 
-    private AuthorsServiceImpl createService()
+    private PublishersServiceImpl createService()
     {
         dataSource = injectTestDataSource();
         NamedParameterJdbcTemplate jdbc = new NamedParameterJdbcTemplate(dataSource);
-        dao = new JdbcAuthorDao(jdbc);
-        return new AuthorsServiceImpl(dao);
+        dao = new JdbcPublisherDao(jdbc);
+        return new PublishersServiceImpl(dao);
     }
 
     @Nested
@@ -49,30 +48,30 @@ class AuthorsServiceImplTest
     class WhenNew
     {
         @BeforeEach
-        void createNewQuestions()
+        void createNew()
         {
             service = createService();
         }
 
         @Test
-        @DisplayName("injected values in AuthorsServiceImpl()")
+        @DisplayName("injected values in PublisherServiceImpl()")
         void defaults()
         {
-            assertThat(service).hasFieldOrPropertyWithValue("authorDao", dao);
+            assertThat(service).hasFieldOrPropertyWithValue("publisherDao", dao);
         }
     }
 
     @Nested
-    @DisplayName("AuthorsServiceImpl methods")
+    @DisplayName("PublisherServiceImpl methods")
     class ServiceMethods
     {
-        private final String[] TEST_RECORD = new String[]{Long.toString(TEST_ID), TEST_FIRST_NAME, TEST_LAST_NAME};
+        private final String[] TEST_RECORD = new String[]{Long.toString(TEST_ID), TEST_PUBLISHER_NAME};
         @BeforeEach
         void createNewService() throws SQLException
         {
             service = createService();
             Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(INSERT_INTO_AUTHOR);
+            statement.execute(INSERT_INTO_PUBLISHER);
         }
 
         @AfterEach
@@ -80,14 +79,14 @@ class AuthorsServiceImplTest
         {
             clearTables(dataSource);
             Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(DELETE_FROM_AUTHOR);
+            statement.execute(DELETE_FROM_PUBLISHER);
         }
 
         @Test
         void findAll()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
             assertArrayEquals(expected.get(0), service.findAll().get(0));
             assertArrayEquals(expected.get(1), service.findAll().get(1));
@@ -97,7 +96,7 @@ class AuthorsServiceImplTest
         void findById()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
 
             List<String[]> testList = service.findById(TEST_ID);
@@ -106,25 +105,13 @@ class AuthorsServiceImplTest
         }
 
         @Test
-        void findByFirstName()
+        void findByPublisher()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
 
-            List<String[]> testList = service.findByFirstName(TEST_FIRST_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-        }
-
-        @Test
-        void findByLastName()
-        {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findByLastName(TEST_LAST_NAME);
+            List<String[]> testList = service.findByPublisherName(TEST_PUBLISHER_NAME);
             assertArrayEquals(expected.get(0), testList.get(0));
             assertArrayEquals(expected.get(1), testList.get(1));
         }
@@ -132,18 +119,18 @@ class AuthorsServiceImplTest
         @Test
         void insert()
         {
-            assertTrue(service.insert(TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST) > 0);
+            assertTrue(service.insert(TEST_PUBLISHER_NAME + TEST) > 0L);
         }
 
         @Test
         void update()
         {
-            long id = service.update(TEST_ID, TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST);
-            assertTrue(id > 0);
+            long id = service.update(TEST_ID, TEST_PUBLISHER_NAME + TEST);
+            assertEquals(TEST_ID, id);
 
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(new String[]{Long.toString(id), TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST});
+            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
+            expected.add(new String[]{Long.toString(id), TEST_PUBLISHER_NAME + TEST});
 
             List<String[]> testList = service.findById(id);
             assertArrayEquals(expected.get(0), testList.get(0));

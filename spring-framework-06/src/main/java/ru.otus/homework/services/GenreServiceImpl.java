@@ -1,66 +1,110 @@
 package ru.otus.homework.services;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.otus.homework.models.Author;
-import ru.otus.homework.models.Book;
 import ru.otus.homework.models.Genre;
 import ru.otus.homework.services.dao.JdbcGenreDao;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class GenreServiceImpl extends TableBuilderService<Genre, JdbcGenreDao> implements GenreService
+public class GenreServiceImpl implements GenreService
 {
-    private JdbcGenreDao publisherDao;
+    // TODO LOG
 
-    public GenreServiceImpl(JdbcGenreDao dao)
+    private JdbcGenreDao genreDao;
+
+    public GenreServiceImpl(JdbcGenreDao genreDao)
     {
-        this.publisherDao = dao;
+        this.genreDao = genreDao;
     }
 
-    private static String[] unfoldGenre(Genre genre)
+    static String[] unfoldGenre(Genre a)
     {
-        return new String[]{Long.toString(genre.getId()), genre.getGenre()};
+        if (null == a) {
+            return new String[]{"NULL", "NULL"};
+        }
+
+        return new String[]{Long.toString(a.getId()), a.getGenre()};
     }
 
-    private static String[] unfoldWithDetail(Genre genre, Book book, Author author)
+    private String[] unfold(Genre a)
     {
-        return new String[]{
-            author.getFirstName(),
-            author.getLastName(),
-            Long.toString(book.getId()),
-            book.getIsbn(),
-            book.getTitle(),
-            Integer.toString(book.getEditionNumber()),
-            book.getCopyright(),
-            genre.getGenre(),
-        };
+        return unfoldGenre(a);
     }
 
     @Override
-    public long insert(String publisherName)
+    public List<String[]> findAll()
     {
-        Genre publisher = new Genre();
-        publisher.setGenre(publisherName);
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcGenreDao.FIND_ALL_HEADER);
 
-        publisherDao.insert(publisher);
+        List<String[]> tail = genreDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
+        head.addAll(tail);
 
-        return publisher.getId();
+        return head;
     }
 
     @Override
-    public long update(long id, String publisherName)
+    public List<String[]> findById(long id)
     {
-        Genre publisher = new Genre();
-        publisher.setId(id);
-        publisher.setGenre(publisherName);
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcGenreDao.FIND_ALL_HEADER);
 
-        publisherDao.update(publisher);
+        try {
+            Genre genre;
+            genre = genreDao.findById(id);
+            head.add(unfold(genre));
 
-        return publisher.getId();
+            return head;
+        }
+        catch (EmptyResultDataAccessException e) {
+            return head;
+
+        }
+    }
+
+    @Override
+    public List<String[]> findByGenre(String genre)
+    {
+        List<String[]> head = new ArrayList<>();
+        head.add(JdbcGenreDao.FIND_ALL_HEADER);
+
+        List<String[]> tail = genreDao.findByGenre(genre)
+            .stream()
+            .map(this::unfold)
+            .collect(Collectors.toList());
+        head.addAll(tail);
+
+        return head;
+    }
+
+    @Override
+    public long insert(String genre)
+    {
+        Genre g = new Genre();
+        g.setGenre(genre);
+        genreDao.insert(g);
+
+        return g.getId();
+    }
+
+    @Override
+    public long update(long id, String genre)
+    {
+        Genre g = new Genre();
+        g.setId(id);
+        g.setGenre(genre);
+        genreDao.update(g);
+
+        return g.getId();
     }
 
     @Override
     public void delete(long id)
     {
-        publisherDao.delete(id);
+        genreDao.delete(id);
     }
 }

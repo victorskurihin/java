@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static ru.otus.outside.utils.JdbcHelper.getStringOrNull;
+
 @Repository("genreDao")
 public class JdbcGenreDao implements GenreDao
 {
@@ -26,7 +28,7 @@ public class JdbcGenreDao implements GenreDao
         Genre g = new Genre();
         try {
             g.setId(resultSet.getLong("genre_id"));
-            g.setGenre(resultSet.getString("genre"));
+            g.setGenre(getStringOrNull(resultSet, "genre"));
 
             return g;
         }
