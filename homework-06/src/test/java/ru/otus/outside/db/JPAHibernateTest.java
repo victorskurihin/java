@@ -5,14 +5,16 @@ import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import static ru.otus.outside.utils.TestData.DELETE_FROM_AUTHOR;
+import static ru.otus.outside.utils.TestData.DELETE_FROM_AUTHOR_ISBN;
+import static ru.otus.outside.utils.TestData.DELETE_FROM_BOOK;
 
 public class JPAHibernateTest
 {
@@ -42,6 +44,43 @@ public class JPAHibernateTest
                 }
             }
         });
+    }
+
+    private int clear(String sql)
+    {
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
+        try {
+            int count = entityManager.createNativeQuery(sql).executeUpdate();
+            transaction.commit();
+
+            return count;
+        }
+        catch (RollbackException e) {
+            throw new RuntimeException(e);
+        }
+        catch (Exception e) {
+            transaction.rollback();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public int clearAuthorIsbn()
+    {
+        return clear(DELETE_FROM_AUTHOR_ISBN);
+    }
+
+    public int clearAuthor()
+    {
+        return clear(DELETE_FROM_AUTHOR);
+    }
+
+    public int clearBook()
+    {
+        return clear(DELETE_FROM_BOOK);
     }
 
     @AfterAll

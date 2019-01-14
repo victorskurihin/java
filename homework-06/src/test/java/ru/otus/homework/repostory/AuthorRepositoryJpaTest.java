@@ -9,16 +9,18 @@ import ru.otus.outside.db.JPAHibernateTest;
 
 import javax.persistence.EntityManager;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static ru.otus.outside.utils.TestData.createAuthor6;
+import static ru.otus.outside.utils.TestData.*;
 
 @DisplayName("Class AuthorRepositoryJpa")
 class AuthorRepositoryJpaTest
 {
-    AuthorRepositoryJpa repository;
+    private AuthorRepositoryJpa repository;
 
     @Nested
     @DisplayName("when new default")
@@ -34,7 +36,7 @@ class AuthorRepositoryJpaTest
         @DisplayName("injected values in JdbcAuthorDao()")
         void defaults()
         {
-            assertThat(repository).hasFieldOrPropertyWithValue("entityManager", null);
+            assertThat(repository).hasFieldOrPropertyWithValue("em", null);
         }
     }
 
@@ -55,11 +57,13 @@ class AuthorRepositoryJpaTest
         @DisplayName("injected values in JdbcAuthorDao()")
         void defaults()
         {
-            assertThat(repository).hasFieldOrPropertyWithValue("entityManager", entityManager);
+            assertThat(repository).hasFieldOrPropertyWithValue("em", entityManager);
         }
 
+        @DisplayName("find by id from table author success")
         @Test
-        void happyPathScenario(){
+        void findById_success()
+        {
             Author expected = new Author();
             expected.setFirstName("testFirstName");
             expected.setLastName("testLastName");
@@ -70,12 +74,14 @@ class AuthorRepositoryJpaTest
             assertEquals(expected, author);
         }
 
+        @DisplayName("find by id from table author return null")
         @Test
-        void authorNotPresentInDb(){
+        void findById_null()
+        {
             when(entityManager.find(Author.class,1L)).thenReturn(null);
 
             Author author = repository.findById(1L);
-            assertNull( author);
+            assertNull(author);
         }
     }
 
@@ -90,36 +96,101 @@ class AuthorRepositoryJpaTest
         }
 
         @Test
-        void findByFirstName()
+        @DisplayName("injected values in JdbcAuthorDao()")
+        void defaults()
         {
+            assertThat(repository).hasFieldOrPropertyWithValue("em", entityManager);
         }
 
         @Test
-        void findByLastName()
+        void findByFirstName_success()
         {
+            Author expected = createAuthor6();
+            List<Author> authorList = repository.findByFirstName(expected.getFirstName());
+            assertTrue(authorList.contains(createAuthor6()));
         }
 
         @Test
-        void findAll()
+        void findByFirstName_empty()
         {
+            clearAuthorIsbn();
+            clearAuthor();
+            List<Author> authorList = repository.findByFirstName("");
+            assertTrue(authorList.isEmpty());
         }
 
-        @DisplayName("find by id from table author")
         @Test
-        void findById()
+        void findByLastName_success()
+        {
+            Author expected = createAuthor6();
+            List<Author> authorList = repository.findByLastName(expected.getLastName());
+            assertTrue(authorList.contains(createAuthor6()));
+        }
+
+        @Test
+        void findByLastName_empty()
+        {
+            clearAuthorIsbn();
+            clearAuthor();
+            List<Author> authorList = repository.findByLastName("");
+            assertTrue(authorList.isEmpty());
+        }
+
+        @DisplayName("find all records from table author, success")
+        @Test
+        void findAll_success()
+        {
+            List<Author> authorList = repository.findAll();
+            assertEquals(3, authorList.size());
+            assertTrue(authorList.contains(createAuthor6()));
+            assertTrue(authorList.contains(createAuthor7()));
+            assertTrue(authorList.contains(createAuthor8()));
+        }
+
+        @DisplayName("find all records from empty table author, empty list")
+        @Test
+        void findAll_empty()
+        {
+            clearAuthorIsbn();
+            clearAuthor();
+            List<Author> authorList = repository.findAll();
+            assertTrue(authorList.isEmpty());
+        }
+
+        @DisplayName("find by id from table author, success")
+        @Test
+        void findById_success()
         {
             Author expected = createAuthor6();
             Author author = repository.findById(expected.getId());
             assertEquals(expected, author);
         }
+
+        @DisplayName("when finding by id from table author, id doesn't exist, return null")
+        @Test
+        void findById_null()
+        {
+            Author author = repository.findById(Integer.MAX_VALUE);
+            assertNull(author);
+        }
+
         @Test
         void insert()
         {
+            Author author = createAuthor9();
+            repository.insert(author);
+            // assertEquals(author, repository.findById(author.getId()));
         }
 
         @Test
         void update()
         {
+            Author author7 = createAuthor7();
+            Author testAuthor = createAuthor6();
+            testAuthor.setFirstName(author7.getFirstName());
+            testAuthor.setLastName(author7.getLastName());
+            repository.update(testAuthor);
+            assertEquals(testAuthor, repository.findById(testAuthor.getId()));
         }
 
         @Test

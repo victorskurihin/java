@@ -22,19 +22,28 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public List<Author> findByFirstName(String firstName)
     {
-        return null;
+        //noinspection unchecked
+        return em.createQuery(
+            "SELECT a FROM Author a WHERE a.firstName LIKE :name")
+            .setParameter("name", firstName)
+            .getResultList();
     }
 
     @Override
     public List<Author> findByLastName(String lastName)
     {
-        return null;
+        //noinspection unchecked
+        return em.createQuery(
+            "SELECT a FROM Author a WHERE a.lastName LIKE :name")
+            .setParameter("name", lastName)
+            .getResultList();
     }
 
     @Override
     public List<Author> findAll()
     {
-        return null;
+        //noinspection unchecked
+        return em.createQuery("SELECT a FROM Author a").getResultList();
     }
 
     @Override
@@ -46,7 +55,11 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public void insert(Author entity)
     {
-
+        Author author = new Author();
+        author.setId(entity.getId());
+        author.setFirstName(entity.getFirstName());
+        author.setLastName(entity.getLastName());
+        em.persist(author);
     }
 
     @Override
