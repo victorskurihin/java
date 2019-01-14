@@ -55,22 +55,31 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public void insert(Author entity)
     {
-        Author author = new Author();
-        author.setId(entity.getId());
-        author.setFirstName(entity.getFirstName());
-        author.setLastName(entity.getLastName());
-        em.persist(author);
-    }
+        em.getTransaction().begin();
+        if (entity.getId() == 0) {
+            em.persist(entity);
+            em.flush();
+        }
+        else {
+            em.merge(entity);
+        }
+        em.getTransaction().commit();
+   }
 
     @Override
     public void update(Author entity)
     {
-
+        em.getTransaction().begin();
+        em.merge(entity);
+        em.getTransaction().commit();
     }
 
     @Override
     public void delete(long id)
     {
-
+        em.getTransaction().begin();
+        Author mergedAuthor = em.merge(findById(id));
+        em.remove(mergedAuthor);
+        em.getTransaction().commit();
     }
 }

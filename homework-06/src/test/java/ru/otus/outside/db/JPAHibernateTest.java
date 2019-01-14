@@ -31,19 +31,22 @@ public class JPAHibernateTest
     @BeforeEach
     public void initializeDatabase()
     {
+        entityManager.getTransaction().begin();
         Session session = entityManager.unwrap(Session.class);
         session.doWork(new Work() {
             @Override
             public void execute(Connection connection) throws SQLException
             {
                 try {
-                    File script = new File(getClass().getResource("/data.sql").getFile());
+                    File script = new File(getClass().getResource("/data-test.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
+                    System.out.println("Ok");
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException("could not initialize with script");
                 }
             }
         });
+        entityManager.getTransaction().commit();
     }
 
     private int clear(String sql)

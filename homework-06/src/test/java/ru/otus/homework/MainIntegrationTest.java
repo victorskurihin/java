@@ -14,6 +14,7 @@ import ru.otus.homework.services.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+// https://stackoverflow.com/questions/50544554/springboottest-junit-test-for-dao-fails
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(properties = {
     InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
@@ -38,7 +39,7 @@ class MainIntegrationTest
 
     @Test
     @DisplayName("YamlProperties: getter and setter for locale.")
-    void test ()
+    void test()
     {
         String oldLocale = yp.getLocale();
         yp.setLocale("ru_RU");
