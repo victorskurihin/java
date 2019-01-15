@@ -1,9 +1,6 @@
-package ru.otus.homework.repostory;
+package ru.otus.homework.repository;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.otus.homework.models.Author;
 import ru.otus.outside.db.JPAHibernateTest;
 
@@ -95,6 +92,14 @@ class AuthorRepositoryJpaTest
             repository = new AuthorRepositoryJpa(entityManager);
         }
 
+        @AfterEach
+        void clear()
+        {
+            clearAuthorIsbn();
+            clearAuthor();
+            repository = null;
+        }
+
         @Test
         @DisplayName("injected values in JdbcAuthorDao()")
         void defaults()
@@ -105,6 +110,7 @@ class AuthorRepositoryJpaTest
         @Test
         void findByFirstName_success()
         {
+            System.out.println("author = " + repository.findAll());
             Author expected = createAuthor6();
             List<Author> authorList = repository.findByFirstName(expected.getFirstName());
             assertTrue(authorList.contains(createAuthor6()));
@@ -113,6 +119,7 @@ class AuthorRepositoryJpaTest
         @Test
         void findByFirstName_empty()
         {
+            System.out.println("author = " + repository.findAll());
             clearAuthorIsbn();
             clearAuthor();
             List<Author> authorList = repository.findByFirstName("");
@@ -122,6 +129,8 @@ class AuthorRepositoryJpaTest
         @Test
         void findByLastName_success()
         {
+            initializeDatabase();
+            System.out.println("author = " + repository.findAll());
             Author expected = createAuthor6();
             List<Author> authorList = repository.findByLastName(expected.getLastName());
             System.out.println("authorList = " + authorList);
@@ -131,6 +140,7 @@ class AuthorRepositoryJpaTest
         @Test
         void findByLastName_empty()
         {
+            System.out.println("author = " + repository.findAll());
             clearAuthorIsbn();
             clearAuthor();
             List<Author> authorList = repository.findByLastName("");
@@ -179,21 +189,29 @@ class AuthorRepositoryJpaTest
         @Test
         void insert_persists()
         {
+            System.out.println("author = " + repository.findAll());
             Author author = new Author();
             author.setFirstName("test");
             author.setLastName("test");
             repository.insert(author);
             assertEquals(author, repository.findById(author.getId()));
+            clearAuthorIsbn();
+            clearAuthor();
+            System.out.println("author = " + repository.findAll());
         }
 
         @Test
         void insert_megre()
         {
+            System.out.println("author = " + repository.findAll());
             Author author = createAuthor6();
             author.setFirstName("test");
             author.setLastName("test");
             repository.insert(author);
             assertEquals(author, repository.findById(author.getId()));
+            clearAuthorIsbn();
+            clearAuthor();
+            System.out.println("author = " + repository.findAll());
         }
 
         @Test

@@ -1,4 +1,4 @@
-package ru.otus.homework.repostory;
+package ru.otus.homework.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.otus.homework.models.Author;

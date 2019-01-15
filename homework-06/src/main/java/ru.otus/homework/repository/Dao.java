@@ -1,4 +1,4 @@
-package ru.otus.homework.repostory;
+package ru.otus.homework.repository;
 
 import ru.otus.homework.models.DataSet;
 

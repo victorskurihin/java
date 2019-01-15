@@ -1,7 +1,6 @@
-package ru.otus.homework.repostory;
+package ru.otus.homework.repository;
 
 import ru.otus.homework.models.Author;
-import ru.otus.homework.repostory.Dao;
 
 import java.util.List;
 

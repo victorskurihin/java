@@ -1,13 +1,14 @@
 
 DELETE FROM author_isbn;
+DELETE FROM author;
 DELETE FROM book;
-
 DELETE FROM publisher;
+DELETE FROM genre;
+
 INSERT INTO publisher VALUES
  (1, 'test_publisher_name_1')
 ;
 
-DELETE FROM genre;
 INSERT INTO genre VALUES
  (2, 'test_genre_2')
 ;
@@ -18,7 +19,6 @@ INSERT INTO book VALUES
 , (5, '9999999995', 'test_title_5', 5, '2003', 1, 2)
 ;
 
-DELETE FROM author;
 INSERT INTO author VALUES
   (6, 'test_first_name_6', 'test_last_name_6')
 , (7, 'test_first_name_7', 'test_last_name_7')

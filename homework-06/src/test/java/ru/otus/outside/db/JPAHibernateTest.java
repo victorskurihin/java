@@ -38,7 +38,7 @@ public class JPAHibernateTest
             public void execute(Connection connection) throws SQLException
             {
                 try {
-                    File script = new File(getClass().getResource("/data-test.sql").getFile());
+                    File script = new File(getClass().getResource("/data-test-h2.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
                     System.out.println("Ok");
                 } catch (FileNotFoundException e) {
@@ -46,6 +46,7 @@ public class JPAHibernateTest
                 }
             }
         });
+        entityManager.flush();
         entityManager.getTransaction().commit();
     }
 
