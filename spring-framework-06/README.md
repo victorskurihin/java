@@ -11,8 +11,8 @@
  * [x] Предусмотреть таблицы авторов, книг и жанров.
  * [x] Покрыть тестами, насколько это возможно.
 ## Замечания
- * [ ] Author.java private List<Book> books; Усложняет работу. При этом является ли список книг свойством автора вопрос спорный. То же касается Publisher.
+ * [x] Author.java private List<Book> books; Усложняет работу. При этом является ли список книг свойством автора вопрос спорный. То же касается Publisher.
  * [ ] Book.java private long publisherId; private long publisherId;
- * [ ] по ДЗ вроде должны быть жанры
+ * [x] по ДЗ вроде должны быть жанры
  * [ ] AuthorsService.java Тут и далее getTableBuilder и createTableForFindAll относятся к UI, а AuthorsService к слою работы с данными. Лучше сделать трансформеры сущностей и их списков в пригодный для отображения вид.
- * [*] TABLE author_isbn Лучше связывать по суррогатному ключу (id).
+ * [x] TABLE author_isbn Лучше связывать по суррогатному ключу (id).

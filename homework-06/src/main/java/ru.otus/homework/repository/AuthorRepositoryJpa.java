@@ -4,12 +4,16 @@ import org.springframework.stereotype.Repository;
 import ru.otus.homework.models.Author;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
+import javax.persistence.RollbackException;
 import java.util.List;
 
 @Repository
 public class AuthorRepositoryJpa implements AuthorDao
 {
+    public static String[] FIND_ALL_HEADER = {"author_id", "first_name", "last_name"};
+
     @PersistenceContext
     private EntityManager em;
 
@@ -55,31 +59,57 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public void insert(Author entity)
     {
-        em.getTransaction().begin();
-        if (entity.getId() == 0) {
-            em.persist(entity);
-            em.flush();
+        EntityTransaction transaction = em.getTransaction();
+
+        if (!transaction.isActive()) {
+            transaction.begin();
         }
-        else {
-            em.merge(entity);
+        try {
+            if (entity.getId() == 0) {
+                em.persist(entity);
+                em.flush();
+            }
+            else {
+                em.merge(entity);
+            }
+            transaction.commit();
         }
-        em.getTransaction().commit();
+        catch (RollbackException e) {
+            // TOTO LOG
+            throw new RuntimeException(e);
+        }
+        catch (RuntimeException e) {
+            // TOTO LOG
+            transaction.rollback();
+        }
    }
 
     @Override
     public void update(Author entity)
     {
         em.getTransaction().begin();
-        em.merge(entity);
-        em.getTransaction().commit();
+        try {
+            em.merge(entity);
+            em.getTransaction().commit();
+        }
+        catch (RuntimeException e) {
+            // TOTO LOG
+            em.getTransaction().rollback();
+        }
     }
 
     @Override
     public void delete(long id)
     {
-        em.getTransaction().begin();
-        Author mergedAuthor = em.merge(findById(id));
-        em.remove(mergedAuthor);
-        em.getTransaction().commit();
+        try {
+            em.getTransaction().begin();
+            Author mergedAuthor = em.merge(findById(id));
+            em.remove(mergedAuthor);
+            em.getTransaction().commit();
+        }
+        catch (RuntimeException e) {
+            // TOTO LOG
+            em.getTransaction().rollback();
+        }
     }
 }

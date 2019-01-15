@@ -16,21 +16,17 @@ import static ru.otus.outside.utils.TestData.DELETE_FROM_AUTHOR;
 import static ru.otus.outside.utils.TestData.DELETE_FROM_AUTHOR_ISBN;
 import static ru.otus.outside.utils.TestData.DELETE_FROM_BOOK;
 
-public class JPAHibernateTest
+public class JpaSharedEntityManagerTest
 {
     protected static EntityManagerFactory emf;
     protected static EntityManager entityManager;
 
-    @BeforeAll
-    public static void init()
-    {
-        emf = Persistence.createEntityManagerFactory("mnf-pu-test");
-        entityManager = emf.createEntityManager();
-    }
-
+    @SuppressWarnings("Duplicates")
     @BeforeEach
     public void initializeDatabase()
     {
+        emf = Persistence.createEntityManagerFactory("mnf-pu-test");
+        entityManager = emf.createEntityManager();
         entityManager.getTransaction().begin();
         Session session = entityManager.unwrap(Session.class);
         session.doWork(new Work() {
@@ -40,7 +36,6 @@ public class JPAHibernateTest
                 try {
                     File script = new File(getClass().getResource("/data-test-h2.sql").getFile());
                     RunScript.execute(connection, new FileReader(script));
-                    System.out.println("Ok");
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException("could not initialize with script");
                 }
@@ -50,6 +45,7 @@ public class JPAHibernateTest
         entityManager.getTransaction().commit();
     }
 
+    @SuppressWarnings("Duplicates")
     private int clear(String sql)
     {
         EntityTransaction transaction = entityManager.getTransaction();
@@ -87,8 +83,8 @@ public class JPAHibernateTest
         return clear(DELETE_FROM_BOOK);
     }
 
-    @AfterAll
-    public static void tearDown()
+    @AfterEach
+    public void tearDownEach()
     {
         entityManager.clear();
         entityManager.close();
