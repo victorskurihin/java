@@ -109,7 +109,7 @@ class BookTest
         @BeforeEach
         void createNew()
         {
-            book = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, publisher, genre);
+            book = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, publisher, genre, null);
         }
 
         @Test
@@ -130,7 +130,7 @@ class BookTest
         void testEquals()
         {
             assertNotEquals(new Book(), book);
-            Book expected = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, publisher, genre);
+            Book expected = new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, publisher, genre, null);
             assertEquals(expected.hashCode(), book.hashCode());
             assertEquals(expected, book);
         }

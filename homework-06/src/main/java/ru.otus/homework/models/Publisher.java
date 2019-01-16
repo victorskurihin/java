@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Entity
 public class Publisher implements Serializable, DataSet
 {
-    static final long serialVersionUID = -1L;
+    static final long serialVersionUID = -5L;
 
     @Id
     @Column(name = "publisher_id")

@@ -17,7 +17,7 @@ class GenreTest
     @Test
     @DisplayName("is instantiated with new Genre()")
     void isInstantiatedWithNew() {
-        new Publisher();
+        new Genre();
     }
 
     @Nested

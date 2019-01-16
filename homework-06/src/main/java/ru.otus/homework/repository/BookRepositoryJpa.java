@@ -45,7 +45,7 @@ public class BookRepositoryJpa implements BookRepository
     public Book findByIsbn(String isbn)
     {
         return em.
-            createQuery("SELECT b FROM Book b WHERE b.title LIKE :isbn", Book.class)
+            createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
             .setParameter("isbn", isbn)
             .getSingleResult();
     }

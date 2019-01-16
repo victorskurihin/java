@@ -145,6 +145,7 @@ class PublisherRepositoryJpaTest
         void findAll_empty()
         {
             clearAuthorIsbn();
+            clearComment();
             clearBook();
             clearPublisher();
             List<Publisher> publisherList = repository.findAll();
@@ -204,6 +205,7 @@ class PublisherRepositoryJpaTest
         {
             assertEquals(1, repository.findAll().size());
             clearAuthorIsbn();
+            clearComment();
             clearBook();
             runInTransaction(() -> repository.delete(1L));
             assertEquals(0, repository.findAll().size());

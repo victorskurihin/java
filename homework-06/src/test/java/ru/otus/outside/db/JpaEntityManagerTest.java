@@ -48,10 +48,13 @@ public abstract class JpaEntityManagerTest
             return count;
         }
         catch (RollbackException e) {
+            System.err.println("Catch RuntimeException:e = " + e);
             throw new RuntimeException(e);
         }
         catch (Exception e) {
+            System.err.println("Catch Exception:e = " + e);
             transaction.rollback();
+            System.err.println("rollback.");
             throw new RuntimeException(e);
         }
     }
@@ -100,5 +103,10 @@ public abstract class JpaEntityManagerTest
     public int clearPublisher()
     {
         return nativeQuery(getEntityManager(), DELETE_FROM_PUBLISHER);
+    }
+
+    public int clearComment()
+    {
+        return nativeQuery(getEntityManager(), DELETE_FROM_COMMENT);
     }
 }

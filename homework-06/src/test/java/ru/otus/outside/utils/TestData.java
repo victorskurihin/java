@@ -1,10 +1,7 @@
 package ru.otus.outside.utils;
 
-import ru.otus.homework.models.Author;
+import ru.otus.homework.models.*;
 import org.springframework.boot.jdbc.DataSourceInitializationMode;
-import ru.otus.homework.models.Book;
-import ru.otus.homework.models.Genre;
-import ru.otus.homework.models.Publisher;
 
 public class TestData
 {
@@ -28,6 +25,8 @@ public class TestData
 
     public static String TEST_PUBLISHER_NAME = "test_publisher_1";
 
+    public static String TEST_COMMENT_NAME = "test_comment_1";
+
     public static String DELETE_FROM_AUTHOR_ISBN = "DELETE FROM author_isbn";
 
     public static String DELETE_FROM_BOOK = "DELETE FROM book";
@@ -37,6 +36,8 @@ public class TestData
     public static String DELETE_FROM_GENRE = "DELETE FROM genre";
 
     public static String DELETE_FROM_PUBLISHER = "DELETE FROM publisher";
+
+    public static String DELETE_FROM_COMMENT = "DELETE FROM comment";
 
     public static Publisher createPublisher1()
     {
@@ -66,6 +67,12 @@ public class TestData
         result.setCopyright("2003");
         result.setPublisher(createPublisher1());
         result.setGenre(createGenre2());
+        Comment comment31 = createComment31();
+        comment31.setBook(result);
+        result.getComments().add(comment31);
+        Comment comment32 = createComment31();
+        comment32.setBook(result);
+        result.getComments().add(comment32);
 
         return result;
     }
@@ -80,6 +87,10 @@ public class TestData
         result.setCopyright("2004");
         result.setPublisher(createPublisher1());
         result.setGenre(createGenre2());
+        result.getComments().add(createComment41());
+        Comment comment41 = createComment41();
+        comment41.setBook(result);
+        result.getComments().add(comment41);
 
         return result;
     }
@@ -134,6 +145,36 @@ public class TestData
         result.setId(9L);
         result.setFirstName("test_first_name_9");
         result.setLastName("test_last_name_9");
+
+        return result;
+    }
+
+    public static Comment createComment32()
+    {
+        Comment result = new Comment();
+        result.setId(32L);
+        result.setComment("test_comment_32");
+        result.setBook(null);
+
+        return result;
+    }
+
+    public static Comment createComment41()
+    {
+        Comment result = new Comment();
+        result.setId(41L);
+        result.setComment("test_comment_41");
+        result.setBook(null);
+
+        return result;
+    }
+
+    public static Comment createComment31()
+    {
+        Comment result = new Comment();
+        result.setId(31L);
+        result.setComment("test_comment_31");
+        result.setBook(null);
 
         return result;
     }

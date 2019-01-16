@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -24,16 +24,16 @@ public class Book implements Serializable, DataSet
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "isbn")
+    @Column
     private String isbn;
 
-    @Column(name = "title")
+    @Column
     private String title;
 
     @Column(name = "edition_number")
     private int editionNumber;
 
-    @Column(name = "copyright")
+    @Column
     private String copyright;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -43,4 +43,7 @@ public class Book implements Serializable, DataSet
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 }

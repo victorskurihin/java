@@ -13,15 +13,19 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-public class Genre implements Serializable, DataSet
+public class Comment implements Serializable, DataSet
 {
-    static final long serialVersionUID = -4L;
+    static final long serialVersionUID = -3L;
 
     @Id
-    @Column(name = "genre_id")
+    @Column(name = "comment_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
-    private String genre;
+    private String comment;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 }
