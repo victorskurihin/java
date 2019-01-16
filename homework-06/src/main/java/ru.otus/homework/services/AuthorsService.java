@@ -2,12 +2,8 @@ package ru.otus.homework.services;
 
 import java.util.List;
 
-public interface AuthorsService
+public interface AuthorsService extends RepositoryService
 {
-    List<String[]> findAll();
-
-    List<String[]> findById(long id);
-
     List<String[]> findByFirstName(String firstName);
 
     List<String[]> findByLastName(String lastName);
@@ -16,5 +12,7 @@ public interface AuthorsService
 
     long update(long id, String firstName, String lastName);
 
-    void delete(long id);
+    long updateFirstName(long id, String firstName);
+
+    long updateLastName(long id, String lastName);
 }

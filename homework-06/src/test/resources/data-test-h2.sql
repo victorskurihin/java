@@ -14,9 +14,9 @@ INSERT INTO genre VALUES
 ;
 
 INSERT INTO book VALUES
-  (3, '9999999993', 'test_title_3', 3, '2001', 1, 2)
-, (4, '9999999994', 'test_title_4', 4, '2002', 1, 2)
-, (5, '9999999995', 'test_title_5', 5, '2003', 1, 2)
+  (3, '9999999993', 'test_title_3', 3, '2003', 1, 2)
+, (4, '9999999994', 'test_title_4', 4, '2004', 1, 2)
+, (5, '9999999995', 'test_title_5', 5, '2005', 1, 2)
 ;
 
 INSERT INTO author VALUES

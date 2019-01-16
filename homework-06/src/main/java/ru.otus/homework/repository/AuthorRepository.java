@@ -4,7 +4,7 @@ import ru.otus.homework.models.Author;
 
 import java.util.List;
 
-public interface AuthorDao extends Dao<Author>
+public interface AuthorRepository extends Repository<Author>
 {
     List<Author> findByFirstName(String firstName);
 

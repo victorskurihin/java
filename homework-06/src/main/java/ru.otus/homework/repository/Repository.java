@@ -4,7 +4,7 @@ import ru.otus.homework.models.DataSet;
 
 import java.util.List;
 
-public interface Dao<T extends DataSet>
+public interface Repository<T extends DataSet>
 {
     String[] FIND_ALL_HEADER = {};
 
@@ -12,9 +12,7 @@ public interface Dao<T extends DataSet>
 
     T findById(long id);
 
-    void insert(T entity);
-
-    void update(T entity);
+    void save(T entity);
 
     void delete(long id);
 }

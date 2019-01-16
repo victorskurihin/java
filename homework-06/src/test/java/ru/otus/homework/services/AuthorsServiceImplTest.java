@@ -138,9 +138,9 @@ class AuthorsServiceImplTest
         }
 
         @Test
-        void insert()
+        void save()
         {
-            assertTrue(service.insert(TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST) > 0);
+            assertTrue(service.save(TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST) > 0);
         }
 
         @Test

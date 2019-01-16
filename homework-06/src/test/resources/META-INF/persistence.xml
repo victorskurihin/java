@@ -7,6 +7,9 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!-- add classes -->
         <class>ru.otus.homework.models.Author</class>
+        <class>ru.otus.homework.models.Genre</class>
+        <class>ru.otus.homework.models.Publisher</class>
+        <class>ru.otus.homework.models.Book</class>
 
         <properties>
             <!-- Configuring JDBC properties -->

@@ -1,17 +1,21 @@
 package ru.otus.homework.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.otus.homework.models.Author;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
-import javax.persistence.RollbackException;
 import java.util.List;
 
 @Repository
-public class AuthorRepositoryJpa implements AuthorDao
+@Transactional(readOnly = true)
+public class AuthorRepositoryJpa implements AuthorRepository
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorRepositoryJpa.class);
+
     public static String[] FIND_ALL_HEADER = {"author_id", "first_name", "last_name"};
 
     @PersistenceContext
@@ -26,9 +30,8 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public List<Author> findByFirstName(String firstName)
     {
-        //noinspection unchecked
-        return em.createQuery(
-            "SELECT a FROM Author a WHERE a.firstName LIKE :name")
+        return em
+            .createQuery("SELECT a FROM Author a WHERE a.firstName LIKE :name", Author.class)
             .setParameter("name", firstName)
             .getResultList();
     }
@@ -36,9 +39,8 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public List<Author> findByLastName(String lastName)
     {
-        //noinspection unchecked
-        return em.createQuery(
-            "SELECT a FROM Author a WHERE a.lastName LIKE :name")
+        return em.
+            createQuery("SELECT a FROM Author a WHERE a.lastName LIKE :name", Author.class)
             .setParameter("name", lastName)
             .getResultList();
     }
@@ -46,8 +48,7 @@ public class AuthorRepositoryJpa implements AuthorDao
     @Override
     public List<Author> findAll()
     {
-        //noinspection unchecked
-        return em.createQuery("SELECT a FROM Author a").getResultList();
+        return em.createQuery("SELECT a FROM Author a", Author.class).getResultList();
     }
 
     @Override
@@ -57,59 +58,25 @@ public class AuthorRepositoryJpa implements AuthorDao
     }
 
     @Override
-    public void insert(Author entity)
+    @Transactional(readOnly = false)
+    public void save(Author entity)
     {
-        EntityTransaction transaction = em.getTransaction();
-
-        if (!transaction.isActive()) {
-            transaction.begin();
+        if (entity.getId() == 0) {
+            em.persist(entity);
+            em.flush();
         }
-        try {
-            if (entity.getId() == 0) {
-                em.persist(entity);
-                em.flush();
-            }
-            else {
-                em.merge(entity);
-            }
-            transaction.commit();
-        }
-        catch (RollbackException e) {
-            // TOTO LOG
-            throw new RuntimeException(e);
-        }
-        catch (RuntimeException e) {
-            // TOTO LOG
-            transaction.rollback();
-        }
-   }
-
-    @Override
-    public void update(Author entity)
-    {
-        em.getTransaction().begin();
-        try {
+        else {
             em.merge(entity);
-            em.getTransaction().commit();
         }
-        catch (RuntimeException e) {
-            // TOTO LOG
-            em.getTransaction().rollback();
-        }
+        LOGGER.info("Save book author id: {}", entity.getId());
     }
 
     @Override
+    @Transactional(readOnly = false)
     public void delete(long id)
     {
-        try {
-            em.getTransaction().begin();
-            Author mergedAuthor = em.merge(findById(id));
-            em.remove(mergedAuthor);
-            em.getTransaction().commit();
-        }
-        catch (RuntimeException e) {
-            // TOTO LOG
-            em.getTransaction().rollback();
-        }
+        Author mergedAuthor = em.merge(findById(id));
+        em.remove(mergedAuthor);
+        LOGGER.info("Delete book author id: {}", mergedAuthor.getId());
     }
 }

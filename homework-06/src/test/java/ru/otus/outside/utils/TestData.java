@@ -1,6 +1,10 @@
 package ru.otus.outside.utils;
 
 import ru.otus.homework.models.Author;
+import org.springframework.boot.jdbc.DataSourceInitializationMode;
+import ru.otus.homework.models.Book;
+import ru.otus.homework.models.Genre;
+import ru.otus.homework.models.Publisher;
 
 public class TestData
 {
@@ -29,6 +33,70 @@ public class TestData
     public static String DELETE_FROM_BOOK = "DELETE FROM book";
 
     public static String DELETE_FROM_AUTHOR = "DELETE FROM author";
+
+    public static String DELETE_FROM_GENRE = "DELETE FROM genre";
+
+    public static String DELETE_FROM_PUBLISHER = "DELETE FROM publisher";
+
+    public static Publisher createPublisher1()
+    {
+        Publisher result = new Publisher();
+        result.setId(1L);
+        result.setPublisherName("test_publisher_name_1");
+
+        return result;
+    }
+
+    public static Genre createGenre2()
+    {
+        Genre result = new Genre();
+        result.setId(2L);
+        result.setGenre("test_genre_2");
+
+        return result;
+    }
+
+    public static Book createBook3()
+    {
+        Book result = new Book();
+        result.setId(3L);
+        result.setIsbn("9999999993");
+        result.setTitle("test_title_3");
+        result.setEditionNumber(3);
+        result.setCopyright("2003");
+        result.setPublisher(createPublisher1());
+        result.setGenre(createGenre2());
+
+        return result;
+    }
+
+    public static Book createBook4()
+    {
+        Book result = new Book();
+        result.setId(4L);
+        result.setIsbn("9999999994");
+        result.setTitle("test_title_4");
+        result.setEditionNumber(4);
+        result.setCopyright("2004");
+        result.setPublisher(createPublisher1());
+        result.setGenre(createGenre2());
+
+        return result;
+    }
+
+    public static Book createBook5()
+    {
+        Book result = new Book();
+        result.setId(5L);
+        result.setIsbn("9999999995");
+        result.setTitle("test_title_5");
+        result.setEditionNumber(5);
+        result.setCopyright("2005");
+        result.setPublisher(createPublisher1());
+        result.setGenre(createGenre2());
+
+        return result;
+    }
 
     public static Author createAuthor6()
     {

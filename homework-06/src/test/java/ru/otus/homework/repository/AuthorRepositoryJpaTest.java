@@ -31,7 +31,7 @@ class AuthorRepositoryJpaTest
         }
 
         @Test
-        @DisplayName("injected values in JdbcAuthorDao()")
+        @DisplayName("default values in AuthorRepositoryJpa()")
         void defaults()
         {
             assertThat(repository).hasFieldOrPropertyWithValue("em", null);
@@ -52,7 +52,7 @@ class AuthorRepositoryJpaTest
         }
 
         @Test
-        @DisplayName("injected values in JdbcAuthorDao()")
+        @DisplayName("Constructor injected values in AuthorRepositoryJpa()")
         void defaults()
         {
             assertThat(repository).hasFieldOrPropertyWithValue("em", entityManager);
@@ -94,7 +94,7 @@ class AuthorRepositoryJpaTest
         }
 
         @Test
-        @DisplayName("injected values in JdbcAuthorDao()")
+        @DisplayName("Constructor injected values in AuthorRepositoryJpa()")
         void defaults()
         {
             assertThat(repository).hasFieldOrPropertyWithValue("em", entityManager);
@@ -111,8 +111,6 @@ class AuthorRepositoryJpaTest
         @Test
         void findByFirstName_empty()
         {
-            clearAuthorIsbn();
-            clearAuthor();
             List<Author> authorList = repository.findByFirstName("");
             assertTrue(authorList.isEmpty());
         }
@@ -120,7 +118,6 @@ class AuthorRepositoryJpaTest
         @Test
         void findByLastName_success()
         {
-            initializeDatabase();
             Author expected = createAuthor6();
             List<Author> authorList = repository.findByLastName(expected.getLastName());
             assertTrue(authorList.contains(createAuthor6()));
@@ -129,8 +126,6 @@ class AuthorRepositoryJpaTest
         @Test
         void findByLastName_empty()
         {
-            clearAuthorIsbn();
-            clearAuthor();
             List<Author> authorList = repository.findByLastName("");
             assertTrue(authorList.isEmpty());
         }
@@ -184,46 +179,34 @@ class AuthorRepositoryJpaTest
             repository = new AuthorRepositoryJpa(entityManager);
         }
 
-        @DisplayName("persists new when insert")
+        @DisplayName("persists new when save")
         @Test
-        void insert_persists()
+        void save_persists()
         {
             Author author = new Author();
             author.setFirstName("test");
             author.setLastName("test");
-            repository.insert(author);
+            runInTransaction(() -> repository.save(author));
             assertEquals(author, repository.findById(author.getId()));
-            clearAuthorIsbn();
-            clearAuthor();
         }
 
-        @DisplayName("merge detached object when insert")
+        @DisplayName("merge detached object when save")
         @Test
-        void insert_megre()
+        void save_megre()
         {
             Author author = createAuthor6();
             author.setFirstName("test");
             author.setLastName("test");
-            repository.insert(author);
-            assertEquals(author, repository.findById(author.getId()));
-        }
-
-        @Test
-        void update()
-        {
-            Author author = createAuthor6();
-            author.setFirstName("test");
-            author.setLastName("test");
-            repository.update(author);
+            runInTransaction(() -> repository.save(author));
             assertEquals(author, repository.findById(author.getId()));
         }
 
         @Test
         void delete()
         {
-            clearAuthorIsbn();
             assertEquals(3, repository.findAll().size());
-            repository.delete(6L);
+            clearAuthorIsbn();
+            runInTransaction(() -> repository.delete(6L));
             assertEquals(2, repository.findAll().size());
         }
     }

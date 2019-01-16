@@ -100,8 +100,7 @@ public class AuthorsServiceImpl implements AuthorsService
         Author author = new Author();
         author.setFirstName(firstName);
         author.setLastName(lastName);
-
-        authorRepository.insert(author);
+        authorRepository.save(author);
 
         return author.getId();
     }
@@ -109,12 +108,30 @@ public class AuthorsServiceImpl implements AuthorsService
     @Override
     public long update(long id, String firstName, String lastName)
     {
-        Author author = new Author();
-        author.setId(id);
+        Author author = authorRepository.findById(id);
         author.setFirstName(firstName);
         author.setLastName(lastName);
+        authorRepository.save(author);
 
-        authorRepository.update(author);
+        return author.getId();
+    }
+
+    @Override
+    public long updateFirstName(long id, String firstName)
+    {
+        Author author = authorRepository.findById(id);
+        author.setFirstName(firstName);
+        authorRepository.save(author);
+
+        return author.getId();
+    }
+
+    @Override
+    public long updateLastName(long id, String lastName)
+    {
+        Author author = authorRepository.findById(id);
+        author.setLastName(lastName);
+        authorRepository.save(author);
 
         return author.getId();
     }
