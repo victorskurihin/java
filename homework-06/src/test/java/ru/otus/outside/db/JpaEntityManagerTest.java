@@ -105,8 +105,8 @@ public abstract class JpaEntityManagerTest
         return nativeQuery(getEntityManager(), DELETE_FROM_PUBLISHER);
     }
 
-    public int clearComment()
+    public int clearBookReview()
     {
-        return nativeQuery(getEntityManager(), DELETE_FROM_COMMENT);
+        return nativeQuery(getEntityManager(), DELETE_FROM_BOOK_REVIEW);
     }
 }

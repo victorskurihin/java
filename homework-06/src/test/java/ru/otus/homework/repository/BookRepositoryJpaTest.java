@@ -102,12 +102,43 @@ class BookRepositoryJpaTest
             assertThat(repository).hasFieldOrPropertyWithValue("em", entityManager);
         }
 
+        @DisplayName("find all records from table book, success")
+        @Test
+        void findAll_success()
+        {
+            List<Book> bookList = repository.findAll();
+            assertEquals(3, bookList.size());
+
+            Book book3 = createBook3();
+            attachCommentBook3(book3);
+            assertTrue(bookList.contains(book3));
+
+            Book book4 = createBook4();
+            attachCommentBook4(book4);
+            assertTrue(bookList.contains(book4));
+
+            Book book5 = createBook5();
+            assertTrue(bookList.contains(book5));
+        }
+
+        @DisplayName("find all records from empty table book, empty list")
+        @Test
+        void findAll_empty()
+        {
+            clearAuthorIsbn();
+            clearBookReview();
+            clearBook();
+            List<Book> bookList = repository.findAll();
+            assertTrue(bookList.isEmpty());
+        }
+
+
         @Test
         void findByTitle_success()
         {
-            Book expected = createBook3();
+            Book expected = createBook5();
             List<Book> bookList = repository.findByTitle(expected.getTitle());
-            assertTrue(bookList.contains(createBook3()));
+            assertTrue(bookList.contains(expected));
         }
 
         @Test
@@ -120,52 +151,23 @@ class BookRepositoryJpaTest
         @Test
         void findByIsbn_exception()
         {
-            // Book book = repository.findByIsbn("");
             assertThrows(NoResultException.class, () -> repository.findByIsbn(""));
         }
 
         @Test
         void findByIsbn_success()
         {
-            Book expected = createBook3();
+            Book expected = createBook5();
             Book book = repository.findByIsbn(expected.getIsbn());
-            book.getComments().clear();
-            expected.getComments().clear();
             assertEquals(expected, book);
-        }
-
-        @DisplayName("find all records from table book, success")
-        @Test
-        void findAll_success()
-        {
-            List<Book> bookList = repository.findAll();
-            assertEquals(3, bookList.size());
-            System.out.println("bookList = " + bookList);
-//            Book book3 = createBook3();
-//            assertTrue(bookList.contains(createBook3()));
-//            assertTrue(bookList.contains(createBook4()));
-//            assertTrue(bookList.contains(createBook5()));
-        }
-
-        @DisplayName("find all records from empty table book, empty list")
-        @Test
-        void findAll_empty()
-        {
-            clearAuthorIsbn();
-            clearComment();
-            clearBook();
-            List<Book> bookList = repository.findAll();
-            assertTrue(bookList.isEmpty());
         }
 
         @DisplayName("find by id from table book, success")
         @Test
         void findById_success()
         {
-            Book expected = createBook3();
-            expected.getComments().clear();
+            Book expected = createBook5();
             Book book = repository.findById(expected.getId());
-            book.getComments().clear();
             assertEquals(expected, book);
         }
 
@@ -206,10 +208,14 @@ class BookRepositoryJpaTest
         @Test
         void save_megre()
         {
-            Book book = createBook3();
-            book.setTitle("test");
-            runInTransaction(() -> repository.save(book));
-            assertEquals(book, repository.findById(book.getId()));
+            final Book[] book = {null};
+            runInTransaction(() -> {
+                book[0] = repository.findById(3L);
+                book[0].setTitle("test");
+                repository.save(book[0]);
+            });
+            assertNotNull(book[0]);
+            assertEquals(book[0], repository.findById(book[0].getId()));
         }
 
         @Test
@@ -217,7 +223,7 @@ class BookRepositoryJpaTest
         {
             assertEquals(3, repository.findAll().size());
             clearAuthorIsbn();
-            runInTransaction(() -> repository.delete(3L));
+            runInTransaction(() -> repository.delete(5L));
             assertEquals(2, repository.findAll().size());
         }
     }

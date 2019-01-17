@@ -145,7 +145,7 @@ class GenreRepositoryJpaTest
         void findAll_empty()
         {
             clearAuthorIsbn();
-            clearComment();
+            clearBookReview();
             clearBook();
             clearGenre();
             List<Genre> genreList = repository.findAll();
@@ -205,6 +205,7 @@ class GenreRepositoryJpaTest
         {
             assertEquals(1, repository.findAll().size());
             clearAuthorIsbn();
+            clearBookReview();
             clearBook();
             runInTransaction(() -> repository.delete(2L));
             assertEquals(0, repository.findAll().size());

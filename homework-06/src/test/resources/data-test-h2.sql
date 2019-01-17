@@ -1,7 +1,7 @@
 
 DELETE FROM author_isbn;
 DELETE FROM author;
-DELETE FROM comment;
+DELETE FROM book_review;
 DELETE FROM book;
 DELETE FROM publisher;
 DELETE FROM genre;
@@ -42,10 +42,10 @@ VALUES
  (8, 3),
  (8, 4);
 
-INSERT INTO comment
-  (comment_id, comment, book_id)
+INSERT INTO book_review
+  (review_id, review, book_id)
 VALUES
-  (31, 'test_comment_31', 3)
-, (32, 'test_comment_32', 3)
-, (41, 'test_comment_41', 4)
+  (31, 'test_review_31', 3)
+, (32, 'test_review_32', 3)
+, (41, 'test_review_41', 4)
 ;

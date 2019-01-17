@@ -46,3 +46,14 @@
 1547642096862:show-all-genres
 1547642102315:delete-genre --id 2
 1547642106377:quit
+1547723547902:show-all-authors
+1547723552964:show-all-genres
+1547723555855:show-all-publishers
+1547723569761:insert-publisher --publisher publisher
+1547723573011:show-all-publishers
+1547723589026:update-publisher --id 2 --publisher Publisher
+1547723590963:show-all-publishers
+1547723602182:delete-publisher --id 2
+1547723611947:show-all-publishers
+1547723626134:delete-publisher --id 1
+1547723629103:stacktrace

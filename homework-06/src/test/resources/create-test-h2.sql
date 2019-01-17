@@ -36,10 +36,10 @@ CREATE TABLE IF NOT EXISTS author_isbn (
 , book_id BIGINT NOT NULL REFERENCES book(book_id)
 );
 
-CREATE TABLE IF NOT EXISTS comment (
-  comment_id BIGINT NOT NULL AUTO_INCREMENT
-, comment VARCHAR(255) NOT NULL
-, book_id BIGINT NOT NULL REFERENCES book(book_id)
-, PRIMARY KEY (comment_id)
+CREATE TABLE IF NOT EXISTS book_review (
+  review_id BIGINT NOT NULL AUTO_INCREMENT
+, review VARCHAR(255) NOT NULL
+, book_id BIGINT REFERENCES book(book_id)
+, PRIMARY KEY (review_id)
 );
 

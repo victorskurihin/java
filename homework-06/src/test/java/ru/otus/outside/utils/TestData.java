@@ -1,7 +1,8 @@
 package ru.otus.outside.utils;
 
 import ru.otus.homework.models.*;
-import org.springframework.boot.jdbc.DataSourceInitializationMode;
+
+import java.util.ArrayList;
 
 public class TestData
 {
@@ -10,6 +11,10 @@ public class TestData
     public static long TEST_ID = 1L;
 
     public static int TEST_NUM = 3;
+
+    public static String TEST_AUTHOR6_FIRST_NAME = "test_first_name_6";
+
+    public static String TEST_AUTHOR6_LAST_NAME = "test_last_name_6";
 
     public static String TEST_FIRST_NAME = "test_first_name_1";
 
@@ -37,7 +42,7 @@ public class TestData
 
     public static String DELETE_FROM_PUBLISHER = "DELETE FROM publisher";
 
-    public static String DELETE_FROM_COMMENT = "DELETE FROM comment";
+    public static String DELETE_FROM_BOOK_REVIEW = "DELETE FROM book_review";
 
     public static Publisher createPublisher1()
     {
@@ -67,12 +72,22 @@ public class TestData
         result.setCopyright("2003");
         result.setPublisher(createPublisher1());
         result.setGenre(createGenre2());
-        Comment comment31 = createComment31();
-        comment31.setBook(result);
-        result.getComments().add(comment31);
-        Comment comment32 = createComment31();
-        comment32.setBook(result);
-        result.getComments().add(comment32);
+
+        return result;
+    }
+
+    public static Book attachCommentBook3(Book result)
+    {
+        ArrayList<Review> reviews = new ArrayList<>();
+        Review review31 = createReview31();
+        // ??? review31.setBook(result);
+        reviews.add(review31);
+
+        Review review32 = createReview32();
+        // ??? review32.setBook(result);
+        reviews.add(review32);
+
+        result.setReviews(reviews);
 
         return result;
     }
@@ -87,10 +102,17 @@ public class TestData
         result.setCopyright("2004");
         result.setPublisher(createPublisher1());
         result.setGenre(createGenre2());
-        result.getComments().add(createComment41());
-        Comment comment41 = createComment41();
-        comment41.setBook(result);
-        result.getComments().add(comment41);
+
+        return result;
+    }
+
+    public static Book attachCommentBook4(Book result)
+    {
+        ArrayList<Review> reviews = new ArrayList<>();
+        Review review41 = createReview41();
+        // ??? review41.setBook(result);
+        reviews.add(review41);
+        result.setReviews(reviews);
 
         return result;
     }
@@ -149,32 +171,33 @@ public class TestData
         return result;
     }
 
-    public static Comment createComment32()
+    public static Review createReview31()
     {
-        Comment result = new Comment();
-        result.setId(32L);
-        result.setComment("test_comment_32");
-        result.setBook(null);
-
-        return result;
-    }
-
-    public static Comment createComment41()
-    {
-        Comment result = new Comment();
-        result.setId(41L);
-        result.setComment("test_comment_41");
-        result.setBook(null);
-
-        return result;
-    }
-
-    public static Comment createComment31()
-    {
-        Comment result = new Comment();
+        Review result = new Review();
         result.setId(31L);
-        result.setComment("test_comment_31");
-        result.setBook(null);
+        result.setReview("test_review_31");
+        // result.setBook(null);
+
+        return result;
+    }
+
+    public static Review createReview32()
+
+    {
+        Review result = new Review();
+        result.setId(32L);
+        result.setReview("test_review_32");
+        // result.setBook(null);
+
+        return result;
+    }
+
+    public static Review createReview41()
+    {
+        Review result = new Review();
+        result.setId(41L);
+        result.setReview("test_review_41");
+        // result.setBook(null);
 
         return result;
     }

@@ -22,7 +22,7 @@ public class GenreCommands
         this.genresService = genresService;
     }
 
-    @ShellMethod(value = "Show Genres from table", group = "Show")
+    @ShellMethod(value = "Show genres from table", group = "Show")
     public Table showAllGenres()
     {
         List<String[]> dataList = genresService.findAll();
@@ -31,7 +31,7 @@ public class GenreCommands
         return new DataTableBulder(dataList).getTableBuilder().build();
     }
 
-    @ShellMethod(value = "Insert Genre to table", group = "Insert")
+    @ShellMethod(value = "Insert genre to table", group = "Insert")
     public String insertGenre(String genre)
     {
         String sid = Long.toString(genresService.insert(genre));
@@ -39,7 +39,7 @@ public class GenreCommands
         return msg.get("inserted_with_id", new Object[]{sid});
     }
 
-    @ShellMethod(value = "Update Genre in table", group = "Update")
+    @ShellMethod(value = "Update genre in table", group = "Update")
     public String updateGenre(long id, String genre)
     {
         String sid = Long.toString(genresService.update(id, genre));
@@ -47,7 +47,7 @@ public class GenreCommands
         return msg.get("record_with_with_id_updated", new Object[]{sid});
     }
 
-    @ShellMethod(value = "Delete Genre from table", group = "Delete")
+    @ShellMethod(value = "Delete genre from table", group = "Delete")
     public void deleteGenre(long id)
     {
         genresService.delete(id);

@@ -13,19 +13,20 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Entity
-public class Comment implements Serializable, DataSet
+@Table(name = "book_review")
+public class Review implements Serializable, DataSet
 {
     static final long serialVersionUID = -3L;
 
     @Id
-    @Column(name = "comment_id")
+    @Column(name = "review_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
-    private String comment;
+    private String review;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    /* @ManyToOne(optional = false, cascade = CascadeType.ALL)
+       @JoinColumn(name = "book_id")
+    // unidirectional private Book book; */
 }

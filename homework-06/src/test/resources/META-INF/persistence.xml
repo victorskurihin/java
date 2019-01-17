@@ -10,7 +10,7 @@
         <class>ru.otus.homework.models.Genre</class>
         <class>ru.otus.homework.models.Publisher</class>
         <class>ru.otus.homework.models.Book</class>
-        <class>ru.otus.homework.models.Comment</class>
+        <class>ru.otus.homework.models.Review</class>
 
         <properties>
             <!-- Configuring JDBC properties -->
