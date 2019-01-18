@@ -39,8 +39,8 @@ public class AuthorRepositoryJpa implements AuthorRepository
     @Override
     public List<Author> findByLastName(String lastName)
     {
-        return em.
-            createQuery("SELECT a FROM Author a WHERE a.lastName LIKE :name", Author.class)
+        return em
+            .createQuery("SELECT a FROM Author a WHERE a.lastName LIKE :name", Author.class)
             .setParameter("name", lastName)
             .getResultList();
     }

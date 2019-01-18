@@ -56,7 +56,7 @@ class GenreTest
         @BeforeEach
         void createNew()
         {
-            genre = new Genre(TEST_ID, TEST_GENRE_NAME);
+            genre = new Genre(TEST_ID, TEST_GENRE2_NAME);
         }
 
         @Test
@@ -64,7 +64,7 @@ class GenreTest
         void defaults()
         {
             assertThat(genre).hasFieldOrPropertyWithValue("id", TEST_ID);
-            assertThat(genre).hasFieldOrPropertyWithValue("genre", TEST_GENRE_NAME);
+            assertThat(genre).hasFieldOrPropertyWithValue("genre", TEST_GENRE2_NAME);
         }
 
         @Test
@@ -72,7 +72,7 @@ class GenreTest
         void testEquals()
         {
             assertNotEquals(new Genre(), genre);
-            Genre expected = new Genre(TEST_ID, TEST_GENRE_NAME);
+            Genre expected = new Genre(TEST_ID, TEST_GENRE2_NAME);
             assertEquals(expected.hashCode(), genre.hashCode());
             assertEquals(expected, genre);
         }

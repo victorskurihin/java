@@ -18,7 +18,13 @@ public class BookRepositoryJpa implements BookRepository
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookRepositoryJpa.class);
 
-    public static String[] FIND_ALL_HEADER = {"book_id", "book"};
+    public static String[] FIND_ALL_HEADER = {
+        "book_id", "isbn", "title", "edition_number", "copyright", "publisher_id", "genre_id"
+    };
+
+    public static String[] FIND_ALL_HEADER_BOOKS_AUTHORS = {
+        "book_id", "isbn", "title", "edition_number", "copyright", "publisher_name", "genre", "first_name", "last_name"
+    };
 
     @PersistenceContext
     private EntityManager em;
@@ -44,8 +50,8 @@ public class BookRepositoryJpa implements BookRepository
     @Override
     public Book findByIsbn(String isbn)
     {
-        return em.
-            createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
+        return em
+            .createQuery("SELECT b FROM Book b WHERE b.isbn = :isbn", Book.class)
             .setParameter("isbn", isbn)
             .getSingleResult();
     }
@@ -53,16 +59,18 @@ public class BookRepositoryJpa implements BookRepository
     @Override
     public List<Book> findByTitle(String title)
     {
-        return em.
-            createQuery("SELECT b FROM Book b WHERE b.title LIKE :name", Book.class)
+        return em
+            .createQuery("SELECT b FROM Book b WHERE b.title LIKE :name", Book.class)
             .setParameter("name", title)
             .getResultList();
     }
 
     @Override
-    public Map<Book, Author> findAllBooksAndTheirAuthors()
+    public List<Book> findAllBooksAndTheirAuthors()
     {
-        return null;
+        return em
+            .createNamedQuery("Book.findAllWithDetail", Book.class)
+            .getResultList();
     }
 
     @Override

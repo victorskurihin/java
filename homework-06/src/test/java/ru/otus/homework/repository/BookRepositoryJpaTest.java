@@ -111,10 +111,12 @@ class BookRepositoryJpaTest
 
             Book book3 = createBook3();
             attachCommentBook3(book3);
+            authorOfBook(book3);
             assertTrue(bookList.contains(book3));
 
             Book book4 = createBook4();
             attachCommentBook4(book4);
+            authorOfBook(book4);
             assertTrue(bookList.contains(book4));
 
             Book book5 = createBook5();

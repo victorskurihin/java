@@ -16,6 +16,12 @@ public class TestData
 
     public static String TEST_AUTHOR6_LAST_NAME = "test_last_name_6";
 
+    public static String TEST_GENRE2_NAME = "test_genre_2";
+
+    public static String TEST_PUBLISHER1_NAME = "test_publisher_name_1";
+
+    public static String TEST_REVIEW31_NAME = "test_review_31";
+
     public static String TEST_FIRST_NAME = "test_first_name_1";
 
     public static String TEST_LAST_NAME = "test_last_name_1";
@@ -88,6 +94,21 @@ public class TestData
         reviews.add(review32);
 
         result.setReviews(reviews);
+
+        return result;
+    }
+
+    public static Book authorOfBook(Book result)
+    {
+        Author author6 = createAuthor6();
+        result.getAuthors().add(author6);
+
+        Author author7 = createAuthor7();
+        result.getAuthors().add(author7);
+
+        Author author8 = createAuthor8();
+        result.getAuthors().add(author8);
+
 
         return result;
     }

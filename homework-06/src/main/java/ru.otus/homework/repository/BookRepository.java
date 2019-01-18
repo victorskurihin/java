@@ -12,5 +12,5 @@ public interface BookRepository extends Repository<Book>
 
     List<Book> findByTitle(String title);
 
-    Map<Book, Author> findAllBooksAndTheirAuthors();
+    List<Book> findAllBooksAndTheirAuthors();
 }

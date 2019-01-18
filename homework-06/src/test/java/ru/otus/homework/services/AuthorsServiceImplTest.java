@@ -3,9 +3,9 @@ package ru.otus.homework.services;
 import org.junit.jupiter.api.*;
 import ru.otus.homework.models.Author;
 import ru.otus.homework.repository.AuthorRepositoryJpa;
+import ru.otus.outside.db.JpaDedicatedEntityManagerTest;
 
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +32,7 @@ class AuthorsServiceImplTest
         new AuthorsServiceImpl(null);
     }
 
-    private AuthorsServiceImpl createService()
+    private AuthorsServiceImpl createMockService()
     {
         repository = mock(AuthorRepositoryJpa.class);
 
@@ -54,7 +54,7 @@ class AuthorsServiceImplTest
         @BeforeEach
         void createNewQuestions()
         {
-            service = createService();
+            service = createMockService();
         }
 
         @Test
@@ -66,7 +66,7 @@ class AuthorsServiceImplTest
     }
 
     @Nested
-    @DisplayName("AuthorsServiceImpl methods")
+    @DisplayName("when mock AuthorRepositoryJpa")
     class ServiceMethods
     {
         private final String[] TEST_AUTHOR6_RECORD = new String[]{
@@ -76,7 +76,7 @@ class AuthorsServiceImplTest
         @BeforeEach
         void createNewService() throws SQLException
         {
-            service = createService();
+            service = createMockService();
         }
 
         @Test
@@ -153,105 +153,58 @@ class AuthorsServiceImplTest
             List<String[]> expected = createEmptyStringsAuthors();
             expected.add(TEST_AUTHOR6_RECORD);
 
-            printListStrings(System.out, testList);
+            // printListStrings(System.out, testList);
             assertEquals(expected.get(0).length, testList.get(0).length);
             assertListStringsEquals(expected, testList);
         }
     }
-/*    private DataSource dataSource;
-
-    private AuthorRepositoryJpa repository;
-
-    private AuthorsServiceImpl service;
-
-    @Test
-    @DisplayName("is instantiated with new AuthorsServiceImpl()")
-    void isInstantiatedWithNew()
-    {
-        new AuthorsServiceImpl(null);
-    }
-
-    private void printFindAll()
-    {
-        System.out.println("findAll = " + service.findAll());
-    }
 
     @Nested
-    @DisplayName("AuthorsServiceImpl methods")
-    class ServiceMethods
+    @DisplayName("JPA H2 insert/update tests for AuthorRepositoryJpa")
+    class JpaH2CreateUpdateTests extends JpaDedicatedEntityManagerTest
     {
-        private final String[] TEST_RECORD = new String[]{Long.toString(TEST_ID), TEST_FIRST_NAME, TEST_LAST_NAME};
         @BeforeEach
-        void createNewService() throws SQLException
+        void createNew()
         {
-            service = createService();
-            Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(INSERT_INTO_AUTHOR);
+            repository = new AuthorRepositoryJpa(entityManager);
+            service = new AuthorsServiceImpl(repository);
         }
 
-        @AfterEach
-        void deleteFromTable() throws SQLException
-        {
-            clearTables(dataSource);
-            Statement statement = dataSource.getConnection().createStatement();
-            statement.execute(DELETE_FROM_AUTHOR);
-        }
-
+        @DisplayName("insert")
         @Test
-        void findByFirstName()
+        void insert()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(AuthorRepositoryJpa.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findByFirstName(TEST_FIRST_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            runInTransaction(() -> {
+                service.insert("test", "test");
+                List<Author> result = repository.findByFirstName("test");
+                assertEquals(1, result.size());
+            });
         }
 
-        @Test
-        void findByLastName()
-        {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(AuthorRepositoryJpa.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findByLastName(TEST_LAST_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
-        }
-
-        @Test
-        void save()
-        {
-            assertTrue(service.save(TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST) > 0);
-        }
-
+        @DisplayName("update")
         @Test
         void update()
         {
-            long id = service.update(TEST_ID, TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST);
-            assertTrue(id > 0);
-
-            List<String[]> expected = new ArrayList<>();
-            expected.add(AuthorRepositoryJpa.FIND_ALL_HEADER);
-            expected.add(new String[]{Long.toString(id), TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST});
-
-            List<String[]> testList = service.findById(id);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
+            runInTransaction(() -> {
+                Author author6 = createAuthor6();
+                author6.setFirstName("test");
+                author6.setLastName("test");
+                service.update(author6.getId(), author6.getFirstName(), author6.getLastName());
+                Author test = repository.findById(author6.getId());
+                assertEquals(author6, test);
+            });
         }
 
+        @DisplayName("delete")
         @Test
-        void delete() throws SQLException
+        void delete()
         {
-            assertEquals(2, service.findAll().size());
-            boolean autoCommit = autoCommitOn(dataSource);
-            service.delete(TEST_ID);
-            assertEquals(1, service.findAll().size());
-            autoCommitRestore(dataSource, autoCommit);
+            clearAuthorIsbn();
+            runInTransaction(() -> {
+                assertEquals(3, repository.findAll().size());
+                service.delete(6L);
+                assertEquals(2, repository.findAll().size());
+            });
         }
-    }*/
+    }
 }
