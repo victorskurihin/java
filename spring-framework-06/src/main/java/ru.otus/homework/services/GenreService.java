@@ -1,14 +1,12 @@
 package ru.otus.homework.services;
 
+import ru.otus.homework.models.Genre;
+
 import java.util.List;
 
-public interface GenreService
+public interface GenreService extends FindService<Genre>
 {
-    List<String[]> findAll();
-
-    List<String[]> findById(long id);
-
-    List<String[]> findByGenre(String genre);
+    List<Genre> findByGenre(String genre);
 
     long insert(String genre);
 

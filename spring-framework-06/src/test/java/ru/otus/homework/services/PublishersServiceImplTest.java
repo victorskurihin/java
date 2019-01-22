@@ -2,12 +2,14 @@ package ru.otus.homework.services;
 
 import org.junit.jupiter.api.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.otus.homework.models.Publisher;
 import ru.otus.homework.services.dao.JdbcPublisherDao;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -86,42 +88,23 @@ class PublishersServiceImplTest
         @Test
         void findAll()
         {
-            List<String[]> testList = service.findById(TEST_ID);
-            // System.out.println(Arrays.toString(testList.get(1)));
-
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            List<Publisher> expected = Collections.singletonList(createTestPublisher13());
+            List<Publisher> testList = service.findAll();
+            assertEquals(expected, testList);
+            // TODO LOG
         }
 
         @Test
         void findById()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findById(TEST_ID);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            assertEquals(createTestPublisher13(), dao.findById(13L));
+            // TODO LOG
         }
 
         @Test
         void findByPublisher()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findByPublisherName(TEST_PUBLISHER_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            assertEquals(Collections.singletonList(createTestPublisher13()), dao.findByName(TEST_PUBLISHER_NAME));
         }
 
         @Test
@@ -133,26 +116,23 @@ class PublishersServiceImplTest
         @Test
         void update()
         {
-            long id = service.update(TEST_ID, TEST_PUBLISHER_NAME + TEST);
-            assertEquals(TEST_ID, id);
+            Publisher expected = new Publisher();
+            expected.setId(13L);
+            expected.setPublisherName(TEST_PUBLISHER_NAME + TEST);
 
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(new String[]{Long.toString(id), TEST_PUBLISHER_NAME + TEST});
-
-            List<String[]> testList = service.findById(id);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
+            long id = service.update(expected.getId(), expected.getPublisherName());
+            assertEquals(13L, id);
+            assertEquals(expected, service.findById(id));
         }
 
         @SuppressWarnings("Duplicates")
         @Test
         void delete() throws SQLException
         {
-            assertEquals(2, service.findAll().size());
+            assertEquals(1, service.findAll().size());
             boolean autoCommit = autoCommitOn(dataSource);
             service.delete(TEST_ID);
-            assertEquals(1, service.findAll().size());
+            assertEquals(0, service.findAll().size());
             autoCommitRestore(dataSource, autoCommit);
         }
     }

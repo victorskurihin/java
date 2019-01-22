@@ -3,9 +3,8 @@ package ru.otus.homework.shell;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.table.Table;
-import ru.otus.homework.services.DataTableBulder;
-import ru.otus.homework.services.MessagesService;
-import ru.otus.homework.services.PublishersServiceImpl;
+import ru.otus.homework.models.Publisher;
+import ru.otus.homework.services.*;
 
 import java.util.List;
 
@@ -14,21 +13,24 @@ public class PublisherCommands
 {
     private MessagesService msg;
 
-    private PublishersServiceImpl publishersService;
+    private PublishersService publishersService;
 
-    public PublisherCommands(MessagesService msg, PublishersServiceImpl publisherService)
+    private DataTransformer<PublishersService, Publisher> dataTransformer;
+
+    public PublisherCommands(MessagesService msg, PublishersService publisherService)
     {
         this.msg = msg;
         this.publishersService = publisherService;
+        this.dataTransformer = new DataTransformer<>(publisherService);
     }
 
     @ShellMethod(value = "Show publishers from table", group = "Show")
     public Table showAllPublishers()
     {
-        List<String[]> dataList = publishersService.findAll();
-        System.out.println(msg.get("number_of_rows", new Object[]{dataList.size()}));
+        List<Publisher> list = publishersService.findAll();
+        System.out.println(msg.get("number_of_rows", new Object[]{list.size()}));
 
-        return new DataTableBulder(dataList).getTableBuilder().build();
+        return dataTransformer.transformList(list).build();
     }
 
     @ShellMethod(value = "Insert publisher to table", group = "Insert")

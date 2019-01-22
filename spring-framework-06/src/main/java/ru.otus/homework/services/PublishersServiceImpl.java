@@ -30,55 +30,46 @@ public class PublishersServiceImpl implements PublishersService
         return new String[]{Long.toString(p.getId()), p.getPublisherName()};
     }
 
-    private String[] unfold(Publisher a)
+    @Override
+    public String[] unfold(Publisher a)
     {
         return unfoldPublisher(a);
     }
 
     @Override
-    public List<String[]> findAll()
+    public List<Publisher> findAll()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        List<Publisher> result = publisherDao.findAll();
+        // TODO LOG
 
-        List<String[]> tail = publisherDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return result;
     }
 
     @Override
-    public List<String[]> findById(long id)
+    public String[] getHeader()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        return FIND_ALL_HEADER;
+    }
 
+    @Override
+    public Publisher findById(long id)
+    {
         try {
-            Publisher publisher;
-            publisher = publisherDao.findById(id);
-            head.add(unfold(publisher));
-
-            return head;
+            return publisherDao.findById(id);
         }
         catch (EmptyResultDataAccessException e) {
-            return head;
-
+            // TODO LOG
+            return null;
         }
     }
 
     @Override
-    public List<String[]> findByPublisherName(String publisherName)
+    public List<Publisher> findByPublisherName(String publisherName)
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        List<Publisher> result = publisherDao.findByName(publisherName);
+        // TODO LOG
 
-        List<String[]> tail = publisherDao.findByName(publisherName)
-            .stream()
-            .map(this::unfold)
-            .collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return result;
     }
 
     @Override

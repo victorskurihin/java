@@ -5,9 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.otus.homework.models.Genre;
 import ru.otus.homework.services.dao.JdbcGenreDao;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GenreServiceImpl implements GenreService
@@ -30,55 +28,46 @@ public class GenreServiceImpl implements GenreService
         return new String[]{Long.toString(a.getId()), a.getGenre()};
     }
 
-    private String[] unfold(Genre a)
+    @Override
+    public String[] unfold(Genre a)
     {
         return unfoldGenre(a);
     }
 
     @Override
-    public List<String[]> findAll()
+    public List<Genre> findAll()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        List<Genre> result = genreDao.findAll();
+        // TODO LOG
 
-        List<String[]> tail = genreDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return result;
     }
 
     @Override
-    public List<String[]> findById(long id)
+    public String[] getHeader()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        return FIND_ALL_HEADER;
+    }
 
+    @Override
+    public Genre findById(long id)
+    {
         try {
-            Genre genre;
-            genre = genreDao.findById(id);
-            head.add(unfold(genre));
-
-            return head;
+            return genreDao.findById(id);
         }
         catch (EmptyResultDataAccessException e) {
-            return head;
-
+            // TODO LOG
+            return null;
         }
     }
 
     @Override
-    public List<String[]> findByGenre(String genre)
+    public List<Genre> findByGenre(String genre)
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        List<Genre> result = genreDao.findByGenre(genre);
+        // TODO LOG
 
-        List<String[]> tail = genreDao.findByGenre(genre)
-            .stream()
-            .map(this::unfold)
-            .collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return result;
     }
 
     @Override

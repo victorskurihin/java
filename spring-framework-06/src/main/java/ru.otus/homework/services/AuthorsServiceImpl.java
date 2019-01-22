@@ -28,6 +28,7 @@ public class AuthorsServiceImpl implements AuthorsService
         return new String[]{Long.toString(a.getId()), a.getFirstName(), a.getLastName()};
     }
 
+    @Override
     public String[] unfold(Author a)
     {
         return unfoldAuthor(a);
@@ -36,7 +37,10 @@ public class AuthorsServiceImpl implements AuthorsService
     @Override
     public List<Author> findAll()
     {
-        return authorDao.findAll();
+        List<Author> result = authorDao.findAll();
+        // TODO LOG
+
+        return result;
     }
 
     @Override

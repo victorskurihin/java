@@ -2,18 +2,17 @@ package ru.otus.homework.services;
 
 import org.junit.jupiter.api.*;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.otus.homework.models.Genre;
 import ru.otus.homework.services.dao.JdbcGenreDao;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static ru.otus.homework.services.GenreServiceImpl.FIND_ALL_HEADER;
 import static ru.otus.outside.utils.TestData.*;
 
 @DisplayName("Class GenreServiceImpl")
@@ -87,42 +86,23 @@ class GenreServiceImplTest
         @Test
         void findAll()
         {
-            List<String[]> testList = service.findById(0L);
-            // System.out.println(Arrays.toString(testList.get(1)));
-
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            assertArrayEquals(expected.get(0), service.findAll().get(0));
-            assertArrayEquals(expected.get(1), service.findAll().get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            List<Genre> expected = Collections.singletonList(createTestGenre());
+            List<Genre> testList = service.findAll();
+            assertEquals(expected, testList);
+            // TODO LOG
         }
 
         @Test
         void findById()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findById(0L);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            assertEquals(createTestGenre(), dao.findById(0L));
+            // TODO LOG
         }
 
         @Test
         void findByGenre()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findByGenre(TEST_GENRE_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-            assertEquals(testList.get(0).length, testList.get(1).length);
+            assertEquals(Collections.singletonList(createTestGenre()), dao.findByGenre(TEST_GENRE_NAME));
         }
 
         @Test
@@ -134,25 +114,22 @@ class GenreServiceImplTest
         @Test
         void update()
         {
-            long id = service.update(0L, TEST_GENRE_NAME + TEST);
+            Genre expected = new Genre();
+            expected.setId(0L);
+            expected.setGenre(TEST_GENRE_NAME + TEST);
+
+            long id = service.update(expected.getId(), expected.getGenre());
             assertEquals(0, id);
-
-            List<String[]> expected = new ArrayList<>();
-            expected.add(FIND_ALL_HEADER);
-            expected.add(new String[]{Long.toString(id), TEST_GENRE_NAME + TEST});
-
-            List<String[]> testList = service.findById(id);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
+            assertEquals(expected, service.findById(id));
         }
 
         @Test
         void delete() throws SQLException
         {
-            assertEquals(2, service.findAll().size());
+            assertEquals(1, service.findAll().size());
             boolean autoCommit = autoCommitOn(dataSource);
             service.delete(0L);
-            assertEquals(1, service.findAll().size());
+            assertEquals(0, service.findAll().size());
             autoCommitRestore(dataSource, autoCommit);
         }
     }

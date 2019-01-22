@@ -3,9 +3,8 @@ package ru.otus.homework.shell;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.table.Table;
-import ru.otus.homework.services.DataTableBulder;
-import ru.otus.homework.services.GenreServiceImpl;
-import ru.otus.homework.services.MessagesService;
+import ru.otus.homework.models.Genre;
+import ru.otus.homework.services.*;
 
 import java.util.List;
 
@@ -14,21 +13,24 @@ public class GenreCommands
 {
     private MessagesService msg;
 
-    private GenreServiceImpl genresService;
+    private GenreService genresService;
 
-    public GenreCommands(MessagesService msg, GenreServiceImpl genreService)
+    private DataTransformer<GenreService, Genre> dataTransformer;
+
+    public GenreCommands(MessagesService msg, GenreService genreService)
     {
         this.msg = msg;
         this.genresService = genreService;
+        this.dataTransformer = new DataTransformer<>(genreService);
     }
 
     @ShellMethod(value = "Show genres from table", group = "Show")
     public Table showAllGenres()
     {
-        List<String[]> dataList = genresService.findAll();
-        System.out.println(msg.get("number_of_rows", new Object[]{dataList.size()}));
+        List<Genre> list = genresService.findAll();
+        System.out.println(msg.get("number_of_rows", new Object[]{list.size()}));
 
-        return new DataTableBulder(dataList).getTableBuilder().build();
+        return dataTransformer.transformList(list).build();
     }
 
     @ShellMethod(value = "Insert genre to table", group = "Insert")

@@ -1,14 +1,12 @@
 package ru.otus.homework.services;
 
+import ru.otus.homework.models.Publisher;
+
 import java.util.List;
 
-public interface PublishersService
+public interface PublishersService extends FindService<Publisher>
 {
-    List<String[]> findAll();
-
-    List<String[]> findById(long id);
-
-    List<String[]> findByPublisherName(String publisherName);
+    List<Publisher> findByPublisherName(String publisherName);
 
     long insert(String publisherName);
 
