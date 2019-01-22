@@ -5,14 +5,12 @@ import org.springframework.stereotype.Service;
 import ru.otus.homework.models.Author;
 import ru.otus.homework.services.dao.JdbcAuthorDao;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorsServiceImpl implements AuthorsService
 {
-    // TODO LOG
+    public static String[] FIND_ALL_HEADER = {"author_id", "first_name", "last_name"};
 
     private JdbcAuthorDao authorDao;
 
@@ -30,70 +28,51 @@ public class AuthorsServiceImpl implements AuthorsService
         return new String[]{Long.toString(a.getId()), a.getFirstName(), a.getLastName()};
     }
 
-    private String[] unfold(Author a)
+    public String[] unfold(Author a)
     {
         return unfoldAuthor(a);
     }
 
     @Override
-    public List<String[]> findAll()
+    public List<Author> findAll()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
-
-        List<String[]> tail = authorDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return authorDao.findAll();
     }
 
     @Override
-    public List<String[]> findById(long id)
+    public String[] getHeader()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
+        return FIND_ALL_HEADER;
+    }
 
+    @Override
+    public Author findById(long id)
+    {
         try {
-            Author author;
-            author = authorDao.findById(id);
-            head.add(unfold(author));
-
-            return head;
+            return authorDao.findById(id);
         }
         catch (EmptyResultDataAccessException e) {
-            return head;
-
+            // TODO LOG
+            return null;
         }
     }
 
     @Override
-    public List<String[]> findByFirstName(String firstName)
+    public List<Author> findByFirstName(String firstName)
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
+        List<Author> authors = authorDao.findByFirstName(firstName);
+        // TODO LOG
 
-        List<String[]> tail = authorDao.findByFirstName(firstName)
-            .stream()
-            .map(this::unfold)
-            .collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return authors;
     }
 
     @Override
-    public List<String[]> findByLastName(String lastName)
+    public List<Author> findByLastName(String lastName)
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(JdbcAuthorDao.FIND_ALL_HEADER);
+        List<Author> authors = authorDao.findByLastName(lastName);
+        // TODO LOG
 
-        List<String[]> tail = authorDao.findByLastName(lastName)
-            .stream()
-            .map(this::unfold)
-            .collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return authors;
     }
 
     @Override

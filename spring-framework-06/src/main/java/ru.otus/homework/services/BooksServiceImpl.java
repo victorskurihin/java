@@ -1,5 +1,7 @@
 package ru.otus.homework.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.otus.homework.models.Author;
@@ -11,12 +13,21 @@ import ru.otus.homework.services.dao.JdbcBookDao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class BooksServiceImpl implements BooksService
 {
-    // TODO LOG
+    public static String[] FIND_ALL_HEADER = {
+        "book_id", "isbn", "title", "edition_number", "copyright", "publisher_id", "genre_id"
+    };
+
+    public static String[] FIND_ALL_HEADER_BOOKS_AUTHORS = {
+        "book_id", "isbn", "title", "edition_number", "copyright", "publisher_name", "genre", "first_name", "last_name"
+    };
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BooksServiceImpl.class);
 
     private JdbcBookDao bookDao;
 
@@ -45,6 +56,7 @@ public class BooksServiceImpl implements BooksService
     private String[] mergeBookAndAuthor(Book b, Author a)
     {
         if (null == b) {
+            LOGGER.error("Book is null.");
             throw new RuntimeException();
         }
 
@@ -83,7 +95,7 @@ public class BooksServiceImpl implements BooksService
     public List<String[]> findAll()
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcBookDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         List<String[]> tail = bookDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
         head.addAll(tail);
@@ -95,7 +107,7 @@ public class BooksServiceImpl implements BooksService
     public List<String[]> findById(long id)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcBookDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         try {
             Book book;
@@ -106,7 +118,6 @@ public class BooksServiceImpl implements BooksService
         }
         catch (EmptyResultDataAccessException e) {
             return head;
-
         }
     }
 
@@ -114,7 +125,7 @@ public class BooksServiceImpl implements BooksService
     public List<String[]> findByIsbn(String isbn)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcBookDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         String[] tail = unfold(bookDao.findByIsbn(isbn));
         head.add(tail);
@@ -126,7 +137,7 @@ public class BooksServiceImpl implements BooksService
     public List<String[]> findByTitle(String title)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcBookDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         List<String[]> tail = bookDao.findByTitle(title)
             .stream()
@@ -141,14 +152,18 @@ public class BooksServiceImpl implements BooksService
     public List<String[]> findAllBooksAndTheirAuthors()
     {
         List<String[]> result = new ArrayList<>();
-        result.add(JdbcBookDao.FIND_ALL_HEADER);
-        Map<Book, Author> map = bookDao.findAllBooksAndTheirAuthors();
+        result.add(FIND_ALL_HEADER_BOOKS_AUTHORS);
+        List<Book> books = bookDao.findAllBooksAndTheirAuthors();
 
-        for (Map.Entry<Book, Author> entry : map.entrySet()) {
-            Book book = entry.getKey();
-            Author author = entry.getValue();
-            // String[] record = mergeBookAndAuthor(book, author);
-            result.add(mergeBookAndAuthor(book, author));
+        for (Book book : books) {
+            if (book.getAuthors().isEmpty()) {
+                result.add(mergeBookAndAuthor(book, null));
+            }
+            else {
+                for (Author author : book.getAuthors()) {
+                    result.add(mergeBookAndAuthor(book, author));
+                }
+            }
         }
 
         return result;

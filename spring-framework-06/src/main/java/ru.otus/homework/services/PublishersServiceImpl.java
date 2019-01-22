@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class PublishersServiceImpl implements PublishersService
 {
-    // TODO LOG
+    public static String[] FIND_ALL_HEADER = {"publisher_id", "publisher_name"};
 
     private JdbcPublisherDao publisherDao;
 
@@ -39,7 +39,7 @@ public class PublishersServiceImpl implements PublishersService
     public List<String[]> findAll()
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcPublisherDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         List<String[]> tail = publisherDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
         head.addAll(tail);
@@ -51,7 +51,7 @@ public class PublishersServiceImpl implements PublishersService
     public List<String[]> findById(long id)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcPublisherDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         try {
             Publisher publisher;
@@ -70,7 +70,7 @@ public class PublishersServiceImpl implements PublishersService
     public List<String[]> findByPublisherName(String publisherName)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcPublisherDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         List<String[]> tail = publisherDao.findByName(publisherName)
             .stream()

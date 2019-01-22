@@ -1,22 +1,25 @@
 package ru.otus.homework.services.dao;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.otus.homework.models.Publisher;
+import ru.otus.homework.services.mappers.PublisherMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
-
-import static ru.otus.outside.utils.JdbcHelper.getStringOrNull;
 
 @Repository("publisherDao")
 public class JdbcPublisherDao implements PublisherDao
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JdbcPublisherDao.class);
+
+    // public static String[] FIND_ALL_HEADER = {"publisher_id", "publisher_name"};
+
     private NamedParameterJdbcTemplate jdbc;
 
     public JdbcPublisherDao(NamedParameterJdbcTemplate jdbc)
@@ -24,24 +27,10 @@ public class JdbcPublisherDao implements PublisherDao
         this.jdbc = jdbc;
     }
 
-    static Publisher buildBy(ResultSet resultSet)
-    {
-        Publisher g = new Publisher();
-        try {
-            g.setId(resultSet.getLong("publisher_id"));
-            g.setPublisherName(getStringOrNull(resultSet, "publisher_name"));
-
-            return g;
-        }
-        catch (SQLException e) {
-            return null;
-        }
-    }
-
     @Override
     public List<Publisher> findAll()
     {
-        return jdbc.query("SELECT publisher_id, publisher_name FROM publisher", (rs, rowNum) -> buildBy(rs));
+        return jdbc.query("SELECT publisher_id, publisher_name FROM publisher", new PublisherMapper());
     }
 
     @Override
@@ -50,7 +39,7 @@ public class JdbcPublisherDao implements PublisherDao
         return jdbc.queryForObject(
             "SELECT publisher_id, publisher_name FROM publisher WHERE publisher_id = :id",
             new MapSqlParameterSource("id", id),
-            (rs, numRow) -> buildBy(rs)
+            new PublisherMapper()
         );
     }
 
@@ -60,7 +49,7 @@ public class JdbcPublisherDao implements PublisherDao
         return jdbc.query(
             "SELECT publisher_id, publisher_name FROM publisher WHERE publisher_name = :publisher",
             new MapSqlParameterSource("publisher", publisher),
-            (rs, rowNum) -> buildBy(rs)
+            new PublisherMapper()
         );
     }
 

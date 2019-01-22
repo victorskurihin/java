@@ -1,16 +1,14 @@
 package ru.otus.homework.services;
 
+import ru.otus.homework.models.Author;
+
 import java.util.List;
 
-public interface AuthorsService
+public interface AuthorsService extends FindService<Author>
 {
-    List<String[]> findAll();
+    List<Author> findByFirstName(String firstName);
 
-    List<String[]> findById(long id);
-
-    List<String[]> findByFirstName(String firstName);
-
-    List<String[]> findByLastName(String lastName);
+    List<Author> findByLastName(String lastName);
 
     long insert(String firstName, String lastName);
 

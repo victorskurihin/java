@@ -33,7 +33,7 @@ class JdbcAuthorDaoTest
 
     private void printFindAll()
     {
-        System.out.println("findAll = " + dao.findAll());
+        System.out.println("transformList = " + dao.findAll());
     }
 
     private JdbcAuthorDao createDao()

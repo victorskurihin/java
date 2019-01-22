@@ -11,9 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Publisher implements Serializable, DataSet
+public class TestEmpty implements Serializable, DataSet
 {
     private long id;
-
-    private String publisherName;
 }

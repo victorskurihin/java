@@ -38,7 +38,7 @@ class JdbcBookDaoTest
 
     private void printFindAll()
     {
-        System.out.println("findAll = " + dao.findAll());
+        System.out.println("transformList = " + dao.findAll());
     }
 
     private JdbcBookDao createDao()
@@ -123,7 +123,7 @@ class JdbcBookDaoTest
         @Test
         void findAllBooksAndTheirAuthors() throws SQLException
         {
-            assertFalse(dao.findAllBooksAndTheirAuthors().isEmpty());
+            assertEquals(1, dao.findAllBooksAndTheirAuthors().size());
         }
 
         @Test

@@ -34,7 +34,7 @@ class JdbcPublisherDaoTest
 
     private void printFindAll()
     {
-        System.out.println("findAll = " + dao.findAll());
+        System.out.println("transformList = " + dao.findAll());
     }
 
     private JdbcPublisherDao createDao()
@@ -151,7 +151,7 @@ class JdbcPublisherDaoTest
             dao.delete(TEST_ID);
 
             // TODO printFindAll();
-            // assertEquals(0, dao.findAll().size());
+            // assertEquals(0, dao.transformList().size());
             dao.delete(Long.MAX_VALUE);
             autoCommitRestore(dataSource, autoCommit);
         }

@@ -16,6 +16,4 @@ public class Genre implements Serializable, DataSet
     private long id;
 
     private String genre;
-
-    // private List<Book> books;
 }

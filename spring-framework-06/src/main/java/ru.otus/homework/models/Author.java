@@ -18,6 +18,4 @@ public class Author implements Serializable, DataSet
     private String firstName;
 
     private String lastName;
-
-    // private List<Book> books;
 }

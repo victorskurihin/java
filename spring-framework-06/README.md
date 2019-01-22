@@ -12,7 +12,7 @@
  * [x] Покрыть тестами, насколько это возможно.
 ## Замечания
  * [x] Author.java private List<Book> books; Усложняет работу. При этом является ли список книг свойством автора вопрос спорный. То же касается Publisher.
- * [ ] Book.java private long publisherId; private long publisherId;
+ * [x] Book.java private long publisherId; private long publisherId;
  * [x] по ДЗ вроде должны быть жанры
- * [ ] AuthorsService.java Тут и далее getTableBuilder и createTableForFindAll относятся к UI, а AuthorsService к слою работы с данными. Лучше сделать трансформеры сущностей и их списков в пригодный для отображения вид.
+ * [x] AuthorsService.java Тут и далее getTableBuilder и createTableForFindAll относятся к UI, а AuthorsService к слою работы с данными. Лучше сделать трансформеры сущностей и их списков в пригодный для отображения вид.
  * [x] TABLE author_isbn Лучше связывать по суррогатному ключу (id).

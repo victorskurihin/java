@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
 
 public class TestData
 {
@@ -44,6 +45,10 @@ public class TestData
     public static final String INSERT_INTO_AUTHOR_ISBN = " INSERT INTO author_isbn (author_id, book_id)" +
         " VALUES (13, 13)";
     public static final String DELETE_FROM_AUTHOR_ISBN = "DELETE FROM author_isbn";
+
+    public static final String[] TEST_STRING_ARRAY_WITH_NULL = new String[]{"NULL"};
+
+    public static final String[] TEST_STRING_ARRAY_TEST_ID = new String[]{"test_id"};
 
     public static DataSource injectTestDataSource()
     {
@@ -95,7 +100,7 @@ public class TestData
 
     public static Book createTestBook13()
     {
-        return new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, createTestPublisher13(), createTestGenre());
+        return new Book(TEST_ID, TEST_ISBN, TEST_TITLE, TEST_NUM, TEST_COPYRIGHT, createTestPublisher13(), createTestGenre(), new LinkedList<>());
     }
 
     public static Book createTestBookAnother()

@@ -1,7 +1,9 @@
 package ru.otus.homework.services;
 
 import org.junit.jupiter.api.*;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.otus.homework.models.Author;
 import ru.otus.homework.services.dao.JdbcAuthorDao;
 
 import javax.sql.DataSource;
@@ -9,10 +11,14 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static ru.otus.homework.services.AuthorsServiceImpl.FIND_ALL_HEADER;
 import static ru.otus.outside.utils.TestData.*;
 
 @DisplayName("Class AuthorsServiceImpl")
@@ -33,7 +39,7 @@ class AuthorsServiceImplTest
 
     private void printFindAll()
     {
-        System.out.println("findAll = " + service.findAll());
+        System.out.println("transformList = " + service.findAll());
     }
 
     private AuthorsServiceImpl createService()
@@ -49,7 +55,7 @@ class AuthorsServiceImplTest
     class WhenNew
     {
         @BeforeEach
-        void createNewQuestions()
+        void createNew()
         {
             service = createService();
         }
@@ -63,10 +69,76 @@ class AuthorsServiceImplTest
     }
 
     @Nested
+    @DisplayName("when mock JdbcAuthorDao")
+    class WhenMock
+    {
+        private JdbcAuthorDao authorDao;
+
+        @BeforeEach
+        void mockEntityManager()
+        {
+            authorDao = mock(JdbcAuthorDao.class);
+            service = new AuthorsServiceImpl(authorDao);
+        }
+
+        @DisplayName("find by id from table author return null")
+        @Test
+        void findById_null()
+        {
+            when(authorDao.findById(1L)).thenThrow(new EmptyResultDataAccessException(0));
+
+            Author author = service.findById(1L);
+            assertNull(author);
+        }
+
+        @DisplayName("find by id from table author success")
+        @Test
+        void findById_success()
+        {
+            Author expected = createTestAuthor13();
+            expected.setFirstName("testFirstName");
+            expected.setLastName("testLastName");
+
+            when(authorDao.findById(expected.getId())).thenReturn(expected);
+
+            Author author = service.findById(expected.getId());
+            assertEquals(expected, author);
+        }
+
+        @DisplayName("find by id from table author return null")
+        @Test
+        void findAll_empty()
+        {
+            List<Author> expected = new LinkedList<>();
+
+            when(authorDao.findAll()).thenReturn(expected);
+
+            List<Author> authors = service.findAll();
+            assertEquals(expected, authors);
+        }
+
+        @DisplayName("find by id from table author return null")
+        @Test
+        void findAll_success()
+        {
+            Author author = createTestAuthor13();
+            List<Author> expected = new LinkedList<>();
+            expected.add(author);
+
+            when(authorDao.findAll()).thenReturn(expected);
+
+            List<Author> authors = service.findAll();
+            authors.add(author);
+            assertEquals(expected, authors);
+        }
+    }
+
+    @Nested
     @DisplayName("AuthorsServiceImpl methods")
     class ServiceMethods
     {
         private final String[] TEST_RECORD = new String[]{Long.toString(TEST_ID), TEST_FIRST_NAME, TEST_LAST_NAME};
+
         @BeforeEach
         void createNewService() throws SQLException
         {
@@ -84,49 +156,23 @@ class AuthorsServiceImplTest
         }
 
         @Test
-        void findAll()
-        {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-            assertArrayEquals(expected.get(0), service.findAll().get(0));
-            assertArrayEquals(expected.get(1), service.findAll().get(1));
-        }
-
-        @Test
-        void findById()
-        {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
-
-            List<String[]> testList = service.findById(TEST_ID);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
-        }
-
-        @Test
         void findByFirstName()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
+            List<Author> expected = new ArrayList<>();
+            expected.add(createTestAuthor13());
 
-            List<String[]> testList = service.findByFirstName(TEST_FIRST_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
+            List<Author> testList = service.findByFirstName(TEST_FIRST_NAME);
+            assertEquals(expected, testList);
         }
 
         @Test
         void findByLastName()
         {
-            List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
-            expected.add(TEST_RECORD);
+            List<Author> expected = new ArrayList<>();
+            expected.add(createTestAuthor13());
 
-            List<String[]> testList = service.findByLastName(TEST_LAST_NAME);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
+            List<Author> testList = service.findByLastName(TEST_LAST_NAME);
+            assertEquals(expected, testList);
         }
 
         @Test
@@ -142,21 +188,18 @@ class AuthorsServiceImplTest
             assertTrue(id > 0);
 
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcAuthorDao.FIND_ALL_HEADER);
+            expected.add(FIND_ALL_HEADER);
             expected.add(new String[]{Long.toString(id), TEST_FIRST_NAME + TEST, TEST_LAST_NAME + TEST});
-
-            List<String[]> testList = service.findById(id);
-            assertArrayEquals(expected.get(0), testList.get(0));
-            assertArrayEquals(expected.get(1), testList.get(1));
         }
 
+        @SuppressWarnings("Duplicates")
         @Test
         void delete() throws SQLException
         {
-            assertEquals(2, service.findAll().size());
+            assertEquals(1, service.findAll().size());
             boolean autoCommit = autoCommitOn(dataSource);
             service.delete(TEST_ID);
-            assertEquals(1, service.findAll().size());
+            assertEquals(0, service.findAll().size());
             autoCommitRestore(dataSource, autoCommit);
         }
     }

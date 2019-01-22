@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 public class GenreServiceImpl implements GenreService
 {
-    // TODO LOG
+    public static String[] FIND_ALL_HEADER = {"genre_id", "genre"};
 
     private JdbcGenreDao genreDao;
 
@@ -39,7 +39,7 @@ public class GenreServiceImpl implements GenreService
     public List<String[]> findAll()
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcGenreDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         List<String[]> tail = genreDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
         head.addAll(tail);
@@ -51,7 +51,7 @@ public class GenreServiceImpl implements GenreService
     public List<String[]> findById(long id)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcGenreDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         try {
             Genre genre;
@@ -70,7 +70,7 @@ public class GenreServiceImpl implements GenreService
     public List<String[]> findByGenre(String genre)
     {
         List<String[]> head = new ArrayList<>();
-        head.add(JdbcGenreDao.FIND_ALL_HEADER);
+        head.add(FIND_ALL_HEADER);
 
         List<String[]> tail = genreDao.findByGenre(genre)
             .stream()

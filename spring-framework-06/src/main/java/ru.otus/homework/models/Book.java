@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 @Data
 @NoArgsConstructor
@@ -26,4 +29,6 @@ public class Book implements Serializable, DataSet
     private Publisher publisher;
 
     private Genre genre;
+
+    private Collection<Author> authors = new LinkedList<>();
 }

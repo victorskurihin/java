@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static ru.otus.homework.services.PublishersServiceImpl.FIND_ALL_HEADER;
 import static ru.otus.outside.utils.TestData.*;
 
 @DisplayName("Class PublisherServiceImpl")
@@ -32,7 +33,7 @@ class PublishersServiceImplTest
 
     private void printFindAll()
     {
-        System.out.println("findAll = " + service.findAll());
+        System.out.println("transformList = " + service.findAll());
     }
 
     private PublishersServiceImpl createService()
@@ -85,35 +86,42 @@ class PublishersServiceImplTest
         @Test
         void findAll()
         {
+            List<String[]> testList = service.findById(TEST_ID);
+            // System.out.println(Arrays.toString(testList.get(1)));
+
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
+            expected.add(FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
-            assertArrayEquals(expected.get(0), service.findAll().get(0));
-            assertArrayEquals(expected.get(1), service.findAll().get(1));
+
+            assertArrayEquals(expected.get(0), testList.get(0));
+            assertArrayEquals(expected.get(1), testList.get(1));
+            assertEquals(testList.get(0).length, testList.get(1).length);
         }
 
         @Test
         void findById()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
+            expected.add(FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
 
             List<String[]> testList = service.findById(TEST_ID);
             assertArrayEquals(expected.get(0), testList.get(0));
             assertArrayEquals(expected.get(1), testList.get(1));
+            assertEquals(testList.get(0).length, testList.get(1).length);
         }
 
         @Test
         void findByPublisher()
         {
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
+            expected.add(FIND_ALL_HEADER);
             expected.add(TEST_RECORD);
 
             List<String[]> testList = service.findByPublisherName(TEST_PUBLISHER_NAME);
             assertArrayEquals(expected.get(0), testList.get(0));
             assertArrayEquals(expected.get(1), testList.get(1));
+            assertEquals(testList.get(0).length, testList.get(1).length);
         }
 
         @Test
@@ -129,7 +137,7 @@ class PublishersServiceImplTest
             assertEquals(TEST_ID, id);
 
             List<String[]> expected = new ArrayList<>();
-            expected.add(JdbcPublisherDao.FIND_ALL_HEADER);
+            expected.add(FIND_ALL_HEADER);
             expected.add(new String[]{Long.toString(id), TEST_PUBLISHER_NAME + TEST});
 
             List<String[]> testList = service.findById(id);
@@ -137,6 +145,7 @@ class PublishersServiceImplTest
             assertArrayEquals(expected.get(1), testList.get(1));
         }
 
+        @SuppressWarnings("Duplicates")
         @Test
         void delete() throws SQLException
         {

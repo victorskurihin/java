@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface Dao<T extends DataSet>
 {
-    String[] FIND_ALL_HEADER = {};
-
     List<T> findAll();
 
     T findById(long id);
