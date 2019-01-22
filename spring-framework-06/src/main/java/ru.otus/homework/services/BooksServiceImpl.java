@@ -10,11 +10,7 @@ import ru.otus.homework.models.Genre;
 import ru.otus.homework.models.Publisher;
 import ru.otus.homework.services.dao.JdbcBookDao;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class BooksServiceImpl implements BooksService
@@ -86,71 +82,64 @@ public class BooksServiceImpl implements BooksService
         };
     }
 
-    private String[] unfold(Book a)
+    @Override
+    public String[] unfold(Book a)
     {
         return unfoldBook(a);
     }
 
     @Override
-    public List<String[]> findAll()
+    public List<Book> findAll()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        List<Book> result = bookDao.findAll();
+        // TODO LOG
 
-        List<String[]> tail = bookDao.findAll().stream().map(this::unfold).collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return result;
     }
 
     @Override
-    public List<String[]> findById(long id)
+    public String[] getHeader()
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        return FIND_ALL_HEADER;
+    }
 
+    @Override
+    public Book findById(long id)
+    {
         try {
-            Book book;
-            book = bookDao.findById(id);
-            head.add(unfold(book));
-
-            return head;
+            return bookDao.findById(id);
         }
         catch (EmptyResultDataAccessException e) {
-            return head;
+            // TODO LOG
+            return null;
         }
     }
 
     @Override
-    public List<String[]> findByIsbn(String isbn)
+    public Book findByIsbn(String isbn)
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
-
-        String[] tail = unfold(bookDao.findByIsbn(isbn));
-        head.add(tail);
-
-        return head;
+        try {
+            return bookDao.findByIsbn(isbn);
+        }
+        catch (EmptyResultDataAccessException e) {
+            // TODO LOG
+            return null;
+        }
     }
 
     @Override
-    public List<String[]> findByTitle(String title)
+    public List<Book> findByTitle(String title)
     {
-        List<String[]> head = new ArrayList<>();
-        head.add(FIND_ALL_HEADER);
+        List<Book> result = bookDao.findByTitle(title);
+        // TODO LOG
 
-        List<String[]> tail = bookDao.findByTitle(title)
-            .stream()
-            .map(this::unfold)
-            .collect(Collectors.toList());
-        head.addAll(tail);
-
-        return head;
+        return result;
     }
 
     @Override
-    public List<String[]> findAllBooksAndTheirAuthors()
+    public List<Book> findAllBooksAndTheirAuthors()
     {
+        /*
         List<String[]> result = new ArrayList<>();
         result.add(FIND_ALL_HEADER_BOOKS_AUTHORS);
         List<Book> books = bookDao.findAllBooksAndTheirAuthors();
@@ -166,7 +155,8 @@ public class BooksServiceImpl implements BooksService
             }
         }
 
-        return result;
+        return result; */
+        return null; // TODO
     }
 
     @Override

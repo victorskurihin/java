@@ -1,18 +1,16 @@
 package ru.otus.homework.services;
 
+import ru.otus.homework.models.Book;
+
 import java.util.List;
 
-public interface BooksService
+public interface BooksService extends FindService<Book>
 {
-    List<String[]> findAll();
+    Book findByIsbn(String isbn);
 
-    List<String[]> findById(long id);
+    List<Book> findByTitle(String title);
 
-    List<String[]> findByIsbn(String isbn);
-
-    List<String[]> findByTitle(String title);
-
-    List<String[]> findAllBooksAndTheirAuthors();
+    List<Book> findAllBooksAndTheirAuthors();
 
     long insert(String isbn, String title, int editionNumber, String copyright, long publisherId, long genreId);
 
