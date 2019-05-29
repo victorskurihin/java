@@ -1,17 +1,31 @@
 package su.svn.fi.services;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
+import su.svn.fi.models.Instrument;
 
-@Service("instrument3")
-public class CalculationEngineInstrument3 implements CalculationEngine<Double>
+@Service("calculationEngineInstrument3")
+public class CalculationEngineInstrument3 implements CalculationEngine
 {
-    private double result = 0;
+    private double maximum = Double.MIN_VALUE;
 
-    private long count = 0L;
+    private double minimum = Double.MAX_VALUE;
 
     @Override
-    public void apply(String line)
+    public synchronized void apply(Instrument instrument)
     {
-        // TODO
+        if (maximum < instrument.getValue()) {
+            maximum = instrument.getValue();
+        }
+        if (minimum > instrument.getValue()) {
+            minimum = instrument.getValue();
+        }
+    }
+
+    @Override
+    public double getResult()
+    {
+        return maximum - minimum;
     }
 }

@@ -1,6 +1,10 @@
 package su.svn.fi.services;
 
-public interface CalculationEngine<T extends Number>
+import su.svn.fi.models.Instrument;
+
+public interface CalculationEngine
 {
-    void apply(String line);
+    void apply(Instrument instrument);
+
+    double getResult();
 }

@@ -31,7 +31,7 @@ public class ParserImpl implements Parser
             throw new RuntimeException("Unexpected input line " + line);
         }
         LocalDate date = parseDate(elements[1]);
-        double value = Double.parseDouble(elements[0]);
+        double value = Double.parseDouble(elements[2]);
 
         return new Instrument(elements[0], date, value);
     }
