@@ -1,9 +1,0 @@
-logging:
-  level:
-    ROOT: INFO
-
-spring:
-  banner:
-    location: classpath:banner.txt
-
-message: "Test Props msg"
