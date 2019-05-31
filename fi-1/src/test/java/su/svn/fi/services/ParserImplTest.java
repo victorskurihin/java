@@ -59,7 +59,7 @@ class ParserImplTest
     void test_parse_good_case1()
     {
         Instrument expected = new Instrument(
-            "INSTRUMENT1", LocalDate.of(1996, 1, 1), 2.4655
+            "INSTRUMENT1", 0, LocalDate.of(1996, 1, 1), 2.4655
             );
         Instrument instrument = parser.parse(lineCase1);
         assertEquals(expected, instrument);
@@ -70,7 +70,7 @@ class ParserImplTest
     void test_parse_good_case2()
     {
         Instrument expected = new Instrument(
-            "INSTRUMENT2", LocalDate.of(1996, 1, 9), 9.342281879
+            "INSTRUMENT2", 0, LocalDate.of(1996, 1, 9), 9.342281879
         );
         Instrument instrument = parser.parse(lineCase2);
         assertEquals(expected, instrument);
@@ -81,7 +81,7 @@ class ParserImplTest
     void test_parse_good_case3()
     {
         Instrument expected = new Instrument(
-            "INSTRUMENT3", LocalDate.of(1997, 3, 23), 115.405
+            "INSTRUMENT3", 0, LocalDate.of(1997, 5, 23), 115.405
         );
         Instrument instrument = parser.parse(lineCase3);
         assertEquals(expected, instrument);

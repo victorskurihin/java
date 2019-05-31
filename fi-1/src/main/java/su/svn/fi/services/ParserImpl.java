@@ -24,7 +24,7 @@ public class ParserImpl implements Parser
     }
 
     @Override
-    public Instrument parse(String line)
+    public Instrument parse(String line, long number)
     {
         String elements[] = line.split(",");
         if ( ! check(elements)) {
@@ -33,6 +33,12 @@ public class ParserImpl implements Parser
         LocalDate date = parseDate(elements[1]);
         double value = Double.parseDouble(elements[2]);
 
-        return new Instrument(elements[0], date, value);
+        return new Instrument(elements[0], number, date, value);
+    }
+
+    @Override
+    public Instrument parse(String line)
+    {
+        return parse(line, 0);
     }
 }

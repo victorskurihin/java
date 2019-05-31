@@ -1,0 +1,11 @@
+logging:
+  level:
+    ROOT: INFO
+  file: 'app.log'
+
+spring:
+  banner:
+    location: classpath:banner.txt
+
+application:
+  batchSize: 100

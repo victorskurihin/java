@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import su.svn.fi.models.Instrument;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Service
+@Component
 public class ApplicationCommandLineRunner implements CommandLineRunner
 {
     private static final Log LOG = LogFactory.getLog(ApplicationCommandLineRunner.class);
@@ -56,8 +57,8 @@ public class ApplicationCommandLineRunner implements CommandLineRunner
     @Override
     public void run(String... args) throws Exception
     {
-        reader.read(strings -> strings.stream().parallel().forEach(line -> {
-            Instrument instrument = parser.parse(line);
+        reader.read(strings -> strings.entrySet().parallelStream().forEach(entry -> {
+            Instrument instrument = parser.parse(entry.getKey(), entry.getValue());
             if (dayChecker.isValid(instrument.getDate())) {
                 CalculationEngine engine = getEngine(instrument.getName());
                 engine.apply(instrument);
