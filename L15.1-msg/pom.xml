@@ -28,7 +28,7 @@
             <guava.version>21.0</guava.version>
             <reflections.version>0.9.11</reflections.version>
             <junit.version>4.12</junit.version>
-            <log4j.version>2.10.0</log4j.version>
+            <log4j.version>2.13.3</log4j.version>
             <springframework.version>4.3.14.RELEASE</springframework.version>
             <jetty.version>9.4.8.v20171121</jetty.version>
             <tomcat.version>7.0.85</tomcat.version>
