@@ -27,7 +27,7 @@
         <javax.jsonb.version>1.0</javax.jsonb.version>
         <jaxen.version>1.1.6</jaxen.version>
         <jsoup.version>1.11.3</jsoup.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <log4j.version>2.10.0</log4j.version>
         <lombok.version>1.18.2</lombok.version>
         <oracle.driver.version>11.2.0.4</oracle.driver.version>
