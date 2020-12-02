@@ -29,7 +29,7 @@
                 <reflections.version>0.9.11</reflections.version>
                 <junit.version>4.12</junit.version>
                 <log4j.version>2.10.0</log4j.version>
-                <jetty.version>9.4.8.v20171121</jetty.version>
+                <jetty.version>9.4.35.v20201120</jetty.version>
                 <hibernate.version>5.2.12.Final</hibernate.version>
                 <freemarker.version>2.3.20</freemarker.version>
         </properties>
