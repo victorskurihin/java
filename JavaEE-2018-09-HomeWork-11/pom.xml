@@ -49,7 +49,7 @@
         <junit.version>4.11</junit.version>
         <lombok.version>1.18.2</lombok.version>
         <oracle.driver.version>11.2.0.4</oracle.driver.version>
-        <org.apache.logging.log4j.version>2.9.1</org.apache.logging.log4j.version>
+        <org.apache.logging.log4j.version>2.15.0</org.apache.logging.log4j.version>
         <org.eclipse.persistence.version>2.2.1</org.eclipse.persistence.version>
         <org.eclipse.version>2.7.1</org.eclipse.version>
         <org.hibernate.javax.persistence.version>1.0.1.Final</org.hibernate.javax.persistence.version>
