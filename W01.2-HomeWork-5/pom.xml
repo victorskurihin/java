@@ -40,7 +40,7 @@
         <!--<jsonschema.version>1.3.0</jsonschema.version>-->
         <jsoup.version>1.11.3</jsoup.version>
         <junit.version>4.11</junit.version>
-        <log4j.version>2.9.1</log4j.version>
+        <log4j.version>2.16.0</log4j.version>
         <lombok.version>1.18.2</lombok.version>
         <oracle.driver.version>11.2.0.4</oracle.driver.version>
         <org.json.version>20180813</org.json.version>
