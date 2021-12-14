@@ -30,7 +30,7 @@
         <javax.json.version>1.1</javax.json.version>
         <javax.jsonb.version>1.0</javax.jsonb.version>
         <org.json.version>20160810</org.json.version>
-        <log4j.version>2.10.0</log4j.version>
+        <log4j.version>2.16.0</log4j.version>
         <slf4j.version>1.7.21</slf4j.version>
 
         <tomcat.deploymentPath>http://localhost:8008/manager/text</tomcat.deploymentPath>
