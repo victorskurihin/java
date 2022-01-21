@@ -22,7 +22,7 @@
         <lombok.version>1.18.2</lombok.version>
         <hibernate.version>5.3.6.Final</hibernate.version>
         <junit.version>4.11</junit.version>
-        <h2.version>1.4.197</h2.version>
+        <h2.version>2.1.210</h2.version>
         <oracle.driver.version>11.2.0.4</oracle.driver.version>
         <postgresql.driver.version>42.2.2</postgresql.driver.version>
         <jaxen.version>1.1.6</jaxen.version>
