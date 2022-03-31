@@ -29,7 +29,7 @@
             <reflections.version>0.9.11</reflections.version>
             <junit.version>4.12</junit.version>
             <log4j.version>2.10.0</log4j.version>
-            <springframework.version>4.3.14.RELEASE</springframework.version>
+            <springframework.version>5.3.18</springframework.version>
             <jetty.version>9.4.8.v20171121</jetty.version>
             <tomcat.version>7.0.85</tomcat.version>
             <hibernate.version>5.2.12.Final</hibernate.version>
