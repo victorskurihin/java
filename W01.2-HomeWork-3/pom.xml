@@ -20,7 +20,7 @@
 
         <javaee.version>8.0</javaee.version>
         <lombok.version>1.18.2</lombok.version>
-        <hibernate.version>5.3.6.Final</hibernate.version>
+        <hibernate.version>5.3.20.Final</hibernate.version>
         <junit.version>4.11</junit.version>
         <h2.version>1.4.197</h2.version>
         <oracle.driver.version>11.2.0.4</oracle.driver.version>
